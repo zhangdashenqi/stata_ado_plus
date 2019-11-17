@@ -1,0 +1,160 @@
+{smcl}
+{* 17Mrr2007}{...}
+{hline}
+{cmd:help sml}, {cmd:help sml2s}{right: ({browse "http://www.stata-journal.com/article.html?article=st0144":SJ8-2: st0144})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 19 21 2}{...}
+{p2col :{hi:sml, sml2s} {hline 2}}SML estimation{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}{cmd:sml} {it:depvar} {it:varlist}
+{ifin}
+{weight}
+{bind:[{cmd:,} {cmdab:nocon:stant}}
+{cmdab:off:set}{cmd:(}{it:varname}{cmd:)} 
+{cmdab:b:width}{cmd:(}{it:#}{cmd:)}
+{cmdab:f:rom}{cmd:(}{it:matname}{cmd:)}
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)}
+{it:maximize_options}]
+
+
+{p 8 17 2}{cmd:sml2s} {it:depvar} {it:varlist}
+{ifin}
+{weight}{cmd:,} 
+{opt sel:ect}{cmd:(}{it:depvar_s} {cmd:=} {it:varlist_s}
+[{cmd:,} {opt nocon:stant} {opt off:set(varname)}]{cmd:)}
+{bind:[{cmd:bwidth1}{cmd:(}{it:#}{cmd:)}}
+{cmd:bwidth2}{cmd:(}{it:#}{cmd:)}
+{cmdab:f:rom}{cmd:(}{it:matname}{cmd:)}
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)}
+{it:maximize_options}]
+
+
+{p 4 4 2}{cmd:fweight}s and {cmd:iweight}s are allowed; see {help weight}.
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:sml} fits univariate binary-choice models by the semiparametric 
+maximum likelihood estimator of Klein and Spady (1993). {cmd:sml2s} fits
+bivariate binary-choice models with sample selection by the semiparametric
+maximum likelihood estimator of Lee (1995). For both estimators, nonparametric
+kernel estimates of the underlying probability functions are obtained through
+Gaussian kernels with a fixed bandwidth. 
+
+
+{title:Options}
+
+{phang}
+{opth offset(varname)}; see {helpb estimation options:[R] estimation options}.
+
+{phang}
+{opt select}{cmd:(}{it:depvar_s} {cmd:=} {it:varlist_s}
+[{cmd:,} {opt nocon:stant} {opt off:set(varname)}]{cmd:)}
+specifies the variables and options for the
+selection equation.  It is an integral part of specifying a selection model
+and is required.  The selection equation should contain at least one variable
+that is not in the outcome equation.
+
+{pmore}
+If {it:depvar_s} is specified, it should be coded as 0 or 1, with 0 indicating
+an observation not selected and 1 indicating a selected observation.  If
+{it:depvar_s} is not specified, observations for which {it:depvar_s} is not
+missing are assumed selected, and those for which {it:depvar_s} is missing are
+assumed not selected.
+
+{phang}{opt bwidth(#)} specifies the value of the bandwidth parameter h_n to be
+used for nonparametric estimation of the response probability.  The default is
+h_n=n^(-1/6.5), where n is the overall sample size used for estimation.
+
+{phang}{opt bwidth1(#)} specifies the value of the bandwidth parameter h_n used
+for nonparametric estimation of the selection probability. The default is
+h_n=n^(-1/6.5), where n is the overall sample size used for estimation. 
+
+{phang}{opt bwidth2(#)} specifies the value of the bandwidth parameter h_(n1)
+used for nonparametric estimation of the conditional probability. The default
+is h_(n1)=n1^(-1/6.5), where n1 is the number of selected observations. 
+
+{phang}{opt from(matname)} specifies the name of the matrix 
+to be used as starting values. By default, starting values are the estimates of 
+the corresponding probit specification, namely, the {helpb probit} estimates for
+{cmd:sml} and the {helpb heckprob} estimates for {cmd:sml2s}.  
+
+{phang}
+{opt level(#)}; see {helpb estimation options:[R] estimation options}.
+
+{phang}
+{it:maximize_options}:
+{opt dif:ficult}, {opt tech:nique(algorithm_spec)}, 
+{opt iter:ate(#)}, [{cmd:{ul:no}}]{opt lo:g}, {opt tr:ace}, 
+{opt grad:ient}, {opt showstep},
+{opt hess:ian},
+{opt shownr:tolerance},
+{opt tol:erance(#)},
+{opt ltol:erance(#)}, {opt gtol:erance(#)}, {opt nrtol:erance(#)},
+{opt nonrtol:erance}, {opt from(init_specs)}; see {manhelp maximize R}.  These
+options are seldom used.
+
+
+{title:Remarks}
+
+{p 4 4 2}Asymptotic properties of the SML estimators require the bandwidth
+parameters to satisfy the restrictions n^(-1/6) < h_n < n^(-1/8) and n_1^(-1/6)
+< h_n1 < n_1^(-1/8).  In practice, one may either experiment with alternative
+values of h_n and h_n1 in the above range or use some more sophisticated
+method like generalized cross validation.
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. set seed 1234}
+
+{p 8 12 2}{cmd:. matrix define sigma=(1,.5 \ .5,1)}
+
+{p 8 12 2}{cmd:. qui drawnorm u1 u2, n(2000) corr(sigma) double}
+
+{p 8 12 2}{cmd:. qui gen double x1=(uniform()*2-1)*sqrt(3)}
+
+{p 8 12 2}{cmd:. qui gen double x2=(uniform()*2-1)*sqrt(3)}
+
+{p 8 12 2}{cmd:. qui gen double x3=invchi2(1,uniform())}
+
+{p 8 12 2}{cmd:. qui gen x4=(uniform()>.5)}
+
+{p 8 12 2}{cmd:. qui gen y1=(x1-x3+2*x4+u1>0)}
+
+{p 8 12 2}{cmd:. qui gen y2=(x2+.5*x3-1.5*x4+u2>0) if y1==1}
+
+{p 8 12 2}{cmd:. sml y1 x3 x4 , offset(x1)}
+
+{p 8 12 2}{cmd:. qui sum y2}
+
+{p 8 12 2}{cmd:. local bw2=1/(r(N)^(1/6.02))}
+
+{p 8 12 2}{cmd:. sml2s y2 x3 x4, sel(y1=x3 x4, offset(x1)) offset(x2) bwidth2(`bw2')}
+
+
+{title:References}
+
+{p 4 8 2}
+Klein, R., and R. Spady. 1993. An efficient semiparametric estimator of the
+binary response models.  {it:Econometrica} 61: 387-421.
+
+{p 4 8 2}
+Lee, L. F. 1995. Semiparametric maximum likelihood estimation of polychotomous
+and sequential choice models.  {it:Journal of Econometrics} 65: 381-428.
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 8, number 2: {browse "http://www.stata-journal.com/article.html?article=st0144":st0144}
+
+{psee}Online:  {helpb snp}, if installed
+{p_end}

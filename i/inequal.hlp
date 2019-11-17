@@ -1,0 +1,59 @@
+Measures of inequality                                          [sg30: STB-23]
+----------------------
+
+      ^atkinson^ varname [^if^ exp] [^in^ range] [fweights] [^,^ ^e^psilon^(^#[^,^#[^,^...]]^)^ ]
+
+                                -- or --
+
+      ^inequal^ varname [^if^ exp] [^in^ range] [fweights]
+
+                                -- or --
+
+      ^lorenz^ varname [^if^ exp] [^in^ range] [fweights] [^,^ ^of^fset graph-options ]
+
+                                -- or --
+
+      ^relsgini^ varname [^if^ exp] [^in^ range] [fweights] [^,^ ^d^elta^(^#[^,^#[^,^...]]^)^ ]
+
+
+These four ado-files provide a variety of measures of inequality.  ^atkinson^
+computes the Atkinson inequality index using the inequality aversion para-
+meter(s) specified in the parameter list. ^inequal^ displays the following
+measures: relative mean deviation, coefficient of variation, standard 
+deviation of logs, Gini index, Mehran index, Piesch index, Kakwani index, 
+Theil entropy index, and mean log deviation.  ^lorenz^ displays a Lorenz curve.
+^relsgini^ computes the Donaldson-Weymark relative S-Gini using the
+distributional sensitivity parameters specified in the parameter list.
+
+
+
+
+
+Options
+-------
+
+^d^elta^()^ specifies the distributional sensitivity parameters used in computing
+   the relative S-Gini.
+
+^e^psilon^()^ specifies the inequality aversion parameters used in computing
+    Atkinson inequality index.
+
+^of^fset specifies the graph options "noaxis xline(0,1) yline(0,1)".
+
+
+
+
+
+
+Author
+------
+
+        Edward Whitehouse
+        OECD, Paris
+        FAX 011-33-1-45-24-78-52
+
+
+Also see
+--------
+
+    STB:  sg30 (STB-23)

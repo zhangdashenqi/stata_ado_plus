@@ -1,0 +1,22 @@
+.-
+help for ^mvtab1^ :: 2008-03-07
+.-
+
+Tabulate missing values
+-----------------------
+
+    ^mvtab1^ varlist^,^ (see options for ^tab1^)
+
+Description
+-----------
+
+  ^mvtab1^ operates just like ^tab1^ except that it only prints frequency
+  distributions for missing values.
+
+Options
+-------
+
+  See ^tab1^ for a listing of options.
+
+.-
+Author: Scott Long - www.indiana.edu/~jslsoc/workflow.htm

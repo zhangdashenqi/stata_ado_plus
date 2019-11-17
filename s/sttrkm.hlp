@@ -1,0 +1,84 @@
+{smcl}
+{cmd:help sttrkm}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 20 2}{...}
+{p2col :{hi: sttrkm} {hline 2}}Diagnostic command for the threshold regression model{p_end}
+{p2colreset}{...}
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:sttrkm} [{it:if}] {cmd:,} {opth by(varname)} [{it:{help sttrkm##sttrkm_options:sttrkm_options}}]
+
+
+{synoptset 33 tabbed}{...}
+{marker sttrkm_options}{...}
+{synopthdr :sttrkm_options}
+{synoptline}
+{syntab :Main}
+{p2coldent :* {opth by(varname)}}report the nominal or ordinal covariate{p_end}
+{synopt :{opt clny0}}specifies a constant ``lny0''. That is, the covariate specified by the ``by'' option is not included as a predictor for the ``lny0'' parameter in the threshold regression model.{p_end}
+{synopt :{opt cmu}}specifies a constant ``mu''. That is, the covariate specified by the ``by'' option is not included as a predictor for the ``mu'' parameter in the threshold regression model.{p_end}
+{synopt :{opt sep:arate}}draw separate plot for predicted and observed curves{p_end}
+{synopt :{opt nosh:ow}}do not show st setting information{p_end}
+
+{syntab:Observed plot}
+{synopt :{opth obsop:ts(stcox_diagnostics##stcoxkm_plot_options:stcoxkm_plot_options)}}affect rendition of the observed curve{p_end}
+{synopt :{cmdab:obs:}{ul:{it:#}}{cmd:opts(}{help sttrkm##sttrkm_plot_options:{it:sttrkm_plot_options}}{cmd:)}}affect rendition of the {it:#}th observed curve; not allowed with {opt separate}{p_end}
+
+{syntab:Predicted plot}
+{synopt :{opth predop:ts(sttrkm##sttrkm_plot_options:sttrkm_plot_options)}}affect rendition of the predicted
+curve{p_end}
+{synopt :{cmdab:pred:}{ul:{it:#}}{cmd:opts(}{help sttrkm##sttrkm_plot_options:{it:sttrkm_plot_options}}{cmd:)}}affect rendition of the {it:#}th predicted curve; not allowed with {opt separate}{p_end}
+
+{syntab:Add plots}
+{synopt :{opth "addplot(addplot_option:plot)"}}add other plots to the generated graph{p_end}
+
+{syntab:Y axis, X axis, Titles, Legend, Overall}
+{synopt :{it:{help twoway_options}}}any options other than {opt by()} documented in {bind:{bf:[G] {it:twoway_options}}}{p_end}
+{synopt :{opth byop:ts(by_option:byopts)}}how subgraphs are combined, labeled,
+etc.{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+* {opt by(varname)} is required with {cmd:stcoxkm}.{p_end}
+
+
+{synoptset 33}{...}
+{marker sttrkm_plot_options}{...}
+{synopthdr:sttrkm_plot_options}
+{synoptline}
+{synopt:{it:connect_options}}change look of connecting method{p_end}
+{synopt:{it:marker_options}}change look of markers (color, size, etc.){p_end}
+{synoptline}
+{p2colreset}{...}
+
+{p 4 6 2}
+You must {cmd:stset} your data before using {cmd:sttrkm};
+see {manhelp stset ST}.{p_end}
+{p 4 6 2}
+{opt fweight}s, {opt iweight}s, and {opt pweight}s may be specified
+using {cmd:stset}; see {manhelp stset ST}.
+ 
+{title:Examples of sttrkm}
+ 
+{pstd}Setup{p_end}
+
+{phang2}{cmd:. use melanoma, clear}{p_end}
+
+
+{pstd}Stset the data{p_end}
+
+{phang2}{cmd:. stset survtime, failure(status)}{p_end}
+
+
+{pstd}Run the sttrkm command for the ``ici'' variable{p_end}
+
+{phang2}{cmd:. sttrkm, by(ici) noshow separate}{p_end}
+
+
+
+

@@ -1,0 +1,50 @@
+/*
+ xls2stata
+*! VERSION 1.0 15jan2012
+*/
+VERSION 10.0
+INCLUDE _std_medium
+DEFINE _dlght 170
+INCLUDE header
+HELP hlp1, view("help xls2stata")
+RESET res1
+
+DIALOG main, label("xls2stata - Import Excel Files into Stata") ///
+	tabtitle("Main")
+BEGIN
+
+ DEFINE wlabel 130
+ DEFINE cmdx 320
+ DEFINE cmdw 170
+ DEFINE _x _xsetbu
+ DEFINE _y _top
+
+ TEXT tx_fn1	_lft	_top	300 	.,	///
+ label("Input Excel File Name:") 
+ FILE fi_fn1    _lft	_ss	300 	.,	///
+ label("Brows...")				///
+ filter("Excel File (*.xls)|*.xls|All (*.*)|*.*") ///
+ defext(xls)
+
+TEXT tx_table    _lft   _xls 220   .,	///
+	label("Sheet Name in Excel")
+EDIT ed_table  _lft  _ss     220   .,	///
+	label("Sheet Name in Excel")	///
+	default(Sheet1$)	///
+	option("table")
+
+END
+
+PROGRAM command
+BEGIN
+put "odbc load "
+beginoptions
+put " " "dsn("`""
+put "Excel Files; DBQ="
+put main.fi_fn1
+put ""`"")
+optionarg main.ed_table
+put " " "clear"
+endoptions
+END
+

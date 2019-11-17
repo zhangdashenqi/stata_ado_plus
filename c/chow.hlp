@@ -1,0 +1,73 @@
+Test for a shift in regression coefficients                      (STB-17: sts7)
+-------------------------------------------
+
+	^chow^ varlist [weight] [^if^ exp] [^in^ range] [, ^ch^ow(sample-list) 
+                        no^co^nstant ^cu^rrent(varlist) ^d^etail ^e^xclude(varlist) 
+                        ^l^ags(#[,#[,...]]) ^p^reserve ^reg^ress ^res^trict(varlist) 
+                        no^sa^mple ^s^tatic(varlist) ^t^ime(power) ^v^artest
+
+
+^chow^ calculates the Chow and Farley-Hinich-McGuire tests for a shift
+in regression coefficients
+
+
+Options
+-------
+
+^ch^ow(sample-list) specifies the subsamples for the Chow test.
+
+no^co^nstant suppresses the constant.
+
+^cu^rrent(varlist) names the time series variables whose contemporaneous
+    values are to be included as regressors.
+
+^d^etail indicates that each subsample is to be tested separately.
+
+^e^xclude(varlist) excludes variables from the Chow test.
+
+^l^ags(#[,#[,...]) specifies the lags.
+
+^p^reserve preserves the original data set.
+
+^reg^ress displays the Chow regression.
+
+^res^trict(varlist) holds the coefficients of the variables in the
+    varlist constant across the subsamples.
+
+no^sa^mple suppresses the display of sample coverage information.
+
+^s^tatic(varlist) specifies the static variables.
+
+^t^ime(power) indicates the function of time to use for a Farley-
+    Hinich-McGuire test.  Instead of a number, you also may specify
+    "exp", "ln", or "log".
+
+^v^artest requests a test of the hypothesis that the error variance is
+    equal across subsamples.
+
+
+Examples
+--------
+
+        ^chow y x1 x2, chow(year>1975)^
+
+tests whether the coefficients of the regression of ^y^ on ^x1^ and ^x2^ change
+after 1975.
+
+        ^chow gnp money, chow(year>1982) lags(4) restrict(gnp)^
+
+tests whether the coefficients on four lags of ^money^ change after 1982.
+
+
+
+Author
+------
+        Sean Becketti
+        Stata Technical Bulletin
+
+Also see
+--------
+
+    STB:  sts7 (STB-17)
+On-line:  ^help^ for ^ts^
+

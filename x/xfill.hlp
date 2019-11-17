@@ -1,0 +1,72 @@
+{smcl}
+{* 9jul2002}{...}
+{hline}
+help for {hi:xfill}{right:(Author:  Tony Brady)}
+{hline}
+
+
+{title:Fill in static variables in longitudinal data}
+
+{p 8 15}{cmd:xfill} {it:varlist} [{cmd:if} {it:exp}]
+	[{cmd:in} {it:range}] [{cmd:,} {cmd:i(}{it:varname}{cmd:)} ]
+
+
+{title:Description}
+
+{p}If you have not read help for {help xt}, please do so now.
+
+{p}{cmd:xfill} 'fills in' missing values of static variables in
+longitudinal datasets. A static variable is one that is constant
+in multiple record data, such as patient gender in a series of
+follow-up visits on the same patient. Often such data will be stored
+with the first record in the series containing the baseline characteristics,
+and subsequent records containing missing values for those
+variables that are not updated. For example:
+
+     {inp:  id	    dob	   gender    sbp}
+     {inp:1001  22jan65		M    160}
+     {inp:1001	      .		.    175}
+     {inp:1001	      .		.    150}
+     {inp:1002  15may43		F    140}
+     {inp:1002	      .		.    170}
+     {inp:1002	      .		.    155}
+     {inp:1002	      .		.    160}
+
+{p}In this example {hi:dob} and {hi:gender} are static variables and
+can be filled in with:
+
+     {inp:. xfill dob gender, i(id)}
+
+Which gives:
+
+     {inp:  id	    dob	   gender    sbp}
+     {inp:1001  22jan65		M    160}
+     {inp:1001  22jan65		M    175}
+     {inp:1001  22jan65		M    150}
+     {inp:1002  15may43		F    140}
+     {inp:1002  15may43		F    170}
+     {inp:1002  15may43		F    155}
+     {inp:1002  15may43		F    160}
+
+{p}{cmd:xfill} first checks that variables to be filled in are static,
+and will refuse to fill in a variable that contains more than one
+value within any cluster. {cmd:xfill} does not require the static data
+to appear in the first record within cluster.
+
+
+{title:Options}
+
+{p 0 4}{cmd:i(}{it:varname}{cmd:)} specifies the variable name corresponding to
+i; see help {help xt}.
+
+
+{title:Author}
+
+{p 8 12}Tony Brady, {browse "http://www.sealedenvelope.com/":Sealed Envelope Ltd}, U.K.{p_end}
+{p 8 12}{browse "mailto:tony@sealedenvelope.com?subject=xfill.ado":tony@sealedenvelope.com}
+
+
+{title:Also see}
+
+{p 1 14}Manual:  {hi:[R] xt}{p_end}
+{p 0 19}On-line:  help for {help xtab} (if installed), {help xt}, {help xttab}, {help xtdes}, {help xtsum}{p_end}

@@ -1,0 +1,33 @@
+.-
+help for ^tabw^                                                 (STB-25: sg36)
+.-
+
+Tabulating the counts of multiple categorical variables
+-------------------------------------------------------
+
+        ^tabw^ varlist [^if^ exp] [^in^ range]
+
+
+Description
+-----------
+
+For each variable in a list, ^tabw^ tabulates the number of times it takes on the
+values 0, 1, ..., 9; the number of times it is missing; and the number of times
+it is equal to some other value.  String variables are not tabulated but are
+identified at the end of the displayed table.
+
+
+Author
+------
+
+        Peter Sasieni, Ph.D.
+        Imperial Cancer Research Fund
+        Fax:  011-44-171-269-3429
+
+
+Also see
+--------
+
+    STB:  STB-25  sg36
+ Manual:  [5d] inspect, [5s] tabulate
+On-line:  help for @inspect@ and @tabulate@.

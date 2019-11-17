@@ -1,0 +1,64 @@
+.-
+help for ^sampclus^                                                (STB-60: sxd4)
+.-
+
+Sample Size for Studies with Cluster Sampling
+---------------------------------------------
+
+   ^sampclus^ [^, obs^clus^(^#^) num^clus^(^#^) rh^o^(^#^)^]
+
+
+Description
+-----------
+
+^sampclus^ calculates sample size and number of clusters for cluster sampled
+studies, correcting for any intraclass correlation. ^sampclus^ uses the
+estimates from ^sampsi^, which must precede it.
+
+
+Options (Note: must choose either ^obsclus^ or ^numclus^, but not both)
+-------
+
+^obsclus(^#^)^ -- number of observations in each cluster; will return 
+    corrected sample sizes and minimum number of clusters needed
+
+    Example: ^obsclus(10)^ -- 10 patients per physician; sampclus 
+                            determines number of physicians needed
+
+^numclus(^#^)^ -- maximum number of clusters; will return corrected sample
+    sizes and number of observations in each cluster. Number of obs.
+    per cluster are rounded up so that the number of clusters will
+    never exceed ^numclus^, but may be fewer. If too few clusters are
+    requested for the other given parameters, ^sampclus^ will prompt
+    for the minimum number of clusters possible.
+
+    Example:  ^numclus(40)^ -- 40 physicians chosen; sampclus determines
+                             number of patients per physician
+
+^rho(^#^)^ -- intraclass correlation coefficient (default=0)
+      
+
+Examples
+--------
+
+ . ^sampsi 200 185, alpha(.01) power(.8) sd(30)^
+ . ^sampclus, obsclus(10) rho(.2)^
+ . ^sampclus, obsclus(10) rho(.1)^
+
+   Corrects sample size and computes number of clusters from a t-test; adjusts
+   this sample size calculation for 10 observations per cluster and an
+   intraclass correlation of 0.2; repeats for an intraclass correlation of 0.1.
+
+ . ^sampsi .20 .30, power(.8) onesided^
+ . ^sampclus, numclus(40) rho(.05)^
+ 
+   Calculates sample size and number of observations per cluster using the
+   difference of two proportions; assumes the number of clusters is 40, and an
+   intraclass correlation of 0.05.
+
+
+Author
+------
+
+Joanne M Garrett, University of North Carolina
+joanne_garrett@med.unc.edu

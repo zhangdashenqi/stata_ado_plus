@@ -1,0 +1,46 @@
+.-
+help for ^mergein^						(STB-29: dm38)
+.-
+
+A more automated @merge@ procedure
+--------------------------------
+
+	^mergein^ mergevar mergefile [ mergevar2 ]
+
+
+Description
+-----------
+
+^mergein^ automates most of the steps in a match-merge.  ^mergein^ makes sure
+both the master and using (^mergefile^) data sets are sorted in the order of
+^mergevar^.  If ^mergevar2^ is specified, the using data set is sorted in the
+order of ^mergevar2^ and the observations are joined based on matches between
+the two merge variables.  ^mergein^ also drops the variable ^_merge^ if it
+exists in either the master or using data sets.
+
+^mergein^ has some known problems.  On datasets with small numbers of
+variables or observations, ^mergein^ will sometimes fail.  In these cases, the
+original master data set is left in place.  Also, merging a small master data
+set with a much larger using data set can cause problems.  ^mergein^ is more
+robust when the larger data set is the master.
+
+
+Example
+-------
+
+ . ^mergein index1 two index2^
+
+
+Author
+------
+
+        Robert M. Farmer
+        rfarmer@@aqaf.com
+
+
+Also see
+--------
+
+    STB:  STB-29 dm38
+ Manual:  [5d] merge
+On-line:  help for @merge@

@@ -1,0 +1,110 @@
+{smcl}
+{* 10may1999}{...}
+{hline}
+help for {hi:varwike2}{right:(SJ3-2: st0036)}
+{hline}
+
+{title:Variable bandwidth Gaussian kernel density estimation (discretized)}
+
+{p 12 19 2}
+{cmd:varwike2} {it:varname} [{cmd:if} {it:exp}] [{cmd:in} {it:range}],
+                 {cmdab:b:width(}{it:#}{cmd:)} [{cmdab:np:oint(}{it:#}{cmd:)}
+		 {cmdab:g:en(}{it:denvar gridvar}{cmd:)} 
+		 {cmdab:numo:des} {cmdab:mo:des}
+		 {cmdab:nog:raph} 
+		 {it:graph_options}]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:varwike2} estimates the density of {it:varname} using the
+variable bandwidth Gaussian kernel described in Fox (1990) modified from
+Silverman (1986) but only uses an uniformly spaced number of points (50 by
+default) to finish drawing the graph of the estimation. 
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:bwidth(}{it:#}{cmd:)} permit to specify (as a geometric mean)
+the width of the window around each data point. {cmd:bwidth()} is not optional,
+the user must input its value. If not, the program halts and displays an error
+message on screen.
+
+{p 4 8 2}{cmd:npoint(}{it:#}{cmd:)} specifies the number of equally spaced
+points (grid) in the range of {it:varname} used for the density estimation.
+The default is 50 gridpoints.
+
+{p 4 8 2}{cmdab:g:en(}{it:denvar gridvar}{cmd:)} permits to generate the
+variable {it:denvar} with the density values estimated at the points given by
+{it:gridvar}.
+
+{p 4 8 2}{cmd:numodes} displays the number of modes in the density estimation.
+
+{p 4 8 2}{cmd:modes} lists the estimated values for each modes. The
+{cmd:numodes} option must be included first.
+
+{p 4 8 2}{cmd:nograph} suppresses the graph drawing.
+
+{p 4 8 2}{it:graph_options} are any of the options allowed with {cmd:graph,}
+{cmd:twoway}.
+
+
+{title:Remarks}
+
+{p 4 4 2}{cmd:varwike2} estimates densities using a Gaussian kernel with fixed
+window width, then uses these estimates to determine local weights inversely
+proportional to the preliminary density estimate.  These local weights are
+used to adjust the window width so that it is narrower at high densities
+(retaining detail) and wider where density is low (eliminating noise).  To
+speed program execution, the density at the second step is estimated only at
+the specified equally spaced points (50 by default).
+
+{p 4 4 2}As with the fixed window kernels the "smoothness" of the result can
+be regulated by changing the width of the interval. Wide intervals produce
+smooth results; narrow intervals will result in noisier density values.
+
+{p 4 4 2}WARNING: Because the adaptive procedure requires the calculation of a
+preliminary density estimation and individual local weights, the time required
+to complete the task is proportional to _N.  Please be patient. 
+
+
+{title:Example}
+
+{p 4 8 2}{cmd:. varwike2 infmorat, b(20) gen(adensity midpt)}
+
+{p 4 4 2}After some time (depending on the number of observations) the results
+are plotted and placed in the new variables {cmd:adensity} and {cmd:midpt}. 
+
+{p 4 8 2}{cmd:. varwike2 infmorat, b(20) numo mo nog}
+
+{p 4 4 2}The number of modes and their estimates appear as a Table on the
+Results window (no graph).
+
+
+{title:References}
+
+{p 4 8 2}Chambers, J. M., W. S. Cleveland, B. Kleiner, and P. A. Tukey. 1983.
+        {it:Graphical Methods for Data Analysis}. Belmont, CA: Wadsworth & 
+	Brooks/Cole.
+
+{p 4 8 2}Silverman, B. W. 1986. {it:Density Estimation for Statistics and Data 
+	Analysis}. London: Chapman & Hall.
+
+{p 4 8 2}Fox, J. 1990. Describing univariate distributions. In 
+         {it:Modern Methods of Data Analysis}, eds. J. Fox and J.S. Long,
+	 58--125.  Newbury Park, CA: Sage Publications.
+
+
+{title:Author}
+
+        Isaias H. Salgado-Ugarte
+        Facultad de Estudios Superiores Zaragoza, U.N.A.M.
+        Biologia (Fax 52-5 773-1183)
+        {browse "mailto:isalgado@servidor.unam.mx":isalgado@servidor.unam.mx}
+
+
+{title:Also see}
+
+{p 5 19 2}STB: snp6 (STB-16){p_end}
+{p 5 19 2}Online: help for {help boxdent}, {help dentrace}, {help kerneldm}, 
+     {help warpdenm}, {help varwiker}

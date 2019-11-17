@@ -1,0 +1,110 @@
+{smcl}
+{* 11nov2006/4dec2006}{...}
+{cmd:help escftest}{right: ({browse "http://www.stata-journal.com/article.html?article=st0174":SJ9-3: st0174})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col :{hi:escftest} {hline 2}}Two-sample test for equality of distributions{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{phang}
+Epps-Singleton two-sample empirical characteristic function test
+
+{p 8 16 2}
+{cmd:escftest} {varname} {ifin}{cmd:,} {cmd:group(}{it:groupvar}{cmd:)} [{cmd:t1(}{it:#}{cmd:)} {cmd: t2(}{it:#}{cmd:)}]
+
+
+{title:Description}
+
+{pstd}
+{cmd:escftest} tests the hypothesis that the distribution functions underlying
+two independent samples (i.e., unmatched data) are identical.  It can be used
+instead of a Kolmogorov-Smirnov two-sample test, which usually has a lower power.
+
+
+{title:Options}
+
+{phang}
+{cmd:group(}{it:groupvar}{cmd:)} is required. It specifies the grouping
+variable. There must be exactly two different groups in the specified sample.
+
+{phang}
+{cmd:t1(}{it:#}{cmd:)} specifies the parameter t_1 as defined by Epps and
+Singleton (1986). If omitted, the default is {cmd:t1(0.4)}. It should not be
+necessary to specify {cmd:t1()}.
+
+{phang}
+{cmd:t2(}{it:#}{cmd:)} specifies the parameter t_2 as defined by Epps and
+Singleton (1986). If omitted, the default is {cmd:t2(0.8)}. It should not be
+necessary to specify {cmd:t2()}.
+
+
+{title:Saved results}
+
+{cmd:escftest} saves the following in {cmd:r()}:
+
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2:Scalars}{p_end}
+{synopt:{cmd:r(crit_val_1)}} the critical value for the test statistic W_2 at a significance level of 0.01{p_end}
+{synopt:{cmd:r(crit_val_5)}} the critical value for the test statistic W_2 at a significance level of 0.05{p_end}
+{synopt:{cmd:r(crit_val_10)}} the critical value for the test statistic W_2 at a significance level of 0.1{p_end}
+{synopt:{cmd:r(p_val)}} the p-value associated with the actual test statistic W_2{p_end}
+{synopt:{cmd:r(correction)}} the small-sample correction factor, C (if applied){p_end}
+{synopt:{cmd:r(t1)}} the value used for t_1 in the empirical characteristic function{p_end}
+{synopt:{cmd:r(t2)}} the value used for t_2 in the empirical characteristic function{p_end}
+
+{synoptset 20 tabbed}{...}
+{p2col 5 20 24 2:Macros}{p_end}
+{synopt:{cmd:r(group1)}} value of the grouping variable for group 1{p_end}
+{synopt:{cmd:r(group2)}} value of the grouping variable for group 2{p_end}
+
+
+{title:Examples}
+
+{psee}{cmd:. escftest expd_shoes, group(gender)}{p_end}
+{psee}{cmd:. by year: escftest expd_chocolate, group(gender)}{p_end}
+{psee}{cmd:. escftest beercnsm, group(gender)}{p_end}
+{psee}{cmd:. escftest voting, group(gender) t1(0.35) t2(0.7)}
+
+
+{title:Acknowledgment}
+
+{pstd}
+{cmd:escftest} was inspired by an implementation of this test by Christian
+Rojas.
+
+
+{title:References}
+
+{psee}Epps, T. W., and K. J. Singleton. 1986.
+An omnibus test for the two-sample problem using the empirical 
+characteristic function.
+{it:Journal of Statistical Computation and Simulation} 26: 177-203.
+
+
+{title:Authors}
+
+{pstd}Sebastian Goerg{p_end}
+{pstd}Max Planck Institute for Research on Collective Goods{p_end}
+{pstd}Bonn, Germany{p_end}
+{pstd}goerg@coll.mpg.de{p_end} 
+
+{pstd}Johannes Kaiser{p_end}
+{pstd}Deutsche Bundesbank{p_end}
+{pstd}Frankfurt, Germany{p_end}
+{pstd}johannes.kaiser@bundesbank.de{p_end} 
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 9, number 3: {browse "http://www.stata-journal.com/article.html?article=st0174":st174}
+
+{psee}
+Online:  {helpb ksmirnov}
+{p_end}

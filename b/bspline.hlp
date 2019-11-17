@@ -1,0 +1,138 @@
+.-
+help for ^bspline^ and ^frencurv^                               (SJ3-3: sg151_1)
+.-
+
+
+B-splines and splines parameterized by their values at reference points
+-----------------------------------------------------------------------
+
+        ^bspline^     [newvarlist] [^if^ exp] [^in^ range] ,^x^var(varname) [^p^ower(#)
+                         ^k^nots(numlist) no^exk^not
+                         ^g^enerate(varname) ^t^ype(type) ^lab^fmt(^%^fmt)]
+
+
+        ^frencurv^    [newvarlist] [^if^ exp] [^in^ range],^x^var(varname) [^p^ower(#)
+                         ^r^efpts(numlist) no^exr^ef ^k^nots(numlist) no^exk^not
+                         ^g^enerate(varname) ^t^ype(type) ^lab^fmt(^%^fmt)]
+
+
+Description
+-----------
+
+^bspline^ generates a basis of B-splines in the x-variate based on a list
+of knots, for use in the design matrix of a regression model. ^frencurv^
+generates a basis of reference splines, for use in the design matrix of a
+regression model, with the property that the parameters fitted will be
+values of the spline at a list of reference points. The splines are
+either given the names in the newvarlist (if present), or (more usually)
+generated as a list of numbered variables, prefixed by the ^generate^ option.
+
+
+Options for use with ^bspline^ and ^frencurv^
+-----------------------------------------
+
+^xvar(^varname^)^ specifies the x-variate on which the splines are based.
+
+^power(^#^)^ (a non-negative integer) specifies the power (or degree) of the
+    splines, eg zero for constant, 1 for linear, 2 for quadratic, 3 for
+    cubic, 4 for quartic or 5 for quintic. If absent, zero is assumed.
+
+^refpts(^numlist^)^ (only for ^frencurv^) specifies a list of at least 2
+    ascending reference points, with the property that, if the splines are
+    used in a regression model, then the fitted values will be values of
+    the spline at those points. If ^refpts^ is absent, then the list is
+    initialized to two points, equal to the minimum and maximum of ^xvar^.
+
+^noexref^ specifies that the original reference list is not to be extended. If
+    ^noexref^ is not specified, then the reference list is extended on the left
+    and right by int(^power^/2) extra reference points on each side, spaced by
+    the distance between the first and last 2 original reference points,
+    respectively.
+
+^knots(^numlist^)^ specifies a list of at least 2 ascending knots, on which the
+    splines are based. If ^knots^ are absent, then ^bspline^ will initialize the
+    list to the minimum and maximum of ^xvar^, and ^frencurv^ will create a list
+    of knots equal to the reference points (in the case of odd-degree splines
+    such as a linear, cubic or quintic) or midpoints between reference points
+    (in the case of even-degree splines such as constant, quadratic or
+    quartic).
+
+^noexknot^ specifies that the original knot list is not to be extended. If
+    ^noexknot^ is not specified, then the knot list is extended on the left
+    and right by ^power^ extra knots on each side, spaced by the distance between
+    the first and last 2 original knots, respectively.
+
+^generate(^varname^)^ specifies a prefix for the names of the generated
+    splines, which (if there is no newvarlist) will be named as
+    varname1...varname`nspline' where nspline is the number of splines.
+
+^type(^type^)^ specifies the storage type of the splines generated (^float^
+    or ^double^). If ^type^ is given as anything else (or not given), then
+    it is set to ^float^.
+
+^labfmt(%^fmt^)^ specifies the format to be used in the variable labels for the
+    generated splines. If absent, then it is set to the format of the ^xvar^.
+
+
+Remarks
+-------
+
+The splines generated are intended for use in the varlist of an estimation
+command (eg ^regress^ or ^glm^), typically with a ^noconst^ option. The rules
+look complicated, but they are designed to give simple defaults for most users
+and also a powerful choice of options for programmers and advanced users. The
+principles and definitions of B-splines are given in de Boor (1978) and
+Ziegler (1969). ^frencurv^ calculates the reference splines by calling ^bspline^
+to calculate B-splines for the reference points and for the ^xvar^, and inverting
+the matrix of the B-splines for the reference points to generate a
+transformation matrix, which is then used to transform the B-splines for ^xvar^
+to reference splines for ^xvar^. The principles and definitions of reference
+splines are given in detail by Newson (2000).
+
+Full documentation of the ^bspline^ package (including Methods and Formulas)
+is provided in the file ^bspline.pdf^, which is distributed with the ^bspline^ package
+as an ancillary file (see help for @net@). It can be viewed using the Adobe Acrobat
+Reader, which can be downloaded from
+
+^http://www.adobe.com/products/acrobat/readermain.html^
+
+
+Examples
+--------
+
+ . ^frencurv,x(weight) g(sp) r(1760(440)4840) p(3)^
+ . ^regress mpg sp* foreign,robust noconst^
+
+ . ^bspline,x(weight) kn(1760(440)4840) power(3) gen(bs)^
+ . ^regress mpg bs*,noconst^
+
+ . ^bspline spl1-spl10,x(weight) kn(1760(440)4840) pow(4) ty(double)^
+ . ^desc spl*^
+
+
+Author
+------
+
+Roger Newson, King's College, London, UK.
+Email: ^roger.newson@@kcl.ac.uk^
+
+
+References
+----------
+
+de Boor C. 1978. A practical guide to splines. New York: Springer Verlag.
+
+Newson R. 2000. sg151: B-splines and splines parameterized by their values at
+reference points on the X-axis. Stata Technical Bulletin 57: 20-27.
+
+Ziegler Z. One-Sided L_1-Approximation by Splines of an Arbitrary
+Degree. In: Schoenberg I. J. (ed.), 1969. Approximations with Special
+Emphasis on Spline Functions. New York: Academic Press.
+
+
+Also see
+--------
+
+Manual:   ^[R] mkspline^
+On-line:  help for @mkspline@
+          help for @spline@, @spbase@ or @sp_adj@ if installed

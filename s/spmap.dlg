@@ -1,0 +1,355 @@
+/* 
+  Third version of mygenerate.dlg
+  This version has a tab added for if/in
+*/  
+
+VERSION 9.0
+SYNCHRONOUS_ONLY
+
+POSITION . . 610 350
+
+LIST clcolor
+  BEGIN
+	Blues          
+	Blues2         
+	BuGn          
+	BuPu          
+	GnBu          
+	Greens          
+	Greens2         
+	Greys          
+	Greys2         
+	Heat         
+	OrRd          
+	Oranges          
+	PuBu          
+	PuBuGn          
+	PuRd          
+	Purples          
+	Rainbow         
+	RdPu          
+	Reds          
+	Reds2         
+	Terrain         
+	Topological         
+	YlGn          
+	YlGnBu          
+	YlOrBr          
+	YlOrRd          
+	BrBG         
+	BuRd         
+	BuYlRd         
+	PRGn         
+	PiYG         
+	PuOr         
+	RdBu         
+	RdGy         
+	RdYlBu         
+	RdYlGn         
+	Spectral         
+	Accent          
+	Dark2          
+	Paired         
+	Pastel1          
+	Pastel2          
+	Set1          
+	Set2          
+	Set3         
+  END 
+  
+LIST shape
+BEGIN
+	O         
+	D         
+	T         
+	S         
+	+      
+	X
+	o         
+	d         
+	s         
+	t         
+	x
+	Oh        
+	Dh        
+	Th        
+	Sh        
+	oh        
+	dh        
+	th        
+	sh        
+	p         
+	i    
+END  
+
+
+LIST shape_lab
+BEGIN
+        circle      
+        diamond  
+        triangle 
+        square   
+        plus   
+        x        
+        smcircle    
+        smdiamond  
+        smsquare    
+        smtriangle 
+        smplus smx 
+        circle_hollow  
+        diamond_hollow 
+        triangle_hollow 
+        square_hollow   
+        smcircle_hollow   
+        smdiamond_hollow  
+        smtriangle_hollow 
+        smsquare_hollow   
+        point             
+        none           
+END
+
+
+
+LIST legorder
+   BEGIN
+       hilo
+	   lohi
+    END
+
+LIST legstyle
+   BEGIN
+       0
+	   1
+	   2
+	   3
+    END
+
+LIST legstyle_lab
+   BEGIN
+       No label
+	   Ordinal label
+	   Standard label
+	   Only upper/lower
+    END
+	
+	
+LIST clmethod
+   BEGIN
+       quantile 
+	   boxplot 
+	   eqint 
+	   stdev 
+	   kmeans 
+	   custom 
+	   unique
+    END
+
+LIST clmethod_lab
+   BEGIN
+       Quantiles 
+	   Boxplot 
+	   Equal intervals 
+	   Standard deviates 
+	   K-means 
+	   Custom (Breaks defined by user)
+	   Unique values
+    END
+
+
+DIALOG main, label("SMAP Mapping with Stata") tabtitle("Main")
+BEGIN
+
+  TEXT tx_using    10 20  260  .,	label("Name of coordinate file ...")
+  FILE fname_using 10 +20 460 ., error("Filename to open") label("Browse...") ///
+                                filter("Data files|*.dta") 						
+							
+  TEXT tx_indicator    10 +30  260  .,	label("Variable to draw")
+  VARNAME vn_indicator    10 +20  260  .,	label("Variable to draw")
+
+  TEXT tx_id    280 -20  260  .,	label("ID Variable")
+  VARNAME vn_id    280 +20  260  .,	label("Variable to draw")  ///
+                                            default("id")    ///
+											option(id)
+
+  TEXT tx_title    10 +30  260  .,	label("Title")
+  EDIT  ed_title      10  +20  120  .,	error("title")  ///
+                                        option(title)
+  
+  TEXT tx_subtitle    10 +30  260  .,	label("Sub-title")
+  EDIT  ed_subtitle      10  +20  120  .,	error("subtitle") ///
+                                           option(subtitle)  
+										   
+  CHECKBOX ck_choro   10  +30   260  .,  label("Choropleth map")     ///
+		                        option(genid)                    
+										   
+  CHECKBOX ck_points   10  +30   260  .,  label("Points map")     ///
+		                        option(genid)                    
+								
+END
+
+DIALOG choro,  tabtitle("Choropleth")
+BEGIN
+
+   TEXT tx_title    10 30  260  .,	label("Choropleth method")
+   COMBOBOX cb_clmethod   10  +20   260  .,  label("Choropleth method")     ///
+                                values(clmethod)                            ///
+								contents(clmethod_lab)                          ///
+		                        option(clmethod)                            ///
+                                dropdown								
+  
+  TEXT tx_clnumber    10 +30  260  .,	label("Number of classes")
+  EDIT  ed_clnumber      10  +20  120  .,	error("clnumber") ///
+                                           option(clnumber)  
+
+  TEXT tx_clbreak    10 +30  260  .,	label("Custom classes")
+  EDIT  ed_clbreak      10  +20  120  .,	error("clbreak") ///
+                                           option(clbreak)  
+										   
+  TEXT tx_fcolor    10 +30  260  .,	label("Fill color of base map polygons")
+  COMBOBOX cb_fcolor   10  +20   260  .,  label("Color")     ///
+                                values(clcolor)                            ///
+								contents(clcolor)                          ///
+		                        option(fcolor)                            ///
+                                dropdown								
+  
+END
+
+DIALOG points,  tabtitle("Points map")
+BEGIN
+
+  TEXT tx_data    10 20  360  .,	label("Name of points coordinate file ...")
+  FILE fname_data 10 +20 360 ., error("Filename to open") label("Browse...") ///
+                                filter("Data files|*.dta")                   ///
+                                option(data)								
+
+  TEXT tx_xcoor        10 +30  260  .,	label("Variable for X coordinate of points")
+  VARNAME vn_xcoor    10 +20  130  .,	label("") ///
+                                        option(xcoor)       
+
+  TEXT tx_ycoor        10 +30  260  .,	label("Variable for Y coordinate of points")
+  VARNAME vn_ycoor    10 +20  130  .,	label("") ///
+										option(ycoor)																	
+
+   TEXT tx_shape    10 +30  260  .,	label("Shape of point markers")
+   COMBOBOX cb_shape   10  +20   130  .,  label("shape")     ///
+                                values(shape)                            ///
+								contents(shape_lab)                      ///
+		                        option(shape)                            ///
+                                dropdown								
+  										   
+  TEXT tx_mcolor    10 +30  260  .,	label("Color of markers")
+  COLOR cb_mcolor   10  +20  20   .,  label("Color")       			
+  
+END
+
+
+DIALOG legend,  tabtitle("Legends")
+BEGIN
+
+
+  CHECKBOX ck_legonoff   10  30   260  .,  label("Display legend")     ///
+		                        option(legend)   ///
+								default(1) 
+																
+  CHECKBOX ck_legcount   10  +30   260  .,  label("Display number of each class")     ///
+		                        option(legcount)   
+
+  TEXT tx_legorder    10 +30  260  .,	label("Legend order")
+  COMBOBOX cb_legorder   10  +20   260  .,  label("legorder")     ///
+                                values(legorder)                            ///
+								contents(legorder)                          ///
+		                        option(legorder)                            ///
+                                dropdown								
+								
+  TEXT tx_legtitle    10 +30  260  .,	label("Legend title")
+  EDIT  ed_legtitle      10  +20  120  .,	error("legtitle") ///
+                                           option(legtitle)  
+
+  TEXT tx_legstyle    10 +30  260  .,	label("Legend style")
+  COMBOBOX cb_legstyle   10  +20   260  .,  label("legstyle")     ///
+                                values(legstyle)                            ///
+								contents(legstyle_lab)                          ///
+		                        option(legstyle)                            ///
+                                dropdown								
+
+  TEXT tx_legsize    10 +30  260  .,	label("Legend size (from 0.5 to 3)")
+  EDIT  ed_legsize      10  +20  120  .,	error("legtitle") 
+								
+  
+END
+
+DIALOG label,  tabtitle("Labels")
+BEGIN
+
+
+  CHECKBOX ck_labelon   10  20   260  .,  label("Display labels")  		                       
+
+  TEXT tx_labelvar        10 +30  260  .,	label("Variable containing labels")
+  VARNAME vn_labelvar    10 +20  260  .,	label("") 
+											
+  TEXT tx_labelx        10 +30  260  .,	label("Variable for X coordinate of labels")
+  VARNAME vn_labelx    10 +20  260  .,	label("") 
+
+  TEXT tx_labely        10 +30  260  .,	label("Variable for Y coordinate of labels")
+  VARNAME vn_labely    10 +20  260  .,	label("") 
+											
+END
+
+
+
+OK ok1,      label("OK")
+CANCEL can1, label("Cancel")
+SUBMIT sub1, label("Submit")
+HELP hlp1,   view("help smap")
+RESET res1
+COPY copy1
+
+
+PROGRAM command
+BEGIN   
+    put "spmap " 
+	if main.ck_choro {
+		put main.vn_indicator " "
+    }
+	put "using "
+	put `"""'
+    put main.fname_using 
+	put `"""'
+	beginoptions
+        optionarg  main.vn_id 
+        optionarg /quoted main.ed_title 
+        optionarg /quoted main.ed_subtitle 
+		if main.ck_choro {
+			optionarg  choro.cb_clmethod
+			optionarg  choro.ed_clnumber
+			optionarg  choro.cb_fcolor
+			if choro.cb_clmethod.iseq("custom") {
+			   optionarg  choro.ed_clbreak
+			}
+			option legend.ck_legcount
+			optionarg legend.cb_legorder
+			optionarg legend.cb_legstyle
+			optionarg /quoted legend.ed_legtitle
+			if legend.ed_legsize {
+			   put "legend(symy(*" legend.ed_legsize ")"
+			   put " symx(*" legend.ed_legsize ")"
+			   put " size(*" legend.ed_legsize ") )"		   
+			}
+		}
+		if label.ck_labelon {
+		   put "label( xcoord(" label.vn_labelx ") ycoord(" label.vn_labely ///
+		       ") label(" label.vn_labelvar ") )"
+		
+		}
+		if main.ck_points {
+		   put "point("
+           optionarg /quoted points.fname_data
+		   optionarg points.vn_xcoor
+		   optionarg points.vn_ycoor
+		   put `"fcolor(""' points.cb_mcolor `"")"'
+		   optionarg points.cb_shape		   
+           put ")"		   
+		}
+	endoptions
+	
+END

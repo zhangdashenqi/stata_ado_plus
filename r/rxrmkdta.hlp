@@ -1,0 +1,48 @@
+.-
+help for ^rxrmkdta^    					  STB-28: sg45
+.-
+
+Write Stata matrix to a Stata dataset
+-------------------------------------
+
+	^rxrmkdta^ matname [rowlabel] [savedta]
+
+
+Description
+-----------
+
+^rxrmkdta^ writes data from a Stata matrix to a Stata dataset.  Column labels
+from the matrix usually become the corresponding variable name, but entire
+columns are lost whenever their column names are not valid names for Stata
+variables.  This conversion of a matrix to a dataset can be useful, for
+example, to ^graph^ the values from the matrix.
+
+^matname^ specifies the name of an existing Stata matrix.  ^rowlabel^
+specifies a valid Stata variable name to store the column of labels (using
+format %9s) for the rows of the ^matname^ matrix.  ^savedta^ specifies a valid
+filename for saving the created Stata dataset to permanent disk storage
+(replace mode.)
+
+
+Examples
+--------
+ . ^rxrmkdta bstar^               ...Write the "bstar" matrix to a dataset
+
+ . ^rxrmkdta bstar mcal^             ...same plus add column of row labels
+
+ . ^rxrmkdta bstar mcal rxridge1^   ...same plus save data to RXRIDGE1.DTA
+
+
+Author
+------
+
+        Robert L. Obenchain
+        Eli Lilly and Company
+
+
+Also see
+--------
+
+    STB:  STB-28 sg45
+On-line:  ^help^ for @rxridge@
+

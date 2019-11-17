@@ -1,0 +1,104 @@
+{smcl}
+{hline}
+help for {hi:optmatch2}
+{hline}
+
+{title:Optimal Matching}
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:optmatch2}
+{varlist}
+{ifin}
+[, options ]
+
+{synoptset 20 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Main}
+{synopt:{opt min:c(#)}} Minimum number of controls per set. Default
+value is 1 {p_end} 
+{synopt:{opt max:c(#)}} Maximum number of controls per set. Default
+value is 1 {p_end} 
+{synopt:{opt n:c(#)}} Total number of controls to include in match. By
+default, all controls are used. {p_end}   
+{synopt:{opt o:mit(#)}} Proportion of controls to be excluded from
+match. Default value is 0 {p_end}
+{synopt:{opt g:en(newvar)}} A new variable to contain the
+number of the case-control set each subject belongs to       {p_end}
+{synopt:{opt i:d(varname)}}  A variable containing a unique identifier
+for each observation. {p_end}
+{synopt:{opt tr:ace(#)}} If set to 1, the network flow problem and
+solution are written to C:/temp for debugging purposes. Default value
+is 0 {p_end} 
+{synopt:{opt cal:iper(#)}} Limit on acceptable matching. By default,
+no limit is used {p_end}
+{synopt:{opt m:easure(string)}} Type of dissimilarity measure to use. {p_end}
+{synopt:{opt eps:ilon(#)}} Stability constant. Default value is 0.000001 {p_end}
+{synopt:{opt rep:eat}} If requested number of controls cannot be
+matched, produce match with as many controls as possible. {p_end}
+{synoptline}
+
+{title:Description}
+
+{phang}
+
+{title:Options}{dlgtab:Main}
+
+{phang}
+{opt min:c(#)} Default value is 1
+
+{phang}
+{opt max:c(#)} Default value is 1
+
+{phang}
+{opt n:c(#)} Default value is 0
+
+{phang}
+{opt o:mit(#)} Default value is 0
+
+{phang}
+{opt g:en(string)}
+
+{phang}
+{opt i:d(string)}
+
+{phang}
+{opt tr:ace(#)} Default value is 0
+
+{phang}
+{opt cal:iper(#)} Default value is 0
+
+{phang}
+{opt m:easure(string)}
+
+{phang}
+{opt eps:ilon(#)} Default value is 0.000001
+
+{phang}
+{opt rep:eat}
+
+
+
+{phang}
+
+{title:Remarks}
+
+{phang}
+
+{title:References}
+
+{phang}
+
+{title:Author}
+
+{pstd}
+Mark Lunt, ARC Epidemiology Unit
+
+{pstd}
+The University of Manchester
+
+{pstd}
+Please email {browse "mailto:mark.lunt@manchester.ac.uk":mark.lunt@manchester.ac.uk} if you encounter problems with this program
+

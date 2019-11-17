@@ -1,0 +1,214 @@
+.-
+help for ^modltbl^                                    (STB-40: sg73)
+.-
+
+Table maker program modltbl
+---------------------------
+
+    ^modltbl^ { ^ts^ | ^se^ } [^(^#decimals ^noR2)^] model_1 [model_2 model_3...model_6],
+              [title]
+
+
+Description
+-----------
+
+    ^modltbl^, used in conjunction with the ^modl^ command, produces a
+user-defined table of the estimates from previously executed estimation
+commands. ^modltbl^ answers a need for researchers to be able to easily
+compare the coefficient estimates and t stats (or standard errors) on
+selected variables from several models which have been estimated. To do
+this, ^modltbl^ MUST be used with the ^modl^ command. As in the example
+below, a ^modl^ command must immediately follow each estimation from which
+you would like estimates displayed in the table produced by ^modltbl^.
+Also, when combined with the ^testres^ commands, ^modltbl^ will display the
+p values on any tests of linear constraints for each model. See help for
+@testres@. Up to 6 models can be compared in any single table.
+
+    ^modltbl^ generates a table of the coefficient estimates and t stats (or
+standard errors) for each of the models requested in the command line. Also
+displayed are a title for the table (optional), the specification of each
+model (if a ^spec^ option has been used with a ^modl^ command), the number of
+observations used in the estimate, the dependent variable, the R-squared,
+and the p values on any tests of linear constraints (if a ^testres^ command
+followed any ^test^ or ^testparm^ command).
+
+
+Options
+-------
+
+^ts^ or ^se^ specifies whether t statistics or standard errors are to be
+   displayed below each coefficient estimate in the table. Either ^ts^ or
+   ^se^ is REQUIRED as the first argument in ^modltbl^.
+
+#decimals is either ^2^, ^3^, or ^4^ and indicates the number of decimal
+   places to display with the coefficient estimates and standard errors. The
+   default is 3, and t stats are always displayed to two decimal places
+   regardless of the option chosen here. ^Note that if the #decimals option
+   is used, it MUST BE SET IN PARENTHESES^. Furthermore, if both the #decimals
+   and the noR2 options are used, they must both be in the same set of paren-
+   theses as in (2 noR2)
+
+^noR2^ suppresses display of the R-squared statistic in the output. This might
+   be desired, for example, in two-stage least squares regressions. ^Note that
+   if the noR2 option is used, it MUST BE SET IN PARENTHESES.^ Furthermore,
+   if both the #decimals and the noR2 options are used, they must both be in
+   the same set of parentheses as in (2 noR2).
+
+^model_2 model_3....model_6^ are the labels attached to each of the
+   additional models the user wishes to display. These model labels are
+   established with the ^modl^ command. The results of up to 6 models can
+   be displayed in any table produced by ^modltbl^. The model labels MUST
+   be one digit alpha-numeric characters such as 1 2 3 or A B C or a b c.
+
+^title^ is a text description of the table which can be up to 80 characters
+   in length, including spaces.
+
+
+Remarks and Restrictions
+------------------------
+
+    ^model_1 model_2...^ etc., index models identified by various ^modl^
+commands which MUST HAVE PRECEEDED the ^modltbl^ command. Note that UP TO
+six models may be specified for any single ^modltbl^ command, and that the
+models NEED NOT be specified sequentially. The user may order the models to
+be displayed in any order in the ^modltbl^ table.
+
+    The following is a list of requirements concerning the use of
+^modltbl^:
+
+1. ^modltbl^ works in conjunction with ^modl^ statements, and the models
+   specified for output in ^modltbl^ must correspond to model labels from
+   previous executed ^modl^ statements, each of which must immediately
+   follow a Stata estimation command. See help for ^modl^.
+
+2. If you specify a title, it must be 80 or fewer characters, counting
+   spaces.
+
+
+Example
+-------
+
+Assume that there are three models you want displayed, each with different
+controls on the right-hand-side and there are three variables whose estimated
+coefficients and t stats you want to compare. You decide to label the
+models as model "1", "2", and "3" and you would like a label at the top of
+the table which identifies the specification of the various models. You
+would then issue the following commands,
+
+   . regress depvar var1 var2.....varX
+
+   . modl 1 var1 var2 var3, Baseline model
+
+   . regress depvar var1 var2.....varX varY
+
+   . modl 2 var1 var2 var3, Model 1 plus varY
+
+   . regress depvar var1 var2.....varX varY varZ
+
+   . modl 3 var1 var2 var3, Model 1 plust varY and varZ
+
+   . ^modltbl^ ts 1 2 3
+
+
+The result would be a table with the desired output.
+
+See help on ^testres^ for an example of how to display the results of tests
+of linear constraints in the ^modltbl^ table.
+
+Following is an example of two linear regressions, each with many (39 and 41)
+right-hand-side variables. The researcher is only interested in comparing the
+the coefficient estimates and t stats for an analytically important subset
+the RHS variables from each model. The researcher wants to indicate
+that both models had controls for family background characteristics and that
+model 2 had additional controls for work experience. Also, the user wants
+the following title displayed, "Table 1. Log Average Earnings 1990-1991,
+Males." Finally, a test of linear contraints was conducted following each
+estimation, and the researcher wants each of those results displayed, along
+with a description of the null hypothesis.
+---------------------------------------------------------------------------
+
+   . quietly regress ln909191 e10-e12 ged tot prt $race math       /*
+            */ $region momed $dadocc $famin $famstr $sibs dkmomed dkmath
+
+   . ^modl^ 1 e10 e11 e12 ged tot Fambg, Baseline model
+
+   . quietly test e10+ged=e12
+
+   . ^testres^ 1 1 "e10 + ged = e12"
+
+   . quietly regress ln909191 e10-e12 ged tot prt $race math              /*
+            */ $region momed $dadocc $famin $famstr $sibs dkmomed dkmath /*
+            */ $work
+
+   . ^modl^ 2 e10 e11 e12 ged tot Fambg WrkExp, Baseline model plus work exper.
+
+   . quietly test e10+ged=e12
+
+   . ^testres^ 2 1 "e10 + ged = e12"
+
+   . ^modltbl^ ts 1 2, Table 1. Log Average Earnings 1990-1991, Males.
+
+^The resulting table would appear as follows:^
+----------------------------------------------------------------------------
+
+   21:10:18 on 22 May 1996
+
+   Table 1. Log Average Earnings 1990-1991, Males.
+
+   Model 1: Baseline model
+   Model 2: Baseline model plus work exper.
+
+   (t-statistics in parentheses)
+   -------------------------------
+   Model :       1           2
+   # obs :     4725        4725
+   Depvar: ln909191    ln909191
+   -------------------------------
+   int          8.974       7.162
+              (61.61)     (37.24)
+
+   e10         -0.096      -0.056
+              (-0.78)     (-0.51)
+
+   e11           -0.1      -0.147
+              (-0.76)     (-1.28)
+
+   e12          0.367       0.008
+               (3.31)      (0.08)
+
+   ged          0.122       0.041
+               (1.27)      (0.52)
+
+   tot           0.09       0.103
+              (13.77)     (16.16)
+
+
+   Fambg        Yes         Yes
+                ---         ---
+
+   WrkExp                   Yes
+                            ---
+
+   -------------------------------
+   R-sq         0.16        0.33
+   -------
+   Ho_1:,
+   Prob>F:     0.000       0.744
+   ===============================
+   Ho_1: e10 + ged = e12
+
+
+Author
+------
+
+      John H. Tyler                       
+      Harvard Graduate School of Education
+      email: tylerjo@@hugse1.harvard.edu
+
+
+Also see
+--------
+
+    STB:  STB-40 sg73
+ Online:  help for @modl@ (if installed), @testres@ (if installed)
+

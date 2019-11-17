@@ -1,0 +1,159 @@
+{smcl}
+{hline}
+help for {hi:viblmdb}{right:(SJ5-1: st0081)}
+{hline}
+
+{title:Visualizing binary logit models for main effects interactive dialog box}
+
+{p 8 14 2}{cmd: viblmdb}
+
+
+{title:Description}
+
+{p 4 4 2}
+The {cmd:viblmdb} is for visualizing main effects for logistic models.
+For additional information, we recommend seeing 
+our {browse www.ats.ucla.edu/stat/seminars:Seminar Page}
+and then seeing the Stata seminar on 
+{it:Visualizing Main Effects and Interactions for Binary Logit Models in Stata}.
+
+{p 4 4 2}
+The logistic model is assumed to be of a form
+
+{p 8 12 2}
+Yhat = B0 + B1*x1 + B2*x2 + B3*x3 + B4*x4 + B5*x5 etc...
+
+{p 4 4 2}
+Where {it:x1} is either a dummy or continuous variable and {it:b1} 
+represents the coefficient for {it:x1}. The variables {it:x3}, {it:x4}, and so
+forth are covariates in the model. 
+
+
+{title:Dialog Box}
+
+{p 4 4 2}
+{cmd:Choose Types of Graphs}
+This section allows you to choose among type I, II, and III graphs.
+You can choose to display multiple graph types at once. These graphs 
+are described below.
+
+{p 8 8 2}
+{cmd:Type I Graph} shows predicted values of {it:Y} on the
+y axis and {it:x1} on the x axis.
+
+{p 8 8 2}
+{cmd:Type II Graph} shows predicted values of {it:Y} on the
+y axis and the covariate contribution on the x axis. 
+Separate lines are shown for two levels of {it:x1}
+(selected in the Predictor Options, described below).
+
+{p 8 8 2}
+{cmd:Type III Graph} shows the difference in the 
+predicted values of {it:Y} shown in the type II graph
+on the y axis and the covariate contribution on the x axis. 
+
+{p 4 4 2}
+{cmd:Predictor Options}
+You can specify whether {it:x1} is a dummy variable or
+a continuous variable. 
+
+{p 8 8 2}
+If {it:x1} is a dummy variable, 
+it is assumed that its minimum is 0 and maximum is 1
+and that you are comparing a value of {it:x1} of 0 
+to a value of {it:x1} of 1 in the table of predicted
+probabilities and the type II and type III
+graphs. 
+
+{p 8 8 2}
+If you specify {it:x1} to be continuous,
+then you can specify {cmd: compare X=} values which
+determine the values of {it:x1} that are compared
+in the table of predicted
+probabilities and the type II and type III
+graphs. 
+
+{p 4 4 2}
+{cmd:Type I Graph Options}
+Here you can specify options that are specific to
+type I graphs. 
+
+{p 8 8 2}
+Range for X: If you specified {it:x1} to be a dummy
+variable, the default minimum and maximum values
+for {it:x1} are 0 and 1, but if you specify {it:x1} 
+is continuous, here is where you can specify the
+minimum and maximum values of {it:x1} and this will affect
+how the x axis is displayed in the type I graph.
+
+{p 8 8 2}
+CC list: You can specify multiple {it:Covariate Contribution} values
+here and a separate line will be displayed in the type I graph
+for each covariate contribution value. 
+
+{p 4 4 2}
+{cmd:Type II and III Graph Options}
+Here you can specify options that are specific to
+type II and III graphs. 
+
+{p 8 8 2}
+Range for CC: The x axis of the type II and III graphs
+is the {it:Covariate Contribution}, and here is where you can
+specify the minimum and maximum values you wish the {it:Covariate Contribution}
+to assume. This will affect the minimum and maximum values that
+will be displayed on the x axis for the type II and III
+graphs.
+
+{p 4 4 2}
+{cmd:Other Controls}
+These are controls that affect all of the graphs. 
+You can choose to display graphs in the probability scale,
+or the logit scale, or even both.  You can choose to display
+the graphs as version 7 graphs (fast, but not as pretty)
+or version 8 graphs (pretty, but not as fast).
+
+{p 4 4 2}
+{cmd:Dynamic Control of Coefficients}
+These controls allow you to vary the values for Bo, B1, and
+for the covariate contribution. You can type in values
+directly or you can press the {cmd:Dn} and
+{cmd:Up} buttons to decrement or increment the values by the amount
+specified just to the right of the buttons. You can change the
+amount of increment/decrement by typing in a new value after the
+{cmd:by}.
+
+{p 4 4 2}
+{cmd:Paste Syntax}
+Pressing this button will paste the syntax to create the
+current graph into a file named {it:_viblm_paste_syntax.do}.
+This is a means for saving the commands that create the graphs so
+you can rerun or this .do file to create the graphs
+again without the dialog box interface.
+
+{p 4 4 2}
+{cmd:Update Plots}
+Some of the controls have immediate effects on the graphs
+and some do not. For those controls that do not immediately
+update the graph, you can press the {cmd:update plots} button
+to update the plots with your current settings.
+
+{p 4 4 2}
+{cmd:?, (help)}
+This button brings up this help window.
+
+{p 4 4 2}
+{cmd:R, (reset)}
+This button resets the dialog box settings to the
+values when you started the program.
+
+{p 4 4 2}
+{cmd:Quit}
+This quits the dialog box.
+
+
+{title:Authors}
+
+        Xiao Chen & Michael Mitchell
+        UCLA Academic Technology Services
+        jingy1@ucla.edu & mnm@ucla.edu 
+{p_end}

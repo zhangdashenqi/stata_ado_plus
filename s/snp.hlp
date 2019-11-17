@@ -1,0 +1,214 @@
+{smcl}
+{* 17Mrr2007}{...}
+{hline}
+{cmd:help snp}, {cmd:help snp2}, {cmd:snp2s}{right: ({browse "http://www.stata-journal.com/article.html?article=st0144":SJ8-2: st0144})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 25 27 2}{...}
+{p2col :{hi:snp, snp2, snp2s} {hline 2}}SNP estimation{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}{cmd:snp} {it:depvar} {it:varlist}
+{ifin}
+{weight}
+{bind:[{cmd:,} {cmdab:nocon:stant}}
+{cmdab:off:set}{cmd:(}{it:varname}{cmd:)} 
+{cmdab:o:rder}{cmd:(}{it:#}{cmd:)}
+{cmdab:r:obust}
+{cmdab:f:rom}{cmd:(}{it:matname}{cmd:)}
+{cmdab:dp:lot}{cmd:(}{it:filename}{cmd:)}
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)}
+{it:maximize_options}]
+
+
+{p 8 17 2}{cmd:snp2} {it:equation1} {it:equation2}
+{ifin}
+{weight}
+{bind:[{cmd:,}} 
+{cmd:order1}{cmd:(}{it:#}{cmd:)}
+{cmd:order2}{cmd:(}{it:#}{cmd:)}
+{cmdab:r:obust}
+{cmdab:f:rom}{cmd:(}{it:matname}{cmd:)}
+{cmdab:dp:lot}{cmd:(}{it:filename}{cmd:)}
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)}
+{it:maximize_options}]
+
+
+{p 8 17 2}{cmd:snp2s} {it:depvar} {it:varlist}
+{ifin}
+{weight}{cmd:,}
+{opt sel:ect}{cmd:(}{it:depvar_s} {cmd:=} {it:varlist_s}
+[{cmd:,} {opt nocon:stant} {opt off:set(varname)}]{cmd:)}
+{bind:[{cmd:order1}{cmd:(}{it:#}{cmd:)}}
+{cmd:order2}{cmd:(}{it:#}{cmd:)}
+{cmdab:r:obust}
+{cmdab:f:rom}{cmd:(}{it:matname}{cmd:)}
+{cmdab:dp:lot}{cmd:(}{it:filename}{cmd:)}
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)}
+{it:maximize_options}]
+
+
+where each equation is specified as
+
+{p 4 4 2} {cmd:(}[{it:eqname}{cmd::}]
+{bind:}{it:depvar} [{cmd:=}] {it:varlist}
+{bind:[{cmd:,} {cmdab:nocon:stant}}
+{cmdab:off:set}{cmd:(}{it:varname}{cmd:)}]{cmd:)}
+
+{p 4 4 2}{cmd:fweight}s, {cmd:pweight}s, and {cmd:iweight}s are allowed; see
+{help weight}.
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:snp}, {cmd:snp2}, and {cmd:snp2s} fit univariate and bivariate
+binary-choice models through the semi-nonparametric estimators of Gallant and
+Nychka (1987). In particular, {cmd:snp} fits a univariate binary-choice model,
+{cmd:snp2} fits a bivariate binary-choice model, and {cmd:snp2s} fits a
+bivariate binary-choice model with sample selection. The unknown density of the
+latent regression errors is approximated by a Hermite polynomial expansion. See
+also Gabler, Laisney, and Lechner (1993); Stewart (2004); and De Luca and
+Peracchi (2007).
+
+
+{title:Options}
+
+{phang}
+{opt noconstant}, {opth offset(varname)}; see
+{helpb estimation options:[R] estimation options}.
+
+{phang}
+{opt select}{cmd:(}{it:depvar_s} {cmd:=} {it:varlist_s}
+[{cmd:,} {opt nocon:stant} {opt off:set(varname)}]{cmd:)}
+specifies the variables and options for the
+selection equation.  It is an integral part of specifying a selection model
+and is required.  The selection equation should contain at least one variable
+that is not in the outcome equation.
+
+{pmore}
+If {it:depvar_s} is specified, it should be coded as 0 or 1, with 0 indicating
+an observation not selected and 1 indicating a selected observation.  If
+{it:depvar_s} is not specified, observations for which {it:depvar_s} is not
+missing are assumed selected, and those for which {it:depvar_s} is missing are
+assumed not selected.
+
+{phang}{opt order(#)} specifies the order R to be used in the univariate
+Hermite polynomial expansion. The default is {cmd:order(3)}.
+
+{phang}{opt order1(#)} specifies the order R_1 to be used in the bivariate
+Hermite polynomial expansion. The default is {cmd:order1(3)}.
+
+{phang}{opt order2(#)} specifies the order R_2 to be used in the bivariate
+Hermite polynomial expansion. The default is {cmd:order2(3)}.
+
+{phang}
+{cmd:robust} specifies that the Huber/White/sandwich estimator of the covariance matrix is to be used in place of the traditional calculation (see
+{hi:[U] 23.11 Obtaining robust variance estimates}).
+
+{phang}{opt from(matname)} specifies the name of the
+matrix to be used as starting values. By default, starting values are the
+estimates of the corresponding probit specification, namely, the {helpb probit}
+estimates for {cmd:snp}, the {helpb biprobit} estimates for {cmd:snp2}, and the
+{helpb heckprob} estimates for {cmd:snp2s}.  
+
+{phang}{opt dplot(filename)} plots the estimated
+marginal densities of the error terms. A Gaussian density with the same
+estimated mean and variance is added to each density plot. For the {cmd:snp}
+command, {it:filename} specifies the name of the density plot to be created.
+For {cmd:snp2} and {cmd:snp2s}, three new graphs are created.  The first is a
+plot of the estimated marginal density of U1 and is stored as
+{it:filename}{cmd:_1}.  The second is a plot of the estimated marginal density
+of U2 and is stored as {it:filename}{cmd:_2}.  The third is a combination of
+the two density plots in a single graph and is stored as {it:filename}.
+
+{phang}
+{opt level(#)}; see {helpb estimation options:[R] estimation options}.
+
+{phang}
+{it:maximize_options}:
+{opt dif:ficult}, {opt tech:nique(algorithm_spec)}, 
+{opt iter:ate(#)}, [{cmd:{ul:no}}]{opt lo:g}, {opt tr:ace}, 
+{opt grad:ient}, {opt showstep},
+{opt hess:ian},
+{opt shownr:tolerance},
+{opt tol:erance(#)},
+{opt ltol:erance(#)}, {opt gtol:erance(#)}, {opt nrtol:erance(#)},
+{opt nonrtol:erance}, {opt from(init_specs)}; see {manhelp maximize R}.  These
+options are seldom used.
+
+
+{title:Remarks}
+
+{p 4 4 2}Asymptotic properties of the SNP estimators require that the degree of
+the Hermite polynomial expansion increases with the sample size. In particular,
+{cmd:snp} generalizes the probit model only if R>2. For {cmd:snp2} and
+{cmd:snp2s}, the error terms may have skewness and kurtosis different from
+those of a Gaussian distribution only if R_1>1 or R_2>1. In practice, the
+values of R, R_1, and R_2 may be selected either through a sequence of
+likelihood-ratio tests or by model-selection criteria such as the
+Akaike information criterion or the Bayesian information criterion (see
+{manhelp lrtest R}). 
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. set seed 1234}
+
+{p 8 12 2}{cmd:. matrix define sigma=(1,.5 \ .5,1)}
+
+{p 8 12 2}{cmd:. qui drawnorm u1 u2, n(2000) corr(sigma) double}
+
+{p 8 12 2}{cmd:. qui gen double x1=(uniform()*2-1)*sqrt(3)}
+
+{p 8 12 2}{cmd:. qui gen double x2=(uniform()*2-1)*sqrt(3)}
+
+{p 8 12 2}{cmd:. qui gen double x3=invchi2(1,uniform())}
+
+{p 8 12 2}{cmd:. qui gen x4=(uniform()>.5)}
+
+{p 8 12 2}{cmd:. qui gen y1=(x1-x3+2*x4+u1>0)}
+
+{p 8 12 2}{cmd:. qui gen y2=(x2+.5*x3-1.5*x4+u2>0)}
+
+{p 8 12 2}{cmd:. snp y1 x1 x3 x4, order(4)}
+
+{p 8 12 2}{cmd:. snp2 (y1=x1 x3 x4, noconst) (y2=x2 x3 x4, noconst), dplot(gr)}
+
+{p 8 12 2}{cmd:. qui replace y2=. if y1==0}
+
+{p 8 12 2}{cmd:. snp2s y2 x2 x3 x4, sel(y1=x1 x3 x4) order1(4) order2(3) nolog}
+
+
+{title:References}
+
+{p 4 8 2}
+De Luca, G., and F. Peracchi. 2007. A sample selection model for unit 
+and item nonresponse in cross-sectional surveys. 
+{it:CEIS Tor Vergata - Research Paper Series} 33: 1-44.
+
+{p 4 8 2}
+Gabler, S., F. Laisney, and M. Lechner. 1993. Seminonparametric estimation of 
+binary-choice models with an application to labor-force participation. 
+{it:Journal of Business and Economic Statistics} 11: 61-80.
+
+{p 4 8 2}
+Gallant, A. R., and D. W. Nychka. 1987. Semi-nonparametric maximum likelihood
+estimation. {it:Econometrica} 55: 363-390.
+
+{p 4 8 2}
+Stewart, M. B. 2004. Semi-nonparametric estimation of extended ordered probit
+models.  {it:Stata Journal} 4: 27-39.
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 8, number 2: {browse "http://www.stata-journal.com/article.html?article=st0144":st0144}
+
+{psee}Online:  {helpb sneop} and {helpb sml}, if installed
+{p_end}

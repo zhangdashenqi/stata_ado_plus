@@ -1,0 +1,52 @@
+.-
+help for ^mlogview^ - 1.6.1 - 2/22/01
+.-
+
+Plots odds ratios and discrete change coefficients from the
+multinomial logit model.
+------------------------------------------------------------
+
+^Select variables^: select independent variables to include in plot
+
+^Select amount of change^: amount of discrete change to plot for each variable
+    ^+1^: unit change
+    ^+SD^: standard deviation change
+    ^0->1^: change from 0 to 1
+    ^Don't plot^: exclude variable from plot
+(Starting values for discrete change taken from output from ^prchange^, which
+must be executed prior to executing ^mlogview^ if discrete change is to be
+plotted.)
+
+^DC Plot^: draw discrete change plot
+
+^OR Plot^: draw odds ratio plot
+
+^OR+DC Plot^: draw odds ratio plot in which the size of the letters
+indicates the discrete change
+
+^Next 6^: list next 6 independent variables for packed plot
+
+^Note^: title for plot
+
+^Number of tics^: # of tic marks on x axis of plot
+
+^Plot from^: minimum and maximum values of x axis for plot
+
+^Connect if^: for odds ratio plots, connect lines if not significant at
+    specified level
+
+^Base category^: value of category to use as base category for odds ratio plot
+
+^Pack odds ratio plot^: eliminate extra vertical space in odds ratio plot
+
+^Use variable labels^: use variable labels instead of names to identify
+variables in plot
+
+^Print^: send plot to printer
+
+.-
+Author: J. Scott Long 
+        www.indiana.edu/~jslsoc/spost.htm
+        spostsup@@indiana.edu
+         
+         

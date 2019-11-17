@@ -1,0 +1,204 @@
+{smcl}
+{* 06Feb2010}{...}
+{hline}
+help for {hi:prgen}{right:06Feb2010}
+{hline}
+
+{title:Generate predicted values and confidence intervals for regression models}
+
+{p 4 4 2}
+To compute the predicted values with all variables but varname
+held at values specified by x() and rest(). The program extends
+{cmd:prgen} by allowing you to generate variables containing upper
+and lower bounds for confidence intervals and marginal effects.
+
+{p 8 15 2}{cmd:prgen} varname,
+{cmdab:g:enerate(}{it:newvar}{cmd:)}
+[{cmdab:f:rom(}{it:#}{cmd:)}
+{cmdab:t:o(}{it:#}{cmd:)}]
+[{cmd:x(}{it:variables_and_values}{cmd:)}
+{cmdab:r:est(}{it:stat}{cmd:)}
+{cmd:all}]
+[{cmdab:b:rief}
+{cmdab:max:cnt(}{it:#}{cmd:)}
+{cmdab:noba:se}
+{cmdab:nola:bel}
+{cmdab:n:cases(}{it:#}{cmd:)}
+{cmd:gap(}{it:#}{cmd:)}
+{cmdab:noi:sily}
+{cmdab:mar:ginal}
+{cmdab:con:ditional}]
+[{cmd:ci}
+{it:prvalue_options}]
+
+{p 4 4 2}
+where {it:variables_and_values} is an alternating list of variables
+and either numeric values or mean, median, min, max, upper, lower,
+previous.
+
+{p 4 4 2}
+{it:stat} is either mean, median, min, max, upper, lower, previous,
+grmean (group mean), grmedian, grmin, grmax.
+
+{p 4 4 2}
+See {help prvalue} for options that can be specified for computing
+confidence intervals.
+
+{title: Description}
+
+{p 4 4 2}
+{cmd:prgen} computes predicted values and confidence intervals
+for regression with continuous, categorical, and count outcomes
+in a way that is useful for making plots. Predicted values are computed
+for the case in which one independent variable varies over a specified
+range while the others are held constant. You can request variables
+containing upper and lower bounds for these variables. You can also
+create a variable containing the marginal change in the outcome with
+respect to the specified variable, holding other variabels constant. New
+variables are added to the existing dataset that contain these
+predicted values that can be plotted.
+
+{p 4 4 2}
+Note: The new variables will contain data for the first k observations
+in the dataset, where k is 11 if not specified with the {cmd: ncases()}
+option or if not determined by the {cmd:gap} option.
+
+{title: Options}
+
+{p 4 8 2}
+{cmd:from()} and {cmd:to()} specify the values over which varname
+should vary when calculating predicted values.  The defaults are the
+observed minimum and maximum values.
+
+{p 4 8 2}
+{cmd:generate()} is up to five letters to name the created variables.
+By changing the name you can run -prgen- repeatedly to compute predictions
+with variables held at various values. It is best to chose a name that is
+different from the beginning letters of variables in your data set.
+This is required.
+
+{p 4 8 2}
+{cmd:ci} indicates that you want to generate confidence intervals
+corresponding to the predictions made by {cmd:prgen}.
+
+{p 4 8 2}
+{cmd:marginal} indicates that you want to generate a variable
+containing the marginal change in the outcome relative to varname,
+holding all other variables constant.
+
+{p 4 8 2}
+{cmd:conditional} indicates that you want to generate conditional
+predictions rather than unconditional predictions for {cmd:ztp} and
+{cmd:ztnb} models.
+
+{p 4 8 2}
+{cmd:ncases} is the number of predicted values computed as varname
+varies from the start value to the end value. If {cmd:Ncases} is not
+specified, 11 points are generated.
+
+{p 4 8 2}
+{cmd:gap} is an alternative to {cmd:ncases}. You specify the gap or
+size between tic marks and {cmd:prgen} determines if the specified
+value divides evenly into the from-to range. If it does, {cmd:prgen}
+determines the appropriate value for {cmd:ncases}.
+
+{p 4 8 2}
+{cmd:x()} sets the values of independent variables for calculating
+predicted values.  The list must alternate variable names and values.
+The values may be either numeric values or can be mean, median, min, max,
+previous, upper, or lower.  The latter cannot be used if rest()
+specifies a group summary statistic (e.g., grmean).
+
+{p 4 8 2}
+{cmd:rest()} sets the independent variables not specified in x() to
+their {cmd:mean} (default), {cmd:minimum}, {cmd:maximum},
+{cmd:median} when calculating predicted values.{cmd:grmean} sets these
+independent variables to the mean conditional on the variables and
+values specified in x(); {cmd:grmedian}, {cmd:grmax}, and {cmd:grmin}
+can also be used. If {cmd:prvalue} has already been run after the last
+estimate, {cmd:previous} will set unspecified variables to their prior values.
+For models other than mlogit, {cmd:upper}and {cmd:lower} can be used to set
+independent variables to their minimum or maximum depending on which will yield
+the upper or lower extreme predicted value.
+
+{p 4 8 2}
+{cmd:maxcnt()} sets the maximum count for which variables are generated
+for count models. The value must be an integer between 0 and 30;
+the default is 9.
+
+{p 4 8 2}
+{cmd:all} specifies that any calculations of means, medians, etc.,
+should use the entire sample instead of the sample used to estimate
+the model.
+
+{p 4 8 2}
+{cmd:brief} and {cmd:nobase} suppress the base values of x in the output.
+
+{p 4 8 2}
+{cmd:nolabel} uses values rather than value labels in output.
+
+{p 4 8 2}
+{cmd:noisily} indicates that you want to see the output from
+{cmd:prvalue}that was was used to generate the predicted values.
+
+{p 4 8 2}
+{it:prvalue_options} control the calculation of confidence intervals;
+see {help prvalue} for details about these options.
+
+{title:Models and Predictions - * is the prefix}
+
+all models:
+
+    *x: value of x
+
+    logit & probit:
+      Predicted probability of each outcome: *p0, *p1
+
+    ologit, oprobit
+        Predicted probabilities: *p#1,*p#2,... where #1,#2,... are values of
+            the outcome variable.
+        Cumulative probabilities: *s#1,*s#2,... where #1,#2,... are values
+            of the outcome variable. *s#k is the probability of all
+            categories up to or equal to #k.
+
+    mlogit:
+        Predicted probabilities: *p#1,*p#2,... where #1,#2,... are values of
+            the outcome variable.
+
+    poisson & nbreg:
+        Predicted rate: *mu;
+        Predicted probabilities: *p0, *p1... where 0, 1, are counts
+        Cumulative probabilities: *s0, *s1... where 0, 1 are counts.
+            The cumulative probability of a given count is probability of
+            observing count less than or equal to that count.
+
+    regress, tobit, cnreg, intreg
+        Predicted xb: *xb
+
+{title: Examples}
+
+{p 4 4 2}
+To compute predicted values and confidencen intervals from an ordered probit
+where warm has four categories SD, D, A and SA:
+
+{p 4 8 2}{cmd:.oprobit warm yr89 male white age ed prst}
+
+{p 4 8 2}{cmd:.prgen age, f(20) t(80) gen(mn) ci delta}
+
+{p 4 8 2}{cmd:.prgen age, x(male=0) f(20) t(80) gen(fem)}
+
+{p 4 8 2}{cmd:.prgen age, x(male=1) f(20) t(80) gen(mal)}
+
+{p 4 8 2}
+To plot the predicted probabilites for average males:
+
+{p 4 8 2}{cmd:.twoway connected malp1 malp2 malp3 malp4 malx}
+
+{hline}
+
+{p 2 4 2}Authors: J. Scott Long, Jeremy Freese & Jun Xu{p_end}
+{p 11 4 2}{browse www.indiana.edu/~jslsoc/spost.htm}{p_end}
+{p 11 4 2}spostsup@indiana.edu{p_end}
+
+
+

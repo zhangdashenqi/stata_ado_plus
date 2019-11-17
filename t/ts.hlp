@@ -1,0 +1,161 @@
+A library of time series programs 			         (STB-17: sts7)
+---------------------------------
+
+The Stata time series library is a group of interconnected ado-files for time
+series analysis. These programs are continually being updated and are in
+various stages of completion and reliability. In the list of programs below,
+each program's status is indicated by a letter grade.  These grades have the
+following interpretation:
+
+
+Status	Interpretation
+------  --------------
+
+  A     The program is safe for general use and has been documented in the 
+        Stata Technical Bulletin (STB).
+
+  B 	The program produces accurate results. However, the program may not
+        be adequately documented, there may be deficiencies in the user or
+	interprogram interface, or the program may not meet all the 
+        requirements of an estimation command. This program is likely to be
+	updated soon. 
+
+  C 	This program is incomplete in significant ways. However, an advanced
+  	Stata user (a user who is fluent in reading ado-files and has some
+  	experience in writing them) may be able to use this program 
+        successfully with some modifications or work-arounds.
+
+  D 	This program has serious deficiencies. Advanced Stata users may,
+  	nonetheless, wish to review this program for ideas on designing
+  	their own ado-files to provide this function.
+
+  O	Obsolete.  This program has been superseded by newer code.  This 
+	grade is typically assigned to old utilities that are still used by
+	one or two user-level programs.
+
+
+
+
+
+
+
+
+
+
+
+
+User-level programs
+-------------------
+
+The following table lists the user-level programs in the time series library
+along with their current status. Separate on-line help is available for each
+of these programs.
+
+
+Program Status Description
+------- ------ -----------
+ac        A    display a correlogram
+chow      C    Chow and Farley-Hinich-McGuire tests for a shift in regression
+               coefficients 
+coint     B    Engle-Granger test for cointegration
+csunits   A    set cross-section indexes for a panel data set
+cusum     B    CUSUM and CUSUM of squares tests of regression stability
+              (NOTE: this program name conflicts with Stata's cusum command
+               for binary variables.  See [5s] cusum.)
+datevars  A    set date variables for a time series data set
+date2obs  A    return observation number corresponding to a date
+dickey    B    Dickey-Fuller test for a unit root
+dif       A    generate differences
+downame   A    converts day-of-the-week code to a name
+dropoper  A    drop operator variables
+faketemp  A    create temporary variable names that can be lagged safely
+filldate  A    fill in missing date values in projection period
+finddate  A    display dates of data availability
+findlag   B    find optimal lag length
+findsmpl  B    find sample coverage
+growth    A    generate growth rate
+growthi   A    immediate form of growth
+hansen    A    Hansen's test for parameter instability
+lag       A    generate lags
+lastday   A    calculates the last day of the month
+lead      A    generate leads
+lstbday   A    calculates the last business day of the month
+mdytodow  A    calculates day-of-the-week from month/day/year
+mnthname  A    converts month code to a name
+namedow   A    converts a name to a day-of-the-week code
+namemnth  A    converts a name to a month code
+pac       A    display a partial autocorrelation plot
+pearson   A    Pearson correlation with p-value
+period    A    set period of time series data
+ppunit    B    Phillips-Perron test for a unit root
+projdate  A    specify initial projection date
+quandt    B    calculate Quandt statistics for a break in a regression
+regdiag   B    calculate regression diagnostics
+scenario  A    generate ad hoc scenario for RHS variable
+spear     A    Spearman correlation with p-value
+tauprob   A    p-values for unit root and cointegration tests
+testsum   B    test the sum of a set of regression coefficients
+today     A    calculates today
+tsfit     A    estimate a time series regression
+tsload    B    load an ad hoc time series equation into memory
+tsmult    A    calculate dynamic multipliers after a time series regression
+tspred    A    dynamically forecast or simulate a time series regression
+tsreg     A    estimate a time series regression, display dynamic multipliers,
+               and calculate diagnostic tests
+unitroot  B    unit root tests
+xcorr     A    cross correlations
+ystrday   A    calculates yesterday from today
+
+
+
+
+
+Utility programs
+----------------
+
+The time series library is built on a core of common utility programs. These
+programs are useful to advanced Stata users who wish to write their own time
+series programs.  These utilities include:
+
+
+Program Status Description
+------- ------ -----------
+_ac       B    calculate autocorrelations, standard errors, and Q-statistics
+_addl     B    "add" a lag operator to a variable name
+_addop    B    "add" an arbitrary operator to a variable name
+_getrres  B    calculate recursive residuals for a regression model
+_gtrank   B    provide "trank" for the egen command, i.e., calculate ranks
+               over non-missing observations respecting "if" and "in" and
+               without sorting the data
+_inlist   B    determine whether a token appears in a token list
+_invlist  B    determine whether a varname appears in a varlist
+_opnum    B    decode the operators and their powers in a varname
+_parsevl  B    parse a varlist to replace abbreviations
+_partset  B    partition two sets of tokens into their intersection and 
+               complements
+_sfran    B    replacement for sfrancia that preserves the data order
+_subchar  B    replace one character in a string with another
+_ts_dsmp  B    display sample coverage for estimation command
+_ts_flag  B    calculate lag length statistics
+_ts_gdat  B    format a date value for a given observation
+_ts_meqn  B    parse a time series command and generate lags
+_ts_pars  B    parse a time series command into useful macros
+_ts_peri  B    obtain periodicity of data
+
+
+Support
+-------
+
+        Sean Becketti, Stata Technical Bulletin
+        FAX (913)-888-6708
+
+
+Also see
+--------
+
+    STB:  dm6   (STB-5) ;  dm20  (STB-20);  ip5   (STB-17);  sg5.1 (STB-13);
+          sts1  (STB-5) ;  sts2  (STB-7) ;  sts3  (STB-13);  sts4  (STB-15);  sts4  (STB-15);  
+          sts6  (STB-17);  sts7  (STB-17);  sts8  (STB-20);
+          
+On-line:  ^help^ for user-level programs listed above
+

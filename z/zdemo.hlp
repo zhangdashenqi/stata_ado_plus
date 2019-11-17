@@ -1,0 +1,34 @@
+
+.-
+help for ^zdemo^
+.-
+
+Display Z distribution with vertical lines
+------------------------------------------
+
+ ^zdemo^ z1 z2 ...
+
+ 
+
+Description
+-----------
+
+^zdemo^ displays a standard normal distribution with
+        vertical lines at ^z1 z2 ...
+
+Examples
+--------
+
+ . ^zdemo 1.25^
+ . ^zdemo -1 0 +1 2 -2^
+
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+

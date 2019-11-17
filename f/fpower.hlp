@@ -1,0 +1,54 @@
+{smcl}
+{* 7sep2006}{...}
+{hline}
+help for {hi:fpower}
+{hline}
+
+{title:Anova power analysis}
+
+{p 8 14}{cmd:fpower} {cmd:,} {cmd:a(}{it:levels}{cmd:)} [ {cmdab:b(}{it:levels}{cmd:)} 
+{cmdab:c(}{it:levels}{cmd:)} {cmdab:r(}{it:levels}{cmd:)} {cmdab:delta(}{it:value}{cmd:)}
+{cmdab:rho(}{it:value}{cmd:)} {cmdab:alpha(}{it:value}{cmd:)} 
+{cmd:n(}{it:sampsize}{cmd:)} {cmdab:graph}]
+
+
+{title:Description}
+
+{p}{cmd:fpower} performs power analysis of anova designs of one, two or
+three factors.  Users are required to include the number of levels of factor a.
+
+
+
+{title:fpower Options}
+
+{p 0 4}{cmdab:b:} the number of levels of factor b (default = 1).
+
+{p 0 4}{cmdab:c:} the number of levels of factor c (default = 1).
+
+{p 0 4}{cmdab:r:} the number of levels of repeated factor (default = 1).
+
+{p 0 4}{cmdab:delta:} the effect size (default = .25).
+
+{p 0 4}{cmdab:alpha:} the alpha level (default = .05).
+
+{p 0 4}{cmdab:rho:} the intraclass correlation (default = 0).
+
+{p 0 4}{cmdab:n:} specific sample size of interest.
+
+{title:Examples}
+
+{p 1 5}{inp:. fpower, a(4) delta(1.2) graph}{p_end}
+{p 1 5}{inp:. fpower, a(4) b(2) delta(0.75)}{p_end}
+
+{title:Acknowledgements}
+
+{p 1 5}Based on (copied from) on the SAS macro program, FPOWER.SAS (version 1.2),
+Created 1990, revised 1995, by  Michael Friendly  <FRIENDLY@YorkU.CA>.
+
+{title:Author}
+
+{p 5 5}
+Philip B. Ender{break}
+UCLA Academic Technology Services{break}
+ender@ucla.edu 
+{p_end}

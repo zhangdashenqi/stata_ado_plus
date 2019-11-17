@@ -1,0 +1,16 @@
+e(table)
+
+	Mean:regionSA==0	Mean:regionSA==1	Difference:Normalized	Difference:Means	Difference:t-stat	N:regionSA==0	N:regionSA==1	
+popgrowth	 .8068966	     1.93	  .703025	 1.123103	 2.566824	       58	       10	
+lexp	 72.62069	     70.3	-.3511634	 -2.32069	-1.478738	       58	       10	
+gnppc	 9623.887	     3645	-.4545866	-5978.887	-2.276333	       53	       10	
+safewater	 77.73333	     71.2	-.2618502	-6.533333	-1.046682	       30	       10	
+
+e(_n)
+
+	N:regionSA==0	N:regionSA==1	N:All	
+popgrowth	       58	       10	       68	
+lexp	       58	       10	       68	
+gnppc	       53	       10	       63	
+safewater	       30	       10	       40	
+

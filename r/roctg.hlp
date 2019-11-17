@@ -1,0 +1,126 @@
+{smcl}
+{* 8oct2002}{...}
+{hline}
+help for {hi:roctg} {right:(SJ2-4:st0025)}
+{hline}
+
+{title:Two-graph receiver operating characteristic}
+
+{p 8 15 2}{cmd:roctg} {it:var_reftest} {it:var_newtest} [{cmd:if} {it:exp}] 
+[{cmd:in} {it:range}] [{cmd:,} {cmdab:cb:and} {cmdab:op:timal}
+{cmdab:sm:ooth} {cmdab:lo:wess} {cmdab:bw:idth(}{it:#}{cmd:)} 
+{cmdab:ab:normal(min}|{cmd:max)} {cmdab:co:nt}
+{cmdab:int:erval(}{it:#}{cmd:)} {cmdab:d:isplay} {cmdab:nor:ank} 
+{cmdab:nog:raph} {cmdab:sa:ving(}{it:filename}{cmd:)} {cmd:replace} 
+{cmdab:le:vel(}{it:#}{cmd:)} {cmdab:sy:mbol(}{it:symb}{cmd:)}
+{cmdab:xlab:el(}{it:numlist}{cmd:)} {cmdab:ylab:el(}{it:numlist}{cmd:)} ] 
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:roctg} is a complement to the {help roc} commands and enables
+visualizing sensitivity (Se) and specificity (Sp) curves on a single
+graph, according to the range of values of a new test (NT), given a
+dichotomized reference test (RT) used as standard. The "optimal" score where
+the Se and Sp curves cross may also be shown. The procedure handles both
+ordinal/integer and continuous/non-integer NT variables and needs the insert
+{help diagt} (STB-59:sbe36_1) to run properly.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:cband} requests that confidence bands be plotted for the
+sensitivity and specificity curves.
+
+{p 4 8 2}{cmd:optimal} requests that an {cmd:xline} be placed at the "optimal"
+cutoff point referred to above. The actual value is also shown on the graph.
+
+{p 4 8 2}{cmd:smooth} requests that the curves be smoothed using {help ksm}. 
+
+{p 4 8 2}{cmd:lowess} specifies that Cleveland's lowess running-line smoother
+is to be used in the smoothing procedure.
+
+{p 4 8 2}{cmd:bwidth(}{it:#}{cmd:)} specifies the bandwidth of the smoothing
+procedure. Default is 0.2.
+
+{p 4 8 2}{cmd:abnormal(min}|{cmd:max)} specifies whether, in variable NT,
+"abnormality" moves towards the minimum ({cmd:min}) or the maximum ({cmd:min})
+value.  Default is {cmd:max}. Note that this specification assumes that RT+ =
+1 and RT- = 0.
+
+{p 4 8 2}{cmd:cont} specifies that NT is to be handled as a continuous
+(usually noninteger) rather than ordinal (integer) variable, the latter being
+the default (ordinal/integer). The option requests that cutoff points of NT
+used to calculate Se and Sp are to be based on intervals of [ (max_value -
+min_value) / n_unique ] rather than 1. In order to enhance computational
+efficiency, the number of a cutoff points is automatically trimmed at 50 if
+the calculated interval leads   to a value above this and provided that the
+sample size is above 100. If not, the number of cutoff points is set to half
+the sample size. Alternatively, the user may have a full control over the
+desired number of cutoff points through the {cmd:interval(}{it:#}{cmd:)}
+option outlined below.
+
+{p 4 8 2}{cmd:interval(}{it:#}{cmd:)} specifies the intervals of the
+successive scores of NT for which Se and Sp estimates are calculated.
+Default values depend on whether or not option {cmd:cont} is requested (see
+above). Note that the finer the interval, the longer {cmd:roctg} will take to
+run.
+
+{p 4 8 2}{cmd:display} outputs the cutoff point (score) of NT for which
+sensitivity and specificity curves cross, as well as both point-estimates and
+respective exact binomial confidence intervals. {cmd:display} also outputs in
+rank order, the five scores where [ (Se-Sp)^2 ] are lowest plus estimates.
+Since calculations are based on smoothed values, option {cmd:smooth} must be
+requested to obtain the second part of the display.
+
+{p 4 8 2}{cmd:norank} suppresses the second part of the {cmd:display} option.
+
+{p 4 8 2}{cmd:nograph} supresses the graph when there is only interested in
+information from {cmd:display} or when saving results (see below). The option
+is ignored if none of those are requested.
+
+{p 4 8 2}{cmd:saving(}{it:filename}{cmd:)} requests the calculated variables
+used for the graph to be   dumped to a file located in the {help pwd}. This
+enables the user to redraw new graphs at his/her own discretion. Note that
+saved values relate to the specified options.
+ 
+{p 4 8 2}{cmd:replace} allows overwriting a file that already exists on the
+{cmd:pwd} when using option {cmd:saving()}.
+
+{p 4 8 2}{cmd:level(}{it:#}{cmd:)} specifies the confidence level (%) for the
+confidence interval.  The default is 95%.
+
+{p 4 8 2}{cmd:symbol(}{it:symb}{cmd:)} requests that symbols be placed on the
+point-estimate curves. Most symbols available in {help graxes} can be used, in
+addition to {cmd:[score]}, which requests NT scores.
+
+{p 4 8 2}{cmd:xlabel(}{it:numlist}{cmd:)} is the usual graph option for
+customizing x-labels, but {it:numlist} is required.
+
+{p 4 8 2}{cmd:ylabel(}{it:numlist}{cmd:)} is the usual graph option for
+customizing y-labels, but {it:numlist} is required.
+
+
+{title:Examples}
+
+Assuming NT_ord is ordinal (integer)
+
+{p 4 8 2}{cmd:. roctg RT NT_ord, abnormal(min)}
+
+{p 4 8 2}{cmd:. roctg RT NT_ord, ab(min) smooth cband optimal symbol([score])}
+
+{p 4 8 2}{cmd:. roctg RT NT_ord, ab(min) display smooth bwidth(0.1) saving(myfile)}
+
+  
+{title:Author}
+
+       Michael E. Reichenheim 
+       IMS/UERJ 
+       Brazil
+       {browse "mailto:michael@ims.uerj.br":michael@@ims.uerj.br}
+
+
+{title:Also see}
+
+{p 5 14 2}Online:  help for {help roctab}, {help rocfit}, {help rocplot},
+{help diagt}, {help lsens}, {help valides}

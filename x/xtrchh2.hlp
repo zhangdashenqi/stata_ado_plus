@@ -1,0 +1,119 @@
+{smcl}
+{* 08jul2003}{...}
+{hline}
+help for {hi:xtrchh2} {right:(SJ3-3: st0046)}
+{right:dialogs:  {dialog xtrchh2}}
+{hline}
+
+{title:Swamy random-coefficients model}
+
+{p 8 15 2}{cmd:xtrchh2} {it:depvar varlist} [{cmd:if} {it:exp}] [{cmd:in}
+{it:range}] [{cmd:,} {cmd:i(}{it:varname}{cmd:)} {cmd:t(}{it:varname}{cmd:)}
+{cmdab:l:evel:(}{it:#}{cmd:)}
+{cmdab:off:set:(}{it:varname}{cmd:)} 
+{cmdab:nocon:stant} 
+{cmdab:nobeta:s} ]
+
+
+{p 4 4 2}
+{cmd:by} {it:...} {cmd::} may be used with {cmd:xtrchh2}; see help {help by}.
+
+{p 4 4 2}
+{cmd:xtrchh2} shares the features of all estimation commands;
+see help {help estcom}.
+
+
+{p 4 4 2}
+The syntax of {help predict} following {cmd:xtrchh2} is
+
+{p 8 16 2}{cmd:predict} [{it:type}] {it:newvarname}
+        [{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:,} {it:statistic}
+         {cmdab:gr:oup(#)} {cmdab:nooff:set}]
+                
+{p 4 4 2}
+where {it:statistic} is
+
+{p 8 21 2}{cmd:xb}{space 6}linear prediction based on B{p_end}
+{p 8 21 2}{cmd:stdp}{space 4}standard error of the linear prediction
+   based on B{p_end}
+{p 8 21 2}{cmd:xbi}{space 5}linear prediction based on B_i{p_end}
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:xtrchh2} fits the Swamy random-coefficients linear
+regression model for panel data.
+
+{center:y[i,t] = a + B_i*x[i,t] + u[i] + e[i,t]}
+
+{center:where B_i = B + v[i]}
+
+{center:i = 1, 2, ..., n   is the groups (or items)}
+{center:t = 1, 2, ..., T_i is the time for group i }
+
+{p 4 4 2}
+Included in the output is the results of a test of parameter constancy.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:i(}{it:varname}{cmd:)} specifies the variable corresponding to an
+independent unit (e.g., a subject id).  This variable represents the i in x_it.
+Either this option must be specified or i must be set using the {cmd:iis}
+command; see help {help iis}.
+
+{p 4 8 2}{cmd:t(}{it:varname}{cmd:)} specifies the variable corresponding to a
+time unit.  This variable represents the t in x_it.  Either this option must be
+specified or t must be set using the {cmd:tis} command; see help {help tis}.
+
+{p 4 8 2}{cmd:level(}{it:#}{cmd:)} specifies the significance level, in percent,
+for confidence intervals of the coefficients; see help {help level}.
+
+{p 4 8 2}{cmd:offset(}{it:varname}{cmd:)} specifies that {it:varname} is
+to be included in the model with its coefficient constrained to be 1.
+
+{p 4 8 2}{cmd:noconstant} suppresses the constant term (intercept) in the
+regression.
+
+{p 4 8 2}{cmd:nobetas} requests that the panel-specific B_i's not be 
+displayed.
+
+
+{title:Options for {help predict}}
+
+{p 4 8 2}{cmd:xb}, the default, calculates the linear prediction based
+on the estimated B.
+
+{p 4 8 2}{cmd:stdp} calculates the standard error of the linear
+prediction based on the estimated B.
+
+{p 4 8 2}{cmd:xbi} calculates the linear prediction based on the
+group-specific estimated B_i, where {it:i} is specified with the
+{cmd:group(}{it:#}{cmd:)} option.
+
+{p 4 8 2}{cmd:group(}{it:#}{cmd:)} specified which group-specific B_i to
+use with the {cmd:xbi} option.  The default is {cmd:group(1)}.
+{cmd:group(}{it:#}{cmd:)} has no effect if {cmd:xbi} is not specified.
+
+{p 4 8 2}{cmd:nooffset} is relevant only if you specified {cmd:offset()} for
+{cmd:xtrchh}.  It modifies the calculations made by {cmd:predict} so that they
+ignore the offset variable; the linear prediction is treated as xb rather  
+than xb + offset.
+
+
+{title:Examples}
+
+    {cmd:. xtrchh2 i f c, i(g) t(t)}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Manual:  {hi:[U] 23 Estimation and post-estimation commands},{break}
+{hi:[U] 29 Overview of Stata estimation commands},{break}
+{hi:[XT] xtrchh}
+
+{p 4 13 2}
+Online:  help for {help estcom}, {help postest}, {help xt};
+{help xtgee}, {help xtgls}, {help xtpcse}, {help xtreg}, {help xtregar}

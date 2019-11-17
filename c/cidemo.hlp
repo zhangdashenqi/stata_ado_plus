@@ -1,0 +1,46 @@
+
+
+.-
+help for ^cidemo^
+.-
+
+Confidence interval monte carlo simulation
+------------------------------------------
+
+ ^cidemo^ n level
+ 
+
+Description
+-----------
+
+^cidemo^ draws 50 random samples of size ^n^ from a
+       normal distribution. By default, a 95% 
+       confidence interval is computed for each of 
+       the 50 means.  The results are displayed in 
+       an error bar graph.  
+
+
+Options
+--------
+
+level    Specifies the confidence level for the 
+         confidence intervals.  For example, .95
+         would request 95% confidence intervals.
+
+Examples
+--------
+
+ . ^cidemo 5^
+ . ^cidemo 30^
+ . ^cidemo 5 .90^
+
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA, Office of Academic Computing
+      ender@@ucla.edu 
+

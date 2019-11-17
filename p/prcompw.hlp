@@ -1,0 +1,150 @@
+.-
+help for ^prcompw^                                 (STB-47: sg101)
+.-
+
+pairwise comparisons of means, including the Tukey wsd method
+-------------------------------------------------------------
+
+   ^prcompw^ [varlist]
+
+^aweights^ and ^fweights^ are allowed; see help @weights@.
+
+
+Description
+-----------
+
+^prcomp^ performs pairwise comparisons of the means of a variable (Y), grouped by
+the values of a second variable (X). By default, the output includes a table of
+Y means and their standard errors, and a table of confidence intervals for the
+difference in Y mean between all pairs of X values, with individual confidence
+level determined by the system macro ^S_level^.  Optionally, prcomp will switch
+from confidence intervals to significance tests, graph the table of confidence
+intervals or tests, and set the simultaneous confidence (significance) level
+using Tukey's wsd method.
+
+By default, prcomp assumes homogeneity of variance in Y and estimates that var-
+iance from a one-way ANOVA of Y classified by X.  An external estimate of error
+variability can be supplied instead, or comparisons can be made without assum-
+ing homogeneity of variance, using the Welch-Satterthwaite approach.
+
+
+Controls
+--------
+
+^Confidence Intervals^ displays confidence intervals for all pairwise differences
+    in Y means, using the settings selected by the other dialog controls
+
+^Significance Tests^ shows significance tests of no difference in Y mean between
+    each pair of X values using the settings given by the other dialog controls
+
+^Refresh^ forces recalculation of all quantities used for the tests or confidence
+    intervals: Y means, differences in means, confidence interval half-widths,
+    etc.  These quantities are saved in Stata's memory and, ordinarily, are re-
+    computed only as necessary (e.g., when the choice of Y, X, confidence level
+    etc. changes).  This option exists to insure, should doubt arise, that the
+    correct quantities are being displayed
+
+^Response (Y)^ chooses the response variable (Y) whose means are to be compared
+
+^Groups (X)^ chooses the variable (X) whose values classify the observations
+
+^a-^ or ^f-weight^ chooses between ^aweights^ and ^fweights^; ignored if the edit box
+    below is empty
+
+^<if>^ supplies an ^if^ condition for selecting observations to be included; enter
+    the condition in the box below, without "if"
+
+^<in>^ supplies an ^in^ range for selecting observations to be included; enter the
+    range in the box below, without "in"
+
+^Conf. level^ sets the simultaneous confidence (significance) if the ^Simult.^ box
+    (below) is checked, otherwise the individual level.  The default value is
+    the current setting of ^S_level^.  Other values can be entered in the box at
+    the left as proportions (.98333) or as percentages (98.333)
+
+^Simult.^ if checked, uses quantiles of the studentized range to control the si-
+    multaneous confidence (significance); the default is to control individual
+    levels with student t quantiles.  This option yields the Tukey wsd method;
+    it cannot be combined with the ^Unequal SDs^ option (below), and it requires
+    that the @qsturng@ command be installed
+
+^Unequal SDs^ specifies that standard errors for differences in Y means be esti-
+    mated without a homogeneity of variance assumption using the Welch standard
+    error and Satterthwaite's degrees of freedom (see the ^unequal^ option of the
+    @ttest@ command)
+
+^ANOVA Pooled SD^ uses the RMSE of a one-way ANOVA of Y classified by X to esti-
+    mate the error standard deviation, assumed to be constant over levels of X
+
+^Other^ if checked uses the contents of the edit boxes below to provide an esti-
+    mate of the error standard deviation, assumed to be constant over levels of
+    X.  Both the ^Sigma^ and the ^d.f.^ boxes must be filled
+
+^Display order^ controls how values of X are arranged in listings of means and in
+    listings or graphs of confidence intervals (tests).  ^Natural^ orders levels
+    of X by their numeric values, ^Labels^ by the value labels currently assign-
+    ed to X, and ^Means^ arranges X so that the means of Y are in order. For each
+    of these choices the order is ascending; the same options with the initial
+    letter in lower case yield descending order
+
+^Use X value labels^ if checked uses the value labels currently assigned to X to
+    identify levels of X in tables and graphs; otherwise, the numerical values
+    of X are used
+
+^ANOVA summary table^ if checked shows the one-way ANOVA used (by default) to ob-
+    an estimate of the error standard deviation
+
+^Table of Y means^ if checked displays a table of group sizes, Y means, and their
+    standard errors
+
+^Table of intervals^ if checked displays a table of confidence intervals for the
+    difference in Y mean between all pairs of X values, or a table of signifi-
+    cance tests for no difference in Y mean between all pairs of X values.  In
+    the latter case, the table shows the observed and critical difference for
+    each pair of X values; significant differences are marked by ^*^
+
+^Graph intervals^ shows a graphic version of the table listing the pairwise con-
+    fidence intervals or tests.  For intervals, the graph shows horizontal er-
+    ror bars ordered (from top to bottom) to match the corresponding table. For
+    tests, the graph shows a triangular plot with symbols whose sizes reflect
+    the magnitude of a difference in Y means, compared to its associated criti-
+    cal difference. Non-significant differences are invisible; the axes of the
+    plot match the rows and columns of the corresponding table
+
+^Show legend^ if checked displays an explanatory legend near the top of the graph
+    of confidence intervals or significance tests
+
+^Graph options^ accepts most options available with the @graph@ ^twoway^ style.  Ex-
+    cluded options are ^yreverse^, ^ylabel^ and, for confidence intervals, ^b2title^
+    and ^xscale^; ^saving^ is also excluded: use the File/Save Graph dialog.
+
+
+Warnings
+--------
+
+The left-quote (^`^) and double-quote (^"^) characters must be avoided in the ^<if>^
+and ^<in>^ edit boxes, as well as in the ^Graph options^ edit box. Their presence
+can cause a variety of problems.
+
+
+Examples
+--------
+
+See the on-line help for @prcomp@.
+
+
+Author
+------
+
+       John R. Gleason
+       Syracuse University
+       Syracuse NY, USA
+       loesljrg@@ican.net
+
+
+Also see
+--------
+
+    STB:  STB-47 sg101
+ Manual:  [R] graph; [R] oneway; [R] ttest
+On-line:  ^help^ for @graph@, @oneway@, @ttest@ (@qsturng@, if installed)

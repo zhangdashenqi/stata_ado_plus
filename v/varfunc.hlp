@@ -1,0 +1,139 @@
+.-
+help on ^varcond^, ^varrank^, ^varnull^, and ^varorth^              ([jw] Dec 05, 1998
+.-
+
+Linear algebra functions for variables
+--------------------------------------
+
+    ^varcond^ varlist [^if^ exp] [^in^ range] [weight] 
+                                [^, c^ond^(^scalar_name^) cons d^isplay ^f^ormat^(^fmt^)^]
+
+    ^varrank^ varlist [^if^ exp] [^in^ range] [weight]
+                                [^, r^ank^(^scalar_name^) c^ons ^d^isplay]
+
+    ^varorth^ varlist [^if^ exp] [^in^ range] [weight] 
+                                [^, prefix(^str^) c^ons ^n^orm ^e^ps^(^#^)^]
+                                
+    ^varnull^ varlist [^if^ exp] [^in^ range] [weight] [^, n^ull^(^matrix_name^) 
+                                r^ank^(^scalar_name^) c^ons ^d^isplay ^f^ormat^(^fmt^)^]
+                                 
+Description
+-----------
+
+These programs return linear algebra characteristics of data, i.e., of an 
+"implied matrix" with the variables in a varlist as columns, and with the 
+(if/in selected) cases without missing values as the rows. 
+
+  ^varcond^ computes the ^condition number^ (ratio of smallest and largest 
+      singular values) of the implied matrix. In linear models, the condition
+      number of the predictor variables is a good measure for the degree of 
+      collineairity. 
+
+  ^varrank^ computes the ^rank^ (number of independent columns or rows) of the
+      implied matrix. 
+
+  ^varorth^ computes a series of orthogonal variables that span the same column 
+      space as varlist by Gramm-Schmidt orthogonalization. 
+       
+  ^varnull^ computes the `null space' of the implied matrix, i.e., a matrix 
+      of coefficients of linear dependencies between the variables.
+
+
+Options
+-------
+
+^const^ specifies that a constant variable (1) should be added to the varlist. 
+   In ^varorth^, the constant is prepended to the varlist, so that the generated
+   variables are orthogonal to 1.
+
+^display^ specifies that the computed characteristics should be displayed. 
+   The programs automatically display results if no names for the results are 
+   specified.
+   
+^format(^fmt^)^ specifies a format (e.g., %10.4f) used to display scalars or
+   matrices. 
+
+
+Options (^varorth^)
+----------------
+
+^pref(^str^)^ specifies the string prefixed to the variables in varlist 
+    to obtain the names of orthogonalized variables. 
+
+^norm^ specifies that the returned variables are normalized, i.e., have unit
+    length. The (weighted) covariance matrix of orthonormalized variables
+    is a unity matrix.
+    
+^eps(#)^ specifies a tolerance to decide whether a variable is linear dependent
+    on the previous variables in the varlist. A more reliable way to obtain the 
+    number of linear dependencies dependencies is via ^varrank^. 
+
+
+Examples
+--------
+
+   . ^varrank price weight turn^             (rank of data matrix with 3 columns)
+
+   . ^varrank price weight turn if foreign, cons rank(r)^     
+             (scalar r will contain rank of foreign data matrix with 4 columns)
+
+   . ^varorth x1 x2 x3 x4^             (gramm-schmidt orthogonalization of x1-x4)
+
+   . ^for 1-4, l(num) : gen I@@ = inc^^@@^                      (polynomials in inc)
+   . ^varorth I*^                                              (orthonalize them)
+
+   . ^gen pw = price + weight^                   (silly, but ok for illustration)
+   . ^varnull price weight pw^   (varnull will show a matrix with coeffients that
+                               indicate that pw is the sum of price and weight)
+
+
+Technical details
+-----------------
+
+The programs ^varcond^, ^varrank^, ^varnull^, and ^varorth^ are variable-oriented 
+versions of the matrix-oriented commands ^matcond^, ^matcond^, ^matnull^, and 
+^matorth^. It is important to understand that the variable-oriented and the 
+matrix-oriented programs use different algorithms. The listed ^matrix^-functions 
+base their results on the singular value decomposition (SVD) of a matrix X 
+(using ^matrix svd^). The SVD provides a numerically reliable algorithm for these 
+functions, though slower than algorithms based on e.g. the QR decomposition.
+However, the SVD may requires much more memory that Stata's matrix modules can 
+cope with. Thus, the ^variable^func are provided as low-precision alternatives. 
+If you fear that your data are ill-conditioned, you have enough memory, and the 
+number of cases does not exceed matsize, you should use ^mkmat^ to make a matrix 
+from your data and use the ^matrix^ programs.
+
+^varrank^ counts the number of non-zero eigenvalues of X'*X (or, X'*W*X if weights 
+are specified) based on the spectral decomposition (^matrix symeigen^). 
+
+^varcond^ computed the condition number of the variables as the square root of the 
+ratio of the largest and smallest eigenvalues of X'X (or X'WX).
+
+^varorth^ uses Gramm-Schmidt orthogonalization, rather than the SVD set of 
+orthogonal variables.
+
+^varnull^ returns the eigenspace of X'X (or X'W'X) associated with zero (or small) 
+eigenvalues, obtained from the spectral decomposition.
+
+
+Author
+------
+
+        Jeroen Weesie
+        Dept of Sociology/ICS
+        Utrecht University
+        J.Weesie @@ fss.uu.nl
+
+
+Known bugs
+----------
+
+* matrix accum will produce "insufficient observations" if called with one obs.
+  Why?
+
+
+See also
+--------
+
+ Manual:  [6m] matrix
+On-line:  help for @matrix@, @matfunc@

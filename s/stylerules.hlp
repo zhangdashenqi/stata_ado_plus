@@ -1,0 +1,350 @@
+{smcl}
+{* 12april2005}{...}
+{hline}
+help for {hi:stylerules}
+{hline}
+
+{title:Suggestions on Stata programming style} 
+
+
+{title:Introduction} 
+
+{p 4 4 2}Programming in Stata, like programming in any other computer language,
+is partly a matter of syntax {c -} Stata has rules that must be obeyed {c -}
+and partly a matter of style. Good style includes {c -} but is not limited to
+{c -} writing programs that are, above all else, clear. They are clear to the
+programmer, who may revisit them repeatedly, and they are clear to other
+programmers, who may wish to understand them, to debug them, to extend them, to
+speed them up, to imitate them or to plagiarise them.
+
+{p 4 4 2}People who program a great deal know this: setting rules for yourself
+and then obeying them ultimately yields better programs and saves time.
+
+{p 4 4 2}I suggest one overriding rule:
+
+{p 8 8 2}Set and obey programming style rules for yourself.
+
+{p 4 4 2}Moreover,
+
+{p 8 8 2}Obey each of the rules I suggest unless you can make a case that your
+own rule is as good or better.
+
+{p 4 4 2}Enough pious generalities. The devil in programming is in the details:
+
+
+{title:Presentation} 
+
+{p 4 4 2}Always include a comment containing the version number of your program,
+your name or initials, and the date the program was last modified above
+the {cmd:program} line. For example,  
+ 
+{p 8 8 2}{cmd:*! 1.0.0 Jane Roe 24jan2003}{break} {cmd:program myprog}
+ 
+{p 4 4 2}(As said, this line is indeed just a comment line: it bears no relation
+to the Stata {help version} command. Both should be used.) 
+ 
+{p 4 4 2}Use sensible, intelligible names where possible, for programs, variables
+and macros. 
+
+{p 4 4 2}Choose a name for your program that does not conflict with anything
+already existing. Suppose you are contemplating {it:newname}. If typing either
+{cmd:which} {it:newname} or {cmd:which} {it:newname}{cmd:.class} gives you a
+result, StataCorp are already using the name. Similarly, if {cmd:ssc type}
+{it:newname}{cmd:.ado} gives you a result, a program with your name is already
+on SSC. No result from either does not guarantee that the program is not in use
+elsewhere: {cmd:findit} {it:newname} may find such a program, although often it
+will also find much that is irrelevant to this point. 
+
+{p 4 4 2}Brevity of names is also a virtue. However, no platform on which Stata
+is currently supported requires an 8-character limit. Tastes are in
+consequence slowly shifting: an intelligible long name for something used only
+occasionally would usually be considered preferable to something more cryptic. 
+ 
+{p 4 4 2}Note that actual English words for program names are supposedly
+reserved for StataCorp.
+
+{p 4 4 2}Use the same names and abbreviations for command options that are in
+common use in official Stata's commands. Try to adopt the same conventions for
+options syntax: for example, allow a {help numlist} where similar commands use
+a {cmd:numlist}. Implement sensible defaults wherever possible.
+
+{p 4 4 2}Use natural names for logical constants or variables. Thus 
+{cmd:local OK} should be 1 if true and 0 if false, permitting idioms such as 
+{cmd:if `OK'}.  (But beware such logicals taking on missing values.) 
+
+{p 4 4 2}Type expressions so they are readable. Some possible rules are
+
+{p 8 8 2}put spaces around each binary operator except {cmd:^} 
+({cmd:gen z = x + y} is clear, but {cmd:x ^ 2} looks odder than {cmd:x^2})
+
+{p 8 8 2}{cmd:*} and {cmd:/} allow different choices. {bind:{cmd:num / den}} is 
+arguably clearer than {cmd:num/den}, but readers might well prefer {cmd:2/3} 
+to {bind:{cmd:2 / 3}}. Overall readability is paramount: compare for example 
+{bind:{cmd:hours + minutes / 60 + seconds / 3600}} with 
+{bind:{cmd:hours + minutes/60 + seconds/3600}} 
+
+{p 8 8 2}put a space after each comma in a function, etc.
+
+{p 8 8 2}parenthesise for readability 
+
+{p 4 4 2}Note, however, that such a spaced-out style may make it difficult to fit
+expressions on one line, another desideratum.
+
+{p 4 4 2}Adopt a consistent style for flow control. Stata has {help if},
+{help while}, {help foreach} and {help forvalues} structures that resemble those
+in many mainstream programming languages. Programmers in those languages often
+argue passionately about the best layout. Choose one such layout for yourself.
+ 
+{p 8 8 2}Here is one set of rules:
+
+{p 8 8 2}tab lines consistently after {cmd:if} or {cmd:else} or {cmd:while} or
+{cmd:foreach} or {cmd:forvalues} (the StataCorp convention is that a tab is 8
+spaces and is greatly preferable if Stata is to show your programs properly)
+
+{p 8 8 2}do not put anything on a line after a brace, 
+either an opening {c -(} or a closing {c )-}.  
+
+{p 8 8 2}put a space before braces
+
+{p 8 8 2}align the {cmd:i} of {cmd:if} and the {cmd:e} of {cmd:else}, and align
+closing braces {cmd:{c )-}} with the {cmd:i}, or the {cmd:e}, 
+or the {cmd:w} of {cmd:while}, or the {cmd:f} of {cmd:foreach} or {cmd:forvalues}: 
+
+{p 8 16 2}{cmd:if} ... {cmd:{c -(}}{break} 
+...{break}
+...{p_end}
+{p 8 8 2}{cmd:{c )-}}
+
+{p 8 16 2}{cmd:else {c -(}}{break}
+...{break}
+...{p_end}
+{p 8 8 2}{cmd:{c )-}}
+
+{p 8 16 2}{cmd:while} ... {cmd:{c -(}}{break}
+...{break}
+...{p_end}
+{p 8 8 2}{cmd:{c )-}}
+
+{p 8 16 2}{cmd:foreach} ... {cmd:{c -(}}{break}
+...{break}
+...{p_end}
+{p 8 8 2}{cmd:{c )-}}
+
+{p 8 8 2}In Stata 8 up, putting the opening and closing braces on lines above
+and below the body of each construct is compulsory (with the exceptions that
+the whole of an {cmd:if} construct or the whole of an {cmd:else} construct may
+legally be placed on one line). For earlier releases, it is strongly advised. 
+
+{p 4 4 2}Write within 80 columns (72 are even better). The awkwardness of viewing
+(and understanding) long lines outweighs the awkwardness of splitting commands
+into two or more physical lines.
+
+{p 4 4 2}Use {cmd:#delimit ;} sparingly (Stata isn't C): commenting out
+end-of-lines is tidier where possible (although admittedly still ugly). 
+The {cmd:///} comment introduced in Stata 8 is most helpful here, 
+and arguably more pleasing visually than {cmd:/* */}. 
+
+{p 4 4 2}Use blank lines to separate distinct blocks of code.
+
+{p 4 4 2}Consider putting {help quietly} on a block of statements, rather than on
+each or many of them. An alternative in some cases is to use {help capture}. 
+
+{p 4 4 2}You may express logical negation by either {cmd:!} or {cmd:~}. Choose
+one and stick with it. StataCorp have flipped from preferring {cmd:~} 
+to preferring {cmd:!}. 
+
+{p 4 4 2}Group {help tempname}, {help tempvar} and {help tempfile} declarations.
+
+{p 4 4 2}Well-written programs don't need many comments. (Comment: We could
+certainly argue about that!)
+
+{p 4 4 2}Use appropriate {help display} styles for messages and other output. 
+All error messages (and no others) should be {cmd:display}ed {cmd:as err}. 
+In addition, attach a return code to each error message: 
+198 (syntax error) will often be fine.
+
+
+{title:Helpful Stata features}
+
+{p 4 4 2}Stata is very tolerant through version control of out-of-date features, 
+but that does not mean that you should be. To maximise effectiveness
+and impact, and to minimise problems, write using the latest version 
+of Stata and exploit its features.  
+
+{p 4 4 2}Make yourself familiar with all the details of {help syntax}. It can stop
+you re-inventing little wheels. Use wildcards for options to pass to other 
+commands when appropriate. 
+
+{p 4 4 2}Support {cmd:if} {it:exp} and {cmd:in} {it:range} where applicable.
+This is best done using {cmd:marksample touse} (or occasionally {cmd:mark} and
+{cmd:markout}).  Have {cmd:touse} as a temporary variable if and only if
+{cmd:marksample} or a related command is used. See help on {help marksample}. 
+
+{p 4 4 2}{cmd:_result()} still works, but it is unnecessarily obscure compared
+with {cmd:r()}, {cmd:e()} or {cmd:s()} class results.
+
+{p 4 4 2}Make effective use of information available in {cmd:e()} and {cmd:r()}.
+If your program is to run in a context which implies results or estimates are
+available (say, after {cmd:regress}), make use of the stored information from
+the prior command.
+
+{p 4 4 2}Where appropriate, ensure that your command returns the information that
+it computes and displays, so that another user may employ it {help quietly} and
+retrieve that information.
+
+{p 4 4 2}Ensure that programs that focus on time-series or panel data work with
+time-series operators if at all possible. In short, exploit {help tsset}. 
+
+{p 4 4 2}Define constants to machine precision. Thus use {cmd:_pi} or
+{cmd:c(pi)} rather than some approximation such as 3.14159, or use
+{cmd:-digamma(1)} for the Euler-Mascheroni constant gamma, rather than 0.57721.
+Cruder approximations may give results adequate for your purposes, but that
+doesn't mean that you should eschew wired-in features. 
+
+{p 4 4 2}Familiarise yourself with the built-in material revealed by 
+{cmd:creturn list}. Scrolling right to the end will show several features
+that may be useful to you. 
+
+{p 4 4 2}SMCL is the standard way to format Stata output. 
+
+
+{title:Respect for datasets} 
+
+{p 4 4 2}In general, make no change to the data unless that is the direct purpose
+of your program or that is explicitly requested by the user.  For example, 
+
+{p 8 8 2}your program should not destroy the data in memory unless that is 
+essential for what it does
+
+{p 8 8 2}you should not create new permanent variables on the side unless
+notified or requested
+ 
+{p 8 8 2}do not use variables, matrices, scalars or global macros whose names 
+might already be in use: there is absolutely no need to guess at names
+unlikely to occur, as temporary names can always be used (see help on  
+{help tempvar}, {help tempname}, and {help tempfile})  
+
+{p 8 8 2}do not change the type of a variable unless requested
+
+{p 8 8 2}do not even change the sort order of data: programs can easily be made 
+{cmd:sortpreserve}. 
+
+
+{title:Speed and efficiency}
+
+{p 4 4 2}Test for fatal conditions as early as possible. Do no unnecessary work
+before checking that a vital condition has been satisfied.
+
+{p 4 4 2}Use {cmd:summarize, meanonly} for speed when its returned results are
+sufficient. Also consider whether a {cmd:qui count} is what fits the purpose
+better. 
+
+{p 4 4 2}{cmd:foreach} and {cmd:forvalues} are cleaner and faster than most
+{cmd:while} loops, and much faster than {cmd:for}. 
+Within programs, avoid {cmd:for} like the plague. 
+
+{p 4 4 2}{cmd:macro shift} can be very slow when many variables are present.
+With 10,000 variables, for example, working all the way through a variable list
+with {cmd:macro shift} would require around 50 million internal macro renames.
+Using {cmd:foreach} or {cmd:while} without a macro shift is faster. 
+
+{p 4 4 2}Avoid {cmd:egen} within programs: it is usually slower than a direct
+attack.
+
+{p 4 4 2}Try to avoid looping over observations, which is very slow. Fortunately,
+it can usually be avoided.
+
+{p 4 4 2}Avoid {cmd:preserve} if possible. {cmd:preserve} is attractive to the
+programmer but can be expensive in time for the user with large data files.
+Programmers should learn to master {help marksample}.
+
+{p 4 4 2}Specify the type of temporary variables to minimise memory overhead. So 
+if a {cmd:byte} variable can be used, specify {cmd:generate byte `myvar'}
+rather than let the default type be used, which would waste storage space.
+ 
+{p 4 4 2}Temporary variables will be automatically dropped at the end of a 
+program, but also consider dropping them when they are no longer
+needed, to minimise memory overhead, and indeed to reduce the chances 
+of your program stopping because there is no room to add more variables. 
+
+{p 4 4 2}Avoid using a variable to hold a constant: a macro or a scalar is 
+usually all that is needed. 
+
+
+{title:Reminders} 
+
+{p 4 4 2}Remember to think about string variables as well as numeric variables.
+Does the task carried out by your program make sense for string variables? If
+so, will it work properly? If not, do you need to trap input of a string
+variable as an error, say through {help syntax}? 
+
+{p 4 4 2}Remember to think about making your program support {cmd:by}
+{it:varlist}{cmd::} when natural. See {help byable}.  
+
+{p 4 4 2}Remember to think about weights and implement them when natural.
+
+{p 4 4 2}The job isn't finished until the {cmd:.hlp} is done.  Use SMCL to set up
+your help files: old-style help files, while supported, are not documented,
+while help files not written in SMCL cannot take advantage of its paragraph
+mode, which allows lines to auto-wrap to fit the desired screen width of the
+user.  For an introduction to the SMCL required to write a basic help
+file, see {hi:[U] 21.11.6 Writing on-line help} or {help examplehelpfile}. 
+
+
+{title:Style in the large} 
+
+{p 4 4 2}Style in the large is difficult to prescribe, but here are some vague
+generalities. 
+ 
+{p 8 8 2}Before writing a program, do check that it has not been written already!
+{help findit} is the broadest search tool. 
+ 
+{p 8 8 2}The best programs do just one thing well. There are exceptions, but what
+to a programmer is a Swiss army knife with a multitude of useful tools may look
+to many users like a confusingly complicated command. 
+ 
+{p 8 8 2}Very large programs become increasingly difficult to understand, to
+build, and to maintain, roughly as some power of their length. Consider
+breaking such programs into subroutines and/or use a structure of command and
+subcommands. 
+
+{p 8 8 2}The more general code is often both shorter and more robust.
+ 
+{p 8 8 2}Don't be afraid to realise that at some point you may be best advised to
+throw it all away and start again from scratch. 
+ 
+ 
+{title:Note: Use the best tools} 
+
+{p 4 4 2}Find and use a text editor which you like and which supports programming
+directly. A good editor will, for example, will be smart about indenting and
+will allow you to search for matching braces. Some even show syntax
+highlighting. For much more detailed comments on various text editors for Stata
+users, see 
+{browse "http://fmwww.bc.edu/repec/bocode/t/textEditors.html":http://fmwww.bc.edu/repec/bocode/t/textEditors.html}. 
+
+
+{title:Author}
+
+{p 4 4 2}Nicholas J. Cox, University of Durham, U.K.{break}
+n.j.cox@durham.ac.uk
+
+
+{title:Acknowledgements}
+
+{p 4 4 2}Many thanks to Kit Baum, Bill Gould, Alan Riley and Vince Wiggins for
+general benedictions and numerous specific contributions. 
+ 
+ 
+{title:History}
+
+{p 4 4 2}this version: 12 April 2005{break} 
+{* previous versions: 15 November 2004, 28 January 2003, 21 August 2002, 19 January 2001,}
+{* 20 January 2000, 30 November 1999, 29 October 1998, 22 September 1998} 
+
+
+{title:See also} 
+
+{p 4 4 2}the Stata manuals...{p_end}
+{p 4 4 2}the Stata {cmd:.ado} code... 
+

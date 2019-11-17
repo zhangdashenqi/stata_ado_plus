@@ -1,0 +1,123 @@
+{smcl}
+{hline}
+help for {hi:loghockey}
+{hline}
+
+{title:"Hockey Stick" Logistic Regression}
+
+{p 4 8 2}
+{cmdab:loghock:ey}
+{it:yvar}
+{it:xvar1}
+[{it:xvarlist}]
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+[{cmd:,} {cmd:or} {cmdab:l:eft0} {cmdab:r:ight0}]
+
+{p 4 4 2}
+{cmd:by} {it:...} {cmd::} may be used with {cmd:loghockey}; see help
+{help by}.
+
+{p 4 4 2}
+The syntax of {help predict} following {cmd:loghockey} is
+
+{p 8 16 2}{cmd:predict} [{it:type}] {it:newvarname} [{cmd:if} {it:exp}]
+	[{cmd:in} {it:range}] [{cmd:,} {it:statistic} ]
+
+{p 4 4 2}
+where {it:statistic} is
+
+{p 8 25 2}{cmd:p} {space 10} predicted probability of a positive
+outcome; the default{p_end}  
+{p 8 25 2}{cmd:xb} {space 9} linear prediction{p_end}
+
+{title:Description}
+
+{p 4 4 2}
+This command uses piecewise linear or "hockey stick" regression (see
+  {help nlhockey})  to fit a logistic regression model. It assumes
+that the association between the log of the odds of {it:yvar} and
+{it:xvar1} is best described by two straight lines, and estimates the
+slopes of these lines (which may be presented as an odds ratio per
+  unit increase in {it:xvar1}), and the value of {it:xvar1} at which
+the slope of the line changes (the breakpoint).
+
+{title:Options}
+
+{p 4 8}
+{cmd:or} presents results in terms of Odds Ratios, rather than regression
+coefficients, where appropriate. The point at which the two lines
+meet is always given as a coefficient.
+
+{p 4 8}
+{cmdab:r:ight0} constrains the slope to the right of the breakpoint to
+be 0.
+
+{p 4 8}
+{cmdab:l:eft0} constrains the slope to the left of the breakpoint to
+be 0.
+
+{title:Remarks}
+
+{p 4}
+The command {it:loghockey} fits the model
+
+{centre:ln({it:p}/(1-{it:p})) = a + b*{it:xvar1} if {it:xvar1} <= c}
+{centre:ln({it:p}/(1-{it:p})) = d + e*{it:xvar1} if {it:xvar1} >=  c}
+
+{p}
+where {it:p} is the probability that {it:yvar} = 1. For more details
+of this "hockey stick" model, see {help nlhockey}. By default,
+{cmd:loghockey} presents parameters a, b, c and e: d can be calculated
+from these since a + b*c = d + e*c. In the absence of the option
+{cmd:or}, these parameters are presented exactly as described in
+{help nlhockey}. 
+
+{p 4}
+If the option {cmd:or} is given, exp(b) and exp(e) are presented, the
+odds ratios per unit change in {it:xvar1} to the left and right of the
+breakpoint c. The parameter c is presented as it is, exponentiating
+that would make no sense. Parameter a, the equivalent of _cons in
+logistic regression, is not presented (as happens with {cmd:logistic
+yvar xvar1, or}).  If other variables are added to this model, it is
+assumed that ln({it:p}/(1-{it:p})) increases linearly with the other
+variables, so the model fitted is:
+
+{centre:ln({it:p}/(1-{it:p})) = a + b*{it:xvar1} + f*{it:xvar2} if {it:xvar1} <= c}
+{centre:ln({it:p}/(1-{it:p})) = d + e*{it:xvar1} + f*{it:xvar2} if {it:xvar1} >= c}
+
+{p}
+Again, either f or exp(f) is presented, depending on whether the
+option {cmd:or} is selected.
+
+{p 4}
+The options {cmd:left0} and {cmd:right0} force the constraints b = 0
+and e = 0 respectively. Specifying both of these options is an
+error. Also, specifying either of them inappropriately can lead to odd
+results: if {cmd:left0} is specified and the slope for small values of
+{it:xvar1} is non-zero, the breakpoint c may be set less than the
+minimum value of {it:xvar1} in the dataset. The model is then no
+longer identified: for any given breakpoint, there is an intercept a
+which gives exactly the same model a simple linear regression. You
+should run {cmd:loghockey} without either of these options first, and
+only if the parameter estimates and standard errors from this model
+convince you should you specify either of these options.
+
+{p 4}
+Iteratively reweighted least squares is used in conjunction with the
+program {help nlhockey} to implement {cmd:loghockey}.
+
+{title:Author}
+
+{p 4 4 2}
+Mark Lunt, Arthritis Research UK Epidemiology Unit
+
+{p 4 4 2}
+The University of Manchester
+
+{p 4 4 2}
+Please email
+{browse "mailto:mark.lunt@manchester.ac.uk":mark.lunt@manchester.ac.uk}
+if
+you encounter problems with this program. 
+

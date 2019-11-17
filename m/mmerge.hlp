@@ -1,0 +1,301 @@
+.-
+help for ^mmerge^                                                  [STB-53: dm75]
+.-
+
+Easy and safe merging of datasets
+---------------------------------
+
+   Important special cases
+
+      ^mmerge^ match-variable(s) ^using^ filename [^,^ { ^si^mple | ^ta^ble }
+                                               ^um^atch^(^varlist^)^ ^uk^eep^(^varlist^)^ ]
+
+   Full Syntax
+
+      ^mmerge^ match-variable(s) ^using^ filename [^,^
+               { ^t^ype^(^type_value^)^ ^unm^atched^(^unmatched_value^)^ | ^si^mple | ^ta^ble }
+               ^m^issing^(^m_value^)^ ^nol^abel ^replace^ ^update^ ^_merge(^varname^)^ ^nosh^ow
+               ^uk^eep^(^varlist^)^ ^ud^rop^(^varlist^)^ ^uif(^exp^)^ ^um^atch^(^varlist^)^
+               ^un^ame^(^stub^)^ ^uren^ame^(^rename_specs^)^ ^ul^abel^(^stub^)^ ]
+
+      where
+
+        type_value      = { ^a^uto | ^1:1^ | ^1:n^ | ^n:1^ | ^n:n^ | ^sp^read }
+
+        unmatched_value = { ^b^oth | ^n^one | ^m^aster | ^u^sing }
+
+        missing_value   = { ^non^e | ^v^alue | ^nom^atch }
+
+        rename_specs    = oldname newname ^\^ oldname newname ^\^ ...
+
+
+Description
+-----------
+
+^mmerge^ is an extension of ^merge^ that makes matched merging safe that
+requires users to specify the type of match to be performed; ^mmerge^ verifies
+that the requirements hold. It also makes merging easy, though that may not be
+obvious at first sight if you look at the full syntax diagram. Look at the
+examples first!
+
+
+Detailed description
+--------------------
+
+Safety features
+
+  The safety of merging crucially depends on the requirement that users should
+  specify whether the match-variables form a key in the master and using data.
+  A key uniquely defines observations and does not contain missing values.
+
+  In contrast with ^merge^, the resulting data after ^mmerge^ is ^independent^
+  of the order of observations in master and using data. As a consequence, you
+  are not required to sort the data yourself.
+
+  ^mmerge^ distinguishes between unmatched records due to missing values in
+  the match variables (^_merge=-1,-2^) and to non-missing values that do not
+  occur in both master and using data (^_merge=1,2^).
+
+  ^mmerge^ displays names of variables that occur in both master and using data.
+
+Convenience features
+
+  -  the master and using data are automatically sorted
+  -  a ^_merge^ variable in master or using data will be silently overwritten;
+     this is not so bad as ^mmerge^ automatically tabulates ^_merge^
+  -  the match-variable(s) of the using data can be named differently from
+     the master data
+  -  selection of observations and variables in the using dataset is
+     facilitated
+  -  prefixing strings to the names (and labels) of variables in the using
+     data is supported
+  -  full renaming of variables in the using data is supported
+  -  value labels are added for the _merge variable (label name ^__MERGE^)
+
+
+Options to specify special cases
+--------------------------------
+
+^simple^ specifies matched merging in which the master and using data supposedly
+    describe the same objects, fully identified by the match variables;, i.e.,
+    the match variables form a key in the master and using data.
+
+    ^simple^ is equivalent to specifying options ^type(1:1)^ and ^unmatched(both)^,
+    and invoking ^assert _merge==3^ upon the completion of ^mmerge^.
+
+^table^ specifies a "table lookup merge", in which the master data contains data
+    on objects of type A (e.g., households) that contain an object of type B
+    (e.g.,a city), identified by the match-variables (e.g., the city of resid-
+    ence), while the using data contains descriptions of type B (cities). Thus,
+    the match variables should form a key in the using data.
+
+    ^table ^ is equivalent to specifying options ^type{n:1} unmatched(master)^.
+
+  In a future version of ^mmerge^, I may support additional "special types of
+  matched merging".
+
+
+Options for matching
+--------------------
+
+^types(^str^)^ specifies whether the match variables are keys in master and using
+    data. Valid values are
+
+       ^1:1^     key in the master and using data
+       ^1:n^     key in master data
+       ^n:1^     key in using data
+       ^n:n^     no keys; ^mmerge^ performs a relational join via ^joinby^
+
+      ^spread^   ^mmerge^ determines which of ^1:n^ or ^n:1^ holds
+       ^auto^    ^mmerge^ determines the match-type. (default)
+
+    While ^auto^ is easy, you are strongly advised to specify your knowledge of
+    the relationship between the master and using data via one of the other
+    values. This allows ^mmerge^ to test whether your understanding is consistent
+    with the data.
+
+^missing(^str^)^ specifies how missing values in the match variables are treated.
+    Valid values are
+
+      ^none^      missing values not allowed in the match vars (default)
+      ^value^     missing values are treated as ordinary values
+      ^nomatch^   missing values of the match vars in the master should ^not^
+                match missing values in the match-vars of the using data.
+
+
+Options for merging
+-------------------
+
+^unmatched(^str^)^ specifies whether non-matching observations in the master and
+    using data are included in the merge result. Valid values are
+
+      ^none^      only completely maching obs are retained.
+      ^both^      non-matching obs from master and using are included (default)
+      ^master^    non-matching obs from master are included
+      ^using^     non-matching obs from using are included
+
+^nolabel^  prevents Stata from copying the value label definitions from the disk
+    dataset. Even if you do not specify this option, in no event do label
+    definitions from disk replace those already in meory.
+
+^update^ varies the action merge takes when an observation is matched. By
+    default, the master data is held inviolate -- values from the master
+    data are retained when the same variables are found in both datasets.
+    If ^update^ is specified, however, the values from the using data are
+    retained in cases where the master data constains missing.
+
+^replace^, allowed with update only, specified that even in the case when the
+    master data contains nomissing values, they are to be replaced with
+    corresponding values from the using data when corresponding data are not
+    equal. A nonmissing value, however, will never be replaced with a missing
+    value.
+
+^_merge(^varname^)^ specifies the name of the variable that will mark the
+    source of the resulting observation.  The default is ^_merge(_merge)^.
+
+^noshow^ specifies that the report on the files and the contents of ^_merge^
+    is suppressed.
+
+
+Options for manipulating the using data ("u"-options)
+---------------------------------------
+
+^ukeep(^varlist^)^
+^udrop(^varlist^)^
+    specifies a varlist in the using data that has to be kept (dropped) before
+    being merged into the master data. It is not valid to specify both ^ukeep^
+    and ^udrop^. If neither is specified, all variables of the using data are
+    used. The match variable(s) need not be specified in ^ukeep^; they are
+    automatically included in ^ukeep^ (excluded from ^udrop^).
+
+^uif^(exp^)^ specifies that only the observations in the using data that meet
+    expression -exp- are to be used. Properness of the key in the using data is
+    determined *after* ^uif^ is processed.
+
+^umatch(^varlist^)^ specifies the names of the match variables in the using data.
+    The ^umatch^ variables are associated with the match variables in the
+    specified order. Clearly, the number of match variables in ^umatch^ should
+    be the same as the number of matching variables in the master.
+
+    ^mmerge^ renames the ^umatch^ variables to the master match variable names
+    after ^ukeep^/^udrop^ have been processed, but before ^urename^ is processed.
+    An error occurs if there are naming conflicts.
+
+^urename(^speclist^)^ specifies a list of "oldname newname" clauses to be applied
+    to the using data, separated by a backslash ^\^. Note that ^urename^ is
+    applied *after* ^ukeep^/^udrop^, and hence ukeep/udrop should use the original
+    names. It is not allowed to rename the match variables here. Use ^umatch^
+    instead.
+
+^uname(^stub^)^ specifies a stub prefixed to the names of the variables
+    imported from the using data, truncated at 8 characters. ^uname^ may not be
+    combined with ^urename^.
+
+^ulabel(^stub^)^ specifies a stub to be prefixed to the variable labels of the
+    imported variables from the using data.
+
+
+Examples
+--------
+
+1. You have two datasets (auto1 and auto2) with properties of cars, identified
+   by the variable ^make^ in both files. You can merge the two datasets with
+
+     . ^use auto1^
+     . ^mmerge make using auto2, type(1:1) unmatched(both)^
+
+   to obtain a dataset on all cars represented in either of the data sets.
+   Since ^both^ is the default of ^unmatched^, it could actually have been
+   omitted. To obtain a dataset that does not include cars that occur in only
+   of the datasets, issue the command
+
+     . ^mmerge make using auto2, type(1:1) unmatched(none)^
+
+   If the identifier in auto2 was named -brand-,
+
+     . ^mmerge make using auto2, type(1:1) umatch(brand)^
+
+   If you had been convinced that the auto1 and auto2 describe the same cars,
+   you could have specified ^simple^ instead of ^type(1:1)^ and ^unmatched(both)^.
+   Then, in addition, ^mmerge^ would verify that your conviction holds true,
+   displaying an error message otherwise.
+
+2. You have a data set of individuals (indiv) and a dataset of households
+   (hhold) with key ^hhid^. The variable ^hhid^ is also in dataset indiv to
+   specify the household to which indivudals belong. You want to add the
+   household level variables to the individuals. This is an example of "table
+   lookup merging",
+
+     . ^use indiv^
+     . ^mmerge hhid using hhold, table^
+
+   One might also have typed
+
+     . ^mmerge hhid using hhold, type(n:1)^
+
+   Alternatively, you could switch the role of indiv and hhold,
+
+     . ^use hhold^
+     . ^mmerge hhid using indiv, type(1:n)^
+
+   If you are a bit like me, you'll be easily confused between ^1:n^ and ^n:1^.
+   You can ask ^mmerge^ to settle the issue for you with the match type ^spread^.
+
+     . ^use indiv^
+     . ^mmerge hhid using hhold, type(spread)^
+
+   Typically, hhold contains many variables, and you only want to import some
+   of them, say the city of residence (city) and number of kids (nkids). This
+   is faciliated by the ^ukeep^ option.
+
+     . ^use indiv^
+     . ^mmerge hhid using hhold, table ukeep(city nkids)^
+
+
+Saved Results
+-------------
+
+^mmerge^ saves in ^r()^
+
+    scalar
+
+        ^mobs^      number of obs in master data
+        ^mvar^      number of vars (incl match vars) in master data
+        ^mkey^      boolean: match vars form key in master data
+        ^uobs^      number of obs in using data
+        ^uvar^      number of vars (incl match vars) in using data
+        ^ukey^      boolean: match vars form key in using data
+
+    local
+
+        ^mfile^     full name of master data
+        ^mmatch^    names of matching vars in master data
+        ^ufile^     full name of using data
+        ^umatch^    (original) names of matching vars in using data
+        ^common^    common variables (excl match vars) in master and using
+
+
+Author
+------
+
+	Jeroen Weesie
+	Dept of Sociology
+	Utrecht University
+	J.Weesie@@fss.uu.nl
+
+I want to acknowledge stimulating discussions with Bill Gould, Chris Snijders,
+and Fred Wolfe. Comments and suggestions are welcomed.
+
+
+Also See
+--------
+
+ Manual:  ^[U] 25 Commands for combining data^
+          ^[R] merge^
+          ^[R] joinby^
+
+On-line:  @append@    Append datasets -- add cases
+          @cross@     Form every pairwise combination of two datasets
+          @fillin@    Rectangularize dataset
+          @joinby@    Form all pairwise combinations within groups
+          @merge@     Merge datasets -- add variables

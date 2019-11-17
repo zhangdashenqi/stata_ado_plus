@@ -1,0 +1,94 @@
+{smcl}
+{* 29jan2001}{...}
+{hline}
+help for {hi:spatcorr}{right:(STB-60: sg162)}
+{hline}
+
+{title:Spatial correlogram}
+
+{p 8 14} {cmd:spatcorr} {it:varname} {cmd:,}
+{cmdab:b:ands}{cmd:(}{it:numlist}{cmd:)}
+{cmdab:x:coord}{cmd:(}{it:varname}{cmd:)}
+{cmdab:y:coord}{cmd:(}{it:varname}{cmd:)}
+[ {cmdab:g:eary} {cmdab:c:umulative} {cmdab:two:tail} {cmdab:gr:aph}
+{cmdab:n:eedle}
+{cmdab:sav:egraph}{cmd:(}{it:filename} [{cmd:, replace}]{cmd:)} ]
+
+
+{title:Description}
+
+{p} {cmd:spatcorr} computes and optionally plots Moran's {it:I} or Geary's
+{it:c} spatial correlogram based on two or more consecutive or cumulative
+distance bands. For each distance band, {cmd:spatcorr} computes and displays
+in tabular form the requested statistic, the expected value of the statistic
+under the null hypothesis of global spatial independence, the standard
+deviation of the statistic, the {it:z}-value, and the corresponding 1-tail or
+2-tail {it:p}-value.
+
+
+{title:Options}
+
+{p 0 4} {cmd:bands(}{it:numlist}{cmd:)} is always required. It specifies the
+sequence of lower and upper bounds of the distance bands to be used in the
+calculation of the spatial correlogram. For example, if option
+{cmd:bands(0 2 4 6)} is specified and option {cmd:cumulative} is not
+specified, then the spatial correlogram will be computed on the following
+consecutive distance bands: (0-2], (2-4], (4-6]. On the other hand, if option
+{cmd: cumulative} is specified, then the spatial correlogram will be computed
+on the following cumulative distance bands: (0-2], (0-4], (0-6].
+
+{p 0 4} {cmd:xcoord(}{it:varname}{cmd:)} is always required. It specifies the
+name of the variable containing the {it:x}-coordinate of each location object
+of analysis.
+
+{p 0 4} {cmd:ycoord(}{it:varname}{cmd:)} is always required. It specifies the
+name of the variable containing the {it:y}-coordinate of each location object
+of analysis. Both the {it:x}-coordinate and the {it:y}-coordinate must be
+expressed in projected units, e.g., meters, kilometers, miles, or arbitrary
+digitizing units.
+
+{p 0 4} {cmd:geary} requests that Geary's {it:c} spatial correlogram be
+computed and optionally plotted instead of the default Moran's {it:I} spatial
+correlogram.
+
+{p 0 4} {cmd:cumulative} requests that cumulative distance bands be used
+instead of the default consecutive distance bands.
+
+{p 0 4} {cmd:twotail} requests that 2-tail {it:p}-values be computed and
+displayed instead of the default 1-tail {it:p}-values.
+
+{p 0 4} {cmd:graph} requests that the spatial correlogram be plotted.
+
+{p 0 4} {cmd:needle} requests that the spatial correlogram be plotted using
+vertical lines from zero (if Moran's {it:I}) or one (if Geary's {it:c}) to the
+computed statistics instead of lines that connect the computed statistics.
+
+{p 0 4} {cmd:savegraph(}{it:filename} [{cmd:, replace}]{cmd:)} requests that
+the graph be saved in {it:filename}. If {it:filename} exists, an error will occur
+unless {cmd:replace} is also specified. {it:filename} must have one of the
+following extensions: {hilite:.ps}, {hilite:.eps}, {hilite:.prn}, or
+{hilite:.wmf}.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. spatcorr crime, bands(0(1)5) xcoord(x) ycoord(y)}
+
+{p 8 12}{inp:. spatcorr crime, bands(0(1)5) xcoord(x) ycoord(y) cumulative}
+
+{p 8 12}{inp:. spatcorr crime, bands(0(1)5) xcoord(x) ycoord(y) graph}
+
+
+{title:Author}
+
+{p 8} Maurizio Pisati {p_end}
+{p 8} Department of Sociology and Social Research {p_end}
+{p 8} University of Milano Bicocca - Italy {p_end}
+{p 8} maurizio.pisati@galactica.it {p_end}
+
+
+{title:Also see}
+
+{p 0 19}On-line:  help for {help spatwmat}, {help spatgsa}, {help spatlsa},
+{help spatdiag}, {help spatreg} if installed
+{p_end}

@@ -1,0 +1,205 @@
+{smcl}
+{* 25jan2007}{...}
+{hline}
+help for {hi:uvrs}{right:(SJ7-1: st0120)}
+{hline}
+
+{title:Univariate regression spline models}
+
+{p 8 12 2}
+{cmd:uvrs}
+{it:regression_cmd}
+[{it:yvar}]
+{it:xvar}
+{it:covars}
+{ifin}
+{weight}
+[{cmd:,}
+{cmd:all}
+{cmdab:al:pha}{cmd:(}{it:#}{cmd:)}
+{cmdab:deg:ree}{cmd:(}{it:#}{cmd:)}
+{cmd:df(}{it:#}{cmd:)}
+{cmdab:kn:ots}{cmd:(}{it:knot_list}{cmd:)}
+{cmdab:rep:ort}{cmd:(}{it:numlist}{cmd:)}
+{cmdab:tra:ce}
+{it:regression_cmd_options}
+]
+
+{p 4 4 2}
+where
+
+{p 8 8 2}
+{it:regression_cmd} may be
+{helpb clogit},
+{helpb glm},
+{helpb logistic},
+{helpb logit},
+{helpb ologit},
+{helpb oprobit},
+{helpb poisson},
+{helpb probit},
+{helpb qreg},
+{helpb regress},
+{helpb stcox},
+{helpb streg},
+or
+{helpb xtgee}.
+
+{p 8 8 2}
+{it:yvar} is required with all {it:regression_cmd}s except
+{cmd:stcox} and {cmd:streg}.  For the last two commands, {it:yvar} is not
+allowed, and you must have {helpb stset} your data first.
+
+{p 4 4 2}
+{cmd:uvrs}
+shares the features of all estimation commands; see {help estcom}.
+
+{p 4 4 2}
+{helpb fracplot} may be used after {cmd:uvrs} to show plots of fitted values
+and partial residuals. {helpb fracpred} may be used for prediction.
+
+{p 4 4 2}
+All weight types supported by {it:regression_cmd} are allowed; see
+{help weights}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:uvrs} selects the regression spline (RS) model that best predicts the
+outcome variable {it:yvar} from the continuous right-hand-side variable
+{it:xvar}, adjusting linearly for covariates in {it:covars} (if specified).
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:all} includes out-of-sample observations when generating the spline
+transformations of {it:xvar}. By default, the generated variables contain
+missing values outside the estimation sample.
+
+{p 4 8 2}
+{cmd:alpha(}{it:#}{cmd:)} determines the nominal p-value used for
+testing the statistical significance of basis functions 
+representing knots in the spline model. The default is {cmd:alpha(1)},
+meaning to fit the full spline model without simplification.
+
+{p 4 8 2}
+{cmd:degree(}{it:#}{cmd:)} specifies the degree of spline. Allowed choices
+for {it:#} are 0 (meaning a step function), 1 (meaning a linear spline),
+and 3 (meaning a cubic spline). The default is {cmd:degree(3)}.
+
+{p 4 8 2}
+{cmd:df(}{it:#}{cmd:)} determines how many spline terms in {it:xvar}
+are used initially.  The default is {cmd:df(4)}, which corresponds to three
+interior knots.
+
+{p 4 8 2}
+{cmd:knots(}{it:knot_list}{cmd:)} specifies knots in {it:knot_list}
+ and overrides the default knots implied by {cmd:df()}.
+
+{p 4 8 2}
+{opt report(numlist)} reports the effect sizes (differences on the spline
+curve) at values of {it:numlist}.
+
+{p 4 8 2}
+{cmd:trace} provides details of all models fitted and the progress of 
+the knot selection algorithm.
+
+{p 4 8 2}
+{it:regression_cmd_options} are options appropriate to the regression
+command in use.  For example, for {opt stcox}, {it:regression_cmd_options} may
+include {opt efron} or some other method for handling tied failures.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:uvrs} leaves variables in the data named {it:xvar}{cmd:_0},
+ {it:xvar}{cmd:_1}, {it:xvar}{cmd:_2}, ..., the number of variables
+ depending on the number of knots in the selected model. These variables
+ are the basis functions for the regression spline. With degree 3,
+ these are linearly transformed to be orthonormal, {it:xvar}{cmd:_0}
+ being {it:xvar} standardized to have mean 0 and variance 1.
+
+    {title:Method of RS model selection}
+
+{p 4 4 2}
+To determine an RS model for a given continuous predictor x, the following
+approach is used. The algorithm, which is implemented in {cmd:uvrs}, embodies
+a closed-test procedure, a sequence of tests designed to maintain the overall
+type I error probability at a prespecified nominal level, alpha, such as 0.05.
+The value of alpha is controlled through the {cmd:alpha(}{it:#}{cmd:)} option.
+The quantity alpha is the key determinant of the complexity (in dimension and
+therefore in shape) of a selected function.
+
+{p 4 4 2}
+Initially, the most complex permitted RS model is chosen. This is determined
+by the df assigned to the RS function by the {cmd:df()} option. As explained
+above, the df equals m + 1, where m is the maximum number of knots to be
+considered and m = 0 means the linear function.
+
+{p 4 4 2}
+Let us call the most complex model M_m and the linear function M_0. First,
+model M_m is compared with the null model (omitting x), using a chi-squared
+test with m + 1 df. If the test is not significant at the alpha level, the
+procedure stops and x is eliminated. Otherwise, the algorithm next compares
+the fit of M_m with that of M_0, on m df. If the deviance difference is not
+significant at the alpha level, M_0 is chosen by default and the algorithm
+stops.
+
+{p 4 4 2}
+Now consider the m possible RS models using just one of the m available knots.
+The best-fitting of these models, say, M_1, is found and compared with M_m.
+If M_m does not fit significantly better than M_1 at the alpha level, there
+is no evidence that the more complex model is needed, so model M_1 is
+accepted and the algorithm stops. Otherwise, M_1 is augmented with each
+of the remaining m - 1 knots in turn, the best-fitting model, M_2, is found,
+and M_2 is compared with M_m. The procedure continues in this fashion until
+either a test is nonsignificant and the procedure stops or all the tests
+are significant, in which case model M_m is the final choice.
+
+{p 4 4 2}
+If x is to be forced into the model, the first comparison, between M_m and
+the null model, is omitted. All tests are based on chi-squared statistics from
+deviance (-2× log-likelihood) differences.
+
+
+{title:Examples}
+
+{p 4 16 2}
+{cmd:. uvrs regress mpg weight}
+
+{p 4 16 2}
+{cmd:. uvrs regress mpg weight displacement foreign, df(3) report(2000(1000)5000)}
+
+{p 4 16 2}
+{cmd:. uvrs regress mpg weight displacement foreign, df(6) degree(1) alpha(0.05) trace}
+
+{p 4 16 2}
+{cmd:. fracplot weight}
+
+{p 4 16 2}
+{cmd:. fracplot displacement}
+
+
+{title:Author}
+
+{p 4 4 2}
+Patrick Royston, MRC Clinical Trials Unit, London{break}
+patrick.royston@ctu.mrc.ac.uk
+
+
+{title:Acknowledgment}
+
+{p 4 4 2}
+Gareth Ambler (Department of Statistical Science, University College, London) played a major
+role in developing the code for {cmd:splinegen}.
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  {help estcom}, {help postest};
+{helpb fracpoly}; {helpb mfp}; {helpb mvrs}; {helpb splinegen}
+{p_end}

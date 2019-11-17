@@ -1,0 +1,58 @@
+.-
+help for ^sumsum^
+.-
+
+Compute sums of variables
+-------------------------
+
+Syntax
+------
+
+  ^sumsum^ varlist [, ^d^etail ^v^arnames ]
+
+The ^sumsum^ command is used to compute sums of variables, and to compute
+sums of the sums.  This is a very useful command for double checking
+data transformations.  The varlist is required, and can contain
+abbreviations including
+  _all
+  wildcards, e.g. test*
+  - , e.g. inc80-inc90
+
+
+Options
+-------
+
+  ^d^etail - By default, ^sumsum^ will compute sums of all of the variables
+           in varlist, and then sum all of those sums, and report the
+           grand sum.  You can specify the ^d^etail option to obtain 
+           the sums for each of the individual variables.
+  
+  ^v^arnames - When using wildcards or ^-^ in the varlist, it is possible 
+               that the varlist may include (or exclude) variable you
+               thought to be in the list.  If you dont use the ^d^etail
+               option, you can use the ^v^arnames option to double check 
+               that the variable list (after expansion of the wildcards)
+               contain the variables you expected it to contain.
+
+A Note about the ^-^ with varlists
+----------------------------------
+
+You might expect x1-x3 to always return x1 x2 x3, however the ^-^ really 
+focuses on the position of the variables in the data file, not the 
+names of the variables in the data file.  So if you have x and y that
+alternate like x1 y2 x2 y2 x3 y3, then x1-x3 will return x1 y1 x2 y2 x3 .
+If you use neither the ^d^etail nor ^v^arnames option, you might 
+believe that the sum of x1 x2 x3 is really the sum of x1 y1 x2 y2 x3.
+
+You can use the ^aorder^ command to change the position of the variables
+in your data file to be in alphabetic order.  Then, after using ^aorder^,
+the varlist x1-x3 will refer to x1 x2 x3.
+  
+
+Author
+------
+
+     Statistical Consulting Group
+     Institute for Digital Research and Education, UCLA
+     idrestat@ucla.edu 
+

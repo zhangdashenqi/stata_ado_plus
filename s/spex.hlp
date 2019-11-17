@@ -1,0 +1,41 @@
+{smcl}
+{* 8Jun2005}
+{hline}
+help for {hi:spex}{right:(part of {hi:spost})}
+{hline}
+
+{p 4 4 2}
+{title:Load example files and run example models}
+
+{p 4 12 2}{cmd:spex} [{it:modelname}] [{it:filename}] [{cmd:,} {cmdab:w:eb} {cmdab:u:ser}]
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:spex} allows users to easily use example files and models from
+Long and Freese's {it: Regression Models for Categorical Dependent Variables}
+{it: Using Stata}.  Typing {cmd:spex} {it:filename} will load the specified 
+example dataset, while typing {cmd:spex} {it:modelname} will estimate that
+model using data and an example specification from the book.
+
+{title:Options}
+
+{p 4 8 2}{cmd:web} indicates that the data are to be accessed from their location 
+on the spost website (http://www.indiana.edu/~jslsoc/spostdata/).  This is 
+the default.
+
+{p 4 8 2}{cmd:user} indicates that the data are to be accessed from the working directory 
+or somewhere else along the user's adopath (somewhere accessible 
+via {cmd:sysuse}).
+
+{title:Notes}
+
+{p 4 4 2}When specifying an estimation command with spex, you can add other 
+options (e.g., "nolog") and these will be passed along as additional options 
+to the estimation command.
+
+{title:Authors}
+
+    Jeremy Freese and J. Scott Long
+    www.indiana.edu/~jslsoc/spost.htm
+    spostsup@indiana.edu

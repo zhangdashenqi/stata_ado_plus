@@ -1,0 +1,50 @@
+.-
+help for ^xmerge^, ^xmerged^ 				(STB-29: dm37)
+.-
+
+Extended merge capabilities
+---------------------------
+
+	  ^xmerge^ varlist ^using^ dta_list
+
+	  ^xmerged^ varlist ^using^ dict_list
+
+
+Description
+-----------
+
+^xmerge^ and ^xmerged^ extend Stata's @merge@ command by merging an arbitrary
+number of files with a single command.  ^xmerge^ operates on Stata data sets
+(.dta files), while ^xmerged^ merges dictionary files (.dict).  Other
+differences from @merge@:
+
+        1. ^xmerge^ and ^xmerged^ destroy the current data set WITHOUT warning;
+
+        2. ^xmerge^ and ^xmerged^ only perform match-merges;
+
+        3. the current dataset is NOT included in the merge;
+
+        4. ^_merge^ is not preserved.
+
+
+Example
+-------
+
+ . ^xmerge year month using calif nevada arizona^
+
+
+Author
+------
+
+        Jon Faust
+        Board of Governors of the Federal Reserve System
+        faustj@@frb.gov
+
+
+Also see
+--------
+
+    STB:  STB-29 dm37
+ Manual:  [5d] merge, [5d] sort
+On-line:  help for @merge@
+

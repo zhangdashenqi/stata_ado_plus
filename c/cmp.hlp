@@ -1,0 +1,386 @@
+{smcl}
+{* *! version 1.1.0 10jan2008}{...}
+{cmd:help cmp}
+{hline}{...}
+
+{title:Title}
+
+{pstd}
+Conditional (recursive) mixed process estimator{p_end}
+
+{title:Syntax}
+
+{phang}
+{cmd:cmp setup}
+
+{phang}
+- or -
+
+{phang}
+{cmd:cmp} {it:eq} [{it:eq ...}] {ifin} {weight} {cmd:,} {cmdab:ind:icators}({it:{help exp:exp}} [{it:{help exp:exp} ...}]) [{opt nolr:test}
+		{opt qui:etly} {opt ghkd:raws(#)} {opt ghkt:ype(string)} {opt ghka:nti} {opt nodr:op} {opt level(#)} {it:{help cmp##ml_opts:ml_opts}}
+		{opt svy} {it:{help cmp##svy_opts:svy_opts}} {opt inter:active}]
+
+{phang2}
+Each {it:eq} is an equation to be estimated, defined according to the {help ml model:ml model} {it:eq} syntax.
+That is, {it:eq} is enclosed in parentheses, 
+optionally prefixed with a name for the equation,{p_end}
+
+{p 12 12 2}
+{cmd:(}
+	[{it:eqname}{cmd::}]
+	{it:varlist_y} {cmd:=}
+	[{it:varlist_x}]
+	[{cmd:,} {opt nocons:tant} {opth off:set(varname:varname_o)}} {opth exp:osure(varname:varname_e)}}]
+{cmd:)}
+
+{pmore}
+or {it:eq} is the name of a parameter, such as sigma, with a slash in front
+
+{p 12 12 2}
+{cmd:/}{it:eqname}{space 6}which
+is equivalent to{space 4}{cmd:(}{it:eqname}{cmd::)}
+
+{phang2}
+Each {it:exp} is an {help exp:expression} that evaluates to a {cmd:cmp} {it:indicator variable}, which communicates required observation-level information about the nature of the LHS variable(s).
+corresponding entry in the {it:exp} list, and can be a constant, a variable name, or a complex mathematical expression. It can contain spaces if it is double-quoted.
+For each observation, each {it:exp} must evaluate to 0, 1, 2, 3, or 4.
+
+{phang}
+- or -
+
+{phang}
+{cmd:cmp cleanup}
+
+
+{pstd}
+{cmd:cmp} may be prefixed with {help svy:svy ... :}.
+
+{phang}{cmd:pweight}s, {cmd:fweight}s, {cmd:aweight}s, and {cmd:iweight}s 
+are allowed; see help {help weights}.
+
+{pstd}
+The syntax of {help predict} following {cmd:cmp} is{p_end}
+
+{phang2}{cmd:predict} [{it:type}] {it:newvarname} [{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:,} {it:statistic}]{p_end}
+
+{pstd}
+where {it:statistic} is
+
+{synoptset 25 tabbed}{...}
+{synopt :{opt eq:uation}{cmd:(}{it:eqno}[{cmd:,}{it:eqno}]{cmd:)}}specify equations{p_end}
+{synopt :{opt xb}}calculate linear prediction{p_end}
+{synopt :{opt stdp}}calculate standard error of the prediction{p_end}
+{synopt :{opt stddp}}calculate the difference in linear predictions{p_end}
+{synopt :{opt nooff:set}}ignore any {opt offset()} or {opt exposure()} variable{p_end}
+
+{pstd}
+For tobit equations, the linear predictions corresponds to the uncensored (and unobserved) version of the dependent variable. For probit variables, it
+is the predicted probability of a non-zero outcome.
+
+{pstd}{cmd:cmp} shares features of all estimation commands; see help {help estcom}.
+
+{title:Description}
+
+{pstd}
+{cmd:cmp} estimates multi-equation, conditional recursive mixed process models. "Mixed process" means that different equations can have different kinds of 
+dependent variables. The choices are: continuous (like OLS), tobit (left-, right-, or bi-censored), and probit. A dependent variable in one equation can 
+appear on the right side of another equation. "Recursive" means, however, that {cmd:cmp} can only fit models with clearly defined stages, 
+not ones with simultaneous causation. {it:A} and {it:B} can be determinants of {it:C} and {it:C} a determinant of {it:D}--but {it:D} cannot be a determinant of {it:A}, {it:B}, or {it:C}. And 
+"conditional" means that the model can vary by observation. An equation can be dropped for observations for which it is not relevant--if, say, a worker
+retraining program is not offered in a city then the determinants of uptake cannot be modeled there. Or the type of dependent variable can even vary by 
+observation.
+
+{pstd}{cmd:cmp}'s modeling framework therefore embraces those of the official Stata commands {help probit:probit}, {help ivprobit:ivprobit}, 
+{help biprobit:biprobit}, {help tobit:tobit}, and {help ivtobit:ivtobit}, in principle even {help regress:regress}, {help sureg:sureg}, 
+and {help ivreg:ivreg} / {help ivregress:ivregress}, as well as the user-written {stata findit triprobit:triprobit}, {stata findit mvprobit:mvprobit}, {stata findit bitobit:bitobit}, 
+and {stata findit mvtobit:mvtobit}. It goes beyond them in several ways. Thanks to the flexibility of {cmd:ml}, on which it is built, it accepts coefficient {help constraint:constraints}
+as well as all weight types, vce types (robust, cluster, linearized, etc.), and {cmd:svy} settings. As a "method d1" {cmd:ml} estimator (see {help ml:help ml}), it tends to run faster than 
+{help ivprobit:ivprobit}, {help ivtobit:ivtobit}, and the user-written commands. And it offers 
+more flexibility in model construction. For example, one can efficiently regress a continuous variable on two endogenous variables, 
+one binary and the other sometimes left-censored, instrumenting each with additional variables. And it allows the models to vary by observation.
+In particular, equations can have different but overlapping samples. In some cases, the gain is consistent estimation where it was difficult before. 
+Usually the gain is just in efficiency.
+For example if {it:y} is continuous, {it:x} is a sometimes-left-censored determinant of {it:y}, and {it:z} is an instrument, then the effect of {it:x} on {it:y} can be
+consistently estimated with 2SLS (Kelejian 1971). However, a {cmd:cmp} estimate that uses the information that {it:x} is censored will be more efficient, based as it
+is on a more accurate model.
+
+{pstd}
+Since {cmd:cmp} is a maximum likelihood estimator built on {help ml:ml}, it accepts most of the arguments that {cmd:ml model} accepts in its
+non-interactive mode. See {help ml:help ml} for more. Equations are also specified according to the {cmd:ml model} syntax.
+The program works in Stata 9.2 but runs faster in version 10.0 or later when estimation requires the GHK algorithm (see below).
+
+{pstd}
+To inform {cmd:cmp} about the natures of the dependent variables and about which equations apply to which observations, the user must include the "indicators"
+option after the comma in the {cmd:cmp} command line. This must contain one expression for equation. The expression can be a constant, a variable name, or 
+a more complicated mathematical formula. For each observation, it must evaluate to one of the following codes, with the meanings shown:
+
+{phang}0 = observation is not in this equation's sample{p_end}
+{phang}1 = equation is "continuous" for this observation, i.e., has the OLS likelihood or is an uncensored observation in a tobit equation{p_end}
+{phang}2 = observation is left-censored for this (tobit) equation{p_end}
+{phang}3 = observation is right-censored{p_end}
+{phang}4 = equation is probit for this observation
+
+{pstd}
+For clarity, users can execute the {cmd:cmp setup} subcommand, which defines four global macros that can then be used in a {cmd:cmp} command line:
+
+{pin}$cmp_out = 0{p_end}
+{pin}$cmp_cont = 1{p_end}
+{pin}$cmp_left = 2{p_end}
+{pin}$cmp_right = 3{p_end}
+{pin}$cmp_probit = 4{p_end}
+
+{pstd}
+For instrumented regressions, {cmd:cmp} differs from {help ivreg:ivreg}, {help ivprobit:ivprobit}, {help ivtobit:ivtobit}, and similar commands
+in not automatically including exogenous regressors (included instruments) from the second stage in the first stage. So you must arrange for this 
+yourself. For example, equivalents of {cmd:ivreg y x1 (x2=z)} are {cmd:cmp (y=x1 x2) (x2=x1 z), ind(1 1)} and {cmd:cmp (y=x1 x2) (x2=x1 z), ind($cmp_cont $cmp_cont)}.
+
+{pstd}
+{cmd:cmp} maximizes a conditional likelihood function; "conditional" here means something different than it does above. The likelihood is decomposed into two components using Bayes's Law--the first for the 
+"continuous" observations (OLS or uncensored tobit observations) and the second, conditional on the first, for the quantized ones (censored or 
+probit). More precisely,
+for each observation, the likelihood for the errors in the equations for which the observation is "continuous" are modeled as jointly normally
+distributed. Then, for the observations that are quantized at mass points, their errors (in the case of tobit equations) or predicted values 
+(i.e., the "XB" values, for probit) have the joint cumulative normal likelihood conditional on the errors for the continuous equations.
+Given trial values for the coefficients and covariance matrix Sigma, the mechanical recipe for the observation-level likelihood is therefore:
+
+{pin}1. For the continuous observations, compute the residuals. Then compute the log of the joint normal density associated with these errors 
+and with the corresponding submatrix of Sigma. This is the unconditional log likelihood for the continuous equations.
+
+{pin}2. For the quantized observations, compute the residuals (for tobit) or predicted values (probit), negating for right-censored observations and probit 
+observations with zero outcome, as in the standard one-equation tobit and probit likelihood functions. Call these the "quantized errors."
+
+{pin}3. Partial the continuous errors out of the quantized ones according to the correlations implied by Sigma. Put otherwise, factor the continuous
+equations out of the full joint normal distribution.
+
+{pin}4. Compute the covariance matrix of these partialled errors, which is purely a function of Sigma.
+
+{pin}5. Compute the log joint cumulative normal distribution associated with these partialled errors and their covariance matrix. This is the {it:conditional}
+log likelihood of the quantized errors, conditional, that is, on the continuous ones. 
+
+{pin}6. Add the unconditional and conditional log likelihoods.
+
+{pstd}For more on such conditional likelihoods, see Rivers and Vuong (1988), Smith and Blundell (1986), and Pitt and Khandker (1998).
+
+{pstd}
+As can be seen from the mechanical recipe above, estimation problems with observations that are quantized in three or more equations, 
+such as a trivariate probit or a trivariate tobit in which some observations are censored in all equations, require simulation of cumulative 
+joint normal distributions of dimension three or higher. This is a non-trivial problem. The preferred technique is the Monte Carlo method of
+Geweke, Hajivassiliou, and Keane (GHK), which {cmd:cmp} accesses through the built-in Mata function {help mf_ghk:ghk()} (in Stata 9.2) or
+{help mf_ghkfast:ghkfast()} (Stata 10.0 or higher). (Greene 2000, 183-85; Cappellari and Jenkins 2003; Gates 2006). 
+{help mf_ghk:ghk()} and {help mf_ghkfast:ghkfast()} give users several choices about the length and nature of the sequences generated for the simulation,
+which choices {cmd:cmp} passes on through the optional {cmdab:ghka:nti}, {cmdab:ghkd:raws()}, and {cmdab:ghkt:ype()} options. See {help cmp##options:options}
+below for more. The state of the Stata random number generator also influences the values returned by {help mf_ghk:ghk()} and {help mf_ghkfast:ghkfast()}. For
+exact reproducibility of your results, initialize it to some chosen value with the {help generate:set seed} command each time before running {cmd:cmp}.
+Estimations that require the GHK algorithm can run much slower than those that do not. In addition, since Stata 9.2 lacks {help mf_ghkfast:ghkfast()},
+it uses {help mf_ghk:ghk()}, which is slower, in part because it regenerates the sequence on each call. For this reason, {cmd:cmp} estimates can
+produce slightly different results in Stata 9.2 than in later Stata versions.
+
+{pstd}
+{cmd:cmp} leaves behind several global macros with names beginning with "cmp_", as well as some 
+variables whose names begin with "_cmp" and some Mata globals that begin with "_". It must leave them in order to serve any subsequent
+requests for scores, such as are needed to compute a linearized vce in {cmd:svy} estimation. To remove these macros and variables (but not the ones created by {cmd:cmp setup}),
+type {cmd:cmp cleanup}.
+
+{pstd}
+{cmd:cmp} starts by fitting each equation separately in order to obtain a good starting point for the full model fit.
+Sometimes in this preparatory step, convergence difficulties in single tobit or probit equations can make a reported variance matrix singular, with missing 
+standard errors for some regressors. In order to maximize the chance of convergence, {cmd:cmp} ordinarily drops such regressors from the equations 
+in which they cause trouble, reruns the single-equation fit, and then leaves them out for the full model too. The optional {opt nodr:op} option prevents this behavior.
+
+{title:Note on estimations with probit equations}
+
+{pstd}
+In estimations with probit equations, the "lnsig" parameters for the probit equations--the logs of the estimated standard deviations of the errors--are constrained
+to equal 0 so that the corresponding "sig" parameters are constrained to 1. This sacrifices no generality. Because of the constraints, the standard 
+errors for these parameters will be reported as missing ({res}.{txt}).
+
+{marker tips}{...}
+{title:Tips for achieving and speeding convergence}
+
+{pstd}
+If you are having trouble achieving (or waiting for) convergence with {cmd:cmp}, these techniques might help:
+
+{phang2}1. Changing the search technique using {cmd:ml}'s {help ml##model_options:technique()} option, or perhaps the search parameters, through its
+{help ml##ml_maxopts:maximization options}. {cmd:cmp} accepts all these and passes them on to {cmd:ml}. 
+{cmd:cmp} is a "method d1" estimator (see {help ml:help ml}), meaning that its likelihood evaluator computes scores
+(observation-level gradients) of the log likelihood analytically, but does not compute the negative Hessian, which forces {cmd:ml} do so numerically.
+In the author's experience, search techniques that rely less than the default Newton-Raphson (NR) method on computing the Hessian,
+such as Davidon-Fletcher-Powell (DFP), converge more quickly and reliably. Examples are below.{p_end}
+{phang2}2. If the indicators passed through the {cmdab:ind:icators} option involve formulas, generate variables from those formulas and 
+double-check their values.{p_end}
+{phang2}3. If the estimation problem requires the GHK algorithm (see above), increase the number of draws in the simulation sequence using 
+the {opt ghkd:raws()} and/or {opt ghka:nti} options. Raising simulation accuracy by increasing the number of draws is 
+sometimes necessary for convergence and can even speed it by improving search precision. By default, {cmd:cmp} uses twice the square root of the number of observations for which the GHK algorithm
+is needed, i.e., the number of observations that are quantized in at least three equations. But taking more draws can also greatly extend execution time.{p_end}
+{phang2}4. If the search appears to be converging in likelihood--if the log likelihood is hardly changing in each iteration--and yet fails to converge, try 
+adding a {opt nrtol:erance(#)} or {opt nonrtol:erance} option to the command line after the comma. These are {cmd:ml} options that control when convergence is declared. (See
+{help cmp##ml_opts:ml_opts}, below.) By default, {cmd:ml} declares convergence when the log likelihood is changing very little with successive iterations (within
+tolerances adjustable with the {opt tol:erance(#)} and {opt ltol:erance(#)} options) {it:and} when the calculated gradient vector is close enough to zero. 
+In some difficult problems, such as ones with nearly collinear regressors, the imperfect precision of floating point numbers prevents {cmd:ml} from quite satisfying the second criterion. 
+It can be loosened by using the {opt nrtol:erance(#)} to set the scaled gradient tolerance to a value larger than its default of 1e-5, or eliminated altogether
+with {opt nonrtol:erance}. Because of the risks of collinearity, {cmd:cmp} warns when the condition number of an equation's regressor matrix exceeds 20 (Greene 2000, 40).{p_end}
+{phang2}5. Try {cmd:cmp}'s interactive mode, via the {opt inter:active} option. 
+This allows the user to interrupt maximization by hitting Ctrl-Break or its equivalent, investigate and adjust the current solution, and then restart
+maximization by typing {help ml:ml max}. Techniques for exploring and changing the current solution include displaying the current coefficient and gradient vectors 
+(with {cmd:mat list $ML_b} or {cmd:mat list $ML_g}) and running {help ml:ml plot}. See {help ml:help ml}, {bf:[R] ml}, and Gould, Pitblado, and Sribney (2006) for details.
+{cmd:cmp} runs slower in interactive mode.
+ 
+{marker options}{...}
+{title:Options}
+
+{phang}{cmdab:ind:icators}({it:{help exp:exp}} [{it:{help exp:exp} ...}]) is required. It should pass a list of expressions that evaluate to 0, 1, 2, 3, or 4 for every 
+observation, with one expression for each equation and in the same order. Expressions can be constants, variable names, or 
+formulas. Individual formulas that contain spaces or other delimiters can be enclosed in quotes.
+
+{phang}{opt level(#)} specifies the confidence level, in percent,
+for confidence intervals of the coefficients; see {help level:help level}. The default is 95.
+
+{phang}{opt nolr:test} suppresses calculation and reporting of the likelihood ratio (LR) test of overall model fit, relative to
+a constant(s)-only model. This has no effect if data are {cmd:pweight}ed or errors are {cmd:robust} or {cmd:cluster}ed.
+In those cases, the likelihood function does not reflect the non-sphericity of the errors, and so is a pseudolikelihood.
+The LR test is then invalid and is not run anyway.
+
+{phang}{opt qui:etly} suppresses most output: the results from the single-equation initial fits and the iteration log during the full model fit.
+
+{phang}{opt inter:active} makes {cmd:cmp} fit the full model in {help ml:ml}'s interactive mode.
+This allows the user to interrupt the model fit with Ctrl-Break or its equivalent, view and adjust the trial solution with such 
+commands as {help ml:ml plot}, then restart optimization by typing {help ml:ml max}. See {help ml:help ml}, {bf:[R] ml}, and 
+Gould, Pitblado, and Sribney (2006) for details. {cmd:cmp} runs slower in interactive mode.
+
+{phang}{opt ghkd:raws(#)} sets the length of the sequence to draw in the GHK simulation of higher-dimensional cumulative multivariate normal distributions.
+The default is twice the square root of the number of observations for which the simulation is needed (see above). See 
+{help mf_ghk:help mf_ghk}, {help mf_ghkfast:help mf_ghkfast}, or Drukker and Gates (2005).
+
+{phang}{opt ghkt:ype(string)} specifies the type of sequence in the GHK simulation. Choices are "halton" (the default), "hammersley", "random", and,
+in Stata 10.0 or higher, "ghalton". See {help mf_ghk:help mf_ghk}, {help mf_ghkfast:help mf_ghkfast}, or Drukker and Gates (2005).
+
+{phang}{opt ghka:nti} requests antithetical draws, which effectively doubles the number of draws. See {help mf_ghk:help mf_ghk}, 
+{help mf_ghkfast:help mf_ghkfast}, or Drukker and Gates (2005).
+
+{phang}{opt nodr:op} prevents the dropping of regressors from equations in which they receive missing standard errors in initial single-equation fits.
+
+{marker ml_opts}{...}
+{phang}{it:ml_opts}: {cmd:cmp} accepts the following standard {help ml:ml} options: {opt tr:ace}
+	{opt grad:ient}
+	{opt hess:ian}
+	{cmd:showstep}
+	{opt tech:nique(algorithm_specs)}
+	{cmd:vce(}{cmd:oim}|{cmdab:o:pg}|{cmdab:r:obust}{cmd:)}
+	{opt iter:ate(#)}
+	{opt tol:erance(#)}
+	{opt ltol:erance(#)}
+	{opt gtol:erance(#)}
+	{opt nrtol:erance(#)}
+	{opt nonrtol:erance}
+	{opt shownrt:olerance}
+	{cmdab:dif:ficult}
+	{opt const:raints(clist)}
+	{cmdab:sc:ore:(}{it:newvarlist}|{it:stub}*{cmd:)}
+
+{marker ml_opts}{...}
+{phang}{opt svy} indicates that {cmd:ml} is to pick up the {opt svy} settings set
+by {cmd:svyset} and use the robust variance estimator.  This option
+requires the data to be {helpb svyset}. {opt svy} may
+not be specified with {cmd:vce()} or {help weight}s. See {help svy estat:help svy estat}.
+
+{phang}{it:svy_opts}: Along with {cmd:svy}, users may also specify any of these related {help ml:ml} options, which affect how the svy-based
+variance is estimated:
+	{cmdab:nosvy:adjust}
+	{cmdab:sub:pop:(}{it:subpop_spec}{cmd:)}
+	{cmdab:srs:subpop}. And users may specify any of these {help ml:ml} options, which affect output display:
+	{cmd:deff}
+	{cmd:deft}
+	{cmd:meff}
+	{cmd:meft}
+	{cmdab:ef:orm}
+	{cmdab:p:rob}
+	{cmd:ci}. See {help svy estat:help svy estat}. 
+
+{title:Examples}
+
+{pstd}These examples show how {cmd:cmp} can match results from standard commands:
+
+{phang}{stata "webuse laborsup":. webuse laborsup}
+
+{phang}{cmd:* Make censoring level 0 for fem_inc since pre-Oct '07 ivtobit assumes it is because of bug.}{p_end}
+{phang}{stata "replace fem_inc = fem_inc - 10":. replace fem_inc = fem_inc - 10}
+
+{phang}{cmd:* Define indicator macros for clarity.}{p_end}
+{phang}{stata "cmp setup":. cmp setup}
+
+{phang}{stata "reg kids fem_inc male_educ":. reg kids fem_inc male_educ}{p_end}
+{phang}{stata "cmp (kids = fem_inc male_educ), ind($cmp_cont) quietly":. cmp (kids = fem_inc male_educ), ind($cmp_cont) quietly}{p_end}
+
+{phang}{stata "sureg (kids = fem_inc male_educ) (fem_work = male_educ), isure":. sureg (kids = fem_inc male_educ) (fem_work = male_educ), isure}{p_end}
+{phang}{stata "cmp (kids = fem_inc male_educ) (fem_work = male_educ), ind($cmp_cont $cmp_cont) quietly":. cmp (kids = fem_inc male_educ) (fem_work = male_educ), ind($cmp_cont $cmp_cont) quietly}{p_end}
+
+{phang}{stata "ivreg fem_work fem_inc (kids = male_educ), first":. ivreg fem_work fem_inc (kids = male_educ), first}{p_end}
+{phang}{stata "cmp (fem_work = kids fem_inc) (kids = fem_inc male_educ), ind($cmp_cont $cmp_cont) qui":. cmp (fem_work = kids fem_inc) (kids = fem_inc male_educ), ind($cmp_cont $cmp_cont) qui}{p_end}
+
+{phang}{stata "probit kids fem_inc male_educ":. probit kids fem_inc male_educ}{p_end}
+{phang}{stata "cmp (kids = fem_inc male_educ), ind($cmp_probit)":. cmp (kids = fem_inc male_educ), ind($cmp_probit)}{p_end}
+
+{phang}{stata "biprobit (kids = fem_inc male_educ) (fem_work = male_educ)":. biprobit (kids = fem_inc male_educ) (fem_work = male_educ)}{p_end}
+{phang}{stata "cmp (kids = fem_inc male_educ) (fem_work = male_educ), ind($cmp_probit $cmp_probit) tech(dfp)":. cmp (kids = fem_inc male_educ) (fem_work = male_educ), ind($cmp_probit $cmp_probit) tech(dfp)}{p_end}
+
+{phang}{stata "ivprobit fem_work (kids = male_educ), first":. ivprobit fem_work (kids = male_educ), first}{p_end}
+{phang}{stata "cmp (fem_work = kids) (kids = male_educ), ind($cmp_probit $cmp_cont) tech(dfp)":. cmp (fem_work = kids) (kids = male_educ), ind($cmp_probit $cmp_cont) tech(dfp)}{p_end}
+
+{phang}{stata "tobit fem_inc kids male_educ, ll":. tobit fem_inc fem_inc male_educ, ll}{p_end}
+{phang}{stata `"cmp (fem_inc = kids male_educ), ind("cond(fem_inc, $cmp_cont, $cmp_left)") qui"':. cmp (fem_inc = kids male_educ), ind("cond(fem_inc, $cmp_cont, $cmp_left)") qui}{p_end}
+
+{phang}{stata "ivtobit fem_inc kids (male_educ = other_inc), ll first":. ivtobit fem_inc kids (male_educ = other_inc), ll first}{p_end}
+{phang}{stata "cmp (fem_inc=male_educ kids) (male_educ = kids other_inc), ind(cond(fem_inc,$cmp_cont,$cmp_left) $cmp_cont)":. cmp (fem_inc=kids male_educ) (male_educ=kids other_inc), ind(cond(fem_inc,$cmp_cont,$cmp_left) $cmp_cont)}{p_end}
+
+{pstd}These examples go beyond standard commands:
+
+{phang}{cmd:* Regress an unbounded, continuous variable on an instrumented, binary one. 2SLS is consistent but less efficient.}{p_end}
+{phang}{stata "cmp (other_inc = fem_work) (fem_work = kids), ind($cmp_cont $cmp_probit) qui robust":. cmp (other_inc = fem_work) (fem_work = kids), ind($cmp_cont $cmp_probit) qui robust}{p_end}
+
+{phang}{hilite:* Now regress it on a left-censored one, female income, which is only modeled for observations in which the woman works.}{p_end}
+{phang}{stata "gen byte ind2 = cond(fem_work, cond(fem_inc, $cmp_cont, $cmp_left), $cmp_out)":. gen byte ind2 = cond(fem_work, cond(fem_inc, $cmp_cont, $cmp_left), $cmp_out)}{p_end}
+{phang}{stata "cmp (other_inc=fem_inc kids) (fem_inc=fem_edu), ind($cmp_cont ind2)":. cmp (other_inc=fem_inc kids) (fem_inc=fem_edu), ind($cmp_cont ind2)}{p_end}
+
+{title:References}
+
+{p 4 8 2}Cappellari, L., and S. Jenkins. 2003. Multivariate probit regression using simulated maximum likelihood.
+{it:Stata Journal} 3(3): 278-94.{p_end}
+{p 4 8 2}Drukker, D.M., and R. Gates. 2006. Generating Halton sequences using Mata. {it:Stata Journal} 6(2): 214-28.{p_end}
+{p 4 8 2}Gates, R. 2006. A Mata Geweke-Hajivassiliou-Keane multivariate normal simulator. {it:Stata Journal} 6(2): 190-213.{p_end}
+{p 4 8 2}Gould, W., J. Pitblado, and W. Sribney. 2006. Maximum Likelihood Estimation with Stata. 3rd ed. College Station: Stata Press.{p_end}
+{p 4 8 2}Greene, W.H. 2002. {it:Econometric Analysis}, 5th ed. Prentice-Hall.{p_end}
+{p 4 8 2}Kelejian, H.H. 1971. Two-stage least squares and econometric systems linear in parameters but nonlinear in the endogenous variables. 
+{it:Journal of the American Statistical Association} 66(334): 373-74.{p_end}
+{p 4 8 2}Pitt, M.M., and S. R. Khandker. 1998. The impact of group-based credit programs on poor households in Bangladesh: Does the gender of participants matter?
+{it:Journal of Political Economy} 106(5): 958-96.{p_end}
+{p 4 8 2}Rivers, D., and Q. Vuong. 1988. Limited information estimators and exogeneity tests for simultaneous probit models.
+{it:Journal of Econometrics} 39: 347-66.{p_end}
+{p 4 8 2}Smith, R.J., and R.W. Blundell. 1986. An exogeneity test for a simultaneous equation tobit model with an application
+to labor supply. {it:Econometrica} 54(3): 679-85.{p_end}
+
+{title:Author}
+
+{p 4}David Roodman{p_end}
+{p 4}Research Fellow{p_end}
+{p 4}Center for Global Development{p_end}
+{p 4}Washington, DC{p_end}
+{p 4}droodman@cgdev.org{p_end}
+
+{title:Acknowledgements}
+
+{pstd}Thanks to Mead Over and Kit Baum for helpful suggestions.
+
+{title:Also see}
+
+{psee}
+{manhelp ml R},
+{manhelp biprobit R},
+{manhelp probit R},
+{manhelp sureg R},
+{manhelp ivreg R},
+{manhelp tobit R},
+{manhelp ivtobit R},
+{manhelp ivprobit R},
+{manhelp svy_estimation SVY:svy estimation}.
+{p_end}

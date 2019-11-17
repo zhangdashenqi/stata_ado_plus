@@ -1,0 +1,52 @@
+{smcl}
+{* 23 aug 2002}{...}
+{hline}
+help for {hi:genpoisson}
+{hline}
+
+{title:Generate data from Stata's {cmd:poisson} model}
+
+{p 8 14}{cmd:genpoisson} {it:newvar} 
+	[{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:,}
+	{cmd:mu(}{it:#}|{it:varname}{cmd:)}
+	{cmd:xbeta(}{it:#}|{it:varname}{cmd:)}
+	{cmdab:ado:only}
+
+{title:Description}
+
+{p}{cmd:genpoisson} generates data {it:newvar} 
+appropriate for Stata's {cmd:poisson}
+estimation command.
+
+{title:Options}
+
+{p 0 4}{cmd:mu(}{it:#}|{it:varname}{cmd:)} specifies the mean of the 
+Poisson distribution, i.e. the exponentiated linear predictor in a 
+regression model, {it:varname}, or a constant {it:#}.
+
+{p 0 4}{cmd:xbeta(}{it:#}|{it:varname}{cmd:)} specifies the linear 
+predictor in a Poisson regression model, {it:varname}, or a constant {it:#} in 
+which case Poisson random deviates are generated with mean exp({it:#}).
+
+{p 4 4}Only one of {cmd:mu()} or {cmd:xbeta()} should be specified.  If 
+neither is specified, then {it:newvar} will contain random deviates from 
+a Poisson distribution with mean one.
+
+{p 0 4}{cmd:adoonly} specifies that only ado code be used, whereas by default
+a Stata plugin is used.  That is, the file {cmd:genpoisson.ado} contains a
+subroutine written in the ado language, and this subroutine has also been
+implemented as a plugin.  Both produce equivalent results, but the plugin is
+faster.  The {cmd: adoonly} option provides endless amusement to those
+performing speed comparisons.
+
+{title:Example}
+
+{p 8 12}{inp:. gen x1 = invnorm(uniform())}{p_end}
+{p 8 12}{inp:. gen x2 = invnorm(uniform())}{p_end}
+{p 8 12}{inp:. gen xb = -1 + 0.5*x1 + 1.5*x2}{p_end}
+{p 8 12}{inp:. genpoisson y, xbeta(xb)}{p_end}
+{p 8 12}{inp:. poisson y x1 x2}{p_end}
+
+{title:Acknowledgement}
+
+{cmd:genpoisson} is an expansion of {cmd:rndpoix}, by Hilbe et al., STB-41.

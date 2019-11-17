@@ -1,0 +1,562 @@
+{smcl}
+{* 30aug2005}{...}
+{hline}
+help for {hi:ice}, {hi:uvis}{right:(SJ5-4: st0067_2; SJ5-2: st0067_1; SJ4-3: st0067)}
+{hline}
+
+{title:Multiple imputation by the MICE system of chained equations}
+
+{p 8 17 2}
+{cmd:ice}
+{it:mainvarlist}
+{cmd:using} {it:filename}[{cmd:.dta}]
+{ifin}
+{weight}
+[{cmd:,}
+{cmdab:bo:ot}[{cmd:(}{it:varlist}{cmd:)}]
+{cmd:cc(}{it:varlist}{cmd:)}
+{cmdab:cm:d(}{it:cmdlist}{cmd:)}
+{cmdab:cy:cles(}{it:#}{cmd:)}
+{cmdab:dry:run}
+{cmd:eq(}{it:eqlist}{cmd:)}
+{cmdab:g:enmiss(}{it:string}{cmd:)}
+{cmdab:i:d(}{it:string}{cmd:)}
+{cmd:m(}{it:#}{cmd:)}
+{cmdab:ma:tch}[{cmd:(}{it:varlist}{cmd:)}]
+{cmdab:nocons:tant}
+{cmdab:nosh:oweq}
+{cmd:on(}{it:varlist}{cmd:)}
+{cmdab:pass:ive(}{it:passivelist}{cmd:)}
+{cmdab:sub:stitute(}{it:sublist}{cmd:)}
+{cmd:replace}
+{cmdab:se:ed(}{it:#}{cmd:)}
+{cmdab:tr:ace(}{it:filename}{cmd:)}]
+
+{p 8 17 2}
+{cmd:uvis}
+{it:regression_cmd}
+{it:yvar}
+{it:xvarlist}
+{ifin}
+{weight}
+{cmd:,}
+{cmdab:g:en(}{it:newvarname}{cmd:)}
+[{cmdab:bo:ot}
+{cmdab:ma:tch}
+{cmdab:nocons:tant}
+{cmd:replace}
+{cmdab:se:ed(}{it:#}{cmd:)}]
+
+{p 4 4 2}
+where
+
+{p 8 8 2}
+{it:regression_cmd} may be
+{helpb logistic},
+{helpb logit},
+{helpb mlogit},
+{helpb ologit},
+or
+{helpb regress}.
+
+{p 4 4 2}
+All weight types supported by {it:regression_cmd} are allowed; see {help weight}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:ice} imputes missing values
+in {it:mainvarlist} by using switching regression, an iterative multivariable
+regression technique. The abbreviation MICE means multiple imputation by
+chained equations and was apparently coined by Steff van Buuren. {cmd:ice}
+implements MICE for Stata. Sets of imputed and nonimputed variables are
+stored to a new file called {it:filename}. Any number of complete imputations
+may be created.
+
+{p 4 4 2}
+{cmd:uvis} (univariate imputation sampling) imputes missing values in the
+single variable {it:yvar} based on multiple regression on {it:xvarlist}.
+{cmd:uvis} is called repeatedly by {cmd:ice} in a regression switching mode to
+perform multivariate imputation.
+
+{p 4 4 2}
+The missing observations are assumed to be missing at random (MAR) or
+missing completely at random (MCAR), according to the jargon. See, for
+example, van Buuren et al. (1999) for an explanation of these concepts.
+
+{p 4 4 2}
+Please note that {cmd:ice} and {cmd:uvis} require Stata 8 or later.
+There have been incompatibility issues with Stata 7 and earlier.
+
+
+{title:Options for ice}
+
+{p 4 8 2}
+{cmd:boot}[{cmd:(}{it:varlist}{cmd:)}] instructs that each member of
+{it:varlist}, a subset of {it:mainvarlist}, be imputed with the {cmd:boot}
+option of {cmd:uvis} activated. If {cmd:(}{it:varlist}{cmd:)} is omitted,
+all members of {it:mainvarlist} with missing observations are imputed using
+the {cmd:boot} option of {cmd:uvis}.
+
+{p 4 8 2}
+{cmd:cc(}{it:varlist}{cmd:)} prevents imputation of missing data in
+{it:mainvarlist} for cases in which any member of {it:varlist} has a missing
+value. "cc" signifies "complete case". Note that members of {it:varlist} are
+used for imputation if they appear in {it:mainvarlist}, but not otherwise. Use
+of this option is equivalent to entering {cmd:if}
+{cmd:~missing(}{it:var1}{cmd:) &} {cmd:~missing(}{it:var2}{cmd:)} ..., where
+{it:var1}, {it:var2}, ... denote the members of {it:varlist}.
+
+{p 4 8 2}
+{cmd:cmd(}{it:cmdlist}{cmd:)} defines the regression commands to be used for
+each variable in {it:mainvarlist}, when it becomes the dependent variable in
+the switching regression procedure used by {cmd:uvis} (see {hi:Remarks}).  The
+first item in {it:cmdlist} may be a command, such as {cmd:regress}, or may have
+the syntax {it:varlist}{cmd::}{it:cmd}, specifying that command {it:cmd}
+applies to all the variables in {it:varlist}.  Subsequent items in
+{it:cmdlist} must follow the latter syntax, and each item should be followed
+by a comma.
+
+{p 8 8 2}
+The default {it:cmd} for a variable is {cmd:logit} when there are two distinct
+values, {cmd:mlogit} when there are 3-5 and {cmd:regress} otherwise.
+
+{p 8 18 2} Example:  {cmd:cmd(regress)} specifies that all variables are 
+to be imputed by {cmd:regress}, overriding the defaults.
+
+{p 8 18 2} Example:  {cmd:cmd(x1 x2:logit, x3:regress)} specifies that
+{cmd:x1} and {cmd:x2} are to be imputed by {cmd:logit}, {cmd:x3} by
+{cmd:regress} and all others by their default choices.
+
+{p 4 8 2}
+{cmd:cycles(}{it:#}{cmd:)} determines the number of cycles of regression
+switching to be carried out. The default is {cmd:cycles(10)}.
+
+{p 4 8 2}
+{cmd:dryrun} does a "dry run"; that is, {cmd:ice} 
+reports the prediction equations it has constructed from the various
+inputs. No imputation is done, and no files are created. It is not
+mandatory to specify an output file with {cmd:using} for a dry run.
+Sometimes the prediction equation set-up needs to be carefully
+checked before running what may be a lengthy imputation process.
+
+{p 4 8 2}
+{cmd:eq(}{it:eqlist}{cmd:)} allows one to define customized prediction
+equations for any subset of variables in {it:mainvarlist}. The option,
+particularly when used with {cmd:passive()}, allows
+great flexibility in the possible imputation schemes. The
+syntax of {it:eqlist} is {it:varname1}{cmd::}{it:varlist1}
+[{cmd:,}{it:varname2}{cmd::}{it:varlist2} ...], where each
+{it:varname#} (or {it:varlist#})
+is a member (or subset) of {it:mainvarlist}. It is your responsibility to ensure
+that each equation is sensible. {cmd:ice} places no restrictions
+except to check that all variables mentioned are indeed in
+{it:mainvarlist} and that an equation is not defined
+for a variable specified to be passively imputed
+(see the {cmd:passive()} option. Note that {cmd:eq()} takes
+precedence over all default definitions and assumptions about 
+the way a given variable in {cmd:mainvarlist} will be imputed.
+The default, if the {cmd:passive()} and {cmd:substitute()}
+options are not invoked, is that each
+variable in {it:mainvarlist} with any missing data is imputed from all
+the other variables in {it:mainvarlist}.
+
+{p 4 8 2}
+{cmd:genmiss(}{it:string}{cmd:)} creates an indicator variable for the
+missingness of data in any variable in {it:mainvarlist} for which at least one
+value has been imputed. The indicator variable is set to missing for
+observations excluded by {cmd:if}, {cmd:in}, etc.  The indicator variable for
+{it:xvar} is named {it:string}{it:xvar}.
+
+{p 4 8 2}
+{cmd:id(}{it:string}{cmd:)} creates a variable called {it:string} containing
+the original sort order of the data. The default {it:string} is {cmd:_i}.
+
+{p 4 8 2}
+{cmd:m(}{it:#}{cmd:)} defines {it:#} as the number of imputations required
+(minimum 1, no upper limit). The default is {cmd:m(1)}.
+
+{p 4 8 2}
+{cmd:match}[{cmd:(}{it:varlist}{cmd:)}] instructs that each member of
+{it:varlist} be imputed with the {cmd:match} option of {cmd:uvis}.
+This provides prediction matching for each member of {it:varlist}.
+If {cmd:(}{it:varlist}{cmd:)} is omitted then all relevant variables are
+imputed with the {cmd:match} option of {cmd:uvis}. The default, if
+{cmd:match()} is not specified, is to draw from the posterior
+predictive distribution of each variable requiring imputation.
+
+{p 4 8 2}
+{cmd:noconstant} suppresses the regression constant in all regressions.
+
+{p 4 8 2}
+{cmd:noshoweq} suppresses the presentation of the prediction equations.
+
+{p 4 8 2}
+{cmd:on(}{it:varlist}{cmd:)} changes the operation of {cmd:ice} in a major
+way.  With this option, {cmd:uvis} imputes each member of {it:mainvarlist}
+univariately on {it:varlist}. This provides a convenient way of producing
+multiple imputations when imputation for each variable in {it:mainvarlist} is
+to be done univariately on a set of complete predictors.
+
+{p 4 8 2}
+{cmd:passive(}{it:passivelist}{cmd:)} allows the use of "passive" imputation
+of variables that depend on other variables, some of which are imputed.
+The syntax of {it:passivelist} is {it:varname}{cmd::}{it:exp}
+[{cmd:\}{it:varname}{cmd::}{it:exp} ...]. Notice the requirement to use
+"\" as a separator between items in {it:passivelist}, rather than the usual comma;
+the reason is that a comma may be a valid part of an expression.
+The option is most easily explained by example. Suppose x1 is a categorical variable
+with 3 levels, and that two dummy variables x1a, x1b have been created by the commands
+
+{p 8 8 2}
+     {cmd:. generate byte x1a=(x1==2)}{break}
+     {cmd:. generate byte x1b=(x1==3)}
+
+{p 8 8 2}
+Now suppose that x1 is to be imputed by the {cmd:mlogit} command and is
+to be treated as the two dummy variables x1a and x1b when predicting other
+variables.  Use of {cmd:mlogit} is achieved by the option
+{cmd:cmd(x1:mlogit)}.  When x1 is imputed, we want x1a and x1b to be updated
+with new values which depend on the imputed values of x1.  This may be
+achieved by specifying {cmd:passive(x1a:x1==2 \ x1b:x1==3)}. It is necessary
+also to remove x1 from the list of predictors when variables other than x1 are
+being imputed, and this is done by using the {cmd:substitute()} option; in the
+present example, you would specify {cmd:substitute(x1:x1a x1b)}.
+
+{p 8 8 2}
+Note that although in this example x1a will take the (possibly
+unintended) value of 0 when x1 is missing, {cmd:ice} is careful to
+ensure that x1a (and x1b) inherit the missingness of x1 and are
+passively imputed following active imputation of missing values
+of x1. If this were not done, incorrect results could occur. The
+responsibility of the user is to create x1a and x1b before running
+{cmd:ice} such that their missing values are identical
+to those of x1.
+
+{p 8 8 2}
+A second example is multiplicative interactions between variables, for
+example, between x1 and x2 (e.g., x12=x1*x2); this could be entered as
+{cmd:passive(x12:x1*x2)}. It would cause the interaction term
+x12 to be omitted when either x1 or x2 was being imputed, since it would
+make no sense to impute x1 from its interaction with x2.
+{cmd:substitute()} is not needed here.
+
+{p 8 8 2}
+It should be stressed that variables to be imputed passively must already
+exist and must be included in {it:mainvarlist}; otherwise, they will not be
+recognized.
+
+{p 4 8 2}
+{cmd:substitute(}{it:sublist}{cmd:)} is typically used with the 
+{cmd:passive()} option to represent multilevel categorical variables
+as dummy variables in models for predicting other variables. See
+{cmd:passive()} for more details. The syntax of {it:sublist} is
+{it:varname}{cmd::}{it:dummyvarlist}
+[{cmd:,}{it:varname}{cmd::}{it:dummyvarlist} ...], where {it:varname} is the
+name of a variable to be substituted and {it:dummyvarlist} is the list of
+dummy variables representing it.
+
+{p 4 8 2}
+{cmd:replace} permits {it:filename} to be overwritten with new data.
+
+{p 4 8 2}
+{cmd:seed(}{it:#}{cmd:)} sets the random-number seed to {it:#}.
+To reproduce a set of imputations, the same random-number seed should be used. 
+The default is {cmd:seed(0)}, meaning no seed is set by the program.
+
+{p 4 8 2}
+{cmd:trace(}{it:filename}{cmd:)} monitors the convergence of the imputation
+algorithm. For each original variable with missing values, the mean of the
+imputed values is stored as a variable in {it:filename}, together
+with the cycle number at which that
+mean was calculated. The results are stored only for the final imputation.
+For diagnostic purposes, it is sensible to run {cmd:trace()}
+with {cmd:m(1)} and many cycles, such as {cmd:cycles(100)}.
+When the run is complete, it is helpful to load {it:filename}
+into memory and plot the mean for each imputed
+variable against the cycle number. If necessary, smoothing may be applied
+to clarify any apparent pattern. Convergence is judged to have occurred
+when the pattern of the imputed means is random.
+The number of cycles needed for convergence is usually obvious from the appearance
+of the plot.
+
+
+{title:Options for uvis}
+
+{p 4 8 2}
+{cmd:gen(}{it:newvar}{cmd:)} is not optional. {it:newvar} contains original
+(nonmissing) and imputed (originally missing) values of {it:yvar}.
+
+{p 4 8 2}
+{cmd:boot} invokes a bootstrap method for creating imputed values (see Remarks).
+ 
+{p 4 8 2}
+{cmd:match} creates imputations by prediction matching. The default is to draw
+imputations at random from the posterior distribution of the missing values of
+{it:yvar}, conditional on the observed values and the members of
+{it:xvarlist}. See Remarks for further details.
+
+{p 4 8 2}
+{cmd:noconstant} suppresses the regression constant in all regressions.
+
+{p 4 8 2}
+{cmd:replace} permits {it:newvar} (see {cmd:gen(}{it:newvar}{cmd:)})
+to be overwritten with new data. {cmd:replace} may not be abbreviated.
+
+{p 4 8 2}
+{cmd:seed(}{it:#}{cmd:)} sets the random-number seed to {it:#}.
+See {hi:Remarks} for comments on how to ensure reproducible imputations
+by using the {cmd:seed()} option.
+The default is {cmd:seed(0)}, meaning no seed is set by the program.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:uvis} imputes {it:yvar} from {it:xvarlist} according to the following
+algorithm (see van Buuren et al. (1999, section 3.2) for further technical
+details):
+
+{p 8 12 2}
+1. Estimate the vector of coefficients (beta) and the residual variance
+by regressing the nonmissing values of {it:yvar} on the current "completed"
+version of {it:xvarlist}. Predict the fitted values {it:etaobs} at the
+nonmissing observations of {it:yvar}.
+
+{p 8 12 2}
+2. Draw at random a value (sigma_star) from the posterior distribution of the
+residual standard deviation.
+
+{p 8 12 2}
+3. Draw at random a value (beta_star) from the posterior distribution of beta,
+allowing, through sigma_star, for uncertainty in beta.
+
+{p 8 12 2}
+4. Use beta_star to predict the fitted values {it:etamis}
+at the missing observations of {it:yvar}.
+
+{p 8 12 2}
+5. The imputed values are predicted directly from beta_star, sigma_star and
+the covariates. When imputation is by linear regression ({cmd:regress}
+command), this step assumes that {it:yvar} is Normally distributed, given the
+covariates.  For other types of imputation, samples are drawn from the
+appropriate distribution.
+
+{p 4 4 2}
+With the {cmd:match} option, step 5 is replaced by the following.
+For each missing observation of {it:yvar} with prediction {it:etamis},
+find the non-missing observation of {it:yvar} whose prediction
+({it:etaobs}) on observed data is closest to {it:etamis}. This closest
+non-missing observation is used to impute the missing value of {it:yvar}.
+
+{p 4 4 2}
+The default draw method is not robust to departures from Normality and
+may produce implausible imputations. For example, if the original distribution
+is skew and positive-valued, the imputed distribution will not necessarily
+have the appropriate amount of skewness, nor will all the imputed values
+necessarily be positive. Log transformation of positive variables may greatly
+improve the appropriateness of the imputations.
+
+{p 4 4 2}
+The alternative {cmd:match} method is recommended only for continuous variables
+when the Normality assumption is clearly untenable, even approximately.
+It is not necessary, nor is it recommended, for binary, ordered categorical or
+nominal variables. {cmd:match} may work well when the distribution of a
+continuous variable is very non-Normal, but it may sometimes result in biased
+imputations.
+
+{p 4 4 2}
+With the {cmd:boot} option, steps 2-4 are replaced by a bootstrap estimation of
+beta_star; beta_star
+is estimated by regressing {it:yvar} on {it:xvarlist} after taking a bootstrap sample
+of the non-missing observations. This has the advantage of robustness since the
+distribution of beta is no longer assumed to be multivariate normal.
+
+{p 4 4 2}
+Note that {cmd:uvis} will not impute observations for which a value 
+of a variable in {it:xvarlist} is missing. However, all original
+(missing or nonmissing) observations of {it:yvar} will be copied into
+{it:newvarname} in such cases. This is a change from the first release of
+{cmd:uvis} (with {cmd:mvis}). Previously, {it:newvarname} would be set to
+missing whenever a value of a variable in {it:xvarlist} was missing,
+irrespective of the value of {it:yvar}.
+
+{p 4 4 2}
+Missing data for ordered (or unordered) categorical covariates should
+be imputed by using the {cmd:ologit} (or {cmd:mlogit}) command. In these cases,
+prediction matching is done on the scale of the mean absolute difference
+in the predicted class probabilities, preceded by logit transformation.
+
+{p 4 4 2}
+{cmd:ice} carries out multivariate imputation in {it:mainvarlist} using
+regression switching (van Buuren et al. 1999) as follows:
+
+{p 8 12 2}
+1. Ignore any observations for which {it:mainvarlist} has only missing values,
+   or if the {cmd:ccvarlist(}{it:varlist}{cmd:)} option has been specified, for
+   which any member of {it:varlist} has a missing value.
+
+{p 8 12 2}
+2. For each variable in {it:mainvarlist} with any missing data, randomly order
+   that variable and replicate the observed values across the missing cases.
+   This step initializes the iterative procedure by ensuing that no relevant
+   values are missing.
+
+{p 8 12 2}
+3. For each variable in {it:mainvarlist} in turn, impute missing values by
+   applying {cmd:uvis} with the remaining variables as covariates.
+
+{p 8 12 2}
+4. Repeat step 3 {cmd:cycles()} times, replacing the imputed values with updated
+   values at the end of each cycle.
+
+{p 4 4 2}
+A single imputation sample is created for each variable with any relevant
+missing values.
+
+{p 4 4 2}
+Van Buuren recommends {cmd:cycles(20)} but goes on to say that 10 or even 5
+iterations are probably sufficient. We have chosen a compromise default of 10.
+
+{p 4 4 2}
+"Multiple imputation" (MI) implies the creation and analysis of several
+imputed datasets. To do this, one would run {cmd:ice} with {it:m} set
+to a suitable number, for example 5. To obtain final estimates
+of the parameters of interest and their standard errors,
+one would fit a model in 
+each imputation and carry out the appropriate post-MI averaging procedure
+on the results from the {it:m} separate imputations. A suitable
+estimation tool for this purpose is {helpb micombine}.
+
+{title:Handling categorical variables}
+
+{p 4 4 2}
+Binary variables present no difficulty: by default, in the MICE
+procedure, when such a variable is the response, it is
+predicted from other variables by using logistic regression;
+when it is a covariate, it is modeled in the only way possible, 
+effectively as a single dummy variable. Categorical variables with 3 or
+more levels may in principle be treated in different ways.
+By default, in {cmd:ice} variables with 3-5 levels are modeled
+using multinomial logistic regression ({cmd:mlogit} command) when
+the response, and as a single linear term when a covariate. The
+same behavior occurs with the ordered logistic model ({cmd:ologit}
+command), requested via the {cmd:cmd()} option. The use of dummy variables
+instead of a single linear term may be imposed as described under
+the {cmd:passive()} option. The requisite dummy variables
+must be created before {cmd:ice} is invoked. Variables with 6 or
+more levels are treated as ordered and continuous, but again 
+different choices may be imposed by use of the {cmd:cmd()},
+{cmd:passive()} and {cmd:substitute()} options.
+
+{p 4 4 2}
+You should be aware that
+unless the dataset is large, use of the {cmd:mlogit} command may produce
+unstable estimates if the number of levels is too large, and
+may compromise the accuracy of the imputations. It is hard to
+predict when this will occur.
+
+{p 4 4 2}
+Note that due to a peculiarity of the way the {cmd:mlogit} command works,
+variables with score labels cause problems to {cmd:ice} 
+and {cmd:uvis} when missing data are imputed using {cmd:mlogit}. 
+Score labels for such variables are removed in the file of imputed
+data. See also the related comment on {hi:Postestimation prediction} in
+{helpb micombine}.
+
+
+{title:Further notes}
+
+{p 4 4 2}
+{cmd:ice} determines the order of imputing variables in the round
+of chained equations according to the amount of missing data.
+Variables with the least missingness are imputed first.
+
+{p 4 4 2}
+An important application of MI is to investigate possible models, for example
+prognostic models, in which selection of influential variables is required
+(Clark and Altman 2003). For example, the stability of the final model across
+the imputation samples is of interest. This area of inquiry is in its infancy.
+
+{p 4 4 2}
+In survival analysis, it is recommended to include the censoring indicator 
+and the log of the survival time in the variables to be used for imputation.
+Van Buuren et al. (1999) give a detailed discussion of the different types
+of covariate that can be included in the imputation model and discuss the
+important issue of how to deal with variables which are missing completely at
+random (MCAR), missing at random (MAR), and missing not at random (MNAR).
+
+{p 4 4 2}
+See also Van Buuren's web site http://www.multiple-imputation.com for further
+information and software sources.
+
+
+{title:Examples}
+
+{p 4 10 2}
+{cmd:. uvis regress y x1 x2 x3, gen(ym)}
+
+{p 4 10 2}
+{cmd:. ice x1 x2 x3 using imputed, m(5)}
+
+{p 4 10 2}
+{cmd:. ice x1 x2 x3 using imputed, m(5) cycles(20) cc(x4 x5)}
+
+{p 4 10 2}
+{cmd:. ice x1-x5 using imputed, m(10) boot match(x1 x2 x3) cmd(x1 x2:mlogit, x3:ologit) id(pid) seed(101) genmiss(m_)}
+
+{p 4 10 2}
+{cmd:. ice x1 x1a x1b x2 x3 x23 using imputed, m(5) cmd(x1:ologit) passive(x1a:x1==2 \x1b:x1==3 \x23=x2*x3) substitute(x1:x1a x1b)}
+
+{p 4 10 2}
+{cmd:. ice y1 y2 y3 x1 x2 x3 x4 using imputed, m(5) eq(y1:x1 x2 y2, y2:y1 x3 x4, y3:y1 y2) match(y3)}
+
+
+{title:Acknowledgement}
+
+{p 4 4 2}
+I am grateful to Gillian Raab for pointing out certain issues with the prediction
+matching approach, particularly that it is only useful with continuous variables.
+As a result, the default imputation method has been
+changed from matching to drawing from the predictive distribution. Gillian also
+suggested imputing the variables in reverse order of the amount of missingness,
+and selecting the imputed value at random from the set determined by the available
+matching predictions. Both suggestions have been implemented in this software update. 
+
+
+{title:Author}
+
+{p 4 4 2}
+Patrick Royston, MRC Clinical Trials Unit, London.{break}
+patrick.royston@ctu.mrc.ac.uk
+
+
+{title:References}
+
+{p 4 8 2}
+van Buuren S., H. C. Boshuizen and D. L. Knook. 1999. Multiple imputation of
+    missing blood pressure covariates in survival analysis.
+    {it:Statistics in Medicine} {cmd:18}:681-694. 
+    Also see http://www.multiple-imputation.com.
+
+{p 4 8 2}
+Carlin  J. B., N. Li, P. Greenwood, and C. Coffey. 2003. Tools for analyzing
+multiple imputed datasets. {it:Stata Journal} 3(3): 226-244.
+
+{p 4 8 2}
+Clark T. G. and D. G. Altman. 2003. Developing a prognostic model
+in the presence of missing data: an ovarian cancer case-study.
+{it:Journal of Clinical Epidemiology} 56: 28-37.
+
+{p 4 8 2}
+Royston P. 2004. Multiple imputation of missing values.
+{it:Stata Journal} 4(3): 227-241.
+
+
+{title:Also see}
+
+{psee}
+Online:  {helpb mijoin}, {helpb micombine}, {helpb mitools}, and related programs,
+if installed
+{p_end}

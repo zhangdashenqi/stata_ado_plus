@@ -1,0 +1,82 @@
+Test for cointegration                                            (STB-7: sts2)
+----------------------
+
+
+	^coint^ varlist [, ^l^ags(#) ^t^rend ^v^ector regress-options]
+
+
+
+Description
+-----------
+
+^coint^ tests the null hypothesis that the variables in varlist are NOT coin- 
+tegrated.  The Engle-Granger test is used.  In this test, a cointegrating 
+vector is estimated by ordinary least squares with the normalization that the 
+first variable in varlist is the left-hand-side variable.  Next, ^unitroot^ is 
+called to test the null hypothesis that the residuals from this regression have
+a unit root.  The test statistics have a non-standard distribution.  Critical 
+values can be found in Engle and Yoo (1987).
+
+
+
+Options
+-------
+
+^lags(^#^)^ specifies the number of lags to be considered.   The default is 4.
+
+^trend^ includes a time trend term in the regression.
+
+^vector^ displays the cointegrating regression.
+
+regress_options refers to any of the options of ^regress^; see ^help regress^.
+
+
+
+
+(Examples follow)
+
+
+
+
+
+
+
+
+Examples
+--------
+
+
+ . ^coint m2 cpi^
+
+tests the hypothesis that M2 and the price level (as measured by the consumer 
+price index) are not cointegrated.  The Dickey-Fuller test is calculated using 
+0 to 4 lags of the first difference of the residual from the first-stage 
+regression (the cointegrating regression).
+
+
+ . ^coint m2 cpi, lags(6)^
+
+would do the same except it would consider using 0 to 6 lags.
+
+
+
+References
+----------
+
+Engle and Yoo.  1987.  Forecasting and testing in co-integrated systems. 
+    ^Journal of Econometrics^ 35(1), May, Table 2, p. 157.
+
+
+
+Author
+------
+ 
+Sean Becketti, Federal Reserve Bank of Kansas City.
+
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7)
+On-line:  ^help^ for ^findlag^, ^lag^, ^unitroot^

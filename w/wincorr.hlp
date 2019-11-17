@@ -1,0 +1,41 @@
+.-
+help for ^wincorr^
+.-
+
+Winsorized correlation
+----------------------
+
+ ^wincorr^ var1 var2 [^if^ exp] [^in^ range] [, ^p(^proportion^)^]
+ 
+Description
+-----------
+
+^wincorr^ computes the correlation between two winsorized
+     variables.
+     
+^Note:^ Requires winsor.ado by N. Cox
+
+Option
+------
+
+^p^ proportion of sample to be winsorized (default = 0.2).
+
+Examples
+--------
+
+ . ^wincorr read write^
+ . ^wincorr read write, p(.1)^
+
+Reference
+---------
+
+Wilcox, R. (2001) Fundamentals of modern statistical methods.
+     New York: Springer.
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 

@@ -1,0 +1,74 @@
+.-
+help for ^clt^
+Central limit theorem demonstration
+.-
+
+The programs ^clt^ is designed to illustrate 
+the Central Limit Theorem.  
+
+^clt^ allows you to take a given number of samples of size ^n^
+from a given distribution and show the distibution of sample means. 
+
+After you invoke ^clt^, a dialog box is shown allowing you to
+make the following choices regarding how the data is sampled.
+
+^Distribution Type^
+  Normal      - A normal distribution.
+  Log normal  - Log of a normal distribution.
+  Exp normal  - Exponential of a normal distribution.
+  Exponential - Exponential of a uniform distribuiton
+  Bimodal     - Two normal populations with means 3 units apart
+                that are added together
+  Binomial    - A 0/1 variable. If you choose this, you can use the
+                ^If Binomial, P=^ pulldown to choose the probability
+                of a 1 occurring.
+  Uniform     - A uniform distribution.
+
+^If Binomial, P=^ 
+  If you draw from a binomial distribution, you can use the ^p()^ 
+  option to specify the probability of success. The default is .5 .
+
+^N per sample^
+  Allows you to choose the sample size, default is 1.
+
+^# of Samples^
+  Allows you to choose how many samples are drawn, default is 1000.
+
+You can also make the following choices regarding how the 
+graph of the sampling distribution is displayed.
+
+^Show Normal Overlay^
+  Includes a normal overlay on the histogram.
+
+^Draw Lines as +-1SD and +-2SD^
+  Draws lines at 
+    xbar - 2sd  
+    xbar - 1sd
+    xbar
+    xbar + 1sd
+    xbar + 2sd
+
+^Show means as Z scores^
+  Shows the X axis as Z scores, helping you to see
+  skewness in the data.
+
+^Show sums instead of means^
+  Shows the values on the X axis as the sum of the scores
+  in the sample (rather than the mean).  This is useful
+  when the distribution is binomial.  
+
+After you have made your selections, you can click the
+^show^ button and the results are calculated and displayed.
+If you choose a large number of samples (say over 3000), then
+there may be a delay while the samples are drawn.
+
+When you want to exit the program, click on the ^done^ button.
+
+
+Author
+------
+
+Michael N. Mitchell
+Statistical Computing and Consulting
+UCLA, Office of Academic Computing
+mnm@@ucla.edu

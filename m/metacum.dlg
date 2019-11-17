@@ -1,0 +1,302 @@
+/* 
+
+*! metacum dialog version 1.0.1, 13 May 2003, T. J. Steichen, steichen@triad.rr.com 
+*!    for metacum version 1.02,     Jan 1998, Jonathan Sterne, jonathan.sterne@bristol.ac.uk
+
+metacum        VERSION 1.02  jan1998
+
+Cumulative meta-analysis, with graphics
+---------------------------------------
+
+Syntax: metacum { theta | exp(theta) } { se_theta | var_theta | ll ul [cl] }
+           [if exp] [in range] effect(f|r) [ , id(strvar) var ci eform level(#)
+           graph cline ltrunc(#) rtrunc(#) csize(#) fmult(#)  ]
+
+To install in User Statistics menu via Stata commands:
+  . window menu append item "stUserStatistics" "Cumulative meta-analysis (meta&cum)" "db metacum"
+  . window menu refresh
+To permanently install, place the commands in your -profile.do- file.
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help metacum")
+RESET res1, label("Reset")
+
+DIALOG main, label("metacum 1.02 - Cumulative Meta-analysis") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_data      10    5  330  _ht5h,            ///
+     label("Type of Data:")
+  RADIO    r_se         15   25  100      .,            ///
+     label("Theta, SE")        first                    ///
+     onclickon(script main_se_on)                       ///
+     onclickoff(script main_se_off)                     ///
+     option(NONE)
+  RADIO    r_var       115   25  100      .,            ///
+     label("Theta, Var")       middle                   ///
+     onclickon(script main_var_on)                      ///
+     onclickoff(script main_var_off)                    ///
+     option("var")
+  RADIO    r_ci        215   25  110      .,            ///
+     label("exp(Theta), CI")   last                     ///
+     onclickon(script main_ci_on)                       ///
+     onclickoff(script main_ci_off)                     ///
+     option("ci")
+
+  TEXT     tx_se        15   45   320     .,            ///
+     label("Vars for theta, se(theta), in that order")
+  VARLIST  vl_se         @   _ss   @      .,            ///
+     label("Vars for theta, se(theta)")
+
+  TEXT     tx_var        @   45   320     .,            ///
+     label("Vars for theta, var(theta), in that order")
+  VARLIST  vl_var        @   _ss   @      .,            ///
+     label("Vars for theta, var(theta)")
+  
+  TEXT     tx_ci         @   45   320     .,            ///
+     label("Vars for exp(theta), CI_LL, CI_UL, in that order")
+  VARLIST  vl_ci         @   _ss   @      .,            ///
+     label("Vars for exp(theta), CI_LL, CI_UL")
+
+  CHECKBOX cb_id        10 100  100       .,            ///
+     label("ID Variable:")                              ///
+     onclickon(main.vn_id.enable)                       ///
+     onclickoff(main.vn_id.disable)
+  VARNAME  vn_id       110 100  230       .,            /// 
+     label("ID Variable")                               ///
+     option("id")
+
+  GROUPBOX gb_effect    10 130  110  _ht3h,             ///
+     label("Pooling Model:")
+  RADIO    r_fixed      15 145   65      .,             ///
+     label("Fixed")           first                     ///
+     option("effect(f)")
+  RADIO    r_random     15 165   75      .,             ///
+     label("Random")          last                      ///
+     option("effect(r)")
+
+  CHECKBOX cb_level    160 145   75       .,            ///
+     label("CI Level:")                                 ///
+     onclickon(main.ed_level.enable)                    ///
+     onclickoff(main.ed_level.disable)
+  EDIT     ed_level    240   @   40       .,            ///
+     label("Level")                                     ///
+     numonly default(95)                                ///
+     option("level")
+     
+  CHECKBOX cb_eform    160 165  120       .,            ///
+     label("Use exp(theta)")                            ///
+     option("eform")
+END
+
+
+DIALOG graph, tabtitle("Graph")
+BEGIN
+  CHECKBOX cb_graph     10   10  330  _ht7h,            ///
+     groupbox                                           ///
+     onclickon(program graph_on)                        ///
+     onclickoff(program graph_off)                      ///
+     label("Draw Graph:")                               ///
+     option("graph")
+
+  CHECKBOX cb_cline     20   35  150      .,            ///
+     label("Draw Estimate line")                        ///
+     option("cline")
+
+  CHECKBOX cb_ltrunc    20   60   95       .,           ///
+     label("Left truncate:")                            ///
+     onclickon(graph.ed_ltrunc.enable)                  ///
+     onclickoff(graph.ed_ltrunc.disable)
+  EDIT     ed_ltrunc   130    @   40       .,           ///
+     label("Left truncate") numonly                     ///
+     option("ltrunc")
+
+  CHECKBOX cb_rtrunc    20   80   105       .,          ///
+     label("Right truncate:")                           ///
+     onclickon(graph.ed_rtrunc.enable)                  ///
+     onclickoff(graph.ed_rtrunc.disable)
+  EDIT     ed_rtrunc  130     @   40       .,           ///
+     label("Right truncate") numonly                    ///
+     option("rtrunc")
+
+  CHECKBOX cb_fmult    195   60  95        .,           ///
+     label("Font scale:")                               ///
+     onclickon(graph.ed_fmult.enable)                   ///
+     onclickoff(graph.ed_fmult.disable)
+  EDIT     ed_fmult    290   60   40       .,           ///
+     label("Font scale")                                /// 
+     numonly default("1")                               ///
+     option("fmult")
+
+  CHECKBOX cb_csize    195   80   95       .,           ///
+     label("Circle size:")                              ///
+     onclickon(graph.ed_csize.enable)                   ///
+     onclickoff(graph.ed_csize.disable)
+  EDIT     ed_csize    290   80   40       .,           ///
+     label("Circle size")                               ///
+     numonly default("180")                             ///
+     option("csize")
+
+  GROUPBOX gb_gopts7   10 145  330     _ht2h,           ///
+     label("Allowed Graph7 Options:")
+  EDIT     ed_gopts7   15 165  320         .,           ///
+     label("Graph7 Options")
+END
+ 
+INCLUDE ifin
+
+SCRIPT main_se_on
+BEGIN
+  main.tx_se.show
+  main.vl_se.show
+  main.tx_se.enable
+  main.vl_se.enable
+
+  main.tx_var.disable
+  main.vl_var.disable
+  main.tx_var.hide
+  main.vl_var.hide
+  
+  main.tx_ci.disable
+  main.vl_ci.disable
+  main.tx_ci.hide
+  main.vl_ci.hide
+END
+
+SCRIPT main_se_off
+BEGIN
+  main.tx_se.disable
+  main.vl_se.disable
+  main.tx_se.hide
+  main.vl_se.hide
+END
+
+SCRIPT main_var_on
+BEGIN
+  main.tx_var.show
+  main.vl_var.show
+  main.tx_var.enable
+  main.vl_var.enable
+
+  main.tx_se.disable
+  main.vl_se.disable
+  main.tx_se.hide
+  main.vl_se.hide
+  
+  main.tx_ci.disable
+  main.vl_ci.disable
+  main.tx_ci.hide
+  main.vl_ci.hide
+END
+
+SCRIPT main_var_off
+BEGIN
+  main.tx_var.disable
+  main.vl_var.disable
+  main.tx_var.hide
+  main.vl_var.hide
+END
+
+SCRIPT main_ci_on
+BEGIN
+  main.tx_ci.show
+  main.vl_ci.show
+  main.tx_ci.enable
+  main.vl_ci.enable
+
+  main.tx_se.disable
+  main.vl_se.disable
+  main.tx_se.hide
+  main.vl_se.hide
+  
+  main.tx_var.disable
+  main.vl_var.disable
+  main.tx_var.hide
+  main.vl_var.hide
+END
+
+SCRIPT main_ci_off
+BEGIN
+  main.tx_ci.disable
+  main.vl_ci.disable
+  main.tx_ci.hide
+  main.vl_ci.hide
+END
+
+PROGRAM graph_on
+BEGIN
+  call graph.cb_cline.enable
+  call graph.cb_fmult.enable
+  call graph.cb_ltrunc.enable
+  call graph.cb_rtrunc.enable
+  call graph.cb_csize.enable
+  call graph.gb_gopts7.enable
+  call graph.ed_gopts7.enable
+  if graph.cb_fmult {
+    call graph.ed_fmult.enable
+  }
+  if graph.cb_ltrunc {
+    call graph.ed_ltrunc.enable
+  }
+  if graph.cb_rtrunc {
+    call graph.ed_rtrunc.enable
+  }
+  if graph.cb_csize {
+    call graph.ed_csize.enable
+  }
+END
+
+PROGRAM graph_off
+BEGIN
+  call graph.cb_cline.disable
+  call graph.cb_fmult.disable
+  call graph.cb_ltrunc.disable
+  call graph.cb_rtrunc.disable
+  call graph.cb_csize.disable
+  call graph.gb_gopts7.disable
+  call graph.ed_gopts7.disable
+  if graph.cb_fmult {
+    call graph.ed_fmult.disable
+  }
+  if graph.cb_ltrunc {
+    call graph.ed_ltrunc.disable
+  }
+  if graph.cb_rtrunc {
+    call graph.ed_rtrunc.disable
+  }
+  if graph.cb_csize {
+    call graph.ed_csize.disable
+  }
+END
+
+PROGRAM command
+BEGIN
+  put "metacum "
+  if main.r_se {
+    varlist main.vl_se 
+  }
+  if main.r_var {
+    varlist main.vl_var 
+  }
+  if main.r_ci {
+    varlist main.vl_ci 
+  }
+  INCLUDE _ifin_pr
+  beginoptions
+    option radio(main r_se r_var r_ci)
+    optionarg main.vn_id
+    option radio(main r_fixed r_random)
+    option main.cb_eform
+    optionarg main.ed_level
+    option graph.cb_graph
+    option graph.cb_cline
+    optionarg graph.ed_ltrunc
+    optionarg graph.ed_rtrunc
+    optionarg graph.ed_fmult
+    optionarg graph.ed_csize
+    put graph.ed_gopts7 
+  endoptions
+END

@@ -1,0 +1,199 @@
+.-
+help on Excel matters
+.-
+
+A golden rule to remember is that
+
+  Stata expects a single matrix or table of data from a single sheet,
+  with at most one line of text at the start defining the contents of
+  the columns.
+
+
+How do I get information from Excel into Stata? (a) General
+-----------------------------------------------------------
+
+(based on material by James Hardin, Stata Corporation, on Stata web
+site)
+
+Here are the steps to follow in order to save data from Excel and then
+read it into Stata:
+
+  1. Launch Excel and read in your Excel file.
+  2. Save this file as a text file (tab delimited or comma delimited) by
+     choosing from the menu ^File^, then ^Save As^. If the original
+     filename is filename.^xls^, then save the file under the name
+     filename.^txt^ or filename.^csv^ in a directory of yours.
+  3. Quit Excel.
+  4. Launch Stata if it is not already running. If it was already
+     running, then ^clear^ the data (^save^ it if you need to).
+  5. In Stata, type ^insheet using^ filename.ext where filename.ext
+     is the name of the file that you just saved in Excel.
+  6. In Stata, type ^compress^.
+  7. Save the data as a Stata dataset using the ^save^ command.
+
+
+How do I get information from Excel into Stata? (b) Windows
+-----------------------------------------------------------
+
+  Within Windows
+  1. Start Excel
+  2. Enter data in rows and columns OR read in previously-saved file
+  3. Copy block of data cells: click on a cell and drag mouse across
+     other cells desired, then click on ^Edit^, then ^Copy^
+  4. Start Stata
+  5. Enter Stata data editor
+  6. Paste data into editor: click on ^Edit^, then ^Paste^
+
+
+Common problems
+---------------
+
+(based on material by David Moore, University of Cincinnati and
+Eric Wruck, Econalytics)
+
+
+  Non-numeric characters
+  ----------------------
+
+  A single cell containing a non-numeric character, such as a letter,
+  within a column of data is enough for Stata to make that variable a
+  string variable. It is often easiest to fix this within Excel.
+  Alternatively, within Stata, suppose that the problematic string
+  variable is ^foo^.
+
+  . ^tab foo if real(foo) == .^
+  . ^edit foo if real(foo) == .^
+  . ^list foo if real(foo) == .^
+
+  are some ways of identifying the rogue observations. If appropriate
+  they can be replaced by missing and then the variable as a whole
+  converted to numeric by using @destring@:
+
+  . ^replace foo == "" if real(foo) == .^
+  . ^destring foo^
+
+
+  Spaces
+  ------
+
+  What appear to be purely numeric data in Excel are often treated by
+  Stata as string variables because they include spaces. People may
+  inadvertently enter space characters in cells that otherwise are
+  empty.  Although Excel strips leading and trailing spaces from numeric
+  entries, it does not trim spaces from character entries.  One or more
+  space characters by themselves constitute a valid character entry and
+  are stored as such. Stata dutifully reads the entire column as a
+  string variable. Excel has a search and replace capability enabling
+  you to delete these stray spaces, or you can use a text-processing
+  program or a text editor on the text file. Within Stata, @destring@
+  can fix observations that are entirely spaces within string variables
+  that are essentially numeric, by converting them to numeric missing
+  values.
+
+
+  Cell formats
+  ------------
+
+  Much formatting within Excel interferes with Stata's ability to
+  interpret the data reasonably. Just before saving the data as a text
+  file, make sure all formatting is turned off, at least temporarily.
+  You can do this by selecting the entire spreadsheet, choose the menu
+  ^Format^, then ^Cells^ and select ^General^ as the format.
+
+
+  Variable names
+  --------------
+
+  As does most statistical software, Stata limits variable names to 8
+  characters and does not allow within such names any characters that it
+  uses as operators or delimiters.  People who are Excel users first and
+  Stata users second are often quite creative with the names they apply
+  to columns. Stata converts illegal column (field) names to labels and
+  makes a best guess at a sensible variable name.  Stata's best guess,
+  however, may not be as good as the name a user would choose knowing
+  Stata's naming restrictions.
+
+
+  Missing rows and columns
+  ------------------------
+
+  Completely empty rows in a spreadsheet are ignored by Stata, but
+  completely empty columns are not.  A completely empty column gets read
+  in as a variable with missing values for every observation.  Of
+  course, no harm is done in either case, but spreadsheet users who wish
+  to add blank columns and/or rows to enhance legibility may wish to
+  note this difference.
+
+
+Why do I get the error "wrong number of values" when I use ^insheet^ to
+read data from Excel?
+---------------------
+
+(based on material by Paul Lin, Stata Corporation, on Stata web site)
+
+This problem has to do with how Excel writes empty cells into files.
+Pretend a row of your spreadsheet reads:
+
+   (1)   (2)   (3)   (4)   (5)   (6)   (7)   (8)   (9)
+ +-----------------------------------------------------+
+ |     |     |     |     |     |     |     |     |     |
+ | 136 | 9.8 |     |  64 | 108 |     |     | 7.8 |     |
+ |     |     |     |     |     |     |     |     |     |
+ +-----------------------------------------------------+
+
+Excel would write this in a file as
+
+ 136,9.8,,64,108,,,7.8,
+
+and Stata can read this without difficulty. Note the comma at the end of
+the line. It is because of that comma that Stata knows there is a ninth
+value; it is merely that the ninth value is missing in this observation.
+Stata understands this.
+
+Sometimes, however, Excel will write this same data as
+
+ 136,9.8,,64,108,,,7.8
+
+without the trailing comma. Thus, it appears to ^insheet^ that the line
+contains eight rather than nine values and so ^insheet^ complains.
+
+The conditions under which Excel does this are complicated. Basically,
+Excel reads a chunk of the spreadsheet and then looks at the chunk. If
+the last column in the chunk contains empty cells, then it omits that
+column! So, in the resulting file, there may be some records showing
+nine columns, others showing eight, and even others showing seven or
+less! Each will occur in a group (that is determined by Excel's buffer
+size).
+
+If you run into this difficulty, here is what you do:
+  1. To your spreadsheet, add another column. Fill the columns with 1s.
+  2. Save the spreadsheet.
+  3. Read the spreadsheet into Stata using ^insheet^.
+  4. Drop the last variable.
+
+Adding a column of 1s will avoid the problem of empty cells in the last
+column and so Excel will write the correct number of separators on each
+line.
+
+
+Author
+------
+
+        This help file was put together by
+
+        Nicholas J. Cox, University of Durham, U.K.
+        n.j.cox@@durham.ac.uk
+
+        (last revised 19 February 1999)
+
+
+Also see
+--------
+
+ Manual:  ^[R] edit^
+          ^[R] insheet^
+          ^[R] outsheet^
+On-line:  @insheet@; @outsheet@; @destring@ (if installed)
+
+.
+

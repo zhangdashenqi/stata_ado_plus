@@ -1,0 +1,206 @@
+{smcl}
+{* May 11 2009} {...}
+{hi:help craggit}{right: ({browse "http://www.stata-journal.com/article.html?article=st0179":SJ9-4: st0179})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 16 21 2}{...}
+{p2col :{hi:craggit} {hline 2}}Fit Cragg's (1971) "two-tier" alternative
+to tobit corner-solution model{p_end}
+{p2colreset}{...}
+
+{title:Syntax}
+
+{p 4 16 2}
+{cmd:craggit} {it:depvar1} [{it:indepvars1}] {ifin} {weight}{cmd:,}
+ {opt sec:ond}{cmd:(}{it:depvar2} [{it:indepvars2}]{cmd:)} [{it:options}]
+
+{synoptset 30 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Model}
+{p2coldent :* {opt second(depvar2 [indepvars2])}}specify model for the second tier: dependent and independent variables (i.e., the determinants of continuous positive values){p_end}
+{synopt:{opt nocons:tant}}suppress constant term in the second tier{p_end}
+
+{syntab:SE/Robust}
+{synopt:{opth vce(vcetype)}}{it:vcetype} may be {opt oim}, {opt opg}, {opt r:obust}, or {opt cluster} {it:clustvar}{p_end}
+{synopt:{opth het:ero(varlist)}}model heteroskedasticity in second tier as a function of observables{p_end}
+
+{syntab:Reporting}
+{synopt:{opt l:evel(#)}}set confidence level; default is {cmd:level(95)}{p_end}
+
+{syntab:Maximization}
+{synopt:{it:{help craggit##maximize_options:maximize_options}}}control maximization process; seldom used{p_end}
+{synoptline}
+{p2colreset}{...}
+{pstd}*{opt second()} is required.{p_end}
+{pstd}{opt fweight}s and {opt pweight}s are allowed; see {helpb weight}.{p_end}
+{pstd}{opt xi} is allowed; see {helpb prefix}.{p_end}
+
+
+{title:Description}
+
+{pstd}
+{opt craggit} fits Cragg's "two-tier" (also sometimes called "two-stage"
+or "double-hurdle") alternative to {helpb tobit} for corner-solution
+models, which incorporates the {helpb probit} model in the first tier and
+truncated normal regression in the second tier (e.g., {helpb truncreg} with a
+lower limit = 0).  The main advantage of {cmd:craggit} over {cmd:tobit} is that an
+independent variable's effect on the probability of a positive outcome and its
+effect on the quantity of that outcome are determined by separate processes.
+Also, {cmd:tobit} is nested in {cmd:craggit}, making it a popular choice among "two-tier"
+models.
+
+
+{title:Options}
+
+{dlgtab:Model}
+
+{phang}
+{opt second(depvar2 [indepvars2])} specifies the model in the second tier for
+determinants of continuous positive values of the dependent variable.
+Specifying this portion of the model is essential to fit Cragg's model.
+There are no restrictions regarding elements of equations for the first and
+second tier (i.e., they can be the same variables or different).
+
+{pmore}
+Dependent variables require a specific structure; {it: depvar2} can take on
+continuous positive values, but with a "pile up" of observations taking a zero
+value as an observed result (i.e., this is conceptually very different from a
+selection model; for selection models, see {helpb heckman}).  {it: depvar1} is
+a binary indicator equal to 1 if {it:depvar2} is positive and equal to 0 otherwise.
+
+{phang} {opt noconstant} supresses the constant term in second tier only.  See
+{helpb estimation options##noconstant:[R] estimation options}.
+
+{dlgtab:SE/Robust}
+
+{phang}
+{opth vce(vcetype)} specifies the type of standard error reported, which
+includes types that are derived from asymptotic theory, that are robust to
+some kinds of misspecification, and that allow for intragroup correlation; see
+{manhelpi vce_option R:vce_option}.
+
+{phang}
+{opt hetero(varlist)} specifies a model for heteroskedastic sigma as a
+function of observables.  This options is beneficial in the Cragg model
+because
+it allows heteroskedasticity in the second tier without conceding model
+misspecification in the first tier.
+
+{dlgtab:Reporting}
+
+{phang}
+{opt level(#)}; see {helpb estimation options##level():[R] estimation options}.
+
+{marker maximize_options}{...}
+{dlgtab:Max options}
+
+{phang}
+{it:maximize_options}:
+{opt diff:icult},
+{opt tech:nique(algorithm_spec)},
+{opt iter:ate(#)},
+[{cmdab:no:}]{opt lo:g},
+{opt tr:ace},
+{opt grad:ient},
+{opt showstep},
+{opt hess:ian},
+{opt shownr:tolerance},
+{opt tol:erance(#)},
+{opt ltol:erance(#)},
+{opt gtol:erance(#)},
+{opt nrtol:erance(#)},
+{opt nonrtol:erance(#)},
+{opt from(init_specs)};
+see {helpb maximize}.
+
+
+{title:Remarks}
+
+{pstd}
+{cmd:craggit} estimates all the parameters of Cragg's (1971) two-tier
+alternative to tobit, which allows probability of a positive outcome and the
+value of a given positive outcome to be determined by separate processes.  The
+results of estimation using {cmd:craggit} can also be obtained by fitting the
+model tier by tier, but interpreting results requires using results from both
+tiers.  The primary benefit of {cmd:craggit} is that it
+facilitates interpretation of results.
+
+{pstd}
+As with {cmd:tobit}, there are three primary values of interest extending from the
+results of {cmd:craggit} estimation (if y is {it:depvar2} and x is all the
+variables in {it:indepvars1} and {it:indepvars2}):
+
+{pin}(1) P[y>0|x]{space 5}(the probability of y being positive) {p_end}
+
+{pin}(2) E[y|x, y>0]{space 2}(the expected value of y of a given positive outcome) {p_end}
+
+{pin}(3) E[y|x]{space 7}(the, so called "unconditional" expected value of y) {p_end}
+
+{pstd}
+Of course, then, the marginal effect of a given explanatory variable on (1)
+through (3) is also of interest.  Each of these values, marginal effects, and
+their standard errors can be found using Stata's existing commands, as
+described in this command's accompanying paper, however automated
+postestimation for {cmd:craggit} remains a work in progress.
+
+{pstd}
+NOTE: As with all separable two-tier models, estimation via {cmd:craggit}
+relies on the conditional independence assumption described by Wooldridge
+(forthcoming).
+
+
+{title:Examples}
+
+{pstd}Let w=1 if y>0 and w=0 if y=0
+
+{pstd}Basic model{p_end}
+{phang2} {cmd:. craggit w x1 x2, second(y x1 x2)}
+
+{pstd}Using options{p_end}
+{phang2} {cmd:. craggit w x1 x2, second(y x1 x2) vce(opg)}{p_end}
+{phang2} {cmd:. craggit w x1 x2, sec(y x2 x3) cluster(id)}{p_end}
+{phang2} {cmd:. craggit w x1 x2, sec(y x1 x2) het(x2 x3)}{p_end}
+{phang2} {cmd:. craggit w x1 x2 [pweight=wght], second(y x1 x2)}{p_end}
+
+{pstd}Replay option{p_end}
+{phang2} {cmd:.craggit, level(90)}{p_end}
+
+
+{title:Acknowledgments}
+
+{pstd}Understanding of the Cragg tobit alternative was greatly assisted by
+information found in Wooldridge (forthcoming).  Programming was done with
+direction from Gould, Pitblado, and Sribney (2006) and Baum (2009).
+
+
+{title:References}
+
+{phang}Baum, C. F. 2009. {browse "http://www.stata-press.com/books/isp.html":{it:An Introduction to Stata Programming}.} College Station, TX: Stata Press.{p_end}
+
+{phang}Cragg, J. G. 1971. Some statistical models for limited dependent
+variables with application to the demand for durable goods.
+{it:Econometrica} 39: 829-844.{p_end}
+
+{phang}Gould, W., J. Pitblado, and W. Sribney. 2006. {browse "http://www.stata-press.com/books/ml.html":{it:Maximum Likelihood Estimation with Stata}.} 3rd ed. College Station, TX: Stata Press.{p_end}
+
+{phang}Wooldridge, J. M. Forthcoming. {it:Econometric Analysis of Cross Section and Panel Data}. 2nd ed. Cambridge, MA: MIT Press.{p_end}
+
+
+{title:Author}
+
+{pstd}{browse "http://www.msu.edu/~burkewi2":William J. Burke}{p_end}
+{pstd}Department of Agricultural, Food, and Resource Economics{p_end}
+{pstd}Michigan State University{p_end}
+{pstd}East Lansing, MI{p_end}
+{pstd}{browse "mailto:burkewi2@msu.edu":burkewi2@msu.edu}{p_end}
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 9, number 4: {browse "http://www.stata-journal.com/article.html?article=st0179":st0179}
+
+{psee}Online:  {helpb probit}, {helpb truncreg}, {helpb tobit}{p_end}

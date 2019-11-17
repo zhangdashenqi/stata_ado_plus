@@ -1,0 +1,49 @@
+.-
+help for ^bxmodel^
+.-
+
+Box model simulation program
+-----------------------------------------
+ 
+	^bxmodel^ 
+
+
+
+Description
+-----------
+
+^bxmodel^ performs box model simmulations for sampling with
+     replacement, sampling without replacement, and birthday
+     types of problems.
+
+Data files
+----------
+
+^bxmodel^ uses standard Stata data files (.dta) with two vaiables:
+     value - which is the value of the ticket,
+     n     - the number of tickets with a given value.
+
+     Here is an example data set for simulating roulette 0/red/black.
+     value     n
+       0       2
+       1      18
+       2      18
+ 
+Additional files
+----------------
+ 
+ ^bxmodel^  requires the following additional files:  bx1.ado, bx1s.ado, 
+     bxb.ado in addition to bxmodel.ado.
+     
+Example
+-------
+
+ . ^bxmodel^
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA, Academic Technology Services
+      ender@@ucla.edu 

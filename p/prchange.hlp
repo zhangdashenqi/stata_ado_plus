@@ -1,0 +1,130 @@
+.-
+help for ^prchange^ - 2Nov2005
+.-
+
+Discrete and marginal change for regression models for categorical and
+count variables
+------------------------------------------------------------------------------
+
+    ^prchange^ [varlist] [^if^ exp] [^in^ range] [, ^x(^variables_and_values^)^
+        ^r^est^(^stat^)^ ^o^utcome^(^#^)^ ^f^romto ^b^rief ^noba^se ^nola^bel ^h^elp
+        ^all^ ^unc^entered ^d^elta^(^#^)^ ^con^ditional]
+
+where
+
+    ^variables_and_values^ is an alternating list of variables and either
+        numeric values or mean, median, min, max, upper, lower, previous
+
+    ^stat^ is either mean, median, min, max, upper, lower, previous, grmean
+        (group mean), grmedian, grmin, grmax
+
+Description
+-----------
+
+^prchange^ computes discrete and marginal change for regression models for
+categorical and count variables.  Marginal change is the partial derivative
+of the predicted probability or predicted rate with respect to the
+independent variables. Discrete change is the difference in the predicted
+value as one independent variable changes values while all others are held
+constant at specified values.
+
+By default, the discrete and marginal change is calculated holding all other
+variables at their mean.  Values for specific independent variables can be
+set using the x() option after ^prchange^.  For example, to compute predicted
+values when educ is 10 and age is 30, type ^prchange, x(educ=10 age=30)^.
+Values for the unspecified independent variables can be set using the rest()
+option, e.g., ^prchange, x(educ=10 age=30) rest(mean)^.  The ^if^ and ^in^
+conditions specify conditions for computation of means, min, etc., that are
+used with rest().
+
+The discrete change is computed when a variable changes from its minimum to
+its maximum (Min->Max), from 0 to 1 (0->1), from its specified value minus
+.5 units to its specified value plus .5 (-+1/2), and from its specified
+value minus .5 standard deviations to its value plus .5 standard deviations
+(-+sd/2).
+
+The command works with cloglog, cnreg, intreg, logit, mlogit, mprobit, nbreg, 
+ologit, oprobit, poisson, probit, regress, slogit, tobit, zinb, zip, ztnb, 
+and ztp.
+
+
+Options
+-------
+
+^x()^ explicitly sets the values of specified independent variables.
+
+^rest()^ sets the independent variables not specified in x() to their ^mean^
+    (default), ^minimum^, ^maximum^, ^median^ when calculating predicted values.
+    ^grmean^ sets these independent variables to the mean conditional on the
+    variables and values specified in x().  If ^prvalue^ has already been run
+    after the last estimate, ^previous^ will set unspecified variables to their
+    prior values.  For models other than mlogit, ^upper^ and ^lower^ can be used
+    to set independent variables to their minimum or maximum depending on
+    which will yield the upper or lower extreme predicted value.
+
+^outcome()^ specifies that changes will be printed only for the outcome
+    indicated. For ^ologit^, ^oprobit^, ^mlogit^ and ^slogit^, the default is 
+    to provide results for all outcomes. For the count models, the default is 
+    to present results with respect to the predicted rate; specifying an
+    outcome number will provide changes in the probability of that outcome.
+
+^delta()^ specifies the amount of the discrete change in the independent
+    variable.  The default is a 1 unit change.
+
+^fromto^ includes the pre- and post- probabilities in addition to the discrete
+    change
+
+^uncentered^ specifies that the uncentered discrete change rather than the
+    centered discrete change is to be computed.
+
+^conditional^ compute changes in conditional predictions rather than
+    unconditional predictions for the ztp and ztnb models.
+
+^all^ specifies that any calculations of means, medians, etc., should use
+    the entire sample instead of the sample used to estimate the model.
+
+^help^ presents guide to interpreting headings of output.
+
+^nolabel^ uses values rather than value labels in output.
+
+^nobase^ suppresses inclusion of the base values of x in the output.
+
+^brief^ prints only limited output.
+
+Examples
+--------
+
+To compute discrete and marginal change for ordered probit at base values
+equal to the mean:
+
+ . ^oprobit warm yr89 male white age ed prst^
+ . ^prchange^
+
+To compute discrete and marginal change for a specific set of base values:
+
+ . ^prchange, x(male=1 white=1 age=30)^
+
+ . ^prchange, x(male=1 white=1 age=30) rest(median)^
+
+ . ^prchange, x(male=1 white=max age=min) rest(median)^
+
+To compute the discrete change for a set of base values while holding other
+variables constant to a group-specific median:
+
+ . ^prchange if white == 1 & male == 0, x(white=1 male=0) rest(median)^
+
+or
+
+ . ^prchange, x(white=1 male=0) rest(grmedian)^
+
+
+To list only the discrete change for specific variables:
+
+ . ^prchange age, x(male=0 white=0) rest(median)^
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+
+

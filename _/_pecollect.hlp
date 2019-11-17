@@ -1,0 +1,163 @@
+{smcl}
+{* 2005-02-06}{...}
+{hline}
+help for {hi:_pecollect}{right:2/6/2005}
+{hline}
+
+{title: Utility program to collect information used by prvalue2}
+
+{p 8 15 2}{cmd:_pecollect}
+{cmd:level(}{it:real}{cmd:)}
+{cmd:inout(}{it:string}{cmd:)}
+{cmd:maxcnt(}{it:string}{cmd:)}
+[{cmdab:d:iff}]
+
+
+{title: Description}
+
+{p 4 4 2}
+{cmd:_pecollect} collects results from _pepred, _perhs, _pecats and other
+low level utility SPost programsto pass to _pecidelta and _peciboot.
+
+{title: Options}
+
+{p 4 8 2}
+{cmd:level()} sets the level of the confidence interval for predicted values
+or probabilities for the commands for which these are provided.
+
+{p 4 8 2}
+{cmd:inout()} specifies model type, such as typical one equation versus two
+equation
+
+{p 4 8 2}
+{cmd:maxcount()} is the maximum count value for which the probability is computed
+in count models. Default is 9.
+
+{p 4 8 2}
+{cmd:diff}  computes difference between current predictions and those that were
+saved.
+
+
+{title:Details on Globals}
+
+{p 4 8 2}
+{cmd:petype} - global string with type of model
+
+{p 8 8 2}
+1. Contents - string with three words
+
+{p 8 8 2}
+Word 1. cmd - e(cmd){break}
+Word 2. input from io - typical vs twoeq{break}
+Word 3. output from io - binary count mlogit ordered regress tobit{break}
+
+{p 8 8 2}
+2. To retrieve information
+
+{p 8 8 2}
+local cmd : word 1 of $petype // what model was estimated {break}
+local input : word 2 of $petype // is it a typical or twoeq model?  {break}
+local output : word 3 of $petype // what is the output type?  {break}
+
+{p 4 8 2}
+{cmd:pecimethod} - global string with type of ci
+
+{p 8 8 2}
+1. Contents - string with two words
+
+{p 8 8 2}
+Word 1. method for ci computation - ml, delta, ept, bootstrap {break}
+Word 2. type of bootstrap ci - normal, percentile, biascorrected {break}
+
+{p 8 8 2}
+2. To retrieve information
+
+{p 8 8 2}
+local cimethod : word 1 of $pecitype{break}
+local boottype : word 2 of $pecitype{break}
+
+
+{p 4 8 2}
+{cmd:peinfo} - global matrix (3x11) with information about the model
+
+{p 8 8 2}
+Row 1: current model {break}
+Row 2: saved model when diff option used{break}
+Row 3: difference current value - saved value{break}
+
+{p 8 8 2}
+Column 1:  # of rhs variables (i.e., # of columns inh PEbase) peinfo[1,1]{break}
+Column 2:  # of categories in outcome (from _pecats){break}
+Column 3:  level for confidence interval (e.g., 95 not .95) peinfo[1,3]{break}
+Column 4:  z value for confidence interval at given level peinfo[1,4]{break}
+Column 5:  # of rhs variables for inflation in zip and zinb{break}
+Column 6:  1 if model with no constant, else 0  peinfo[1,6]{break}
+Column 7:  base category for mlogit{break}
+Column 8:  stdp for binary models{break}
+Column 9:  # of requested reps for bootstrap (# specified by rep() option){break}
+Column 10: # of completed replications for bootstrap{break}
+Column 11: maximum # of values in predicted probs in count models.{break}
+
+{p 4 8 2}
+{cmd:pebase} and {cmd:pebase2} - base values for the x's
+
+{p 8 8 2}
+matrix pebase  = PE_in{break}
+matrix pebase2 = PE_in2{break}
+
+{p 8 8 2}
+The jth column of pebase is the jth right hand size variable in the
+model. The jth column of pebase2 is the jsth right hand side inflation
+variable in zip or zinb. If save and dif, three rows are in the matrix:{break}
+
+{p 8 8 2}
+Row 1: current model {break}
+Row 2: saved model when diff option used{break}
+Row 3: difference current value - saved value{break}
+
+{p 4 8 2}
+{cmd:pepred} - a global matrix (7 by # of outcome) containing predicted values
+
+{p 8 8 2}
+Row 1: values of the outcome category
+
+{p 8 8 2}
+{result:Current model}{break}
+Row 2: predicted probabilities for the value in row 1{break}
+Row 3: Column 1: xb from first part of model{break}
+Column 2: mu from count model{break}
+Column 3: xb from inflation part of zip and zinb{break}
+Column 4: pr(always 0) from zip and zinb{break}
+
+{p 8 8 2}
+{result:Saved model}{break}
+Row 4: predicted probabilities for the value in row 1{break}
+Row 5: Column 1: xb from first part of model{break}
+Column 2: mu from count model{break}
+Column 3: xb from inflation part of zip and zinb{break}
+Column 4: pr(always 0) from zip and zinb{break}
+
+{p 8 8 2}
+{result:Difference for saved - current}{break}
+Row 6: predicted probabilities for the value in row 1{break}
+Row 7: Column 1: xb from first part of model{break}
+Column 2: mu from count model{break}
+Column 3: xb from inflation part of zip and zinb{break}
+Column 4: pr(always 0) from zip and zinb{break}
+
+{p 4 8 2}
+{cmd:peupper} - upper bound of ci
+
+{p 4 8 2}
+{cmd:pelower} - lower bound of ci
+
+{p 8 8 2}
+Row 1: is identical to pepred.{break}
+Rows 2-7: the upper or lower bounds from the corresponding quantity in pepred{break}
+
+*** ADD MATRICES FROM BOOT FOR VARIOUS TYPES OF CIs
+
+{hline}
+{p 2 4 2}Authors: J. Scott Long & Jun Xu{p_end}
+{p 11 4 2}{browse www.indiana.edu/~jslsoc/spost.htm}{p_end}
+{p 11 4 2}spostsup@indiana.edu{p_end}

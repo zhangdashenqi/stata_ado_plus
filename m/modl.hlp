@@ -1,0 +1,279 @@
+.-
+help for ^modl^                                             (STB-40: sg73)
+.-
+
+Table making program modl
+-------------------------
+
+    ^modl^ model_label [^nocon^] [varlist] ,[specification]
+
+where "model_label" is the number or alpha-numeric character (of length 1)
+which labels the model just estimated.
+
+
+Description
+-----------
+
+    ^modl^ follows any estimation command, and is used in conjunction with
+@modltbl@ to display the estimated coefficients and t stats (or standard
+errors) for selected variables from the just estimated model. (See help on
+@modltbl@.)
+
+    ^modl^ saves coefficient estimates, standard errors, and t statistics for
+the selected variables specified by the arguments following "model_label".
+These estimates are saved as global macros which are then available for use
+by ^modltbl^. ^modltbl^ will compare the estimates on selected variables
+for up to 6 models. You may, however, have the results from any number of
+models you have specified with ^modl^ stored and available for use by
+^modltbl^ in any combination.
+
+    A simple example of a table is shown below. The example involves the
+comparison of two simple models. In the base model log wages are regressed
+on potential experience and mother's education. Model #2 includes a dummy
+variable for hispanic ethnicity.
+
+. quietly regress lwage pot momed
+. ^modl 1^ ,Base model
+. quietly regress lwage pot momed hisp
+. ^modl 2^ ,Hispanic dummy variable included
+. ^modltbl^ ts 1 2
+
+----------Output table produced with above commands-----------
+11:31:43 on  9 Nov 1996
+
+Model 1: Base model
+Model 2: Hispanic dummy variable included
+
+(t-statistics in parentheses)
+-------------------------------
+Model :       1           2
+# obs :       77          77
+Depvar:    lwage       lwage
+-------------------------------
+intcpt       1.806       1.854
+           (16.88)     (17.82)
+
+pot          0.049       0.048
+            (3.48)      (3.55)
+
+momed       -0.002       0.001
+           (-1.46)      (0.62)
+
+hisp                    -0.403
+                       (-2.75)
+
+-------------------------------
+R-sq        0.163       0.241
+===============================
+
+
+Remarks and Restrictions
+------------------------
+
+    The ^modl^ command is the second of three required steps in producing a
+table which will display the estimates of selected variables from selected
+models. The steps are (1) estimate a model, (2) immediately follow the
+estimation command with a ^modl^ command, and (3) at any later time in that
+Stata session invoke display of the desired estimates with a ^modltbl^
+command.
+    There are certain requirements which must be kept in mind when using
+^modl^. These restrictions are:
+
+        1. Any ^model_label^ used in ^modl^ must be an ^alpha-numeric
+        character of length 1^. That is ^model_label^ must be of the form 1,
+        2, or 3, or A, B, or C, and not 10 or 11 or 1A.
+
+        2. ^modl^ must IMMEDIATELY follow the estimation command for the
+        model you specify.
+
+        3. The variable NAMES used in ^modl^ must ^not be longer than 6
+        characters^. If a variable with a 7 or 8 character name is included as
+        an independent variable in the model the user can rename that
+        "too-long" variable in the ^modl^ statement using the
+                            ^newname=oldname^
+        option. See the example below under the ^varlist^ option.
+
+        4. One of the values of ^modl^ and ^modltbl^ is the ability to limit
+        output in the table to the estimates on user-selected coefficients,
+        while suppressing the output associated with the remaining "control"
+        variables. Indication in the table of the presence of sets of controls
+        can be accomplished through the ^Capital-control^ varlist option. The
+        restriction is that any ^Capital-control^ indicator ^must begin with^
+        ^a capital letter^ and ^be no longer than 6 characters^. See the
+        example below under the ^varlist^ option.
+
+        5. Note that estimates saved by ^modl^ are stored as global macros
+        so that they may be used at any time during a Stata session by
+        ^modltbl^. However, ^this may cause confusion^ if you label a model
+        as "1" at one point in the session and then sometime later you
+        estimate another model and also label it as model "1". Note that
+        you can purge all of the saved macros created by various ^modl^
+        commands with the command ^macro drop _all^. Beware, however, that
+        this command will also drop any other global macros you may have
+        created for your own use. The version of ^modl^ for Stata 5.0 will
+        update this limitation.
+
+
+Options
+-------
+
+^nocon^ indicates that either (1) the model was fit without a constant or
+   (2) the model may have been fit with a constant, but the user does not
+   wish for the estimates associated with the constant to be displayed in
+   the ^modltbl^ table.
+
+^varlist^ can be:
+
+        1) ^a blank space^. This is the default setting, and in this case the
+           estimates associated with all of the independent variables in the
+           model are included in the ^modltbl^;
+
+
+        2) ^_all^. This is a second way to capture the estimates of all of the
+           independent variables for display in a ^modltbl^.
+
+        3) ^identification of estimates to be included by number^. For example,
+           in a model (say model #1) with many independent variables, the
+           estimates from the 1st-6th, the 8th, and the 10th-12th independent
+           variables could be included in the table by issuing the command:
+
+                    ^modl 1 1-6 8 10-12^
+
+        4) ^identification of estimates to be included by name^. For example,
+
+                    ^modl 1 age gender black^
+
+           would present the estimates associated with the variables age,
+           gender, and black for model #1 in the table. Note that identifica-
+           tion by number and by name can be combined as in:
+
+                     ^modl 1 1-6 black^
+
+        5) ^replacement of a current variable name with a new variable name^
+           ^via the "newname=oldname" option^. For example, if a current
+           variable name is more than 6 characters (e.g., "hispanic"), the
+           user can rename this variable in the ^modl^ statement. This option
+           can be used in combination with any of the other varlist options as
+           in:
+
+                     ^modl 1 _all hisp=hispanic^               or
+                     ^modl 1 1-3 hisp=hispanic^                or
+                     ^modl 1 age gender black hisp=hispanic^
+
+           Note that use of this option ^does not change the actual name^ of
+           the variable, but simply uses "newvarname" in place of "oldvarname"
+           in the table.
+
+        6) ^Capital-control variable sets^. In this case the user does not
+           want to display the estimates associated with all of the indepen-
+           dent variables included in the just estimated model. The user would,
+           however, like to indicate that a set or sets of controls were
+           included in the model. To do this, append a ^Capital-control^
+           indicator at the end of the varlist. The restrictions are that the
+           indicator ^must begin with a capital letter^ and that as with
+           other variable name, the indicator ^must be no longer than 6^
+           ^characters^. For example, to indicate that a (potentially long)
+           list of family background and work experience variables were
+           included in the fitting of model #1 issue:
+
+                     ^modl 1 1-6 Fambg WrkExp^
+
+           In this example the output would include estimates on the first
+           six independent variables in the model. It would also list "Fambg"
+           and "WrkExp" at the end of the variable list in the far left column
+           of the table, and under the column of estimates associated with
+           model #1, would be the word "Yes" aligned with both "Fambg" and
+           "WrkExp" to indicate the inclusion of family background and work
+           experience variables in the model.
+
+^specification^ allows for the display of a text description of the specifi-
+   cation of the model. The text will appear at the top of the output table.
+   See the simple example at the beginning of this help file for an illustra-
+   tion.
+
+
+Extended Example
+----------------
+
+
+Following is a typical series of estimations (output excluded) followed by
+the ^modltbl^ table.
+
+-------------------------------------------------------------------------
+Example of a ^modltbl^ table using the ^modl^ command: In this example,
+the first linear regression regresses the dependent variable on 39 right-
+hand-side variables (note that global macros were used for lists of variable)
+and the second regression contained 41 right-hand-side variables. A subset
+of coefficient estimates from each set of RHS variables was chosen for
+display in the ^modltbl^ table, along with the information that both models
+contained controls for family background, while model 2 also contained
+controls for work experience.
+
+
+   . regress ln909191 e10-e12 ged tot prt $race math                       /*
+            */ $region momed $dadocc $famin $famstr $sibs dkmomed dkmath
+   (OUTPUT OMITTED)
+   
+   . ^modl^ 1 e10 e11 e12 ged tot Fambg
+   
+   . regress ln909191 e10-e12 ged tot prt $race math                       /*
+            */ $region momed $dadocc $famin $famstr $sibs dkmomed dkmath /*
+            */ $work
+   (OUTPUT OMITTED)
+
+   . ^modl^ 2 e10 e11 e12 ged tot Fambg WrkExp
+
+   . ^modltbl^ ts 1 2
+
+   21:10:18 on 22 May 1996
+
+   (t-statistics in parentheses)
+   -------------------------------
+   Model :       1           2
+   # obs :     4725        4725
+   Depvar: ln909191    ln909191
+   -------------------------------
+   intcpt       8.974       7.162
+              (61.61)     (37.24)
+
+   e10         -0.096      -0.056
+              (-0.78)     (-0.51)
+
+   e11           -0.1      -0.147
+              (-0.76)     (-1.28)
+
+   e12          0.367       0.008
+               (3.31)      (0.08)
+
+   ged          0.122       0.041
+               (1.27)      (0.52)
+
+   tot           0.09       0.103
+              (13.77)     (16.16)
+
+
+   Fambg        Yes         Yes
+                ---         ---
+
+   WrkExp                   Yes
+                            ---
+
+   -------------------------------
+   R-sq          .16         .33
+   ===============================
+
+
+Author
+------
+
+      John H. Tyler                       
+      Harvard Graduate School of Education
+      email: tylerjo@@hugse1.harvard.edu
+
+
+Also see
+--------
+
+    STB:  STB-40 sg73
+ Online:  help for @modltbl@ (if installed), @testres@ (if installed)
+

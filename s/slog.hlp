@@ -1,0 +1,88 @@
+{smcl}
+{hline}
+help for {hi:slog}{right: Bill Rising}
+{hline}
+
+{title:Nested Logging}
+{* put the syntax in what follows. Don't forget to use [ ] around optional items}
+{p 8 14}
+{cmd: slog using} {it:filename} [, { {cmd:append} | {cmd:replace} } { {cmd:text} | {cmd:smcl} } {cmdab:nop:roc} {cmdab:nol:ink} ]
+{p_end}
+{p 8 14}
+{cmd: slog close} [, {cmdab:nol:ink} ]
+{p_end}
+{p 8 14}
+{cmd: slog flush}
+{p_end}
+
+{title:Description}
+
+{p}
+{cmd:slog} allows nesting of log files within one another, exploiting SMCL to allow linking the log files.
+This is most useful when debugging programs, because it allows using log files to track various programs without worrying about crashes due to logging.
+It can also be of some use when writing long production jobs whose output needs to be split into pieces.
+{p_end}
+
+{title:Options}
+
+{p 0 4}{cmd:append}, {cmd:replace}, {cmd:noproc}, {cmd:text}, and {cmd:smcl} are used just as they would be when using the {help log} command.
+{p_end}
+
+{p 0 4}{cmd:nolink} supresses the hyperlinks added to the log files which allow moving from log file to log file.
+{p_end}
+
+{title:Example(s)}
+
+{p 8 12}{inp:. slog using bling}
+{p_end}
+
+{p 8 12}{inp:. slog close}
+{p_end}
+
+{p 8 12}{inp:. slog close, nolink}
+{p_end}
+
+{title:Notes}
+
+{p}
+This allows programs to use log files without fear of odd behavior if a log 
+file is open when the program is called. This aids compartimentilization of
+ado files... especially when building complicated batch processes.
+{p_end}
+
+{p}
+If a {cmd:slog using} command is not balanced with a {cmd:slog close} command, the output 
+is sent to places unintended. If there is a problem, typing {cmd:slog flush} closes any open log file,
+and puts the logging back to its virgin state. Mixing {cmd:slog} and {help log} commands can
+cause havoc if a {help log} command is mistakenly balanced by a {cmd:slog close} command. So... it would be
+best to simply use the {cmd:slog} commands.
+{p_end}
+
+{p}
+When using {cmd:slog} in ado files (its main use), the following usage is
+recommended in order to avoid the above balancing problem:
+{p_end}
+
+    {cmd:slog using} {it:filename}
+    {cmd:capture n }{
+        Stuff to be logged into {it:filename}
+        {cmd:}}
+    {cmd:local rc = _rc}
+    {cmd:slog close}
+    {cmd:if `rc' }{
+        {cmd:exit `rc'}
+        {cmd:}}
+
+{title:Author}
+Bill Rising 
+email: {browse "mailto:brising@louisville.edu":brising@louisville.edu} 
+web: {browse "http://www.louisville.edu/~wrrisi01":http://www.louisville.edu/~wrrisi01}
+
+snailmail:
+Dept. of Family and Community Medicine
+University of Louisville
+MedCenter One, Suite 270
+501 E. Broadway
+Louisville, KY 40202
+
+{title:Last Updated}: July 23, 2002 @ 14:09:27

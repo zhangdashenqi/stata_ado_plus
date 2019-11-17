@@ -1,0 +1,104 @@
+Generate growth-rate                                              (STB-7: sts2)
+--------------------
+
+    ^growth^ varname [^, peri^od^(^#|str^) m^a^(^#^) noa^nnual ^l^og ^p^ercent ^s^uffix^(^str^)^]
+
+
+Description
+-----------
+
+^growth^ creates ^G_^varname containing the growth in varname.  For instance, 
+"^growth gnp^" creates ^G_gnp^.
+
+
+Options
+-------
+
+^period(^#^)^ specifies the periodicity of the data.  If not specified, the per-
+    iodicity set with the ^period^ command or, if not set, 1, is assumed.
+    ^period()^ may be specified as a number (interpreted as number of observa-
+    tions in the data per "year") or as a word such as "^weekly^", "^quarterly^",
+    etc., and may be abbreviated "^w^", "^q^", etc.; see ^help period^.
+
+^ma(^#^)^ specifies that the moving average of growth is to be calculated; ^ma()^
+    is specified in ^period()^ units.  Thus, ^ma(1)^ calculates the growth between
+    adjacent observations.  ^ma(2)^ calculates the growth between y[t-2] and 
+    y[t].  Thus, with ^period(quarterly)^ data, one could obtain moving average
+    of yearly growth by specifying ^ma(4)^.
+
+^noannual^ prevents the annualizing normalization of the resulting growth rate.
+
+^log^ calculates the growth rates in log terms.
+
+^percent^ records the growth rates as percent rather than fractions.
+
+^suffix(^str^)^ specifies the base part of the name to be used rather than the 
+    existing name.  E.g., "growth gnp, suffix(x)" names the new variable G_x
+    rather than G_gnp.
+
+
+Examples
+--------
+
+ . ^growth gnp^
+
+calculates the growth in GNP.  Assuming one has not previously used the ^period^
+command, the growth rate is "per-observation" growth.  If one were using quar-
+terly data, one might want the quarterly growth rates normalized to an annual
+rate.  This would be accomplished by
+
+ . ^growth gnp, period(4)^
+
+or 
+
+ . ^growth gnp, period(quarterly)^
+
+or
+
+ . ^period quarterly^
+ . ^growth gnp^
+
+This last form is preferred because you only have to set the period once after
+using the data; see ^help period^.
+
+Now pretend we have not given the ^period^ command.
+
+ . ^growth gnp, ma(4)^
+
+would calculate the growth between y[t-4] and y[t], normalized to a per-obser-
+vation (quarterly) growth rate.  If we had given the period command, the com-
+mand would create ^G_gnp^ containing growth between y[t-4] and y[t] normalized 
+to an annual rate (which in this case, means no normalization at all). 
+
+
+
+
+Methods and Formulas
+--------------------
+
+Let p be the period of the data (1 for annual, 4 for quarterly, etc.)  If 
+^noannual^ is specified, p=1, as it also is if ^period()^ is not specified and 
+the ^period^ command has not been given stating that the period is other than 
+"annual".
+
+The ma(1) growth rate of y is then (y[t]/y[t-1])^p - 1.  The ma(m) growth rate
+is (y[t]/y[t-m])^(p/m) - 1.
+
+The log growth rate is (ln(y[t])-ln(y[t-m]))*(p/m).
+
+The percentage growth rate is obtained by multiplying these fraction growth 
+rates by 100.
+
+
+
+Author
+------
+ 
+Sean Becketti, Federal Reserve Bank of Kansas City.
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7)
+On-line:  ^help^ for ^dropoper^, ^lag^

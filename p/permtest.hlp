@@ -1,0 +1,60 @@
+^Permutation tests^
+-----------------
+
+
+^permtest^ [varlist] [weights] ^, prog^ram^(^progname^) perm^ute^(^varname^)^ 
+    ^te^sts^(^test1 test2 ...^)^ [^num^ber^(^#^) wi^thin^(^varlist^) clus^ter^(^varlist^)^ 
+    ^noi^sily ^sav^ing^(^filename^) rep^lace ^dots ev^ery^(^#^)^ slave program options]
+
+
+^Description^
+-----------
+
+This program carries out permutation tests by a Monte Carlo method. It calls
+another Stata program (the "slave" program) repetitively, randomly permuting 
+the values in one variable between calls. The slave program must be an ^rclass^
+program and any of the returned values may be taken as a test statistic. 
+Several returned values may be monitored in the same run if required. 
+Optionally a restricted permutation can be carried out by permuting 
+values within groups defined by one or more stratifying variables.
+
+The program counts the number of times the test statistic(s) monitored is 
+equal to or greater than its value realised in the original data.
+
+If the data form "clusters" of related records, the permutation test is
+carried out by randomly permuting values of a variable, which must be constant 
+within cluster, between clusters.
+
+The optional varlist is passed to the ^called^ program, as are weights and 
+all additional options.
+
+
+^Options^
+-------
+
+^program^	Name of the slave program, which must be an rclass program 
+^permute^	Variable whose values are to be permuted
+^tests^		The names of the returned values to be used as test statistics
+
+The above "options" are mandatory. The remainder are optional:
+
+^number^	Number of random permutations to carry out (default 1000)
+^within^	The variables defining a stratification for permutation
+^cluster^	The variables defining clusters of observations
+^noisily^	Call the slave program "noisily"
+^saving^	Save the test statistic values for each permutation to a Stata
+                dataset
+^replace^	Set if this is to replace an existing dataset
+^dots^		Write a dot to the screeen every so often
+^every^		Sets how often to write a dot (default 10 permutations)
+
+
+^Author^
+------
+
+David Clayton
+
+Diabetes and Inflammation Laboratory		Tel: 44 (0)1223 762669 
+Cambridge Institute for Medical Research	Fax: 44 (0)1223 762102
+Wellcome Trust/MRC Building			david.clayton@cimr.cam.ac.uk
+Addenbrooke's Hospital, Cambridge, CB2 2XY	www-gene.cimr.cam.ac.uk/clayton

@@ -1,0 +1,74 @@
+..-
+help for ^heckman2^                             (statalist distribution 27feb98)
+..-
+
+Heckman selection model estimated using Heckman's two-step approach
+- -------------------------------------------------------------------
+
+   ^heckman2^ eqname1 eqname2 [^if^ exp] [^in^ range] [^, ^l^evel^(^#^)^ ]
+
+
+^heckman2^ shares the features of all estimation commands; see help @est@.
+
+^heckman2^ typed without arguments redisplays previous results.
+
+To reset problem-size limits, see help @matsize@.
+
+
+Description
+- -----------
+
+^heckman2^ performs both Heckman's two-step procedure with Heckman's adjusted
+covariance matrix of the estimates for estimation of selection models.
+
+eqname1 (see help @eq@) is the name of the regression equation to be estimated.
+eqname2 is the name of an "equation" containing the variables thought to
+determine whether observations on the dependent variable in eqname1 are
+defined or missing.  The model to be estimated is
+
+
+   y = X1*b1 + sigma*u1                        (eqname1 contains y X1)
+
+   y observed if  X2*b2 + u_2 > 0              (eqname2 contains X2)
+
+
+Options
+- -------
+
+^level(^#^)^ specifies the confidence level in percent for confidence intervals
+    of the coefficients.
+
+
+Example
+- -------
+
+   . ^eq wage educ age^
+   . ^eq probit : married children educ age^
+
+To obtain Heckman's 2-step procedure results:
+
+   . ^heckman2 wage probit
+
+
+Author
+- ------
+
+     Vince Wiggins
+     StataCorp.
+     vwiggins@@stata.com
+
+
+References
+- ----------
+
+Heckman, J. 1976.  Sample selection bias as a specification error.
+   Econometrica 47: 153-161.
+
+
+Also see
+- --------
+
+ Manual:  ^[U] 26 Estimation and post-estimation commands^
+          ^[U] 35 Overview of model estimation^
+     ^[R] heckman^
+On-line:  help for @cnreg@, @eq@, @predict@, @test@; @fit@, @regress@, @vce@

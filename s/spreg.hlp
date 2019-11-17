@@ -1,0 +1,103 @@
+{smcl}
+{hline}
+help for {cmd:spreg}
+{hline}
+
+{title:Linear Models with Spatio-temporal Interdependence of Observations}
+
+{p 8 12}{cmd:spreg} {it:depvar} {it:indvars} [{cmd:if} {it:exp}] [{cmd:in} {it:range}], 
+	{cmdab:spa:tialvars}({it:varlist}) {cmdab:ID:}({it:varname}) {cmdab:rowid:}({it:varname})
+	{cmdab:colid:}({it:varname}) [{cmdab:T:ime}({it:varname}) {cmdab:spat:ime}({it:varname})] 
+	{cmdab:robust:} {it:maximize_options}]
+
+
+
+
+{p}{cmd:pweight}s, {cmd:aweight}s, {cmd:fweight}s, and {cmd:iweight}s are
+allowed; see help {help weights}.
+
+{title:Description}
+
+{p 0 4}{cmd:spreg} allows the user to estimate by maximum likelihood linear models that relax the assumption of independence between observations by including spatial lags of the dependent variable on the right-hand side. NOTE: Interpretation of effects is less straightforward in spatially or spatiotemporally dynamic models than in the CLRM.  For estimates of marginal effects, see spmfx.{p_end}
+	
+{p 0 4}To use this package, aspects of the dataset must be arranged in two different ways: in lower-order and higher-order data-blocs. The lower-order data are the dependent and independent variables of the analysis; their entries refer to observations. The higher-order data are the weights matrices; their entries refer to the connections between the observations. If, for example, the goal is to estimate a monadic model with interdependence, the lower-order data will be monadic and should be structured in the typical fashion, with each row of the data set corresponding to an observation. The higher order data will refer to the weights matrices, which, being relational between monads, will be dyadic in this case. With dyadic data, the lower order is dyadic and the higher-order weights matrices are "dyadic^2", i.e., they refer to relations between dyads. These higher-order weights data need not be organized the same way as the dependent and independent variables, but the variables giving these weights should be included in the same data set. The means of identifying elements of this combined dataset is though an ID variable or an ID and a time-identifying variable. Through either the use of a single ID variable, or, in the case of spatiotemporal data, an ID variable and a time identifying variable.{p_end}
+
+{p 0 4}The id variables can be either strings or numeric values.  If you have cross section of country data, country names are adequate as an identifier.  If you have time series-cross sectional (hereafter TSCS) country data, names and years are adequate as identifiers.  Please visit http://www-personal.umich.edu/~wmacmill/spreg for example data sets.{p_end}
+
+
+{title:Options}
+
+{p 0 4}{cmdab:spa:tialvars}({it:varlist}) specifies the variables to be used for the weighting matrices.{p_end}
+
+{p 0 4}{cmdab:id:}({it:varname}) each observation of the lower-order bloc must be uniquely identified by this variable. For TSCS data, this variable in combination with the time variable must uniquely identify observations of the lower-order bloc.{p_end}
+
+{p 0 4}{cmdab:rowid:}({it:varname}) this identifies the rows of the W matrix. It must {it:exactly} take on the values that identify variable specified by {cmdab:ID:}({it:varname}).{p_end}
+
+{p 0 4}{cmdab:colid:}({it:varname}) the same warnings to apply to this as to {cmdab:rowid:}({it:varname}).{p_end}
+
+{p 0 4}{cmdab:T:ime}({it:varname}) this identifies the time component for TSCS data sets.{p_end}
+
+{p 0 4}{cmdab:spat:ime}({it:varname}) if {cmdab:T:ime}({it:varname}) is specified, this must also be specified.{p_end}
+
+{p 0 4}{cmdab:robust:} allows for Huber-White robust standard errors.{p_end}
+
+{p 0 4}{it:maximize_options} allows the user to add options to
+	Stata's maximize command (e.g., {it:difficult}, {it:trace}, {it:iterate(#)} {it:constraint(#)}, etc.). 
+	See {help ml maximize} for complete details.  You should rarely have to specify them, 
+	though they may be helpful if parameters approach boundary values. {p_end}
+
+	
+{title:Notes}
+
+{p 0 4}1. A total of 10 weighting matrices can be specified.  However, keep in mind the memory demands with large data sets.  A 10k x 10k W matrix is 75 megabytes, and a 20k x 20k W matrix is 800 megabytes.{p_end}
+
+{p 0 4}2. W must be of dimensions NxN.  However, if W is symmetric, the program will recognize when only the lower triangle has been specified, and will fill out the rest of the matrix, reducing the number of data points that must be entered.{p_end}
+
+{p 0 4}3. If W is not symmetric, the rowid must correspond to flows away from the monadic observation, and the colid must refer to flows into.{p_end}
+
+{p 0 4}4. Each W matrix is estimated to have the effect of "rho" in the model.{p_end}
+
+{title:Examples}
+
+Please refer to the sample data sets used here for examples of the correct structure of the data.
+
+    {hline}
+{pstd}For a time series-cross sectional data set{p_end}
+
+{phang2}{cmd:. use "http://www-personal.umich.edu/~wmacmill/stata/spreg/tscsspatialdata.dta", clear}{p_end}
+
+{phang2}{cmd:. spreg captx psdebt, spa(W) id(coid) rowid(countryid) colid(ccid) t(year) spat(spattime)}{p_end}
+
+    {hline}
+{pstd}For a cross sectional data set{p_end}
+
+{phang2}{cmd:. use "http://www-personal.umich.edu/~wmacmill/stata/spreg/csspatialdata.dta", clear}{p_end}
+
+{phang2}{cmd:. spreg captx psdebt, spa(W) id(coid) rowid(countryid) colid(ccid)}{p_end}
+	
+	
+{title:References}
+
+{p 0 4}If you use spreg, please cite:{p_end}
+
+{p 4 4}MacMillan, William D., Rob Franzese, and Jude Hays.  2009.  SPREG: Models with Spatio-temporal Interdpendence (Stata version).  
+Version 1.0.  Ann Arbor, MI: University of Michigan. http://www-personal.umich.edu/~wmacmill/{p_end}
+
+{p 4 4}Franzese, Robert J. Jr., and Jude C. Hays.  2008.  "Interdependence in Comparative Politics: Substance, Theory, Empirics, Substance" 
+Comparative Political Studies 41 (4/5): 742-80.{p_end} 
+
+{title:Author}
+
+    William D. MacMillan
+    University of Michigan
+    Department of Political Science
+    wmacmill@umich.edu
+    http://www-personal.umich.edu/~wmacmill/
+
+{title:Acknowledgements}
+
+{p 0 4} We wish to acknowledge Maurizio Pisati for his generous contributions.  Fred Boehmke also gave helpful tips and advice during the production of this code.
+
+{p 0 4}This program is the product of a collaborative research effort with
+    Rob Franzese and Jude Hays.  However, Rob and Jude are (mostly) sin free from programming
+	errors in the spreg package.{p_end}

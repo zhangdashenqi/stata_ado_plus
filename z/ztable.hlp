@@ -1,0 +1,38 @@
+.-
+help for ^ztable^
+.-
+
+Standard Normal Distribution
+----------------------------
+ 
+	^ztable^ [, ^Cum^ ] 
+
+Description
+-----------
+
+^ztable^ displays a table of probabilities for 
+     the standard normal distribution.
+     
+Option
+------
+
+^cum^ displays a table of cumulative probabilities for 
+     values between -inf and Z.
+     
+     By default ^ztable^ displays probabilities for values 
+     between 0 and Z.
+
+
+Examples
+--------
+
+ . ^ztable^
+ . ^ztable, cum^
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 

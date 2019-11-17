@@ -1,0 +1,10 @@
+Test the sum of coefficients                                     (STB-17: sts7)
+----------------------------
+
+	^testsum^ varlist ^, ^[^testval(#)^]
+
+tests the sum of the coefficients on the variables in varlist against the 
+^testval^.  The default ^testval^ is zero.  ^testsum^ is a convenience 
+feature; it allows Stata wildcards in the varlist and calls ^test^ to 
+perform the test.  The sum of coefficients is stored in S_1.  S_2 through 
+S_6 are filled in with the results of the ^test^ command.

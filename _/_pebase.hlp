@@ -1,0 +1,54 @@
+.-
+help for ^_pebase^ - 1.6.5 2007-02-08
+.-
+
+    _pebase [if] [in] [, x(variables_and_values) rest(stat) all]
+
+    where
+
+    ^variables_and_values^ is an alternating list of variables and either
+        numeric values or mean, median, min, max, upper, lower, previous
+
+    ^stat^ is either mean, median, min, max, upper, lower, previous, zero, 
+        grmean (group mean), grmedian, grmin, grmax
+
+
+^_pebase^ is a utility command for programming commands that require the user
+to set specific values for the independent variables in regression.
+
+Values of the independent variables are set using the ^x()^, ^rest()^, and ^all^
+options.  These can be passed directly from the user input for the 
+programmer's command to ^_pebase^.
+
+Options
+-------
+
+^x()^ sets the values of independent variables for calculating predicted
+    values.  The list must alternate variable names and either numeric values
+    or types of ^stat^.  
+
+^rest()^ sets the independent variables not specified in x() to one of the 
+    types of ^stat^.  Type ^help prstar^ for more details about using ^x()^ and
+    ^rest^.
+
+^all^ specifies that any calculations of means, medians, etc., should use
+    the entire sample instead of the sample used to estimate the model.
+
+Output of _pebase
+-----------------
+
+PE_base: global matrix containing set values of independent variables
+
+r(pebase): r() class matrix containing set values of independent variables
+
+r(nrhs): r() class macro containing number of independent variables
+
+r(rhsnms): r() class macro containing names of independent variables
+
+PE_base2, r(pebase2), r(nrhs2), r(rhsnms): same as above but for the 
+    second equation of two-equation commands like ^zip^ and ^zinb^.
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu

@@ -1,0 +1,55 @@
+{smcl}
+{* 02jun2003}{...}
+{hline}
+help for {hi:xtserial}
+{hline}
+
+{title:Wooldridge test for serial correlation in panel-data models}
+
+{p 8 16 2}{cmd:xtserial}
+{it:depvar} {it:indepvars}
+{bind:[{cmd:if} {it:exp}]}
+{bind:[{cmd:in} {it:range}]}
+[{cmd:,}
+{cmdab:o:utput}] 
+
+{p 4 4 2}
+You must {cmd:tsset} your data before using {cmd:xtserial}; see
+help {help tsset}.
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:xtserial} implements a test for serial correlation in the idiosyncratic
+errors of a linear panel-data model discussed by Wooldridge (2002).  Drukker
+(2003) presents simulation evidence that this test has good size and power
+properties in reasonable sample sizes.
+
+{p 4 4 2}
+Under the null of no serial the residuals from the regression of the
+first-differenced variables should have an autocorrelation of -.5.  This
+implies that the coefficient on the lagged residuals in a regression of the
+lagged residuals on the current residuals should be -.5.  xtserial performs
+a Wald test of this hypothesis.  See Drukker (2003) and Wooldridge (2002)
+for further details.
+
+{title:Options}
+
+{p 4 8 2}{cmd:output} specifies that the output from the first-differenced
+regression should be displayed.  By default, the first-differenced regression
+output is not displayed.
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. xtserial ln_wage age* ttl_exp tenure* south , output}
+
+{title:References}
+
+{p 4 8 2}Drukker, D. M. 2003.
+Testing for serial correlation in linear panel-data models.
+{it:The Stata Journal} (3)2, 1-10.
+
+{p 4 8 2}Wooldridge, J. M.  2002.
+{it:Econometric Analysis of Cross Section and Panel Data}.
+Cambridge, Massachusetts:The MIT Press.
+

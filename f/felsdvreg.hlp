@@ -1,0 +1,373 @@
+{smcl}
+{* 25oct2011 version 1.9.0}{...}
+{cmd:help felsdvreg}{right: ({browse "http://www.stata-journal.com/article.html?article=up0041":SJ13-3: st0143_4)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 18 20 2}{...}
+{p2col :{hi:felsdvreg} {hline 2}}Memory-saving estimation of a linear model with two high-dimensional fixed effects{p_end}
+
+
+{title:Syntax}
+
+{p 8 20}{cmd:felsdvreg}
+varlist  
+{ifin},
+{opt i:var(varname)}
+{opt j:var(varname)}
+{opt p:eff(name)}
+{opt f:eff(name)}  
+{opt xb(name)}
+{opt r:es(name)}
+{opt m:over(name)}
+{opt g:roup(name)}
+{opt mnum(name)}
+{opt pobs(name)}
+[{opt cons}
+{opt takegroup}
+{opt grouponly}
+{opt ftest}
+{opt robust}
+{opt cl:uster(varname)}
+{opt noadji}
+{opt noadjj}
+{opt chol:solve}
+{opt norm:alize}
+{opt noi:sily}
+{opt nocomp:ress}
+{opt hat(varlist)}
+{opt orig(varlist)}
+{opt feffse(name)}]
+
+
+{title:Description}
+
+{pstd}{cmd:felsdvreg} computes a linear regression model with two
+high-dimensional fixed effects: one effect
+(e.g., the firm effect) is included as dummy variables, while the other effect
+(e.g., the person effect) is eliminated by subtracting group means
+(within-transformation).  This method has been termed "FEiLSDVj" by Andrews,
+Schank, and Upward (2006) because it has features of both the classical
+fixed-effects model and the least-squares dummy-variable model.  (Further
+effects, e.g., time effects, can be specified by including the
+corresponding dummies.)
+
+{pstd}{cmd:felsdvreg} skips the step of creating the dummy variables.  Instead,
+it exploits the information provided by the group identifiers to directly
+create the cross-product matrices needed for the least-squares normal
+equations.  This procedure is memory saving because the cross-product matrices
+are of a much lower dimension than the design matrix.  The procedure is
+described in more detail in Cornelissen (2008).
+
+{pstd}{cmd:felsdvreg} incorporates the grouping algorithm proposed by Abowd,
+Creecy, and Kramarz (2002) and programmed by Robert Creecy (original author),
+Lars Vilhuber (current author), and Amine Ouazad (author of Stata command 
+{net "from http://repository.ciser.cornell.edu/viewcvs-public/cg2/branches/stata/":{bf:a2group}}). 
+The grouping algorithm allows you to determine which of the effects is
+identified.  One firm effect per group (the reference) and all firm effects of
+firms without movers are dropped from the estimation beforehand.
+
+{pstd} In Cornelissen (2008), the use of {cmd:felsdvreg} and the
+output are described.
+
+{pstd}You may want to consider
+{net "from http://repository.ciser.cornell.edu/viewcvs-public/cg2/branches/stata/":{bf:a2reg}}
+by Amine Ouazad as an alternative estimation tool for a two-way fixed-effects
+regression.
+
+
+{title:Memory requirements}
+
+{pstd}The moment matrices and the estimation are created in the
+Mata environment.  Mata can use only memory that is not allocated to Stata by
+the {cmd:set memory} command.  Therefore, you should not allocate too much
+memory to Stata because any memory that is allocated in excess to Stata is
+lost for Mata.  If you get the error message "unable to allocate real", then
+Mata is running out of memory; in this case, try to reduce the memory you
+allocated to Stata by using {cmd:set memory}.  If you get the error message "no
+room to add more observations/variables", then Stata is running out of memory;
+in this case, you need to increase the memory allocated to Stata by using
+{cmd:set memory}.
+
+{pstd} If you do not have enough memory available to run {cmd:felsdvreg} on the
+complete sample, you may wish to run it on a subsample.  To have as
+many identified firm effects as possible in this subsample, you may wish to
+choose the subsample such that the mobility groups remain intact.  For example,
+you may wish to choose a large mobility group as your subsample and remove 
+the remaining groups.  In this case, you can use the option {cmd:grouponly}
+(see description below) to run the grouping algorithm separately, and then use
+the created group variable to choose your sample for the fixed-effects
+estimation.
+
+
+{title:Options} 
+
+{phang}
+{opt ivar(varname)} specifies the identification variable for the first effect,
+which is omitted from the regression by a fixed-effect transformation
+(subtracting group means).  This is, for example, the person ID.
+
+{phang}
+{opt jvar(varname)} specifies the identification variable for the second
+effect, which is included as dummy variables.  This is, for example, the firm
+ID.
+
+{phang}
+{opt peff(name)} specifies the name of a new variable to store the first
+effect.
+
+{phang}
+{opt feff(name)} specifies the name of a new variable to store the second
+effect.
+
+{phang}
+{opt xb(name)} specifies the name of a new variable to store the linear
+prediction X'b.
+
+{phang}
+{opt res(name)} specifies the name of a new variable to store the residual.
+
+{phang}
+{opt mover(name)} specifies the name of a new variable to store an indicator
+for movers.
+
+{phang}
+{opt group(name)} specifies the name of a new variable to store the group
+identifier.  (Group 0 represents all firms without movers; all other groups
+represent sets of firms that are connected to each other by worker mobility.)
+
+{phang}
+{opt mnum(name)} specifies the name of a new variable to store the number of
+movers per firm.
+
+{phang}
+{opt pobs(name)} specifies the name of a new variable to store the number of
+observations per person.  Similarly to {helpb xtreg}, the program will also
+compute person effects for those persons with only one observation.  The
+residual for these persons will be zero (in {helpb xtreg}, it is set to missing
+in these cases).  The variable defined in {opt pobs()} allows you to identify
+those persons.
+
+{phang}
+{opt cons} normalizes all person effects to the mean zero by subtracting the
+mean person effect over all groups.  The mean is then displayed as the
+regression constant.
+
+{phang}
+{opt takegroup}, if the group variable already exists, skips the
+grouping algorithm.  The existing group variable must regroup all firms without
+movers into group 0 and apply to exactly the same estimation sample.
+
+{phang}
+{opt grouponly} causes {cmd:felsdvreg} to run only the grouping algorithm and
+produce the group indicator variable.  No estimates are computed.  This can be
+useful if the sample is too big to run the estimation on the whole sample, but
+the group variable is required to select a smaller sample.
+
+{phang}
+{opt ftest} issues not only the F test of joint significance of all fixed
+effects but also F tests for the significance of firm effects and person
+effects separately. Choosing this option will consume more computer memory.
+
+{phang}
+{opt robust} computes robust Huber/White/sandwich estimates of the covariance
+matrix.
+
+{phang}
+{opt cluster(varname)} computes the clustered variant of the
+Huber/White/sandwich estimates of the covariance matrix, where
+{it:varname} defines the clusters.
+
+{pmore} Notes: (1) If you choose {cmd:robust} or {cmd:cluster()}, the
+conventional standard errors will be returned as {cmd:e(se)} for comparison. 
+
+{pmore}(2) The clustered covariance matrix is multiplied by the scalar
+N/(N-K)*M/(M-1), where N is the number of observations, M is the number of
+clusters, and K is the number of parameters.  For this scalar adjustment,
+{cmd:felsdvreg} computes K by default as the number of explicit regressors plus
+the number of identified fixed effects (full degrees-of-freedom adjustment).
+(Stata's {helpb xtreg} does this full degrees-of-freedom adjustment only when
+the option {cmd:dfadj} is specified; otherwise, it leaves the fixed effects out
+of the count.)  The options {opt noadji} and {opt noadjj} (see below) change the
+default count of K.  The N-K used by {cmd:felsdvreg} is returned as a scalar,
+{cmd:e(df_r)}.  If you want a different degrees-of-freedom adjustment than what
+was done by {cmd:felsdvreg}, say, N-K*, then you can multiply the clustered
+standard errors reported by {cmd:felsdvreg} by sqrt({cmd:e(df_r)}/(N-K*)).
+
+{pmore} (3) Computing clustered or robust standard errors can take
+substantially more time than the other steps of the estimation.  This is because
+the memory-saving way in which {cmd:felsdvreg} operates consists of not storing
+the time-demeaned dummy-variable matrix of the fixed effects but instead
+computing elements of it each time they are needed.  For the robust and
+clustered standard errors, this is more time consuming than for the preceding
+generation of the moment matrices.
+
+{phang}
+{opt noadji} leaves out of the degrees-of-freedom adjustment for the clustered
+covariance matrix the number of groups in the first effect.  This is the
+default degrees-of-freedom adjustment used by Stata's
+{helpb xtreg} with the option {cmd:vce(cluster} {it:clustvar}{cmd:)}.
+
+{phang}
+{opt noadjj} leaves out of the degrees-of-freedom adjustment for the clustered
+covariance matrix the number of groups in the second effect.
+
+{phang}
+{opt cholsolve} directs Stata to use the {cmd:cholsolve()} function instead of
+the {cmd:invsym()} function to solve for the estimates of the coefficients and
+standard errors.  The advantage of the {cmd:cholsolve()} function may be its
+greater internal precision, which can be important in large datasets.  However,
+if the {cmd:cholsolve()} function is used, the program will only check for
+collinearity between explicit regressors, not for collinearity between
+regressors and fixed effects.  If the latter occurs and the option 
+{cmd:cholsolve} is used, Stata will issue the error message "matrix has missing
+values".
+
+{phang}
+{opt normalize} normalizes the group means of the firm effects to
+zero.  In each group, the mean firm effect is subtracted from the firm effects
+and added to the person effects.
+
+{phang}
+{opt noisily} provides additional output, including tables with summary
+statistics.  These include the count of movers, persons, and firms, as well as
+the mobility of persons between firms.
+
+{phang}
+{opt nocompress} specifies not to compress the dataset.  By default, the
+{cmd:felsdvreg} command uses the Stata {helpb compress} command to compress the
+dataset.  Compressing is recommended.  You should only specify {opt nocompress}
+if you are sure that you have enough memory and if you think compressing takes
+too long.
+
+{phang}
+{opt hat(varlist)}, if you run the second-stage regression of a 2SLS
+estimation, tells {cmd:felsdvreg} which regressors are predictions from a
+first-stage regression so that it can adjust the residual sum of squares and
+the standard errors of the second-stage regression (see, for example, Greene
+[2003, 400]).  This option must be used with the option {opt orig()}.
+
+{phang}
+{opt orig(varlist)} specifies which original regressors belong to
+the predicted regressors specified in {opt hat()}.  The order of the regressors
+must match the order chosen in {opt hat()}.
+
+{pmore}For example, in a regression of {cmd:y} on {cmd:z1}, {cmd:x2}, {cmd:x3},
+and two-way fixed effects, the variables {cmd:x2} and {cmd:x3} are to be
+instrumented by the IVs {cmd:z2} and {cmd:z3}.  A 2SLS estimation can be carried
+out in the following way:
+
+{pmore2}Run a first-stage regression for {cmd:x2}:
+
+{phang3}{cmd:. felsdvreg x2 z1 z2 z3, ivar(i) jvar(j) xb(xb)}
+         {cmd:peff(phat) feff(fhat)}
+
+{pmore2}Predict {cmd:x2hat}:
+
+{phang3}{cmd:. generate x2hat = xb + phat + fhat}
+
+{pmore2}Run a first-stage regression for {cmd:x3}:
+
+{phang3}{cmd:. felsdvreg x3 z1 z2 z3, ivar(i) jvar(j) xb(xb)}
+         {cmd:peff(phat) feff(fhat)}
+
+{pmore2}Predict {cmd:x3hat}:
+
+{phang3}{cmd:. generate x3hat = xb + phat + fhat}
+
+{pmore2}Run a second-stage regression:
+
+{phang3}{cmd:. felsdvreg y z1 x2hat x3hat, ivar(i) jvar(j) xb(xb)}
+            {cmd:peff(phat) feff(fhat) hat(x2hat x3hat) orig(x2 x3)}
+
+{pmore2}Note that after the second stage, {cmd:felsdvreg} will calculate the
+saved residual by plugging in {cmd:x2} and {cmd:x3} for {cmd:x2hat} and
+{cmd:x3hat}.  If you require the second-stage residual based on {cmd:x2hat}
+and {cmd:x3hat}, you can generate it by typing
+
+{phang3}{cmd:. generate res2 = y - xb - phat - fhat}
+
+{phang}
+{opt feffse(varname)} specifies the name of a new variable to store the standard
+errors of the fixed effects of the second effect.  For the nonidentified
+effects, the variable for the standard errors will contain a missing value.
+(Recovering the standard errors of the first effect is not implemented.)
+
+
+{title:Saved results}
+
+{pstd}
+Besides the information saved in the variables named as determined by the
+options {cmd:peff()}, {cmd:feff()}, {cmd:xb()}, {cmd:res()}, {cmd:mover()},
+{cmd:group()}, {cmd:mnum()}, and {cmd:pobs()}, some e-class scalars and
+matrices are returned and can be listed by typing {cmd:ereturn list}.  If the
+{cmd:robust} or {cmd:cluster()} option is used, the e-class matrices include a
+matrix {cmd:e(se)}, which contains the usual (nonrobust) standard errors that
+would have been obtained without the {cmd:robust} or {cmd:cluster()} option.
+
+
+{title:R-squared}
+
+{pstd}
+The fraction of the variance of the dependent variable explained by
+the model (including what is explained by all the fixed effects) can
+be computed from the saved results by typing
+
+{phang3}display 1-e(rss)/e(tss)
+
+{pstd}
+That is, just 1 minus the residual sum of squares divided by the total sum 
+of squares.  However, there are other types of R-squareds that one can compute 
+after a fixed-effects model; see, for example, {manhelp xtreg XT}.
+One of those, the "within" R-squared is also provided by
+{cmd:felsdvreg}. To get this one, type
+
+{phang3}display e(r2_w)
+
+{pstd}
+after estimation with {cmd:felsdvreg}.
+
+
+{title:Example}
+
+{phang}
+{cmd:. felsdvreg y x w, ivar(i) jvar(j) feff(feff) peff(peff) mover(mover)}
+         {cmd:group(group) xb(xb) res(res) mnum(mnum)}
+
+
+{title:References}
+
+{phang}Abowd, J., R. Creecy, and F. Kramarz.  2002.  Computing person and firm
+effects using linked longitudinal employer-employee data.  Technical Report 
+2002-06, U.S. Census Bureau. 
+{browse "http://lehd.dsd.census.gov/led/library/techpapers/tp-2002-06.pdf"}.
+
+{phang}Andrews, M., T. Schank, and R. Upward.  2006.  Practical fixed-effects
+estimation methods for the three-way error-components model.
+{it:Stata Journal} 6: 461-481.
+
+{phang}Cornelissen, T. 2008.  The Stata command felsdvreg to fit a linear model
+with two high-dimensional fixed effects.  {it:Stata Journal} 8: 170-189.
+
+{phang}Greene, W.  2003.  {it:Econometric Analysis}.  5th ed.
+Upper Saddle River, NJ: Prentice Hall.
+
+
+{title:Author}
+
+        Thomas Cornelissen, University College London
+        t.cornelissen@ucl.ac.uk
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 13, number 3: {browse "http://www.stata-journal.com/article.html?article=up0041":st0143_4}{break}
+         {it:Stata Journal}, volume 11, number 4: {browse "http://www.stata-journal.com/article.html?article=up0034":st0143_3}{break}
+         {it:Stata Journal}, volume 9, number 2: {browse "http://www.stata-journal.com/article.html?article=up0025":st0143_2}{break}
+         {it:Stata Journal}, volume 9, number 1: {browse "http://www.stata-journal.com/article.html?article=up0024":st0143_1}{break}
+         {it:Stata Journal}, volume 8, number 2: {browse "http://www.stata-journal.com/article.html?article=st0143":st0143}
+
+{psee}Online:  {manhelp xtreg XT}
+{p_end}

@@ -1,0 +1,95 @@
+.-
+help for ^prtab^ - 2Nov2005
+.-
+
+Table of predicted values/probabilities/rates for regression models
+-------------------------------------------------------------------
+
+    ^prtab^ rowvar [colvar [supercolvar]] [^if^ exp] [^in^ range],
+        [^by(^superrowvar^)^ ^x(^variables_and_values^)^ ^r^est^(^stat^)^
+        ^o^utcome^(^string^)^ ^b^rief ^noba^se ^nol^abel ^novar^lbl
+        ^con^ditional ^a^ll]
+
+    where
+
+    ^rowvar^, ^colvar^, ^supercolvar^, and ^superrowvar^ are independent variables
+        in the previous estimation.
+
+    ^variables_and_values^ is an alternating list of variables and either
+        numeric values or mean, median, min, max, upper, lower, previous
+
+    ^stat^ is either mean, median, min, max, upper, lower, previous, grmean
+        (group mean), grmedian, grmin, grmax
+
+Description
+-----------
+
+After estimating a regression model, ^prtab^ presents a one- to four-way table
+of the predicted values (probabilities, rate) for different combinations of
+values of independent variable.
+
+The command works with cloglog, cnreg, intreg, logit, mlogit, mprobit, nbreg, 
+ologit, oprobit, poisson, probit, regress, slogit, tobit, zinb, zip, ztnb, 
+and ztp.
+
+Options
+-------
+
+^by(superrowvar)^ specifies numeric variable to be treated as superrow.  Only
+    one variable is allowed.
+
+^x()^ sets the values of independent variables for calculating predicted
+    values.  The list must alternate variable names and values.  The values
+    may be either numeric values or can be mean, median, min, max, previous,
+    upper, or lower.  The latter cannot be used if rest() specifies a group
+    summary statistic (e.g., grmean).
+
+^rest()^ sets the independent variables not specified in x() to their ^mean^
+    (default), ^minimum^, ^maximum^, ^median^ when calculating predicted values.
+    ^grmean^ sets these independent variables to the mean conditional on the
+    variables and values specified in x(); ^grmedian^, ^grmax^, and ^grmin^ can
+    also be used.  If ^prvalue^ has already been run after the last estimate,
+    ^previous^ will set unspecified variables to their prior values.  For
+    models other than mlogit, ^upper^ and ^lower^ can be used to set independent
+    variables to their minimum or maximum depending on which will yield the
+    upper or lower extreme predicted value.
+
+^outcome()^ presents results for the specified outcome.  For ordered models or
+    mlogit, the default is to provide results for all outcomes (each one in a
+    separate table); for count models, the default is to present changes in
+    the predicted rate.
+
+^conditional^ for -ztp- and -ztnb-, table with contain conditional predictions
+    rather than the default unconditional predictions.
+
+^all^ specifies that any calculations of means, medians, etc., should use
+    the entire sample instead of the sample used to estimate the model.
+
+^brief^ and ^nobase^ suppress the base values of x in the output.
+
+^novallbl^ causes the numeric codes to be displayed rather than value labels.
+
+^nolabel^ causes the variable name to be displayed rather than the variable
+    label.
+
+Examples
+--------
+
+^. probit faculty female fellow phd mcit3 mnas^
+^. prtab female fellow mnas^
+
+^. ologit jobclass female fellow pub1 phd^
+^. prtab female fellow, x(phd=min)^
+
+^. poisson pub1 female fellow phd enrol^
+^. prtab female fellow^
+^. prtab female fellow, outcome(0)^
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+
+
+
+

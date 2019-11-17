@@ -1,0 +1,367 @@
+{smcl}
+{* 24march2006}{...}
+{hline}
+help for {hi:mvnp()}{right:(SJ6-2: st0101)}
+{hline}
+
+{title:Multivariate normal probabilities, calculated using the GHK simulator}
+
+{p 4 12 2}{cmd:egen} {it:newvar} = {cmdab:mvnp(}{it:varlist1}{cmd:)} 
+	{ifin}, {cmdab:pre:fix(}{it:string}{cmd:)} {cmdab:dr:aws(}{it:#}{cmd:)} 
+	[{cmdab:chol:(}{it:matrix_name}{cmd:)} 
+	{cmdab:s:igns(}{it:varlist2}{cmd:)} {cmdab:ado:only}]
+
+{p 4 8 2}where {it:varlist1} refers to a list of existing variables containing 
+upper integration points (see below). The variable names should be separated
+by spaces, not commas.
+
+
+{title:Description}
+
+{p 4 4 2}This {cmd:egen} function calculates multivariate normal probabilities 
+using the Geweke-Hajivassiliou-Keane (GHK) simulator and returns the 
+results in {it:newvar}, with storage type double. For a brief description 
+of the GHK smooth recursive simulator, see Greene (2003, 931{c -}933), who also 
+provides references to the literature. See also Train (2003).
+
+{p 4 4 2}More specifically, the function returns, in {it:newvar}, the multivariate 
+normal probability Prob[-inf <= {it:x_m} <= {it:a_m}, {it:m} = 1, ..., {it:M}] 
+where the {it:M} variables {it:x_m} each have mean zero, and covariance matrix 
+{it:V} where {it:matrix_name} = {cmd:cholesky(}{it:V}{cmd:)}. For example, the
+function returns the joint cumulative distribution {it:F}({it:a_1}, {it:a_2},
+..., {it:a_M}; {it:R}) of {it:M}-variate normal distribution with covariance
+matrix {it:V}, where the cumulation is over (-inf, {it:a_1}] x  (-inf,
+{it:a_2}] x ... x  (-inf, {it:a_M}].  The upper integration points, {it:a_1},
+{it:a_2}, ..., {it:a_M}, are the variables specified in {it:varlist1}. If the
+mean ofany of the {it:x_m} variables is nonzero, the upper integration points
+should be appropriately centered first.
+
+{p 4 4 2}The function assumes the existence of {it:M} x {it:D} variables
+containing draws from the standard uniform distribution, i.e., a uniform
+density with domain [0,1).  The names of the variables have a common prefix,
+specified by the option {cmdab:prefix(}{it:string}{cmd:)}, and the variable
+name suffixes are {it:m_d} for each integer {it:m} = 1, ..., {it:M} and each
+integer {it:d} = 1, ..., {it:D}. The variables can be created using the
+command {cmd:mdraws}. 
+
+{p 4 4 2}The MSL estimator is consistent, asymptotically normal and efficient,
+and equivalent to ML if the number of draws tends to infinity faster than the
+square root of the number of observations does (Train, 2003, 259). (When
+{it:M} = 2, and for a `large' number of random draws, then the calculation is
+asymptotically equivalent to that provided by the built-in function
+{cmd:binormal()}.) Other things being equal, the more draws, the better. In
+practice, a relatively small number of draws may work well in the sense that
+the change in calculated probabilities as the number of draws is increased is
+negligible. It is the responsibility of the user to check that this is the
+case.
+
+{p 4 4 2}Calculation is numerically intensive, and may be very slow if the number of
+observations is large, if {it:D} is large, or especially if {it:M} is large. 
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:prefix(}{it:string}{cmd:)} specifies the prefix identifying the 
+variables that contain draws from the standard uniform distribution. The variables
+must be named following the convention regarding suffixes that is explained in the
+Description.
+
+{p 4 8 2}{cmd:draws(}{it:#}{cmd:)} specifies the number of draws
+used when calculating the simulated probability. The default is 5. (See the 
+discussion above concerning the number of draws.)
+
+{p 4 8 2}{cmd:chol(}{it:matrix_name}{cmd:)} specifies the lower triangular
+matrix that is the Cholesky factorization of the covariance matrix, {it:V}, 
+i.e., matrix {it:matrix_name} = {cmd:cholesky(}{it:V}{cmd:)}. At least one
+of the diagonal elements of matrix {it:matrix_name} should equal 1. The 
+nature of any further constraints on matrix {it:matrix_name} depends on the
+application (see the examples below). The user must ensure that the
+appropriate constraints are imposed.
+
+{p 4 8 2}{cmd:signs(}{it:varlist2}{cmd:)} may be used if the function is used 
+to evaluate multivariate probit-like likelihood functions, and it helps reduce
+computation time. For an ordered set of binary dependent variables 
+{it:i} = 1,...{it:M}, {it:varlist2} contains the names of a set of 
+variables summarizing the sign of each dependent variable. Specifically, 
+the {it:i}th variable of {it:varlist2} should contain 1 for an observation 
+with the corresponding dependent variable equal to 1 and contain -1 
+for an observation with the corresponding dependent variable equal to 0.
+
+{p 4 8 2}{cmd:adoonly} prevents using the Stata plugin to perform the 
+intensive numerical calculations.  Specifying this option results in 
+slower-running code but may be necessary if the plugin is not available
+for your platform.  This option is also useful if you like to do speed
+comparisons!
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. ************ (1) one-off evaluation ************** }
+
+{p 8 12 2}{cmd:. set obs 1000}
+
+{p 8 12 2}{cmd:. matrix R = (1, .25 \ .25, 1) }
+
+{p 8 12 2}{cmd:. drawnorm v1 v2, corr(R) seed(13131313) }
+
+{p 8 12 2}{cmd:. matrix C = cholesky(R)  }
+
+{p 8 12 2}{cmd:. ge x_b = binormal(v1,v2,.25) }
+
+{p 8 12 2}{cmd:. mdraws, neq(2) dr(500) prefix(p)  }
+
+{p 8 12 2}{cmd:. egen x_s = mvnp(v1 v2), dr(500) chol(C) }
+
+{p 8 12 2}{cmd:. su x_b x_s }
+
+{p 8 12 2}{cmd:. **** (2) trivariate probit by Maximum Simulated Likelihood **** }
+
+{p 8 12 2}{cmd:. // (cf. with -mvprobit-) }
+
+{p 8 12 2}{cmd:. capture program drop myll }
+
+{p 8 12 2}{cmd:. program define myll }
+
+{p 8 12 2}{cmd:. {space 8}args lnf xb1 xb2 xb3 c21 c31 c32 }
+
+{p 8 12 2}{cmd:. {space 8}tempvar sp k1 k2 k3 }
+
+{p 8 12 2}{cmd:. {space 8}quietly {c -(}  }
+
+{p 8 12 2}{cmd:. {space 12}gen double `k1' = 2*$ML_y1 - 1 }
+
+{p 8 12 2}{cmd:. {space 12}gen double `k2' = 2*$ML_y2 - 1 }
+
+{p 8 12 2}{cmd:. {space 12}gen double `k3' = 2*$ML_y3 - 1 }
+
+{p 8 12 2}{cmd:. {space 12}tempname cf21 cf31 cf32 }
+
+{p 8 12 2}{cmd:. {space 16}// next lines, since -lf- evaluator }
+
+{p 8 12 2}{cmd:. {space 12}su `c21', meanonly }
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf21' = r(mean)  }
+
+{p 8 12 2}{cmd:. {space 12}su `c31', meanonly }
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf31' = r(mean)  }
+
+{p 8 12 2}{cmd:. {space 12}su `c32', meanonly }
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf32' = r(mean)  }
+
+{p 8 12 2}{cmd:. {space 16}// constrain diagonal elements of V to equal 1 }
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf22' = sqrt( 1 - `cf21'^2 )  }
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf33' = sqrt( 1 - `cf31'^2 - `cf32'^2 )  }
+
+{p 8 12 2}{cmd:. {space 12}tempname C } 
+
+{p 8 12 2}{cmd:. {space 12}mat `C' = (1, 0, 0 \ `cf21', `cf22', 0 \ `cf31', `cf32', `cf33') } 
+
+{p 8 12 2}{cmd:. {space 12}egen `sp' = mvnp(`xb1' `xb2' `xb3') , /// }
+
+{p 8 12 2}{cmd:. {space 20}chol(`C') dr(200) prefix(q) signs(`k1' `k2' `k3') }
+
+{p 8 12 2}{cmd:. {space 12}replace `lnf'= ln(`sp') }
+
+{p 8 12 2}{cmd:. {space 8}{c )-}  }
+
+{p 8 12 2}{cmd:. end }
+
+{p 8 12 2}{cmd:. webuse school }
+
+{p 8 12 2}{cmd:. // Create pseudo-random draw variables }
+
+{p 8 12 2}{cmd:. mdraws, dr(200) neq(3) prefix(q) random seed(123456789) }
+
+{p 8 12 2}{cmd:. // Get initial values }
+
+{p 8 12 2}{cmd:. quietly {c -(}  }
+
+{p 8 12 2}{cmd:. {space 8}probit private loginc  }   
+
+{p 8 12 2}{cmd:. {space 8}mat b1 = e(b) }
+
+{p 8 12 2}{cmd:. {space 8}mat coleq b1 = private }
+
+{p 8 12 2}{cmd:. {space 8}probit vote loginc }
+
+{p 8 12 2}{cmd:. {space 8}mat b2 = e(b) }
+
+{p 8 12 2}{cmd:. {space 8}mat coleq b2 = vote }
+
+{p 8 12 2}{cmd:. {space 8}probit pub12 loginc }
+
+{p 8 12 2}{cmd:. {space 8}mat b3 = e(b) }
+
+{p 8 12 2}{cmd:. {space 8}mat coleq b3 = pub12 }
+
+{p 8 12 2}{cmd:. {space 8}mat b0 = b1, b2, b3 }
+
+{p 8 12 2}{cmd:. {c )-}  }
+
+{p 8 12 2}{cmd:. ml model lf myll (private: private=loginc) (vote: vote=loginc) /// }
+
+{p 8 12 2}{cmd:. {space 16}(pub12: pub12=loginc) /c21 /c31 /c32 }
+
+{p 8 12 2}{cmd:. ml maximize }
+
+{p 8 12 2}{cmd:. nlcom (r21: [c21]_b[_cons]) (r31: [c31]_b[_cons]) /// }
+
+{p 8 12 2}{cmd:. {space 6}(r32: [c21]_b[_cons]*[c31]_b[_cons] /// }
+
+{p 8 12 2}{cmd:. {space 10}+ sqrt( 1 - [c21]_b[_cons]^2 )*[c32]_b[_cons]) }
+
+{p 8 12 2}{cmd:. mvprobit (private=loginc) (vote=loginc) (pub12: pub12=loginc) draws(200) seed(123456789) }
+
+{p 8 12 2}{cmd:. **** (3) MSL example: two binary outcomes, one of which is incidentally truncated **** }
+
+{p 8 12 2}{cmd:. // outcomes are lph20 and flph20, with latter observed only if retent1 == 1 }
+
+{p 8 12 2}{cmd:. use trial }
+
+{p 8 12 2}{cmd:. ta lph20 flph20, missing }
+
+{p 8 12 2}{cmd:. // Note use of `missing' option on -ml model- statement below, so that}
+
+{p 8 12 2}{cmd:. // observations with incidentally truncated values on flph20 (i.e. missing) are retained. }
+
+{p 8 12 2}{cmd:. // Get initial values }
+
+{p 8 12 2}{cmd:. quietly {c -(}  }
+
+{p 8 12 2}{cmd:. {space 8}probit retent1 female eta eta2     }   
+
+{p 8 12 2}{cmd:. {space 8}mat b1 = e(b) }
+
+{p 8 12 2}{cmd:. {space 8}mat coleq b1 = retent1 }
+
+{p 8 12 2}{cmd:. {space 8}probit lph20 female eta eta2  }
+
+{p 8 12 2}{cmd:. {space 8}mat b2 = e(b) }
+
+{p 8 12 2}{cmd:. {space 8}mat coleq b2 = lph20 }
+
+{p 8 12 2}{cmd:. {space 8}probit flph20 female eta eta2  }
+
+{p 8 12 2}{cmd:. {space 8}mat b3 = e(b) }
+
+{p 8 12 2}{cmd:. {space 8}mat coleq b3 = flph20 }
+
+{p 8 12 2}{cmd:. {space 8}mat b0 = b1, b2, b3  }
+
+{p 8 12 2}{cmd:. {c )-}  }
+
+{p 8 12 2}{cmd:. // Create Halton draw variables }
+
+{p 8 12 2}{cmd:. mdraws, dr(100) neq(3) prefix(z) }
+
+{p 8 12 2}{cmd:. program define myll2 }
+
+{p 8 12 2}{cmd:. {space 8}args lnf xb1 xb2 xb3 c21 c31 c32  }
+
+{p 8 12 2}{cmd:. {space 8}tempvar sp2 sp3 k1 k2 k3 }
+
+{p 8 12 2}{cmd:. {space 8}quietly {c -(}  }
+
+{p 8 12 2}{cmd:. {space 12}gen double `k1' = 2*$ML_y1 - 1 }
+
+{p 8 12 2}{cmd:. {space 12}gen double `k2' = 2*$ML_y2 - 1 }
+
+{p 8 12 2}{cmd:. {space 12}gen double `k3' = 2*$ML_y3 - 1 }
+
+{p 8 12 2}{cmd:. {space 12}tempname cf21 cf31 cf32 }
+
+{p 8 12 2}{cmd:. {space 12}su `c21', meanonly  }	
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf21' = r(mean)  }
+
+{p 8 12 2}{cmd:. {space 12}su `31', meanonly }		
+
+{p 8 12 2}{cmd:. {space 12}scalar `c31' = r(mean)  }
+
+{p 8 12 2}{cmd:. {space 12}su `c32', meanonly }		
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf32' = r(mean)  }
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf22' = sqrt( 1 - `cf21'^2 )  }
+
+{p 8 12 2}{cmd:. {space 12}scalar `cf33' = sqrt( 1 - `cf31'^2 - `cf32'^2 )  }
+
+{p 8 12 2}{cmd:. {space 12}tempname C1 C2 } 
+
+{p 8 12 2}{cmd:. {space 12}mat `C1' = (1, 0, 0 \ `cf21', `cf22', 0 \ `cf31', `cf32', `cf33') } 
+
+{p 8 12 2}{cmd:. {space 12}mat `C2' = (1, 0 \ `cf21', `cf22' ) } 
+
+{p 8 12 2}{cmd:. {space 12}egen `sp3' = mvnp(`xb1' `xb2' `xb3') if $ML_y1==1, /// } 
+
+{p 8 12 2}{cmd:. {space 20}chol(`C1') dr(100) prefix(z) signs(`k1' `k2' `k3') aa }
+
+{p 8 12 2}{cmd:. {space 12}egen `sp2' = mvnp(`xb1' `xb2' ) if $ML_y1==0, /// }
+
+{p 8 12 2}{cmd:. {space 20}chol(`C2') dr(100) prefix(z) signs(`k1' `k2') aa }
+
+{p 8 12 2}{cmd:. {space 12}replace `lnf'= ln(`sp3') if   $ML_y1==1 }
+
+{p 8 12 2}{cmd:. {space 12}replace `lnf'= ln(`sp2') if   $ML_y1==0 }
+
+{p 8 12 2}{cmd:. {space 8}{c )-}  }
+
+{p 8 12 2}{cmd:. end }
+
+{p 8 12 2}{cmd:. ml model lf myll2 (retent1: retent1=female eta eta2) /// }
+
+{p 8 12 2}{cmd:. {space 12}(lph20: lph20=female eta eta2)     /// }
+
+{p 8 12 2}{cmd:. {space 12}(flph20: flph20=female eta eta2)   /// }
+
+{p 8 12 2}{cmd:. {space 12}/c21 /c31  /c32  /// }
+
+{p 8 12 2}{cmd:. {space 12}, missing  }
+
+{p 8 12 2}{cmd:. ml init b0 }
+
+{p 8 12 2}{cmd:. ml maximize  }
+
+{p 8 12 2}{cmd:. nlcom (r21: [c21]_b[_cons]) (r31: [c31]_b[_cons]) /// }
+
+{p 8 12 2}{cmd:. {space 6}(r32: [c21]_b[_cons]*[c31]_b[_cons] /// }
+
+{p 8 12 2}{cmd:. {space 10}+ sqrt( 1 - [c21]_b[_cons]^2 )*[c32]_b[_cons]) }
+
+
+{title:Authors}
+
+{p 4 4 2}Lorenzo Cappellari, Cattolica Universita di Milano, Italy{break}
+<lorenzo.cappellari@unicatt.it>
+
+{p 4 4 2}Stephen P. Jenkins, ISER, University of Essex, U.K.{break}
+<stephenj@essex.ac.uk>
+
+
+{title:Acknowledgments}
+
+{p 4 4 2}We are hugely indebted to Roberto Gutierrez (StataCorp) for writing
+the plugin to accompany this program. We also benefited from helpful comments
+by Richard Gates (StataCorp) and especially Mark Stewart (University of
+Warwick).
+
+
+{title:References}
+
+{p 4 8 2}Greene, W. H. 2003. {it:Econometric Analysis}. 5th ed. 
+Upper Saddle River, NJ: Prentice Hall.
+
+{p 4 8 2}Train, K. E. 2003. {it:Discrete Choice Methods with Simulation}. 
+Cambridge: Cambridge University Press.
+
+
+{title:Also see}
+
+{p 4 13 2}Manual:  {hi:[D] egen}, {hi:[D] functions}
+
+{p 4 13 2}Online:  {helpb mvprobit}, {helpb mdraws} (if installed)
+{p_end}

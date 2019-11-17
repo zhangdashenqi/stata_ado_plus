@@ -1,0 +1,159 @@
+/*
+ spmstarxt
+*! VERSION 1.0 03jan2012
+*/
+VERSION 10.0
+INCLUDE _std_xlarge
+DEFINE _dlght 360
+INCLUDE header
+HELP hlp1, view("help spmstarxt")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+program parseMessage
+script se_createAsSvyOLS
+script se_setBias_on
+program svy_check_title
+END
+
+PROGRAM parseMessage
+BEGIN
+if __MESSAGE.contains("__MI__") {
+call script se_setMI_on
+}
+END
+
+SCRIPT POSTINIT
+BEGIN
+program check_bytab
+program se_setFinalInitState
+END
+
+PROGRAM check_bytab
+BEGIN
+if ! __MESSAGE.contains("__MI__") {
+call script sub_set_by_on
+}
+END
+
+SCRIPT svy_is_on
+BEGIN
+	script max_setDefaultNoLog
+END
+SCRIPT svy_is_off
+BEGIN
+	script max_setDefaultLog
+END
+
+
+DIALOG main, label("spmstarxt- Spatial Panel Multiparametric Spatio Temporal AutoRegressive Regression") ///
+	tabtitle("Main")
+BEGIN
+
+ DEFINE wlabel 130
+ DEFINE cmdx 320
+ DEFINE cmdw 170
+ DEFINE _x _xsetbu
+ DEFINE _y _top
+
+ GROUPBOX gb_group0   _lft     _top       _iwd     _ht4 , 
+ TEXT tx_fn1	_ilft	_ss	250 	.,	///
+ label("Input W File Name (dta):") 
+ TEXT tx_weights 320    @       150     .,	///
+	label("Spatial Weight Matrix:")
+ TEXT tx_eigw    430    @      150 .,	///
+	label("Eigenvalue:")
+ FILE fi_fn1   _ilft    _ss	290 	.,	///
+ label("Brows...")				///
+ option("wmfile")					///
+ filter("Stata dta File (*.dta)|*.dta|All (*.*)|*.*") ///
+ defext(dta)
+ EDIT mname_weights  320   @   100  ., ///
+	label("wmat")			 ///
+	option("wmat")
+ VARNAME vn_eigw 430    @   100  ., ///
+	label("Eigenvalue")	 ///
+	option("eigw")
+
+ GROUPBOX gb_group1   _lft     _ls       _iwd     _ht6 , 
+  TEXT     tx_yvar     _ilft   _ss    _vnwd     .,	/*
+		*/ label("Dependent Variable:")		/*
+		*/
+  TEXT     tx_xvar     _vlx      @      _cwd2     .,	/*
+		*/ label("Independent Variables:")	/*
+		*/
+  VARNAME  vn_yvar     _ilft         _ss       _vnwd   .,	/*
+		*/ label("Dependent Variable")		/*
+		*/
+  VARLIST  vl_xvar     _vlx         @         380      .,	/*
+		*/ label("Independent Variables")	/*
+		*/
+  CHECKBOX ck_nocons @         _ms       @         .,	/*
+		*/ label("Suppress constant term")	/*
+		*/ option("noconstant")			/*
+*/  
+		
+  GROUPBOX gb_group2   _lft   _ls   _iwd   _ht15 ,	/*
+*/ label("") /*
+*/
+  SPINNER  sp_nw   _ilft        _ss    _spwd  .,	/*
+	*/ min(1) max(4) default(1)		/*
+	*/ option("nwmat")			/*
+	*/ label("nwmat")
+  TEXT     tx_nw   90    @         _sprb  .,	/*
+	*/ label("nwmat: Number of Weight Matrixes")
+  EDIT sp_id   _ilft  _ls    60  .,	///
+	option("id")			///
+	label("Cross Section Numbers")
+  TEXT  tx_id   90  @     120  .,	///
+	label("Cross Section Numbers")
+*/
+ CHECKBOX ck_stand   _ilft  _ls   350  ., option("stand") /*
+*/ label("Use Standardized Weight Matrix and Eigenvalue") 
+ CHECKBOX ck_robust _ilft  _ss   350  ., option("robust") /*
+*/ label("robust: Use Huber-White Variance-Covariance Matrix") 
+ TEXT tx_predict _ilft    _ms    140 .,	///
+	label("Predicted Variable")
+ TEXT tx_resid   170      @      140 .,	///
+	label("Residuals Variable")
+ VARNAME vn_predict _ilft _ss   140  .,	///
+	label("predict") 		///
+	option(predict)
+ VARNAME vn_resid  170   @     140  .,	///
+	label("resid") 			///
+	option(resid)
+END
+
+INCLUDE byifin
+INCLUDE weights_fpai
+INCLUDE se
+INCLUDE max_ml
+
+PROGRAM command
+BEGIN
+ put /program by_output
+ put "spmstarxt "
+ varlist main.vn_yvar [main.vl_xvar]
+ put " " /program ifin_output
+ put " " /program weights_output
+ put /program se_prefix_output
+ require main.fi_fn1
+ require main.mname_weights
+ require main.vn_eigw
+ require main.sp_nw 
+beginoptions
+ optionarg main.fi_fn1
+ optionarg main.mname_weights
+ optionarg main.sp_nw 
+ optionarg main.vn_eigw
+ optionarg main.sp_id
+ option main.ck_nocons
+ option main.ck_stand
+ option main.ck_robust
+ optionarg main.vn_predict
+ optionarg main.vn_resid
+ put " " /program se_output
+ put " " /program max_output
+ endoptions
+ END

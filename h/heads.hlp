@@ -1,0 +1,26 @@
+.-
+help for ^heads^
+.-
+
+Coin tossing simulation illustrating law of large numbers
+---------------------------------------------------------
+
+^heads^ [, flips(integer 100) coins(integer 1) prob(real .5) ci ]
+
+
+^heads^    simulates the tossing of a coin.  
+
+Options
+-------
+
+^flips^  Number of flips or trials.
+^coins^  Number of coins being flipped.
+^prob^   Probability of each coin coming up heads.
+^ci^     Include confidence interval in graph.
+
+Author
+------
+
+      Philip B. Ender & Michael N. Mitchell
+      UCLA Statistical Consulting
+      ender@@ucla.edu 

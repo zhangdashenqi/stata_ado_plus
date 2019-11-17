@@ -1,0 +1,72 @@
+{smcl}
+{* 23 aug 2002}{...}
+{hline}
+help for {hi:gennbreg}
+{hline}
+
+{title:Generate data from Stata's {cmd:nbreg} model}
+
+{p 8 14}{cmd:gennbreg} {it:newvar} 
+	[{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:,}
+	{cmdab:d:ispersion(}{cmdab:m:ean}|{cmdab:c:onstant}{cmd:)}
+	{cmd:mu(}{it:#}|{it:varname}{cmd:)}
+	{cmd:xbeta(}{it:#}|{it:varname}{cmd:)}
+	{cmd:alpha(}{it:#}{cmd:)} {cmd:delta(}{it:#}{cmd:)}
+	{cmdab:ado:only}
+
+{title:Description}
+
+{p}{cmd:gennbreg} generates data {it:newvar} 
+appropriate for Stata's {cmd:nbreg}
+estimation command.
+
+{title:Options}
+
+{p 0 4}{cmd:dispersion(mean}|{cmd:constant)} specifies the parameterization of
+the model.  The default is {cmd:dispersion(mean)}, which yields a model with
+dispersion equal to 1 + alpha*exp(x_i*b + offset); i.e., the dispersion is a
+function of the expected mean: exp(x_i*b + offset).
+{cmd:dispersion(constant)}
+has dispersion equal to 1 + delta; i.e., it is a constant for all
+observations.
+
+{p 0 4}{cmd:mu(}{it:#}|{it:varname}{cmd:)} specifies the mean of the 
+negative binomial distribution, i.e. the exponentiated linear predictor in a 
+regression model, {it:varname}, or a constant {it:#}.
+
+{p 0 4}{cmd:xbeta(}{it:#}|{it:varname}{cmd:)} specifies the linear 
+predictor in a negative binomial
+regression model, {it:varname}, or a constant {it:#} in 
+which case negative binomial
+random deviates are generated with mean exp({it:#}).
+
+{p 4 4}Only one of {cmd:mu()} or {cmd:xbeta()} should be specified.  If 
+neither is specified, then {it:newvar} will contain random deviates from 
+a negative binomial distribution with mean one.
+
+{p 0 4}{cmd:alpha(}{it:#}{cmd:)} specifies the dispersion parameter in 
+mean dispersion models.  The default is one.
+
+{p 0 4}{cmd:delta(}{it:#}{cmd:)} specifies the dispersion parameter in 
+constant dispersion models.  The default is one.
+
+{p 4 4}Only one of {cmd:alpha()} or {cmd:delta()} should be specified.
+
+{p 0 4}{cmd:adoonly} specifies that only ado code be used, whereas by default
+a Stata plugin is used.  That is, {cmd:gennbreg} calls {cmd:genpoisson}, and
+the file {cmd:genpoisson.ado} contains a subroutine written in the ado
+language, and this subroutine has also been implemented as a plugin.  Both
+produce equivalent results, but the plugin is faster.  The {cmd: adoonly}
+option provides endless amusement to those performing speed comparisons.
+
+{title:Examples}
+
+{p 8 12}{inp:. gen x1 = invnorm(uniform())}{p_end}
+{p 8 12}{inp:. gen x2 = invnorm(uniform())}{p_end}
+{p 8 12}{inp:. gen xb = -1 + 0.5*x1 + 1.5*x2}{p_end}
+{p 8 12}{inp:. gennbreg y1, xbeta(xb) alpha(0.3)}{p_end}
+{p 8 12}{inp:. nbreg y1 x1 x2, dispersion(mean)}{p_end}
+{p 8 12}{inp:. gen exb = exp(xb)}{p_end}
+{p 8 12}{inp:. gennbreg y2, mu(exb) delta(0.3) dispersion(constant)}{p_end}
+{p 8 12}{inp:. nbreg y2 x1 x2, dispersion(cons)}{p_end}
+

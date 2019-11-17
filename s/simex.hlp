@@ -1,0 +1,301 @@
+{smcl}
+{* 02dec2003}{...}
+{hline}
+help for {hi:simex}{right:(SJ3-4: st0049, st0050, st0051)}
+{hline}
+
+{title:Simulation Extrapolation}
+
+{p 8 12 2}
+{cmd:simex} {it:depvar} [{it:indepvars}] ({it:label:varlist})
+[({it:label:varlist}) ... ({it:label:varlist})]
+[{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:,} {cmd:bstrap}
+{cmd:brep}{cmd:(}{it:#}{cmd:)} {cmd:ltolerance}{cmd:(}{it:#}{cmd:)}
+{cmd:iterate}{cmd:(}{it:#}{cmd:)}
+{cmd:family}{cmd:(}{it:familyname}{cmd:)}
+{cmd:link}{cmd:(}{it:linkname}{cmd:)}
+{cmd:suuinit}{cmd:(}matrixname{cmd:)}
+{cmd:theta}{cmd:(}matrixname{cmd:)} {cmd:linear|rational}
+{cmd:nlrep}{cmd:(}{it:#}{cmd:)} {cmd:nleps}{cmd:(}{it:#}{cmd:)}
+{cmd:median {cmd:srep}{cmd:(}{it:#}{cmd:)}
+{cmd:btrim}{cmd:(}{it:#}{cmd:)}
+{cmd:saving}{cmd:(}{it:filename}{cmd:)} {cmd:replace}
+{cmd:seed}{cmd:(}{it:#}{cmd:)}
+{cmd:scale}{cmd:(}{cmd:x2}|{cmd:dev}|{it:#}{cmd:)}
+{cmd:message}{cmd:(}{it:#}{cmd:)}]
+
+
+{p 4 4 2}where {it:familyname} is one of
+
+{p 8 8 2}{cmdab:gau:ssian} | {cmdab:ig:aussian} |
+{bind:{cmdab:b:inomial} [{it:varnameN}|{it:#N}]} | {cmdab:p:oisson} |
+{bind:{cmdab:nb:inomial} [{it:#k}]} | {cmdab:gam:ma}
+
+{p 4 4 2}and {it:linkname} is one of
+
+{p 8 8 2}{cmdab:i:dentity} | {cmd:log} | {cmdab:l:ogit} | {cmdab:p:robit} |
+{cmdab:c:loglog} | {cmdab:opo:wer} {it:#} | {cmdab:pow:er} {it:#} |
+{cmdab:nb:inomial} | {cmdab:logl:og} | {cmd:logc}
+
+{p 4 4 2} and {it:label:varlist} describes a variable measured with error.
+The {it:label} is for the unknown measurement error covariate
+({it:label} cannot be the same as an existing variable in the data
+set). {it:varlist} is a list of variables with the replicate measurements 
+for the unknown {it:label} covariate (see comments for restrictions).
+
+{p 4 4 2}
+{cmd:by} {it:...} {cmd::} may be used with {cmd:simex}; see help {help by}.
+
+{p 4 4 2}
+{cmd:simex} No {cmd:predict} is implemented.
+
+
+{title:Description}
+
+{p 4 4 2} 
+{cmd:simex} fits generalized linear models for measurement error data
+using IRLS (maximum quasi-likelihood) and is similar in syntax to
+{cmd:rcal}.  The command is implemented by Stata's plug-in
+mechanism. {cmd:simex} allows one or more (see comments) covariates
+measured with errors and uses simulation extrapolation to estimate the
+missing covariates. It will allow replicate data or a user specified
+measurement error covariance matrix. It supports a very fast internal
+bootstrap (different from the regular Stata boostrap command).
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:bstrap} specifies that the bootstrap estimate of variance be used.
+
+{p 4 8 2}
+{cmd:brep}{cmd:(}{it:#}{cmd:)} specifies the number of bootstrap
+samples to consider in forming the bootstrap estimate of variance.  The
+default is {cmd:brep(199)}.
+
+{p 4 8 2}
+{cmd:ltolerance}{cmd:(}{it:#}{cmd:)} specifies the convergence
+criterion for the change in deviance between iterations;
+{cmd:ltolerance(1e-6)} is the default.
+
+{p 4 8 2}
+{cmd:iterate}{cmd:(}{it:#}{cmd:)} specifies the maximum number of
+iterations allowed in fitting the model; {cmd:iterate(100)} is the
+default.  You should seldom need to specify {cmd:iterate()}.
+
+{p 4 8 2}
+{cmd:family}{cmd:(}{it:familyname}{cmd:)} specifies the distribution of
+{it:depvar}; {cmd:family(gaussian)} is the default.
+
+{p 4 8 2}
+{cmd:link}{cmd:(}{it:linkname}{cmd:)} specifies the link function; the
+default is the canonical link for the {cmd:family()} specified.
+
+{p 4 8 2}
+{cmd:suuinit}{cmd:(}matrixname{cmd:)} Specify the measurement error covariance
+matrix. This is calculated from the replications in the measurement error
+variables if it is not specified.
+
+{p 4 8 2}
+{cmd:theta}{cmd:(}matrixname{cmd:)} The thetas we will use for our simex. 
+The default is {cmd:} theta=(0, .5, 1, 1.5, 2){cmd:}
+
+{p 4 8 2}
+{cmd:linear|rational} The default extrapolation is quadratic regression. 
+Choose {cmd: linear} to use linear regression extrapolation or {cm: rational} 
+to use the rational extrapolant (see {cmd: nlrep}, {cmd: nleps} and comments).
+
+{p 4 8 2}
+{cmd:nlrep}{cmd:(}{it:#}{cmd:)} When using the rational extrapolant, the
+maximum number of iterations the optimizer will use.
+
+{p 4 8 2}
+{cmd:nleps}{cmd:(}{it:#}{cmd:)} When using the rational extrapolant, the
+convergence criteria (tolerance) we use in our optimizer.
+
+{p 4 8 2}
+{cmd:median} Use the median instead of the default mean of the simulated
+estimators (see {cmd: srep}).
+
+{p 4 8 2}
+{cmd:srep}{cmd:(}{it:#}{cmd:)} Number of replications (simulations) for
+each theta.
+
+{p 4 8 2}
+{cmd:btrim}{cmd:(}{it:#}{cmd:)} Percent boostrap trimming. The default
+is {cmd:btrim(.02)}.
+
+{p 4 8 2}
+{cmd:saving}{cmd:(}{it:filename}{cmd:)} Save the booststrap results to the
+specified file.
+
+{p 4 8 2}
+{cmd:replace} Replace the existing 'bootstrap results' file if it exists.
+
+{p 4 8 2}
+{cmd:seed}{cmd:(}{it:#}{cmd:)} specify the seed for the random number
+generator used for simex. This enables for identical simex runs. This
+option is generally not specified.
+
+{p 4 8 2}
+{cmd:scale}{cmd:(}{cmd:x2}|{cmd:dev}|{it:#}{cmd:)} overrides the
+default scale parameter.  By default, {cmd:scale(1)} is assumed for
+discrete distributions (binomial, Poisson, negative binomial)
+and {cmd:scale(x2)} for continuous distributions
+(Gaussian, gamma, inverse Gaussian).
+
+{p 8 8 2}
+{cmd:scale(x2)} specifies the scale parameter be set to the Pearson
+chi-squared (or generalized chi-squared) statistic divided by the residual
+degrees of freedom.
+
+{p 8 8 2}
+{cmd:scale(dev)} sets the scale parameter to the deviance divided by the
+residual degrees of freedom.  This provides an alternative to {cmd:scale(x2)}
+for continuous distributions and over- or under-dispersed discrete
+distributions.
+
+{p 8 8 2}
+{cmd:scale}{cmd:(}{it:#}{cmd:)} sets the scale parameter to {it:#}.
+
+{p 4 8 2}
+{cmd:message}{cmd:(}{it:#}{cmd:)} The message or debug level 
+from the plug-in module. The default is {cmd:message(2))}.
+
+
+{title:Special comments on multiple measurement error covariates}
+
+{p 4 4 2}
+The number of replications for a covariate measured with error can
+vary across observations. When two or more measurement error
+covariates exist, they must all have the same number of replications
+across observations.
+
+
+{title:Special comments on standard errors}
+
+{p 4 4 2} 
+By default simex will not calculate standard errors. The only
+supported standard errors are via the bootstrap. Use the 'bstrap' and
+'brep' options, but note that this calculation can take considerable
+time. An estimated time to completion is printed if the boostrap will
+require more than 30 seconds.
+
+
+{title:Special comments on the rational extrapolant}
+
+{p 4 4 2} 
+The rational extrapolant requires the fitting of a non-linear curve on
+estimated coeeficients using very few data points (the number of
+thetas).  This can encounter numerical difficulties and produce and
+error message. We suggest the default quadratic extrapolant.
+
+
+{title:Plotting the effect of measurement error on parameter estimates}
+
+{p 4 4 2} 
+Use the {cmd: simexplot} to view the effect of measurement error on
+parameter estimates. {cmd:simexplot} will plot the effect of
+measurement error on parameter estimate. It gives a visual
+representation on how the parameter estimates are derived. The line
+shows the extrapolation back to -1. Note that if the rational
+extrapolant was used no extrapolant line is drawn. See the examples
+below.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+The allowed link functions are
+
+{center:Link function            {cmd:glm} option     }
+{center:{hline 40}}
+{center:identity                 {cmd:link(identity)} }
+{center:log                      {cmd:link(log)}      }
+{center:logit                    {cmd:link(logit)}    }
+{center:probit                   {cmd:link(probit)}   }
+{center:complementary log-log    {cmd:link(cloglog)}  }
+{center:odds power               {cmd:link(opower} {it:#}{cmd:)} }
+{center:power                    {cmd:link(power} {it:#}{cmd:)}  }
+{center:negative binomial        {cmd:link(nbinomial)}}
+{center:log-log                  {cmd:link(loglog)}   }
+{center:log-compliment           {cmd:link(logc)}     }
+
+{p 4 4 2}
+The allowed distribution families are
+
+{center:Family                 {cmd:glm} option       }
+{center:{hline 40}}
+{center:Gaussian(normal)       {cmd:family(gaussian)} }
+{center:Inverse Gaussian       {cmd:family(igaussian)}}
+{center:Bernoulli/binomial     {cmd:family(binomial)} }
+{center:Poisson                {cmd:family(poisson)}  }
+{center:Negative binomial      {cmd:family(nbinomial)}}
+{center:Gamma                  {cmd:family(gamma)}    }
+
+{p 4 4 2}
+Reasonable combinations of {cmd:family()} and {cmd:link()} are
+
+	  {c |} id  log  logit  probit  clog  pow  opower  nbinomial  loglog  logc
+{hline 10}{c +}{hline 67}
+Gaussian  {c |}  x   x                         x
+inv. Gau. {c |}  x   x                         x
+binomial  {c |}  x   x     x      x       x    x     x                  x      x
+Poisson   {c |}  x   x                         x
+neg. bin. {c |}  x   x                         x              x
+gamma     {c |}  x   x                         x
+
+{p 4 11 2}
+Note:  Nonstandard combinations other than those marked out above
+are allowed, but the user is responsible for seeing that the data fit
+the combination and for the interpretation of the results.
+
+{p 4 4 2}
+If you specify {cmd:family()} but not {cmd:link()}, you obtain the canonical
+link for the family:
+
+{center:{cmd:family()}                default {cmd:link()}}
+{center:{hline 38}}
+{center:{cmd:family(gaussian)}        {cmd:link(identity)}}
+{center:{cmd:family(igaussian)}       {cmd:link(power -2)}}
+{center:{cmd:family(binomial)}        {cmd:link(logit)}   }
+{center:{cmd:family(poisson)}         {cmd:link(log)}     }
+{center:{cmd:family(nbinomial)}       {cmd:link(log)}     }
+{center:{cmd:family(gamma)}           {cmd:link(power -1)}}
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. * generate some data}{p_end}
+{p 4 8 2}{cmd:. set obs 1000}{p_end}
+{p 4 8 2}{cmd:. gen x1 = uniform()}{p_end}
+{p 4 8 2}{cmd:. gen x2 = uniform()}{p_end}
+{p 4 8 2}{cmd:. gen x3 = uniform()}{p_end}
+{p 4 8 2}{cmd:. gen err = invnorm(uniform())}{p_end}
+{p 4 8 2}{cmd:. gen y = 1+2*x1+3*x2+4*x3+err}{p_end}
+
+{p 4 8 2}{cmd:. * estimate with x3 known}{p_end}
+{p 4 8 2}{cmd:. qvf y x1 x2 x3, bstrap}{p_end}
+
+{p 4 8 2}{cmd:. * simulate measurement error covariate}{p_end}
+{p 4 8 2}{cmd:. gen a1 = x3 + .3*invnorm(uniform())}{p_end}
+{p 4 8 2}{cmd:. gen a2 = x3 + .3*invnorm(uniform())}{p_end}
+
+{p 4 8 2}{cmd:. * estimate x1, x2 & w3 using simex & plot the extrapolation}{p_end}
+{p 4 8 2}{cmd:. simex (y=x1 x2) (w3: a1 a2), bstrap}{p_end}
+{p 4 8 2}{cmd:. simexplot w3}{p_end}
+{p 4 8 2}{cmd:. simexplot}{p_end}
+
+{p 4 8 2}{cmd:. eret list}{p_end}
+
+{p 4 8 2}{cmd:. mat theta=(0,.5,1,1.5,2,2.5,3,3.5)}{p_end}
+{p 4 8 2}{cmd:. simex (y=x1 x2) (w3: a1 a2), bstrap theta(theta) median}{p_end}
+{p 4 8 2}{cmd:. simexplot w3}{p_end}
+
+{p 4 4 2}
+See {cmd: rcal} for further examples of options.
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {help qvf}, {help simex}, {help simexplot}

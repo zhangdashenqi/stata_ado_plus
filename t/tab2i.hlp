@@ -1,0 +1,59 @@
+.-
+help for ^tab2i^                                                   (STB-33: sg57)
+.-
+
+An immediate command for two way tables
+---------------------------------------
+
+    ^tab2i^ #11 #12 [...] ^\^ #21 #22 [...] [^\^ ...] [ ^,^ ^replace^ ]
+
+
+Description
+-----------
+
+^tab2i^ displays information derived from the r x c table using the
+values specified; rows are separated by '^\^'. The display contains row
+and column identifiers, observed frequencies, expected frequencies on a
+null hypothesis of no association between the row and column variables,
+Pearson residuals, defined as (observed - expected)/sqrt(expected), and
+adjusted residuals, Pearson residuals divided by an estimate of their
+standard error.
+
+The Pearson chi-square statistic and its P-value are also given.
+
+
+Option
+------
+
+^replace^ indicates that the variables listed by the ^tab2i^ command are
+    to be left as the current data in place of whatever data was there.
+
+
+Examples
+--------
+
+        . ^tab2i 1 28 7 \ 9 53 68 \ 28 3 21^
+
+        . ^tab2i 1 28 7 \ 9 53 68 \ 28 3 21, replace^
+
+
+Author
+------
+
+         Nicholas J. Cox, University of Durham, U.K.
+
+
+Acknowledgment
+--------------
+
+         William Gould of Stata Corporation suggested several improvements.
+
+
+Also see
+--------
+
+    STB:  STB-33, sg57
+ Manual:  [U] 25 Immediate commands, [R] glm, [R] tabulate
+On-line:  help for @immed@
+
+

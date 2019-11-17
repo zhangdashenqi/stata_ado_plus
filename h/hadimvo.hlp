@@ -1,0 +1,130 @@
+Identify multivariate outliers                                   [STB-11: smv6]
+------------------------------
+
+
+    ^hadimvo^ varlist [^if^ exp] [^in^ range]^, g^enerate^(^newvar1 [newvar2]^)^ [^p(^#^)^]
+
+
+
+
+
+Description
+-----------
+
+^hadimvo^ identifies multiple outliers in multivariate data using the method of
+Hadi (1992, 1993), creating newvar1 equal to 1 if an observation is an "out-
+lier" and 0 otherwise.  Optionally, newvar2 can also be created containing the
+distances from the basic subset.
+
+
+
+
+
+Options
+-------
+
+^generate(^newvar1 [newvar2]^)^ is not optional; it identifies the new variable(s)
+    to be created.  Whether you specify two variables or one, however, is
+    optional.  newvar2, if specified, will contain the distances (not the
+    distances squared) from the basic subset.  E.g., specifying ^gen(odd)^
+    creates odd containing 1 if the observation is an outlier in the Hadi sense
+    and 0 otherwise.  Specifying ^gen(odd dist)^ also creates dist containing
+    the Hadi distances.
+
+^p(^#^)^ specifies the significance level for outlier cutoff; 0 < # < 1.  The de-
+    fault is ^p(.05)^.  Larger numbers identify a larger proportion of the sample
+    as outliers.  If # is specified greater than 1, it is interpreted as a
+    percent.  Thus, ^p(5)^ is the same as ^p(.05)^.
+
+
+Remarks
+-------
+
+The search for subsets of the data which, if deleted, would change results
+markedly is known as the search for outliers.  ^hadimvo^ provides one, computer
+intensive but practical method for identifying such observations.
+
+
+Remarks, continued
+------------------
+
+Classical outlier detection methods (e.g., Mahalanobix distance and Wilks' 
+test) are powerful when the data contain only one outlier, but the power of
+these methods decreases drastically when more than one outlying observation
+is present.  The loss of power is usually due to what are known as masking and
+swamping problems (false negative and false positive decisions) but in add-
+tion, these methods often fail simply because they are affected by the very 
+observations they are supposed to identify.
+
+Solutions to these problems often involve an unreasonable amount of calculation
+and therefore computer time.  (Solutions involving hundreds of millions of 
+calculations even for a samples of size 30 have been suggested.)  The method
+developed by Hadi (1992, 1993) attempts to surmount these problems and produce
+an answer, albeit second best, in finite time.
+
+A basic outline of the procedure is as follows:  A measure of distance from
+an observation to a cluster of points is defined.  A base cluster of r 
+points is selected and then that cluster is continually redefined by taking 
+the r+1 points "closest" to the cluster as the new base cluster.  This 
+continues until some rule stops the redefinition of the cluster.
+
+
+Remarks, concluded
+------------------
+
+Ignoring many of the fine details, given k variables, the initial base cluster
+is defined as r=k+1 points.  The distance that is minimized in selecting these
+k+1 points is a covariance-matrix distance on the variables with their medians
+removed.  (We will use the language loosely; if we were being more precise, we
+would have said the distance is based on a matrix of second moments, but remem-
+er, the medians of the variables have been removed.  We would also discuss how
+the k+1 points must be of full column rank and how they would be expanded to
+include additional points if they are not.)
+
+Given the base cluster, a more standard mean-based center of the r-observation
+cluster is defined and the r+1 observations closest in the covariance-matrix
+sense are chosen as a new base cluster.  This is then repeated until the base
+cluster has r = int((n+k+1)/2) points.
+
+At this point, the method continues in much the same way, except a stopping
+rule based on the distance of the additional point, and the user specifed 
+^p()^, is introduced.
+
+Simulation results are presented in Hadi (1993).
+
+
+Examples
+--------
+
+ . ^hadimvo price weight, gen(odd)^
+ . ^list if odd^                            /* list the outliers            */
+ . ^summ price weight if ~odd^              /* summary stats for clean data */
+
+
+ . ^drop odd^
+ . ^hadimvo price weight, gen(odd D)^
+ . ^gen id=_n^                             /* make an index variable         */
+ . ^graph D id^                            /* index plot of D                */
+ . ^graph price weight [w=D]^              /* 2-way scatter, outliers big    */
+ . ^graph price weight [w=1/D]^            /* same, outliers small           */
+ . ^summarize D, detail^
+ . ^sort D^
+ . ^list make price weight D odd^
+
+
+ . ^hadimvo price weight mpg, gen(odd2 D2) p(.01)^
+ . ^fit^ ... ^if ~odd2^
+
+
+
+References
+----------
+
+Gould, W. and A. S. Hadi.  1992.  Identifying multivariate outliers.  ^Stata^
+    ^Technical Bulletin^ 11: 28-32.
+
+Hadi, A. S.  1992.  Identifying multiple outliers in multivariate data.
+    ^J. R. Statist. Soc. B^ 54(3): 761-771.
+
+------.  1993.  A modification of a method for the detection of outliers in
+    multivariate samples.  ^J. R. Statist. Soc. B^ (forthcoming).

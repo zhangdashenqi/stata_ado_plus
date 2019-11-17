@@ -1,0 +1,1063 @@
+/*
+  gyxview -- graph options for range plots
+
+  VERSION 1.0.0  21dec2002
+
+  This idlg requires the use of _graph.idlg and _std_graph.idlg for lengths,
+  widths, heights.
+
+  This idlg requires the use of _glist_def.idlg and _glist_sc.idlg at the
+  beginning of your dialog file for initiating lists.
+
+  This file was generated from a template.  It is one of:
+
+	gyxview.idlg	-- tabtitle = "Plot"
+	gplot1.idlg	-- tabtitle = "Plot 1"
+	gplot2.idlg	-- tabtitle = "Plot 2"
+	gplot3.idlg	-- tabtitle = "Plot 3"
+	gplot4.idlg	-- tabtitle = "Plot 4"
+
+  Any change to this file should have come from changes made to the template,
+  so that they are also reflected similarly in the others.
+
+  The default plot type is specified by the first entry in LIST
+  yxview_change, which is defined in one of the following files:
+
+	gscatter_chlist.idlg
+	gline_chlist.idlg
+	gconnected_chlist.idlg
+	garea_chlist.idlg
+	gbar_chlist.idlg
+	gspike_chlist.idlg
+	gdropline_chlist.idlg
+
+  One of these files must be INCLUDEd by the dialog that is INCLUD[E]ing this
+  tab.
+
+  WARNING:  For gplot[1234].idlg, -onselchangelist(yxview_change)- must be
+  -onselchangelist(gyxview_yxview_change)-, respectively.  Similarly
+  every occurrence of "PROGRAM yxview_" must be changed to "PROGRAM gyxview_",
+  respectively.
+
+  Note that substitutions are being made on "yxview".
+
+*/
+
+DIALOG gyxview, label("")			///
+	tabtitle("Plot")		///
+	/// tabtitle("Plot 1")		///
+	/// tabtitle("Plot 2")		///
+	/// tabtitle("Plot 3")		///
+	/// tabtitle("Plot 4")		///
+	// blank
+BEGIN
+  // The control helps decide whether anything has changed from the default
+  CHECKBOX ck_command	_lft      _top      0         0,		///
+			clickon("program gyxview_command_hide")		///
+			clickoff("program gyxview_command_hide")		///
+			label("")
+  // The control helps decide whether to wrap the options with yxview()
+  CHECKBOX ck_option	_lft      _top      0         0,		///
+			clickon("program gyxview_command_hide")		///
+			clickoff("program gyxview_command_hide")		///
+			label("")
+
+  TEXT     tx_cis         _lft      _top      _txwd     .,		///
+			label("Plot:")					///
+			right
+  COMBOBOX cb_cis         _txsep    @         _txr4g    .,		///
+			label("Plot")					///
+			dropdownlist					///
+			contents(gyxview_contents)				///
+			value(gyxview_value)			///
+			onselchangelist(yxview_change)			///
+			option(recast)
+
+  TEXT     tx_type        _lft4_2g  @         _cwd1     .,		///
+		label("")
+
+  DEFINE repos @ // +100
+  GROUPBOX gb_line        _lft      _ls       _cwd4_g   _ht9h,		///
+		label("Line")
+  DEFINE y1 @y
+  TEXT     tx_blcol       _lft4_1gi _ss       _txwd     .,		///
+		label("Color:")						///
+		right
+  TEXT     tx_clcol       @         @         @         .,		///
+		label("Color:")						///
+		right
+  DEFINE x @x
+  COMBOBOX cb_blcol       _txsep    @         _tcr4gi   .,		///
+		label("Color")						///
+		dropdownlist						///
+		contents(_dclst_2)					///
+		value(_dvlst_2)						///
+		onselchangelist(gyxview_color_blcol)			///
+		option(blcolor)
+  COMBOBOX cb_clcol       repos     @         @         .,		///
+		label("Color")						///
+		dropdownlist						///
+		contents(_dclst_2)					///
+		value(_dvlst_2)						///
+		onselchangelist(gyxview_color_clcol)			///
+		option(clcolor)
+  COLOR    cl_blcol       _tcr4gisep @        _colorwd  .,		///
+		label("Color")						///
+		default(255 0 0)					///
+		option(blcolor)
+  COLOR    cl_clcol       repos      @        @         .,		///
+		label("Color")						///
+		default(255 0 0)					///
+		option(clcolor)
+  TEXT     tx_blwid       x         _ms       _txwd     .,		///
+		label("Width:")						///
+		right
+  TEXT     tx_clwid       @         @         @         .,		///
+		label("Width:")						///
+		right
+  COMBOBOX cb_blwid       _txsep    @         _txr4gi   .,		///
+		label("Width")						///
+		dropdownlist						///
+		contents(_dclst_5)					///
+		value(_dvlst_5)						///
+		option(blwidth)
+  COMBOBOX cb_clwid       repos     @         @         .,		///
+		label("Width")						///
+		dropdownlist						///
+		contents(_dclst_5)					///
+		value(_dvlst_5)						///
+		option(clwidth)
+  TEXT     tx_clpat       x         _ms       _txwd     .,		///
+		label("Pattern:")					///
+		right
+  COMBOBOX cb_clpat       _txsep    @         _txr4gi   .,		///
+		label("Pattern")					///
+		dropdownlist						///
+		contents(_dclst_4)					///
+		value(_dvlst_4)						///
+		option(clpattern)
+  TEXT     tx_blpat       x         @         _txwd     .,		///
+		label("Pattern:")					///
+		right
+  COMBOBOX cb_blpat       _txsep    @         _txr4gi   .,		///
+		label("Pattern")					///
+		dropdownlist						///
+		contents(_dclst_4)					///
+		value(_dvlst_4)						///
+		option(blpattern)
+  TEXT     tx_conn        x         _ms       _txwd     .,		///
+		label("Type:")						///
+		right
+  COMBOBOX cb_conn        _txsep    @         _txr4gi   .,		///
+		label("Line type")					///
+		dropdownlist 						///
+		contents(_dclst_6)					///
+		value(_dvlst_6)						///
+		option(connect)
+
+  GROUPBOX gb_misc        _lft      _ht15     _cwd4_g   _ht9h,		///
+		label("Bar")
+  DEFINE y2 @y
+  TEXT     tx_bfcol       _lft4_1gi _ss       _txwd     .,		///
+		label("Fill color:")					///
+		right
+  // (x,y) position of first control in this box
+  DEFINE mmx @x
+  DEFINE mmy @y
+  COMBOBOX cb_bfcol       _txsep    @         _tcr4gi   .,		///
+		label("Color")						///
+		dropdownlist						///
+		contents(_dclst_2)					///
+		value(_dvlst_2)						///
+		onselchangelist(gyxview_color_bfcol)			///
+		option(bfcolor)
+  COLOR    cl_bfcol       _tcr4gisep @        _colorwd  .,		///
+		label("Color")						///
+		default(255 0 0)					///
+		option(bfcolor)
+  TEXT     tx_barw        mmx       _ms       _txwd     .,		///
+		label("Width:")						///
+		right
+  EDIT     en_barw        _txsep    @         _txr4gi   .,		///
+		label("Width")						///
+		default(1)						///
+		numonly							///
+		option(barwidth)
+
+  GROUPBOX gb_marker      _lft4_2g  y1       _cwd4_g    _ht9h,		///
+		label("Markers")
+  TEXT     tx_msym        _lft4_2gi _ss      _txwd      .,		///
+		label("Symbol:")					///
+		right
+  DEFINE mlx @x
+  COMBOBOX cb_msym        _txsep    @        _txr4gi    .,		///
+		label("Marker symbol")					///
+		dropdownlist						///
+		contents(_dclst_0)					///
+		value(_dvlst_0)						///
+		option(msymbol)
+  TEXT     tx_msize       mlx       _ms      _txwd      .,		///
+		label("Size:")						///
+		right
+  COMBOBOX cb_msize       _txsep    @        _txr4gi    .,		///
+		label("Marker size")					///
+		dropdownlist						///
+		contents(_dclst_1)					///
+		value(_dvlst_1)						///
+		option(msize)
+  TEXT     tx_mcol        mlx       _ms     _txwd       .,		///
+		label("Color:")						///
+		right
+  COMBOBOX cb_mcol        _txsep    @       _tcr4gi     .,		///
+		label("Marker color")					///
+		dropdownlist						///
+		contents(_dclst_2)					///
+		onselchangelist(gyxview_color_mcol)			///
+		value(_dvlst_2)						///
+		option(mcolor)
+  COLOR    cl_mcol        _tcr4gisep @      _colorwd    .,		///
+		label("Marker color")					///
+		default(255 0 0)					///
+		option(mcolor)
+
+  CHECKBOX ck_mlab        _lft4_2g  y2      _cwd4_g     _ht9h,		///
+		label("Marker labels") groupbox 			///
+		clickon(program gyxview_mlabels_check)			///
+		clickoff(program gyxview_mlabels_check)
+  TEXT     tx_mlab        _lft4_2gi _ss     _txwd       .,		///
+		label("Variable:")					///
+		right
+  DEFINE mlx @x
+  VARLIST  vl_mlab        _txsep    @       _txr4gi     .,		///
+		label("Marker labels variable")				///
+		option(mlabel)
+  TEXT     tx_mlsize      mlx       _ms     _txwd       .,		///
+		label("Size:")						///
+		right
+  COMBOBOX cb_mlsize      _txsep    @       _txr4gi     .,		///
+		label("Marker labels text size")			///
+		dropdownlist						///
+		contents(_dclst_7)					///
+		value(_dvlst_7)						///
+		option(mlabsize)
+  TEXT     tx_mlcol       mlx       _ms     _txwd       .,		///
+		label("Color:")						///
+		right
+  COMBOBOX cb_mlcol       _txsep    @       _tcr4gi     .,		///
+		label("Marker label color")				///
+		dropdownlist						///
+		contents(_dclst_2)					///
+		value(_dvlst_2)						///
+		onselchangelist(gyxview_color_mlcol )			///
+		option(mlabcolor)
+  COLOR    cl_mlcol       _tcr4gisep @      _colorwd    .,		///
+		label("Marker label color")				///
+		default(255 0 0)					///
+		option(mlabcolor)
+  TEXT     tx_mlpos       mlx       _ms     _txwd       .,		///
+		label("Position:")					///
+		right
+  COMBOBOX cb_mlpos       _txsep    @       _txr4gi     .,		///
+		label("Marker label position")				///
+		dropdownlist						///
+		contents(_dclst_3)					///
+		value(_dvlst_3)						///
+		option(mlabposition)
+
+END
+
+LIST gyxview_contents
+BEGIN
+	Default
+	scatter
+	line
+	connected
+	area
+	bar
+	spike
+	dropline
+END
+
+// This list is only used by gplot[1234].idlg
+LIST gyxview_yxview_change
+BEGIN
+	program gyxview_line	// default type for plot[1234].idlg
+	program gyxview_scatter
+	program gyxview_line
+	program gyxview_connected
+	program gyxview_area
+	program gyxview_bar
+	program gyxview_spike
+	program gyxview_dropline
+END
+
+LIST gyxview_value
+BEGIN
+	""
+	scatter
+	line
+	connected
+	area
+	bar
+	spike
+	dropline
+END
+
+LIST gyxview_color_bfcol
+BEGIN
+	gyxview.cl_bfcol.hide
+	gyxview.cl_bfcol.show
+	gyxview.cl_bfcol.hide
+END
+
+LIST gyxview_color_blcol
+BEGIN
+	gyxview.cl_blcol.hide
+	gyxview.cl_blcol.show
+	gyxview.cl_blcol.hide
+END
+
+LIST gyxview_color_clcol
+BEGIN
+	gyxview.cl_clcol.hide
+	gyxview.cl_clcol.show
+	gyxview.cl_clcol.hide
+END
+
+LIST gyxview_color_mcol
+BEGIN
+	gyxview.cl_mcol.hide
+	gyxview.cl_mcol.show
+	gyxview.cl_mcol.hide
+END
+
+LIST gyxview_color_mlcol
+BEGIN
+	gyxview.cl_mlcol.hide
+	gyxview.cl_mlcol.show
+	gyxview.cl_mlcol.hide
+END
+
+PROGRAM yxview_scatter
+BEGIN
+	if !H(gyxview.tx_cis) {
+		call gaction gyxview.tx_type.setlabel "(Scatter)"
+		// misc box
+		call gaction gyxview.gb_misc.hide
+		call program gyxview_bfcolor_hide
+		call program gyxview_barwidth_hide
+		// line box
+		call gaction gyxview.gb_line.hide
+		call program gyxview_blcolor_hide
+		call program gyxview_blwidth_hide
+		call program gyxview_blpattern_hide
+		call program gyxview_clcolor_hide
+		call program gyxview_clwidth_hide
+		call program gyxview_clpattern_hide
+		call program gyxview_connect_hide
+		// markers box
+		call program gyxview_markers_enable
+		call program gyxview_markers_show
+		// marker labels box
+		call program gyxview_mlabels_enable
+		call program gyxview_mlabels_show
+		}
+END
+
+PROGRAM yxview_line
+BEGIN
+	if !H(gyxview.tx_cis) {
+		call gaction gyxview.tx_type.setlabel "(Line)"
+		// misc box
+		call gaction gyxview.gb_misc.hide
+		call program gyxview_bfcolor_hide
+		call program gyxview_barwidth_hide
+		// line box
+		call gaction gyxview.gb_line.setlabel "Line"
+		call gaction gyxview.gb_line.enable
+		call gaction gyxview.gb_line.show
+		call program gyxview_blcolor_hide
+		call program gyxview_blwidth_hide
+		call program gyxview_blpattern_hide
+		call program gyxview_clcolor_enable
+		call program gyxview_clcolor_show
+		call program gyxview_clwidth_enable
+		call program gyxview_clwidth_show
+		call program gyxview_clpattern_enable
+		call program gyxview_clpattern_show
+		call program gyxview_connect_enable
+		call program gyxview_connect_show
+		// markers box
+		call program gyxview_markers_hide
+		// marker labels box
+		call program gyxview_mlabels_hide
+	}
+END
+
+PROGRAM yxview_connected
+BEGIN
+	if !H(gyxview.tx_cis) {
+		call gaction gyxview.tx_type.setlabel "(Connected symbols)"
+		// misc box
+		call gaction gyxview.gb_misc.hide
+		call program gyxview_bfcolor_hide
+		call program gyxview_barwidth_hide
+		// line box
+		call gaction gyxview.gb_line.setlabel "Line"
+		call gaction gyxview.gb_line.enable
+		call gaction gyxview.gb_line.show
+		call program gyxview_blcolor_hide
+		call program gyxview_blwidth_hide
+		call program gyxview_blpattern_hide
+		call program gyxview_clcolor_enable
+		call program gyxview_clcolor_show
+		call program gyxview_clwidth_enable
+		call program gyxview_clwidth_show
+		call program gyxview_clpattern_enable
+		call program gyxview_clpattern_show
+		call program gyxview_connect_enable
+		call program gyxview_connect_show
+		// markers box
+		call program gyxview_markers_enable
+		call program gyxview_markers_show
+		// marker labels box
+		call program gyxview_mlabels_enable
+		call program gyxview_mlabels_show
+	}
+END
+
+PROGRAM yxview_area
+BEGIN
+	if !H(gyxview.tx_cis) {
+		call gaction gyxview.tx_type.setlabel "(Area)"
+		// misc box
+		call gaction gyxview.gb_misc.setlabel "Area"
+		call gaction gyxview.gb_misc.enable
+		call gaction gyxview.gb_misc.show
+		call program gyxview_bfcolor_enable
+		call program gyxview_bfcolor_show
+		call program gyxview_barwidth_hide
+		// line box
+		call gaction gyxview.gb_line.setlabel "Outline"
+		call gaction gyxview.gb_line.enable
+		call program gyxview_blcolor_enable
+		call program gyxview_blpattern_hide
+		call gaction gyxview.gb_line.show
+		call program gyxview_blcolor_show
+		call program gyxview_blwidth_show
+		call program gyxview_blwidth_enable
+		call program gyxview_clcolor_hide
+		call program gyxview_clwidth_hide
+		call program gyxview_clpattern_hide
+		call program gyxview_connect_hide
+		// markers box
+		call program gyxview_markers_hide
+		// marker labels box
+		call program gyxview_mlabels_hide
+	}
+END
+
+PROGRAM yxview_bar
+BEGIN
+	if !H(gyxview.tx_cis) {
+		call gaction gyxview.tx_type.setlabel "(Bars)"
+		// misc box
+		call gaction gyxview.gb_misc.setlabel "Bar"
+		call gaction gyxview.gb_misc.enable
+		call gaction gyxview.gb_misc.show
+		call program gyxview_bfcolor_enable
+		call program gyxview_bfcolor_show
+		call program gyxview_barwidth_enable
+		call program gyxview_barwidth_show
+		// line box
+		call gaction gyxview.gb_line.setlabel "Outline"
+		call gaction gyxview.gb_line.enable
+		call program gyxview_blcolor_enable
+		call program gyxview_blpattern_hide
+		call gaction gyxview.gb_line.show
+		call program gyxview_blwidth_enable
+		call program gyxview_blcolor_show
+		call program gyxview_clcolor_hide
+		call program gyxview_blwidth_show
+		call program gyxview_clwidth_hide
+		call program gyxview_clpattern_hide
+		call program gyxview_connect_hide
+		// markers box
+		call program gyxview_markers_hide
+		// marker labels box
+		call program gyxview_mlabels_hide
+	}
+END
+
+PROGRAM yxview_spike
+BEGIN
+	if !H(gyxview.tx_cis) {
+		call gaction gyxview.tx_type.setlabel "(Spikes)"
+		// misc box
+		call gaction gyxview.gb_misc.hide
+		call program gyxview_bfcolor_hide
+		call program gyxview_barwidth_hide
+		// line box
+		call gaction gyxview.gb_line.setlabel "Spike"
+		call gaction gyxview.gb_line.enable
+		call gaction gyxview.gb_line.show
+		call program gyxview_blcolor_enable
+		call program gyxview_blcolor_show
+		call program gyxview_blwidth_enable
+		call program gyxview_blwidth_show
+		call program gyxview_blpattern_enable
+		call program gyxview_blpattern_show
+		call program gyxview_clcolor_hide
+		call program gyxview_clwidth_hide
+		call program gyxview_clpattern_hide
+		call program gyxview_connect_hide
+		// markers box
+		call program gyxview_markers_hide
+		// marker labels box
+		call program gyxview_mlabels_hide
+	}
+END
+
+PROGRAM yxview_dropline
+BEGIN
+	if !H(gyxview.tx_cis) {
+		call gaction gyxview.tx_type.setlabel "(Droplines)"
+		// misc box
+		call gaction gyxview.gb_misc.hide
+		call program gyxview_bfcolor_hide
+		call program gyxview_barwidth_hide
+		// line box
+		call gaction gyxview.gb_line.setlabel "Spike"
+		call gaction gyxview.gb_line.enable
+		call gaction gyxview.gb_line.show
+		call program gyxview_blcolor_enable
+		call program gyxview_blcolor_show
+		call program gyxview_blwidth_enable
+		call program gyxview_blwidth_show
+		call program gyxview_blpattern_enable
+		call program gyxview_blpattern_show
+		call program gyxview_clcolor_hide
+		call program gyxview_clwidth_hide
+		call program gyxview_clpattern_hide
+		call program gyxview_connect_hide
+		// markers box
+		call program gyxview_markers_enable
+		call program gyxview_markers_show
+		// marker labels box
+		call program gyxview_mlabels_enable
+		call program gyxview_mlabels_show
+	}
+END
+
+PROGRAM gyxview_bfcolor_enable
+BEGIN
+	call gaction gyxview.tx_bfcol.enable
+	call gaction gyxview.cb_bfcol.enable
+	call gaction gyxview.cl_bfcol.enable
+	call gaction gyxview.cb_bfcol.withvalue gyxview.cb_bfcol.setvalue "@"
+END
+
+PROGRAM gyxview_bfcolor_disable
+BEGIN
+	call gaction gyxview.tx_bfcol.disable
+	call gaction gyxview.cb_bfcol.disable
+	call gaction gyxview.cl_bfcol.disable
+END
+
+PROGRAM gyxview_bfcolor_show
+BEGIN
+	call gaction gyxview.tx_bfcol.show
+	call gaction gyxview.cb_bfcol.show
+END
+
+PROGRAM gyxview_bfcolor_hide
+BEGIN
+	call gaction gyxview.tx_bfcol.hide
+	call gaction gyxview.cb_bfcol.hide
+	call gaction gyxview.cl_bfcol.hide
+END
+
+PROGRAM gyxview_barwidth_enable
+BEGIN
+	call gaction gyxview.tx_barw.enable
+	call gaction gyxview.en_barw.enable
+END
+
+PROGRAM gyxview_barwidth_disable
+BEGIN
+	call gaction gyxview.tx_barw.disable
+	call gaction gyxview.en_barw.disable
+END
+
+PROGRAM gyxview_barwidth_show
+BEGIN
+	call gaction gyxview.tx_barw.show
+	call gaction gyxview.en_barw.show
+END
+
+PROGRAM gyxview_barwidth_hide
+BEGIN
+	call gaction gyxview.tx_barw.hide
+	call gaction gyxview.en_barw.hide
+END
+
+PROGRAM gyxview_blcolor_enable
+BEGIN
+	call gaction gyxview.tx_blcol.enable
+	call gaction gyxview.cb_blcol.enable
+	call gaction gyxview.cl_blcol.enable
+	call gaction gyxview.cb_blcol.withvalue gyxview.cb_blcol.setvalue "@"
+END
+
+PROGRAM gyxview_blcolor_disable
+BEGIN
+	call gaction gyxview.tx_blcol.disable
+	call gaction gyxview.cb_blcol.disable
+	call gaction gyxview.cl_blcol.disable
+END
+
+PROGRAM gyxview_blcolor_show
+BEGIN
+	call gaction gyxview.tx_blcol.show
+	call gaction gyxview.cb_blcol.show
+END
+
+PROGRAM gyxview_blcolor_hide
+BEGIN
+	call gaction gyxview.tx_blcol.hide
+	call gaction gyxview.cb_blcol.hide
+	call gaction gyxview.cl_blcol.hide
+END
+
+PROGRAM gyxview_clcolor_enable
+BEGIN
+	call gaction gyxview.tx_clcol.enable
+	call gaction gyxview.cb_clcol.enable
+	call gaction gyxview.cl_clcol.enable
+	call gaction gyxview.cb_clcol.withvalue gyxview.cb_clcol.setvalue "@"
+END
+
+PROGRAM gyxview_clcolor_disable
+BEGIN
+	call gaction gyxview.tx_clcol.disable
+	call gaction gyxview.cb_clcol.disable
+	call gaction gyxview.cl_clcol.disable
+END
+
+PROGRAM gyxview_clcolor_show
+BEGIN
+	call gaction gyxview.tx_clcol.show
+	call gaction gyxview.cb_clcol.show
+END
+
+PROGRAM gyxview_clcolor_hide
+BEGIN
+	call gaction gyxview.tx_clcol.hide
+	call gaction gyxview.cb_clcol.hide
+	call gaction gyxview.cl_clcol.hide
+END
+
+PROGRAM gyxview_blwidth_enable
+BEGIN
+	call gaction gyxview.tx_blwid.enable
+	call gaction gyxview.cb_blwid.enable
+END
+
+PROGRAM gyxview_blwidth_disable
+BEGIN
+	call gaction gyxview.tx_blwid.disable
+	call gaction gyxview.cb_blwid.disable
+END
+
+PROGRAM gyxview_blwidth_show
+BEGIN
+	call gaction gyxview.tx_blwid.show
+	call gaction gyxview.cb_blwid.show
+END
+
+PROGRAM gyxview_blwidth_hide
+BEGIN
+	call gaction gyxview.tx_blwid.hide
+	call gaction gyxview.cb_blwid.hide
+END
+
+PROGRAM gyxview_clwidth_enable
+BEGIN
+	call gaction gyxview.tx_clwid.enable
+	call gaction gyxview.cb_clwid.enable
+END
+
+PROGRAM gyxview_clwidth_disable
+BEGIN
+	call gaction gyxview.tx_clwid.disable
+	call gaction gyxview.cb_clwid.disable
+END
+
+PROGRAM gyxview_clwidth_show
+BEGIN
+	call gaction gyxview.tx_clwid.show
+	call gaction gyxview.cb_clwid.show
+END
+
+PROGRAM gyxview_clwidth_hide
+BEGIN
+	call gaction gyxview.tx_clwid.hide
+	call gaction gyxview.cb_clwid.hide
+END
+
+PROGRAM gyxview_blpattern_enable
+BEGIN
+	call gaction gyxview.tx_blpat.enable
+	call gaction gyxview.cb_blpat.enable
+END
+
+PROGRAM gyxview_blpattern_disable
+BEGIN
+	call gaction gyxview.tx_blpat.disable
+	call gaction gyxview.cb_blpat.disable
+END
+
+PROGRAM gyxview_blpattern_show
+BEGIN
+	call gaction gyxview.tx_blpat.show
+	call gaction gyxview.cb_blpat.show
+END
+
+PROGRAM gyxview_blpattern_hide
+BEGIN
+	call gaction gyxview.tx_blpat.hide
+	call gaction gyxview.cb_blpat.hide
+END
+
+PROGRAM gyxview_clpattern_enable
+BEGIN
+	call gaction gyxview.tx_clpat.enable
+	call gaction gyxview.cb_clpat.enable
+END
+
+PROGRAM gyxview_clpattern_disable
+BEGIN
+	call gaction gyxview.tx_clpat.disable
+	call gaction gyxview.cb_clpat.disable
+END
+
+PROGRAM gyxview_clpattern_show
+BEGIN
+	call gaction gyxview.tx_clpat.show
+	call gaction gyxview.cb_clpat.show
+END
+
+PROGRAM gyxview_clpattern_hide
+BEGIN
+	call gaction gyxview.tx_clpat.hide
+	call gaction gyxview.cb_clpat.hide
+END
+
+PROGRAM gyxview_markers_enable
+BEGIN
+	call gaction gyxview.gb_marker.enable
+	call gaction gyxview.tx_msym.enable
+	call gaction gyxview.cb_msym.enable
+	call gaction gyxview.tx_msize.enable
+	call gaction gyxview.cb_msize.enable
+	call gaction gyxview.tx_mcol.enable
+	call gaction gyxview.cb_mcol.enable
+	call gaction gyxview.cl_mcol.enable
+	call gaction gyxview.cb_mcol.withvalue gyxview.cb_mcol.setvalue "@"
+END
+
+PROGRAM gyxview_markers_disable
+BEGIN
+	call gaction gyxview.gb_marker.disable
+	call gaction gyxview.tx_msym.disable
+	call gaction gyxview.cb_msym.disable
+	call gaction gyxview.tx_msize.disable
+	call gaction gyxview.cb_msize.disable
+	call gaction gyxview.tx_mcol.disable
+	call gaction gyxview.cb_mcol.disable
+	call gaction gyxview.cl_mcol.disable
+END
+
+PROGRAM gyxview_markers_show
+BEGIN
+	call gaction gyxview.gb_marker.show
+	call gaction gyxview.tx_msym.show
+	call gaction gyxview.cb_msym.show
+	call gaction gyxview.tx_msize.show
+	call gaction gyxview.cb_msize.show
+	call gaction gyxview.tx_mcol.show
+	call gaction gyxview.cb_mcol.show
+END
+
+PROGRAM gyxview_markers_hide
+BEGIN
+	call gaction gyxview.gb_marker.hide
+	call gaction gyxview.tx_msym.hide
+	call gaction gyxview.cb_msym.hide
+	call gaction gyxview.tx_msize.hide
+	call gaction gyxview.cb_msize.hide
+	call gaction gyxview.tx_mcol.hide
+	call gaction gyxview.cb_mcol.hide
+	call gaction gyxview.cl_mcol.hide
+END
+
+PROGRAM gyxview_mlabels_enable
+BEGIN
+	call gaction gyxview.ck_mlab.enable
+	call program gyxview_mlabels_check
+END
+
+PROGRAM gyxview_mlabels_disable
+BEGIN
+	call gaction gyxview.ck_mlab.disable
+	call program gyxview_mlabels_off
+END
+
+PROGRAM gyxview_mlabels_show
+BEGIN
+	call gaction gyxview.ck_mlab.show
+	call gaction gyxview.tx_mlab.show
+	call gaction gyxview.vl_mlab.show
+	call gaction gyxview.tx_mlsize.show
+	call gaction gyxview.cb_mlsize.show
+	call gaction gyxview.tx_mlcol.show
+	call gaction gyxview.cb_mlcol.show
+	call gaction gyxview.tx_mlpos.show
+	call gaction gyxview.cb_mlpos.show
+END
+
+PROGRAM gyxview_mlabels_hide
+BEGIN
+	call gaction gyxview.ck_mlab.hide
+	call gaction gyxview.tx_mlab.hide
+	call gaction gyxview.vl_mlab.hide
+	call gaction gyxview.tx_mlsize.hide
+	call gaction gyxview.cb_mlsize.hide
+	call gaction gyxview.tx_mlcol.hide
+	call gaction gyxview.cb_mlcol.hide
+	call gaction gyxview.cl_mlcol.hide
+	call gaction gyxview.tx_mlpos.hide
+	call gaction gyxview.cb_mlpos.hide
+END
+
+PROGRAM gyxview_mlabels_check
+BEGIN
+	if gyxview.ck_mlab {
+		call gaction gyxview.tx_mlab.enable
+		call gaction gyxview.vl_mlab.enable
+		call gaction gyxview.tx_mlsize.enable
+		call gaction gyxview.cb_mlsize.enable
+		call gaction gyxview.tx_mlcol.enable
+		call gaction gyxview.cb_mlcol.enable
+		call gaction gyxview.cl_mlcol.enable
+		call gaction gyxview.tx_mlpos.enable
+		call gaction gyxview.cb_mlpos.enable
+		call gaction gyxview.cb_mlcol.withvalue gyxview.cb_mlcol.setvalue "@"
+	}
+	if ! gyxview.ck_mlab {
+		call gaction gyxview.tx_mlab.disable
+		call gaction gyxview.vl_mlab.disable
+		call gaction gyxview.tx_mlsize.disable
+		call gaction gyxview.cb_mlsize.disable
+		call gaction gyxview.tx_mlcol.disable
+		call gaction gyxview.cb_mlcol.disable
+		call gaction gyxview.cl_mlcol.disable
+		call gaction gyxview.tx_mlpos.disable
+		call gaction gyxview.cb_mlpos.disable
+	}
+END
+
+PROGRAM gyxview_connect_show
+BEGIN
+	call gaction gyxview.tx_conn.show
+	call gaction gyxview.cb_conn.show
+END
+
+PROGRAM gyxview_connect_hide
+BEGIN
+	call gaction gyxview.tx_conn.hide
+	call gaction gyxview.cb_conn.hide
+END
+
+PROGRAM gyxview_connect_enable
+BEGIN
+	call gaction gyxview.tx_conn.enable
+	call gaction gyxview.cb_conn.enable
+END
+
+PROGRAM gyxview_connect_disable
+BEGIN
+	call gaction gyxview.tx_conn.disable
+	call gaction gyxview.cb_conn.disable
+END
+
+// The following two programs are intended for use by other controls:
+
+SCRIPT gyxview_enable
+BEGIN
+	gyxview.tx_cis.enable
+	gyxview.cb_cis.enable
+	gyxview.tx_type.enable
+	gyxview.cb_cis.withvalue gyxview.cb_cis.setvalue "@"
+END
+
+SCRIPT gyxview_disable
+BEGIN
+	gyxview.tx_cis.disable
+	gyxview.cb_cis.disable
+	gyxview.tx_type.disable
+	// line box
+	gyxview.gb_line.disable
+	program gyxview_blcolor_disable
+	program gyxview_blwidth_disable
+	program gyxview_blpattern_disable
+	program gyxview_clcolor_disable
+	program gyxview_clwidth_disable
+	program gyxview_connect_disable
+	program gyxview_clpattern_disable
+	// misc box
+	gyxview.gb_misc.disable
+	program gyxview_bfcolor_disable
+	program gyxview_barwidth_disable
+	// markers box
+	program gyxview_markers_disable
+	// marker labels box
+	program gyxview_mlabels_disable
+END
+
+// The following program sets a checkbox on if any of the controls have been
+// changed.
+
+PROGRAM gyxview_command_hide
+BEGIN
+	call gaction gyxview.ck_command.hide
+	call gaction gyxview.ck_option.hide
+END
+
+PROGRAM gyxview_command_check
+BEGIN
+	call gaction gyxview.ck_command.setoff
+
+	if !H(gyxview.cl_blcol) | !H(gyxview.cl_bfcol) | !H(gyxview.cl_mcol) {
+		call gaction gyxview.ck_command.seton
+	}
+
+	if (! gyxview.ck_command & gyxview.cb_cis   & !H(gyxview.cb_cis)) {
+		call gaction gyxview.ck_command.seton
+	}
+
+	if (! gyxview.ck_command & gyxview.cb_blcol & !H(gyxview.cb_blcol)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_blwid & !H(gyxview.cb_blwid)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_blpat & !H(gyxview.cb_blpat)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_clcol & !H(gyxview.cb_clcol)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_clwid & !H(gyxview.cb_clwid)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_clpat & !H(gyxview.cb_clpat)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_conn  & !H(gyxview.cb_conn)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_bfcol & !H(gyxview.cb_bfcol)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.en_barw  & !H(gyxview.en_barw)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_msym  & !H(gyxview.cb_msym)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_msize & !H(gyxview.cb_msize)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.cb_mcol  & !H(gyxview.cb_mcol)) {
+		call gaction gyxview.ck_command.seton
+	}
+	if (! gyxview.ck_command & gyxview.vl_mlab  & !H(gyxview.vl_mlab)) {
+		call gaction gyxview.ck_command.seton
+	}
+
+END
+
+// The following program generates command options:
+
+PROGRAM gyxview_output
+BEGIN
+	call program gyxview_command_check
+	if gyxview.ck_command {
+		if gyxview.ck_option {
+			// for use by gplot[1234].idlg only
+			put " yxview("
+		}
+
+		optionarg gyxview.cb_cis
+		// line box
+		if H(gyxview.cl_blcol) {
+			optionarg /hidedefault gyxview.cb_blcol
+		}
+		if !H(gyxview.cl_blcol) {
+			optionarg /quoted gyxview.cl_blcol
+		}
+		optionarg gyxview.cb_blwid
+		optionarg gyxview.cb_blpat
+		optionarg gyxview.cb_conn
+		if H(gyxview.cl_clcol) {
+			optionarg /hidedefault gyxview.cb_clcol
+		}
+		if !H(gyxview.cl_clcol) {
+			optionarg /quoted gyxview.cl_clcol
+		}
+		optionarg gyxview.cb_clwid
+		optionarg gyxview.cb_clpat
+		optionarg gyxview.cb_conn
+
+		// misc box
+		if H(gyxview.cl_bfcol) {
+			optionarg /hidedefault gyxview.cb_bfcol
+		}
+		if !H(gyxview.cl_bfcol) {
+			optionarg /quoted gyxview.cl_bfcol
+		}
+		optionarg /hidedefault gyxview.en_barw
+
+		// markers box
+		optionarg gyxview.cb_msym
+		optionarg gyxview.cb_msize
+		if H(gyxview.cl_mcol) {
+			optionarg /hidedefault gyxview.cb_mcol
+		}
+		if !H(gyxview.cl_mcol) {
+			optionarg /quoted gyxview.cl_mcol
+		}
+
+		// mlabels box
+		if gyxview.ck_mlab {
+			require gyxview.vl_mlab
+			optionarg gyxview.vl_mlab
+		}
+		optionarg gyxview.cb_mlsize
+		if H(gyxview.cl_mlcol) {
+			optionarg /hidedefault gyxview.cb_mlcol
+		}
+		if !H(gyxview.cl_mlcol) {
+			optionarg /quoted gyxview.cl_mlcol
+		}
+		optionarg gyxview.cb_mlpos
+
+		if gyxview.ck_option {
+			// for use by gplot[1234].idlg only
+			put ")"
+		}
+	}
+
+END
+

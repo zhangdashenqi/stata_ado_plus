@@ -1,0 +1,162 @@
+Review of most common transformations
+-------------------------------------
+
+The most useful transformations in introductory data analysis are
+
+the ^reciprocal^ x to 1/x and the ^negative reciprocal^ x to -1/x. This
+is a very strong transformation with a drastic effect on distribution
+shape. It can not be applied to zero values. Although it can be applied
+to negative values, it is not useful unless all values are positive. The
+reciprocal of a ratio may often be interpreted as easily as the ratio
+itself: e.g.
+
+population density (people per unit area) becomes area per
+person
+
+persons per doctor becomes doctors per person
+
+rates of erosion become time to erode a unit depth.
+
+(In practice, we might want to multiply or divide the results of taking
+the reciprocal by some constant, such as 1000 or 10000, to get numbers
+that are easy to manage, but that itself has no effect on skewness or
+linearity.)
+
+The reciprocal reverses order among values of the same sign: largest
+becomes smallest, etc. The negative reciprocal preserves order among
+values of the same sign.
+
+the ^logarithm^ x to log base 10 of x OR
+              x to log base e of x (ln x) OR
+              x to log base 2 of x.
+This is a strong transformation with a major effect on distribution
+shape. It is commonly used for reducing right skewness and is often
+appropriate for measured variables. It can not be applied to zero or
+negative values. One unit on a logarithmic scale means a multiplication
+by the base of logarithms being used. Exponential growth or decline
+
+                        bx
+                  y = ae
+
+is made linear by
+
+               ln y = ln a + bx
+
+so that the response variable y should be logged. (Here e is a special
+number, approximately 2.71828, that is the base of natural logarithms.)
+
+An aside on this ^exponential growth or decline^ equation: put x = 0,
+and
+
+                        0
+                 y  = ae  = a,
+
+so a is the amount or count when x = 0. If a and b > 0, then y grows at
+a faster and faster rate (e.g. compound interest or unchecked population
+growth), whereas if a > 0 and b < 0, y declines at a slower and slower
+rate (e.g. radioactive decay).
+
+Power functions
+
+                        b
+                  y = ax
+
+are made linear by
+
+              log y = log a + b log x
+
+so that both variables y and x should be logged.
+
+An aside on such ^power functions^: put x = 0, and for b > 0,
+
+                        b
+                 y  = ax  = 0,
+
+so the power function for positive b goes through the origin, which
+often makes physical or biological or economic sense. Think: does zero
+for x imply zero for y? This kind of power function is a shape
+that fits many data sets rather well.
+
+Consider ratios
+
+                 y  = p / q
+
+where p and q are both positive in practice. Examples are
+
+                 males / females
+
+                 dependants / workers
+
+                 downstream length / downvalley length
+
+then y is somewhere between 0 and infinity, or in the last case, between
+1 and infinity. If p = q, then y = 1. Such definitions often lead to
+skewed data, because there is a definite lower limit and no definite
+upper limit. The logarithm, however, namely
+
+              log y = log p / q = log p - log q,
+
+is somewhere between -infinity and infinity and p = q means that log y =
+0. Hence the logarithm of such a ratio is likely to be more
+symmetrically distributed.
+
+the ^cube root^ x to x^^(1/3). This is a fairly strong transformation
+with a substantial effect on distribution shape: it is weaker than the
+logarithm. It is also used for reducing right skewness, and has the
+advantage that it can be applied to zero values. Note that the cube root
+of a volume has the units of a length. It is commonly applied to
+rainfall data.
+
+the ^square root^ x to x^^(1/2) = sqrt(x). This is a transformation with
+a moderate effect on distribution shape: it is weaker than the logarithm
+and the cube root. It is also used for reducing right skewness, and also
+has the advantage that it can be applied to zero values. Note that the
+square root of an area has the units of a length. It is commonly applied
+to counted data, especially if the values are mostly rather small.
+
+the ^square^ x to x^^2. This transformation has a moderate effect on
+distribution shape and it could be used to reduce left skewness. In
+practice, the main reason for using it is to fit a response by a
+quadratic function y = a + b x + c x^^2. Quadratics have a turning
+point, either a maximum or a minimum, although the turning point in a
+function fitted to data might be far beyond the limits of the
+observations. The distance of a body from an origin is a quadratic if
+that body is moving under constant acceleration, which gives a very
+clear physical justification for using a quadratic. Otherwise quadratics
+are typically used solely because they can mimic a relationship within
+the data region. Outside that region they may behave very poorly,
+because they take on arbitarily large values for extreme values of x,
+and unless the intercept a is constrained to be 0, they may behave
+unrealistically close to the origin.
+
+Squaring usually makes sense only if the variable concerned is zero or
+positive, given that (-x)^^2 and x^^2 are identical.
+
+The main criterion in choosing a transformation is: what works with the
+data? As examples above indicate, it is important to consider as well
+two questions.
+
+- What makes physical (biological, economic, whatever) sense, for
+  example in terms of limiting behaviour as values get very small or
+  very large? This question often leads to the use of logarithms.
+
+- Can we keep dimensions and units simple and convenient? If possible,
+  we prefer measurement scales that are easy to think about. The cube
+  root of a volume and the square root of an area both have the
+  dimensions of length, so far from complicating matters, such
+  transformations may simplify them. Reciprocals usually have simple
+  units, as mentioned earlier. Often, however, somewhat complicated
+  units are a sacrifice that has to be made.
+
+Also see:
+---------
+
+Reasons for using transformations                         help @trreason@
+
+Transformations for proportions and percents              help @trpropor@
+
+Psychological comments -- for the puzzled                 help @trpsych@
+
+How to do transformations in Stata                        help @trstata@
+
+

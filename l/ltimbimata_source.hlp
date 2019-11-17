@@ -1,0 +1,219 @@
+*! Source code of --ltimbimata--
+
+
+
+*! {smcl}
+*! {marker mz_decalen}{bf:mz_decalen.mata}{asis}
+*! version 1.0.0, Diallo Ibrahima Amadou, 25aug2008
+version 10.0
+mata:
+
+transmorphic matrix mz_decalen(transmorphic matrix x, real scalar n)
+{
+            transmorphic matrix u, v, res
+            real scalar k
+            k = abs(n)
+            u = J(k, cols(x), missingof(x))
+            if (n>=0) {
+                       v = mz_trimrows(x,0,k)
+                       res  = (u\v)
+            }
+            else {
+                  v = mz_trimrows(x,k,0)
+                  res  = (v\u)
+            }
+            return(res)
+}
+
+end
+
+
+
+*! {smcl}
+*! {marker pancolshape}{bf:mz_pancolshape.mata}{asis}
+*! version 1.0.0, Diallo Ibrahima Amadou, 25aug2008
+version 10.0
+mata:
+
+transmorphic matrix mz_pancolshape(transmorphic matrix W, real scalar c, string scalar f)
+{
+            transmorphic matrix res
+            transmorphic rowvector v, s
+            real rowvector R
+            real scalar i, j, l, N
+            N = cols(W)/c
+            if ((N-trunc(N))!=0) {
+                                  _error(3200,"You have inconformable number of panels")
+            }
+            if (f=="CK") {
+                          v = J(1, c, missingof(W))
+                          for(i=1; i<=N; i++) {
+                                               v = (v\W[|1,(1+(i-1)*c)\.,(i*c)|])
+                          }
+                          res = v[(2::rows(v)),.]
+            }
+            else if (f=="KC") {
+                               s = J(1, c, missingof(W))
+                               for (j=1; j<=N; j++) {
+                                                     R = J(1, cols(W), 0)
+                                                     for (l=1; l<=c; l++) {
+                                                                           R[j+(l-1)*N] = 1
+                                                     }
+                                                     s = (s\select(W,R))
+                               }
+                               res = s[(2::rows(s)),.]
+            }
+            return(res)
+}
+
+end
+
+
+
+*! {smcl}
+*! {marker mz_panrowshape}{bf:mz_panrowshape.mata}{asis}
+*! version 1.0.0, Diallo Ibrahima Amadou, 25aug2008
+version 10.0
+mata:
+
+transmorphic matrix mz_panrowshape(transmorphic matrix V, real scalar idcol, string scalar f, | real rowvector d)
+{
+            transmorphic matrix  X, VP, VPP, res, w
+            transmorphic colvector Q
+            real matrix info
+            real rowvector s, P, PP, R
+            real scalar T, N, k, i, j, a, l, m
+            P = J(1, cols(V), 1)
+            Q = J(rows(V), 1, missingof(V))
+            if (args()==4) {
+                            for (i=1; i<=cols(d); i++) {
+                                                        a = .
+                                                        a = d[i]
+                                                        if (a==idcol) {
+                                                                       Q = V[.,idcol]
+                                                        }
+                                                        P[a] = 0
+                            }
+                            k = cols(V)-cols(d)
+            }
+            else {
+                  k = cols(V)
+            }
+            if (allof(Q,missingof(Q))) {
+                                        VP = V
+                                        VPP = select(VP,P)
+                                        info = panelsetup(VPP, idcol, 2, 0)
+                                        s = panelstats(info)
+                                        N = s[1]; T = s[4]
+            }
+            else {
+                  VP = select(V,P)
+                  VPP = (Q,VP)
+                  info = panelsetup(VPP, 1, 2, 0)
+                  s = panelstats(info)
+                  N = s[1]; T = s[4]
+                  PP = J(1, cols(VPP), 1)
+                  PP[1] = 0
+                  VPP = select(VPP,PP)
+            }
+            X = J(T,N*k, missingof(V))
+            for (j=1; j<=N; j++) {
+                                  X[|1,(1+(j-1)*k)\.,(j*k)|] = panelsubmatrix(VPP, j, info)
+            }
+            if (f=="CK") {
+                          res = X
+            }
+            else if (f=="KC") { 
+                               w = J(rows(X), 1, missingof(X))
+                               for (l=1; l<=k; l++) {
+                                                     R = J(1, cols(X), 0)
+                                                     for (m=1; m<=N; m++) {
+                                                                           R[l+(m-1)*k] = 1
+                                                     }
+                               w = (w,select(X,R))
+                               }
+                               res = w[.,(2.. cols(w))]
+            }
+            return(res)
+}
+
+end
+
+
+
+*! {smcl}
+*! {marker mz_reshape}{bf:mz_reshape.mata}{asis}
+*! version 1.0.0, Diallo Ibrahima Amadou, 25aug2008
+version 10.0
+mata:
+
+transmorphic matrix mz_reshape(transmorphic matrix x, real scalar m, real scalar n)
+{
+            transmorphic matrix res
+            transmorphic rowvector v, q, w
+            real scalar i
+            v = vec(x')'
+            w = mz_ajvec(v, m*n)
+            q = J(1, n, missingof(x))
+            for (i=1; i<=m; i++) {
+                                  q = (q\w[|1+(i-1)*n\i*n|])
+            }
+            res = q[(2::rows(q)),.]
+            return(res)
+}
+
+transmorphic rowvector mz_ajvec(transmorphic rowvector x, real scalar d)
+{
+            transmorphic rowvector u, v
+            real scalar i, s
+            u = J(1, cols(x), missingof(x))
+            if (d<=cols(x)) {
+                             v = x[|1\d|]
+            }
+            else {
+                  s = ceil(d/cols(x))
+                  for (i=1; i<=s; i++) {
+                                        u = (u,x)
+                  }
+                  v = u[|(cols(x)+1)\(cols(x)+d)|]
+            }
+            return(v)
+}
+
+end
+
+
+
+*! {smcl}
+*! {marker mz_stdc}{bf:mz_stdc.mata}{asis}
+*! version 1.0.0, Diallo Ibrahima Amadou, 25aug2008
+version 10.0
+mata:
+
+real colvector  mz_stdc(real matrix x)
+{
+                real matrix res
+                real scalar N
+                N = rows(x)
+                res = sqrt((1/(N-1)):*colsum((x-mz_reshape(mean(x), rows(x), cols(x))):^2)')
+                return(res)
+}
+
+end
+
+
+
+*! {smcl}
+*! {marker mz_trimrows}{bf:mz_trimrows.mata}{asis}
+*! version 1.0.0, Diallo Ibrahima Amadou, 25aug2008
+version 10.0
+mata:
+
+transmorphic matrix mz_trimrows(transmorphic matrix x, real scalar p,  real scalar d)
+{
+            transmorphic matrix res
+            res = x[((p+1)::(rows(x)-d)),.]
+            return(res)
+}
+
+end

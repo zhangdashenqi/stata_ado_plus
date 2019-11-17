@@ -1,0 +1,87 @@
+{smcl}
+{* 27mar2002}{...}
+{hline}
+help for {hi:finirr}{right:(user-written)}
+{hline}
+
+{title:Compute the internal rate of return (IRR) of a cash stream}
+
+{p 8 14}{cmd:finirr} {it:varname} [{cmd:if} {it:exp}] [{cmd:in} {it:range}] 
+     [{cmd:,}
+     {cmdab:C:ash0(}{it:#}{cmd:)} {cmdab:log:} 
+     {cmd:from(}{it:init_specs}{cmd:)} {it:maximize_options}]
+     
+
+{p}{cmd:finirr} is for use with time-series data.  You must {cmd:tsset} your
+data before using {cmd:finirr}; see help {help tsset}.
+
+{p}{cmd:by} {it:...} {cmd::} may be used with {cmd:finirr}; see help {help by}.
+
+{title:Description}
+
+{p}{cmd:finirr} computes the internal rate of return (IRR) of the cashflow in
+{it:varname}.  The IRR is defined as the discount (or interest) rate that
+causes the net present value (NPV) of the stream to be 0 at the starting
+period of the stream.
+
+{p}The cashflow is assumed to begin at the first period with non-missing data
+for {it:varname} or the first period defined by the {cmd:if} and {cmd:in}
+qualifiers.  That is to say, this period is taken as the 0th period and is not
+discounted.
+
+{p}If there are gaps in the time variable, then these gaps are considered in
+the discounting.  For example, if the stream begins in in 1970 and has data
+for 1971, but the there is no observation in 1972 (or equivalently, the cash
+flow is missing), and there is an observation in 1973, the observation for
+1971 is discounted 1 period and the observation in 1973 is discounted 3
+periods.  Put another way, the number of periods discounted is determined by
+the time variable, not the observation number.  
+
+{p}If the data are tsset with a time-unit (periodicity) other than
+{cmd:yearly} or {cmd:generic}, then the simple and compound annualized rates
+based on the specified time unit are also computed.  The simple annualized
+rate is just -- irr / p -- where irr is the irr per period and p is the
+periodicity of the observations, e.g.  12 for monthly.  The compound
+annualized rate is computed as -- (1 + irr)^p - 1).
+
+{p}{cmd:finirr} stops when it finds one IRR that causes the NPV to be 0.  Some
+cash streams can allow multiple IRRs that produce an NPV of 0.  
+
+{title:Options}
+
+{p 0 4}{cmd:cash0(}{it:#}{cmd:)} specifies an initial cash flow for period 0.
+When this option is specified, the first observation used in the data is now
+taken to be period 1 (rather than 0) and is thus discounted 1 period.  This
+option makes it easier to work with data where the cash flow is recorded in
+the data, but there is an initial balance or balloon in the initial period
+that is not recorded in the data.
+
+{p 0 4}{cmd:from(}{it:init_spec}{cmd:)} is a rarely used option specifies a
+starting point in the search for the IRR, by default the search starts at 0.
+The {cmd:from()} option takes an {it:init_spec} as defined in {help maximize},
+but will typically be something like, {inp:from(.1 , copy)}
+
+{p 0 4}{cmd:log} is rarely used and requests that an iteration log be produced
+of the search for the IRR.  {help ml} is used to solve the optimization
+problem, though a likelihood is not being maximized.  Other maximization
+options may also be specified, see {help maximize}.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. finirr earnings_less_costs}
+
+{p 8 12}{inp:. finirr income, cash0(building_cost)}
+
+{title:Returned results}
+
+{p 4 4}scalars
+
+{p 8 8}{cmd:r(irr)} {space 2}the IRR{p_end}
+{p 8 8}{cmd:r(irr_s)} the simple annualize IRR{p_end}
+{p 8 8}{cmd:r(irr_c)} the compound annualized IRR{p_end}
+
+{title:Also see}
+
+{p 1 14}Manual:  {hi:[U] 15.5.4 Time-series formats},{p_end}
+	  {hi:[R] tsset}

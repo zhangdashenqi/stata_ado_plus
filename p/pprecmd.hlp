@@ -1,0 +1,54 @@
+.-
+help for ^pprecmd^                                                [STB-52: sg120]
+.-
+
+Split input for prefix commands
+
+    ^pprecmd^ lname1 lname2 ^:^ string
+
+
+Description
+-----------
+
+^pprecmd^ splits the input string into the part before the first ^:^ (returned
+in local lname1) and the part after this colon (returned in the local lname2).
+
+If string does not contain a colon or ends after the first colon, lname2 is
+empty.
+
+
+Examples
+--------
+
+You want to write a prefix command X with syntax
+
+    X [, Xoptions] : cmd ...
+
+The beginning of X could like like this:
+
+    program define X
+       version 6.0
+       pprecmd 0 cmd: `0'
+       if `"`cmd'"'=="" {
+          di in re "syntax error, : missing"
+          exit 198
+       }
+        syntax [, Xoptions]
+       ...
+    end
+
+
+Author
+------
+
+        Jeroen Weesie
+        Dept of Sociology/ICS
+        Utrecht University
+        J.Weesie @@ fss.uu.nl
+
+
+Also See
+--------
+
+ Manual: [R] syntax
+On-line: help for @syntax@, @gettoken@

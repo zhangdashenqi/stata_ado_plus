@@ -1,0 +1,125 @@
+{smcl}
+{* 15 Sept 2008}{...}
+{cmd:help dropmiss}{right: ({browse "http://www.stata-journal.com/article.html?article=up0023":SJ8-4: dm89_1})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col :{hi:dropmiss} {hline 2}}Drop variables (observations) that are all missing{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2} 
+{cmd:dropmiss}
+[{varlist}] 
+[{cmd:,}
+{cmd:force}
+{cmd:any}
+{cmdab:t:rim}
+{cmdab:p:iasm}]  
+
+
+{p 8 17 2} 
+{cmd:dropmiss}
+[{it:varlist}] 
+{ifin}
+{cmd:,}
+{cmdab:o:bs} 
+[{cmd:force} 
+{cmd:any}
+{cmdab:t:rim}
+{cmdab:p:iasm}]
+
+
+{title:Description}
+
+{p 4 4 2} 
+{cmd:dropmiss} drops those variables in {it:varlist} for which all
+(optionally, any) observations have missing values, that is, any of
+{cmd:.} or {cmd:.a} to {cmd:.z} for a numeric variable or {cmd:""} for a
+string variable.  {it:varlist} defaults to all variables. 
+
+{p 4 4 2}
+{cmd:dropmiss} with the {cmd:obs} option drops those observations for
+which all (optionally, any) variables in {it:varlist} have missing
+values. {it:varlist} defaults to all variables. 
+
+{p 4 4 2} 
+You can also simply type, for example, {cmd:drop if missing(myvar)}
+or {cmd:drop if myvar == .} if that is desired.  
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:obs} is required in the second syntax and specifies that
+observations are to be dropped if their values are missing in {it:varlist}.
+
+{p 4 8 2}{cmd:force} specifies that, even though the data in memory have
+been changed, you do want to apply {cmd:dropmiss}. 
+
+{p 4 8 2}{cmd:any} specifies that variables or observations are to be
+dropped if any values are missing in those variables or observations.
+This can have drastic effects and may even result in the
+dropping of all data. 
+
+{p 4 8 2}{cmd:trim} specifies that whether string values are missing 
+should be determined after trimming leading and trailing spaces. For
+example, {cmd:trim} {cmd:" "} (a single blank) would count as
+missing. 
+
+{p 4 8 2}{cmd:piasm} specifies that {cmd:p}eriod {cmd:i}s {cmd:a}lso
+{cmd:s}tring {cmd:m}issing; that is, {cmd:"."} counts as missing. Some
+Stata users use {cmd:"."} to indicate missing values of string
+variables. 
+
+{p 4 8 2}{cmd:trim piasm} would specify that, e.g., {cmd:" . "} counts as
+missing. 
+
+
+{title:Remarks} 
+
+{p 4 4 2}
+{cmd:dropmiss} is destructive.  Once variables or observations have been
+dropped, they can not be reinstated except by once more reading in or
+otherwise re-creating the data. As a reminder of the
+destructive character of this command, users must specify the
+{cmd:force} option to drop data if the data in memory have been changed. 
+
+
+{title:Examples}
+
+{phang2}{cmd:. dropmiss}{p_end}
+{phang2}{cmd:. dropmiss, obs}
+
+{p 4 4 2}With the {cmd:auto} dataset, 
+
+{phang2}{cmd:dropmiss} {space 10} drops nothing{p_end}
+{phang2}{cmd:dropmiss, any} {space 5} drops {cmd:rep78}{p_end}
+{phang2}{cmd:dropmiss, obs} {space 5} drops nothing{p_end}
+{phang2}{cmd:dropmiss, obs any} {space 1} drops 5 observations for which {cmd:rep78} is missing 
+
+
+{title:Author}
+
+{p 4 4 2}Nicholas J. Cox, Durham University, UK{break} 
+         n.j.cox@durham.ac.uk
+
+
+{title:Acknowledgments}
+
+{p 4 4 2}Jeroen Weesie suggested adding {cmd:if} and {cmd:in}.  Estie Sid Hudes
+prompted the addition of an optional varlist when the {cmd:obs} option is
+specified and the addition of the {cmd:any} option. 
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 8, number 4: {browse "http://www.stata-journal.com/article.html?article=up0023":dm89_1},{break}
+         {it:Stata Technical Bulletin} 60: {browse "http://www.stata.com/products/stb/journals/stb60.pdf":dm89}
+
+{psee}Online:  {manhelp drop D}
+{p_end}

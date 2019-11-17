@@ -1,0 +1,50 @@
+.-
+help for ^tukeyhsd^
+.-
+
+Tukey's HSD pairwise comparisons
+-------------------------------
+ 
+	^tukeyhsd^ var [if] [, Level(sig) nu(dfe) mse(mse) ]
+
+
+Description
+-----------
+
+^tukeyhsd^ performs Tukey's HSD pairwise comparisons after
+       running ^anova^.
+       
+       ^tukeyhsd^ requires the ^gsturng^ and the ^sturng*^ files.
+
+
+Examples
+--------
+
+ . ^anova y b^
+ . ^tukeyhsd b^
+ . ^tukeyhsd b, level(.99) ^
+ 
+  ^/* differences in b at a==3 */^
+ . ^anova y a b a*b^
+ . ^tukeyhsd b if a==3^
+ . ^tukeyhsd b if a==3, nu(3) mse(71.6)^
+
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+      
+      
+Acknowledgements
+----------------
+
+      John R. Gleason
+      Syracuse University
+      loesljrg@ican.net
+      
+      For ^qsturng^ and ^strung*^
+      STB-47/sg101

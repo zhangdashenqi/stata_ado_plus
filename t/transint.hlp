@@ -1,0 +1,451 @@
+.-
+Transformations: an introduction
+.-
+
+^Transformation^ is the replacement of a variable by a function of that
+variable: for example, replacing a variable x by the square root of x or
+the logarithm of x. It is very common in data analysis.
+
+This help item covers the following topics. You can read in sequence or
+go directly to each section.
+
+    Reasons for using transformations                         help @trreason@
+
+    Review of most common transformations                     help @trreview@
+
+    Transformations for proportions and percents              help @trpropor@
+
+    Psychological comments -- for the puzzled                 help @trpsych@
+
+    How to do transformations in Stata                        help @trstata@
+
+Reasons for using transformations
+---------------------------------
+
+There are many reasons for transformation. The list here is not
+comprehensive.
+
+1. Convenience
+2. Reducing skewness
+3. Equal spreads
+4. Linear relationships
+5. Additive relationships
+
+If you are looking at just one variable, 1, 2 and 3 are relevant, while
+if you are looking at two or more variables, 4 and 5 are more important.
+However, transformations that achieve 4 and 5 very often achieve 2 and
+3.
+
+1. ^Convenience^ A transformed scale may be as natural as the original
+scale and more convenient for a specific purpose (e.g. percentages
+rather than original data, sines rather than degrees).
+
+One important example is ^standardisation^, whereby values are adjusted
+for differing level and spread. In general
+
+                       value - level
+ standardised value =  -------------.
+                          spread
+
+Standardised values have level 0 and spread 1 and have no units: hence
+standardisation is useful for comparing variables expressed in different
+units. Most commonly a ^standard score^ is calculated as
+
+                       x - mean of x
+                  z =  -------------.
+                          sd of x
+
+Standardisation makes no difference to the shape of a distribution.
+
+2. ^Reducing skewness^ A transformation may be used to reduce skewness.
+A distribution that is symmetric or nearly so is often easier to handle
+and interpret than a skewed distribution.
+
+To reduce right skewness, take roots or logarithms or reciprocals (roots
+are weakest). This is the commonest problem in practice.
+
+To reduce left skewness, take squares or cubes or higher powers.
+
+3. ^Equal spreads^ A transformation may be used to produce approximately
+equal spreads, despite marked variations in level, which again makes
+data easier to handle and interpret. Each data set or subset having
+about the same spread or variability is a condition called
+^homoscedasticity^: its opposite is called ^heteroscedasticity^. (The
+spelling ^-sked-^ rather than ^-sced-^ is also used.)
+
+4.  ^Linear relationships^ When looking at relationships between
+variables, it is often far easier to think about patterns that are
+approximately linear than about patterns that are highly curved. This is
+vitally important when using linear regression, which amounts to fitting
+such patterns to data. (In Stata, @regress@ is the basic command for
+regression.)
+
+For example, a plot of logarithms of a series of values against time has
+the property that periods with ^constant rates of change^ (growth or
+decline) plot as straight lines.
+
+5. ^Additive relationships^ Relationships are often easier to analyse
+when additive rather than (say) multiplicative. So
+
+                  y = a + bx
+
+in which two terms a and bx are added is easier to deal with than
+
+                        b
+                  y = ax
+
+                          b
+in which two terms a and x  are multiplied. ^Additivity^ is a vital
+issue in ^analysis of variance^ (in Stata, @anova@, @oneway@, etc.).
+
+In practice, a transformation often works, serendipitously, to do
+several of these at once, particularly to reduce skewness, to produce
+nearly equal spreads and to produce a nearly linear or additive
+relationship.
+
+Review of most common transformations
+-------------------------------------
+
+The most useful transformations in introductory data analysis are
+
+the ^reciprocal^ x to 1/x and the ^negative reciprocal^ x to -1/x. This
+is a very strong transformation with a drastic effect on distribution
+shape. It can not be applied to zero values. Although it can be applied
+to negative values, it is not useful unless all values are positive. The
+reciprocal of a ratio may often be interpreted as easily as the ratio
+itself: e.g.
+
+population density (people per unit area) becomes area per
+person
+
+persons per doctor becomes doctors per person
+
+rates of erosion become time to erode a unit depth.
+
+(In practice, we might want to multiply or divide the results of taking
+the reciprocal by some constant, such as 1000 or 10000, to get numbers
+that are easy to manage, but that itself has no effect on skewness or
+linearity.)
+
+The reciprocal reverses order among values of the same sign: largest
+becomes smallest, etc. The negative reciprocal preserves order among
+values of the same sign.
+
+the ^logarithm^ x to log base 10 of x OR
+              x to log base e of x (ln x) OR
+              x to log base 2 of x.
+This is a strong transformation with a major effect on distribution
+shape. It is commonly used for reducing right skewness and is often
+appropriate for measured variables. It can not be applied to zero or
+negative values. One unit on a logarithmic scale means a multiplication
+by the base of logarithms being used. Exponential growth or decline
+
+                        bx
+                  y = ae
+
+is made linear by
+
+               ln y = ln a + bx
+
+so that the response variable y should be logged. (Here e is a special
+number, approximately 2.71828, that is the base of natural logarithms.)
+
+An aside on this ^exponential growth or decline^ equation: put x = 0,
+and
+
+                        0
+                 y  = ae  = a,
+
+so a is the amount or count when x = 0. If a and b > 0, then y grows at
+a faster and faster rate (e.g. compound interest or unchecked population
+growth), whereas if a > 0 and b < 0, y declines at a slower and slower
+rate (e.g. radioactive decay).
+
+Power functions
+
+                        b
+                  y = ax
+
+are made linear by
+
+              log y = log a + b log x
+
+so that both variables y and x should be logged.
+
+An aside on such ^power functions^: put x = 0, and for b > 0,
+
+                        b
+                 y  = ax  = 0,
+
+so the power function for positive b goes through the origin, which
+often makes physical or biological or economic sense. Think: does zero
+for x imply zero for y? This kind of power function is a shape
+that fits many data sets rather well.
+
+Consider ratios
+
+                 y  = p / q
+
+where p and q are both positive in practice. Examples are
+
+                 males / females
+
+                 dependants / workers
+
+                 downstream length / downvalley length
+
+then y is somewhere between 0 and infinity, or in the last case, between
+1 and infinity. If p = q, then y = 1. Such definitions often lead to
+skewed data, because there is a definite lower limit and no definite
+upper limit. The logarithm, however, namely
+
+              log y = log p / q = log p - log q,
+
+is somewhere between -infinity and infinity and p = q means that log y =
+0. Hence the logarithm of such a ratio is likely to be more
+symmetrically distributed.
+
+the ^cube root^ x to x^^(1/3). This is a fairly strong transformation
+with a substantial effect on distribution shape: it is weaker than the
+logarithm. It is also used for reducing right skewness, and has the
+advantage that it can be applied to zero values. Note that the cube root
+of a volume has the units of a length. It is commonly applied to
+rainfall data.
+
+the ^square root^ x to x^^(1/2) = sqrt(x). This is a transformation with
+a moderate effect on distribution shape: it is weaker than the logarithm
+and the cube root. It is also used for reducing right skewness, and also
+has the advantage that it can be applied to zero values. Note that the
+square root of an area has the units of a length. It is commonly applied
+to counted data, especially if the values are mostly rather small.
+
+the ^square^ x to x^^2. This transformation has a moderate effect on
+distribution shape and it could be used to reduce left skewness. In
+practice, the main reason for using it is to fit a response by a
+quadratic function y = a + b x + c x^^2. Quadratics have a turning
+point, either a maximum or a minimum, although the turning point in a
+function fitted to data might be far beyond the limits of the
+observations. The distance of a body from an origin is a quadratic if
+that body is moving under constant acceleration, which gives a very
+clear physical justification for using a quadratic. Otherwise quadratics
+are typically used solely because they can mimic a relationship within
+the data region. Outside that region they may behave very poorly,
+because they take on arbitarily large values for extreme values of x,
+and unless the intercept a is constrained to be 0, they may behave
+unrealistically close to the origin.
+
+Squaring usually makes sense only if the variable concerned is zero or
+positive, given that (-x)^^2 and x^^2 are identical.
+
+The main criterion in choosing a transformation is: what works with the
+data? As examples above indicate, it is important to consider as well
+two questions.
+
+- What makes physical (biological, economic, whatever) sense, for
+  example in terms of limiting behaviour as values get very small or
+  very large? This question often leads to the use of logarithms.
+
+- Can we keep dimensions and units simple and convenient? If possible,
+  we prefer measurement scales that are easy to think about. The cube
+  root of a volume and the square root of an area both have the
+  dimensions of length, so far from complicating matters, such
+  transformations may simplify them. Reciprocals usually have simple
+  units, as mentioned earlier. Often, however, somewhat complicated
+  units are a sacrifice that has to be made.
+
+Transformations for proportions and percents (more advanced)
+------------------------------------------------------------
+
+Data that are proportions (between 0 and 1) or percents (between 0 and
+100) often benefit from special transformations. The most common is the
+^logit^ (or logistic) transformation, which is
+
+            logit p = log (p / (1 - p)) for proportions
+
+         OR logit p = log (p / (100 - p)) for percents
+
+where p is a proportion or percent.
+
+This transformation treats very small and very large values
+symmetrically, pulling out the tails and pulling in the middle around
+0.5 or 50%. The plot of p against logit p is thus a flattened S-shape.
+Strictly logit p cannot be determined for the extreme values of 0 and 1
+(100%): if they occur in data, there needs to be some adjustment.
+
+One justification for this logit transformation might be sketched in
+terms of a diffusion process such as the spread of literacy. The push
+from zero to a few percent might take a fair time; once literacy starts
+spreading its increase becomes more rapid and then in turn slows; and
+finally the last few percent may be very slow in converting to literacy,
+as we are left with the isolated and the awkward, who are the slowest to
+pick up any new thing. The resulting curve is thus a flattened S-shape
+against time, which in turn is made more nearly linear by taking logits
+of literacy. More formally, the same idea might be justified by
+imagining that adoption (infection, whatever) is proportional to the
+number of contacts between those who do and those who do not, which will
+rise and then fall quadratically. More generally, there are many
+relationships in which predicted values cannot logically be less than 0
+or more than 1 (100%). Using logits is one way of ensuring this:
+otherwise models may produce absurd predictions.
+
+The logit (looking only at the case of proportions)
+
+            logit p = log (p / (1 - p))
+
+can be rewritten
+
+            logit p = log p  - log (1 - p)
+
+and in this form can be seen as a member of a set of ^folded^
+^transformations^
+
+     transform of p = something done to p -
+                          something done to (1 - p).
+
+This way of writing it brings out the symmetrical way in which very high
+and very low values are treated. (If p is small, 1 - p is large, and
+vice versa.) The logit is occasionally called the ^folded log^. The
+simplest other such transformation is the ^folded root^ (that means
+square root)
+
+   folded root of p = root of p  - root of (1 - p)
+
+As with square roots and logarithms generally, the folded root has the
+advantage that it can be applied without adjustment to data values of 0
+and 1 (100%). The folded root is a weaker transformation than the logit.
+In practice it is used far less frequently.
+
+Two other transformations for proportions and percents met in the older
+literature (and still used occasionally) are the ^angular^ and the
+^probit^. The angular is
+
+            arcsin(root of p):
+
+that is, the angle whose sine is the square root of p. In practice, it
+behaves very like
+
+             0.41          0.41
+            p     - (1 - p)    ,
+
+which in turn is close to
+
+             0.5          0.5
+            p    - (1 - p)   ,
+
+which is another way of writing the folded root. The probit is a
+transformation with a mathematical connection to the normal (Gaussian)
+distribution, which is not only very similar in behaviour to the logit,
+but also more awkward to work with. As a result, it is now rarely seen
+in any but more advanced applications, where it retains some advantages.
+
+Psychological comments -- for the puzzled
+-----------------------------------------
+
+The main motive for transformation is greater ease of description.
+Although transformed scales may seem less natural, this is largely a
+psychological objection. Greater experience with transformation tends to
+reduce this feeling, simply because transformation so often works so
+well. In fact, many familiar measured scales are really transformed
+scales: decibels, pH and the Richter scale of earthquake magnitude are
+all logarithmic.
+
+Often it helps to transform results back again, using the reverse or
+^inverse^ transformation:
+
+    reciprocal             also reciprocal
+
+    t = 1 / x              x = 1 / t
+
+    logarithm base 10      10 to the power
+
+                                 x
+    t = log  x             t = 10
+           10
+
+    logarithm base e       e to the power
+
+                                x
+    t = log x = ln x       t = e
+           e
+
+    logarithm base 2       2 to the power
+
+                                x
+    t = log x              t = 2
+           2
+
+    cube root              cube
+
+         1/3                    3
+    t = x                  x = t
+
+    square root            square
+
+         1/2                    2
+    t = x                  x = t
+
+
+How to do transformations in Stata
+----------------------------------
+
+Basic first steps:
+
+- Draw a graph of the data to see how far patterns in data match the
+  simplest ideal patterns. Try @graph@ or @dotplot@.
+
+- See what range the data cover. Transformations will have little effect
+  if the range is small.
+
+- Think carefully about data sets including zero or negative values.
+  Some transformations are not defined mathematically for some values
+  (see above), and often they make little or no scientific sense. For
+  example, I would never transform temperatures in degrees Celsius or
+  Fahrenheit for these reasons (unless to Kelvin).
+
+Standard scores (mean 0 and sd 1) in a new variable are obtained by
+
+    . ^egen stdpopi = std(popi)^
+
+whereas the basic transformations can all be put in new variables by
+@generate@:
+
+    . ^gen recener = 1/energy^
+    . ^gen logeener = ln(energy)^
+    . ^gen l10ener = log10(energy)^
+    . ^gen curtener = energy^^(1/3)^
+    . ^gen sqrtener = sqrt(energy)^
+    . ^gen sqener = energy^^2^
+
+    . ^gen logitp = log(p/(1-p))^          if p is a proportion
+    . ^gen logitp = log(p/(100-p))^        if p is a percent
+    . ^gen frootp = sqrt(p) - sqrt(1-p)^   if p is a proportion
+    . ^gen frootp = sqrt(p) - sqrt(100-p)^ if p is a percent
+
+Note any messages about missing values carefully: unless you had missing
+values in the original variable, they indicate an attempt to apply a
+transformation when it is not defined. (Do you have zero or negative
+values, for example?)
+
+It is not always necessary to create a transformed variable before
+working with it. In particular, @graph@ allows the option ^log^ when
+producing a histogram and the options ^xlog^ and ^ylog^ when drawing
+a (twoway) scatter plot. The last is very useful because the graph is
+labelled using the original values, but it does not leave behind a
+log-transformed variable in memory.
+
+Author
+------
+
+        This help file was put together by
+
+        Nicholas J. Cox, University of Durham, U.K.
+        n.j.cox@@durham.ac.uk
+
+        (last revised 20 February 1999)
+
+
+Also see
+--------
+
+On-line: @generate@, @egen@, @graph@
+

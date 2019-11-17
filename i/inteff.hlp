@@ -1,0 +1,110 @@
+{smcl}
+{hline}
+help for {hi:inteff}{right:(SJ4-2: st0063; SJ4-3: st0063_1)}
+{hline}
+
+{title:Computing interaction effects and standard errors in logit and probit models}
+
+{title:Syntax}
+
+{p 8 12 2}
+{cmd:inteff}
+{it:varlist}
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+[{cmd:,}
+{cmd:savedata(}{it:filename}[{cmd:, replace}]{cmd:)}
+{cmd:savegraph1(}{it:filename}[{cmd:, replace}]{cmd:)}
+{cmd:savegraph2(}{it:filename}[{cmd:, replace}]{cmd:)}]
+
+{p 8 8 2}
+where {it:varlist} must be the same as the fitted logit or probit model
+and must include at least four variables. The order of these first four
+variables must be dependent variable, independent variable 1, independent
+variable 2, and the interaction between independent variables 1 and 2. Other
+independent variables can be added after the interaction term, i.e., starting
+from the fifth position.
+
+{p 8 8 2}
+If the interaction term (at the fourth position) is a product of a
+continuous variable and a dummy variable, the first independent
+variable x_1 has to be the continuous variable, and the second independent
+variable x_2 has to be the dummy variable. The order of the second and
+third variables does not matter if both are continuous or both are dummy
+variables.
+
+
+{title:Description}
+
+{p 4 4 2}
+The new command {cmd:inteff} calculates the interaction effect, standard
+error, and {it:z}-statistic for each observation for either logit or probit
+when two variables have been interacted. The interacted variables cannot
+have higher order terms, such as squared terms. The command is designed to
+be run immediately after fitting a logit or probit model.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:savedata(}{it:filename}[{cmd:, replace}]{cmd:)} specifies the path
+and filename of computed data to be saved. This gives the researcher the
+option of further investigation. Saved data include five variables, in the
+following order:
+
+{p 12 15 2}1. predicted probability{p_end}
+{p 12 15 2}2. interaction effect (calculated by conventional linear
+method){p_end}
+{p 12 15 2}3. interaction effect (calculated by the method suggested in this
+paper){p_end}
+{p 12 15 2}4. standard error of the interaction effect{p_end}
+{p 12 15 2}5. {it:z}-statistic of the interaction effect{p_end}
+
+{p 8 8 2}
+The variables all have meaningful names. For example,
+after we run a logit model, the five variables would be {cmd:_logit_phat},
+{cmd:_logit_linear}, {cmd:_logit_ie}, {cmd:_logit_se}, and 
+{cmd:_logit_z}. The prefix for probit models is {cmd:_probit}.
+
+{p 4 8 2}
+{cmd:savegraph1(}{it:filename}[{cmd:, replace}]{cmd:)} and
+{cmd:savegraph2(}{it:filename}[{{cmd:, replace}]{cmd:)} save the graphs
+with the name and path designated by the user.  The {cmd:inteff} command
+generates two scatter graphs. Both plot predicted probabilities on the
+{it:x}-axis. The first graph plots two interaction effects (one is calculated
+by the method suggested in this paper, and the other one is calculated by the
+conventional linear method) against predicted probabilities. The second graph
+plots $z$-statistics of the interaction effect against predicted
+probabilities. 
+
+
+{title:Examples}
+
+
+{p 8 12 2}{cmd:. logit $y age educ ageeduc male ins_pub ins_uni $x, nolog cluster(pid)}{p_end}
+{p 8 12 2}{cmd:. inteff $y age educ ageeduc male ins_pub ins_uni $x,} 
+ {cmd:savedata(d:\data\logit_inteff,replace)}
+ {cmd:savegraph1(d:\data\figure1, replace)}
+ {cmd:savegraph2(d:\data\figure2, replace)}{p_end}
+
+{p 8 12 2}{cmd:. probit $y male ins_uni male_uni age educ ins_pub $x, nolog cluster(pid)}{p_end}
+{p 8 12 2}{cmd:. inteff $y male ins_uni male_uni age educ ins_pub $x,}
+  {cmd:savedata(d:\data\probit_inteff, replace)}
+  {cmd:savegraph1(d:\data\figure3, replace)}
+  {cmd:savegraph2(d:\data\figure4, replace)}
+
+
+{title:Authors}
+
+    Edward C. Norton 
+    Department of Health Policy and Administration
+    University of North Carolina at Chapel Hill
+
+    Hua Wang 
+    Department of Health Policy and Administration
+    University of North Carolina at Chapel Hill
+
+    Chunrong Ai
+    Department of Economics
+    University of Florida and Tsinghua University, China
+

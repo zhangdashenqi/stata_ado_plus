@@ -1,0 +1,164 @@
+{smcl}
+{hline}
+help for {cmd:dursel}
+{hline}
+
+{title:Duration Models With Selectivity}
+
+{p 8 12}{cmd:dursel} {it:depvar} {it:indvars} [{cmd:if} {it:exp}] [{cmd:in} {it:range}], 
+	{cmdab:sel:ect}({it:depvar_s} {cmd:=} {it:indvars_s}) [{cmdab:d:ist}({it:modelname})] 
+	[{cmdab:rtc:ensor}({it:varname}) cmdab:time} 
+	{cmdab:cl:uster}({it:varname}) {cmdab:nor:obust} {it:maximize_options}]
+
+     or
+
+{p 8 12}{cmd:dursel} {it:depvar} {it:indvars} [{cmd:if} {it:exp}] [{cmd:in} {it:range}], 
+	{cmdab:sel:ect}({it:indvars_s}) [{cmdab:d:ist}({it:modelname})]
+	[{cmdab:rtc:ensor}({it:varname}) 
+	{cmdab:cl:uster}({it:varname}) {cmdab:nor:obust} {it:maximize_options}]
+
+
+{p}{cmd:pweight}s, {cmd:aweight}s, {cmd:fweight}s, and {cmd:iweight}s are
+allowed; see help {help weights}.
+
+{title:Description}
+
+{p 0 4}{cmd:dursel} allows the user to estimate exponential, Weibull or lognormal duration
+	models accounting for potential non-ignorable selectivity using maximum likelihood techniques.
+	These models are analogous to Heckman models for OLS regression. For interpretation
+	through estimated hazard and survival functions, see {help durselgr}.
+
+{title:Options}
+
+{p 0 4}{cmdab:sel:ect(}...{cmd:)} specifies the variables for the
+    selection equation.  This command is not optional.
+
+{p 0 4}{cmdab:d:ist(}{it:distname}{cmd:)} must be one of {cmd:exp}, {cmd:weibull},
+	or {cmd:lognormal}.
+	This allows the user to specify either an exponential, Weibull or lognormal duration model.
+	If not specified, an exponential is estimated.
+
+{p 0 4}{cmd:time} reports the accelerated failure time interpretation of the coefficients
+	(i.e., larger coefficients correspond to smaller hazards and longer durations).
+	This option has the same effect as specifying it when running {cmd:streg} and reports
+	values of (-beta) rather than (beta*p). This option is not available for the 
+	lognormal model, which reports an accelerated failure time interpretation by
+	default. The default is to report a hazard interpretation (hazard ratios are not
+	available at this time).
+
+{p 0 4}{cmdab:rtc:ensor(}{it:varname}{cmd:)} allows the user to specify that the data are
+	right-censored (observations exit the study before failure is
+	observed). This variable is coded 1 for observations that
+	are right-censored and 0 for observations that fail. It may be missing for
+	observations without valid durations (i.e., those that do not select in).
+
+{p 0 4}If you do not specify {it:depvar_s}, all observations with {it:depvar} {cmd:==} . 
+    are considered censored.
+
+{p 0 4}By default, {cmd:dursel} uses the Huber/White/sandwich estimator of the
+     variance in place of the conventional MLE variance estimator. This option 
+     can be turned off specifying the {cmd:norobust} option.
+     Option {cmd:cluster()} further allows observations which
+     are not independent within cluster (although they be be independent between
+     clusters).
+
+{p 0 4}{cmdab:cl:uster(}{it:varname}{cmd:)} specifies that the observations are
+     independent across groups (clusters) but not necessarily within groups.
+     {it:varname} specifies to which group each observation belongs; e.g.,
+     {cmd:cluster(stateid)} in data with repeated observations on states.
+     {cmd:cluster()} affects the estimated standard errors and variance-covariance
+     matrix of the estimators (VCE), but not the estimated coefficients.
+     Specifying {cmd:cluster()} implies {cmd:robust}.
+
+
+{p 0 4}{it:maximize_options} allows the user to add options to
+	Stata's maximize command (e.g., {it:difficult}, {it:trace}, {it:iterate(#)} {it:constraint(#)}, etc.). 
+	See {help ml maximize} for complete details.  You should rarely have to specify them, 
+	though they may be helpful if parameters approach boundary values. 
+
+{title:Notes}
+
+{p 0 4}1. {cmd:dursel} reports the coefficients of the duration model (hazard interpretation), 
+    hazard ratios are not available at this time. Thus the default dursel coefficients are comparable
+    to those obtained when running streg with the nohr option.
+
+{p 0 4}2. If you create a variable for whether an observation is censored
+    or not, note that units for which duration is observed are coded 1,
+    units that are not observed are coded 0.
+
+{p 0 4}3. The assumed bivariate distribution for the exponential and Weibull 
+    distributions requires that the correlation between
+    the stochastic terms in the selection and duration equations be between
+    -0.25 and 0.25. The maximum likelihood estimates ({it:Z_alpha}) use the inverse of Fisher's Z
+    transformation to restrict the correlation to lie in this interval.
+    The lognormal allows the correlation to range from -1 to 1.
+
+{p 0 4}4. {cmd:dursel} does not allow for time-varying covariates in
+    the outcome equation (though it does in the selection equation). 
+
+{p 0 4}5. {cmd:dursel} reports the estimated correlation between the error terms in the
+    selection and duration equations in more than one way. The likelihood function uses 
+    the inverse of Fisher's Z transformation to restrict the correlation parameter to lie 
+    between -1 and 1. This correlation parameter is {it:alpha} and the corresponding
+    unbounded argument of the transformation is ({it:Z_alpha}). In the lognormal model,
+    the correlation between the error terms is {it: rho = alpha} whereas in the exponential
+    and Weibull models, {it:rho = alpha/4}, so we report both parameter estimates. Standard
+    errors for {it:alpha} and {it:rho} are estimated using the delta method. Most users will
+    be interested in the value of {it:rho}.
+
+{title:Examples}
+
+{p 2 8}Download, unzip, and open the data set in http://myweb.uiowa.edu/fboehmke/dursel/dursel-example.zip.{p_end}
+{p 2 8}Run the model. For example:{p_end}
+{p 4 8}{inp:. dursel warlen democ, sel(enter=trade) dist(weibull) difficult}{p_end}
+{p 4 8}{inp:. dursel warlen democ, sel(trade) rtcensor(exitsamp) time}{p_end}
+{p 2 8}These results correspond to following naive duration models:{p_end}
+{p 4 8}{inp:. stset warlen, failure(obsfail)}{p_end}
+{p 4 8}{inp:. streg democ, dist(weibull) nohr robust}{p_end}
+{p 4 8}{inp:. streg democ, dist(exp) time robust}{p_end}
+
+{p 2 2}where:
+
+{p 4 8}{it:warlen} is the variable that records the duration of each observation that selects into the sample;
+
+{p 4 8}{it:democ} is a variable that explains time until failure in the duration equation;
+
+{p 4 8}{it:enter} is the variable that records whether an observation selects into the duration sample;
+
+{p 4 8}{it:trade} is a variable that explains whether a unit selects into the duration sample;
+
+{p 4 8}{it:exitsamp} is the variable that records whether an observed duration is right-censored;
+
+{p 4 8}{it:obsfail} is the variable that records whether an observed duration fails during the period
+	of observation (i.e., is not right-censored);
+
+{p 4 8}{it:stateid} is a variable that identifies states.
+
+{title:References}
+
+{p 0 4}If you use {cmd:dursel}, please cite:
+
+{p 4 4}Boehmke, Frederick J. 2005. DURSEL: A Program for Duration Models with
+    Sample Selection (Stata version).  Version 2.0. Iowa City, IA: University of Iowa.
+    http://myweb.uiowa.edu/fboehmke/methods.
+
+{p 4 4}Boehmke, Frederick J., Daniel Morey and Megan Shannon. 2006. "Selection 
+    Bias and Continuous-Time Duration Models: Consequences and a 
+    Proposed Solution." American Journal of Political Science 50 (1): 192-207.
+
+
+{title:Author}
+
+    Frederick J. Boehmke
+    University of Iowa
+    Department of Political Science
+    341 Schaeffer Hall
+    Iowa City, IA 52242
+    frederick-boehmke@uiowa.edu
+    http://www.fredboehmke.net
+
+{title:Acknowledgements}
+
+{p 0 4}This program is the product of a collaborative research effort with
+    Dan Morey and Meg Shannon.  Morey and Shannon are, however, absolved
+    from any Stata programming sins committed here.{p_end}

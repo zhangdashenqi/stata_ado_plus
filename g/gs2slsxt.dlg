@@ -1,0 +1,210 @@
+/*
+ gs2slsxt
+*! VERSION 1.0 15dec2011
+*/
+VERSION 11.0
+INCLUDE _std_xlarge
+DEFINE _dlght 440
+INCLUDE header
+HELP hlp1, view("help gs2slsxt")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+ program parseMessage
+ script se_createAsGEE
+END
+
+SCRIPT show_xtset
+BEGIN
+ create STRING note
+ note.setvalue `"For a population-averaged model,"'
+ note.append   `" correlation structures other than"'
+ note.append   `" "exchangeable" and "independent""'
+ note.append   `" require that a time variable be specified."'
+ note.withvalue create CHILD xtset, message(`"" " `"@"'"')
+END
+
+DIALOG main, label("gs2slsxt- Generalized Spatial Panel Autoregressive 2SLS Regression") ///
+	tabtitle("Main")
+BEGIN
+ BUTTON   bu_xtset	_xsetbu	_top	_setbuwd ., ///
+ onpush(script show_xtset)			 ///
+ label("Panel settings...")
+ BUTTON   bu_mi_xtset  _xsetbu	_top	_setbuwd ., ///
+ onpush("view dialog mi_xtset")			 ///
+ label("Panel settings...")
+  TEXT  tx_cmd1   20      _top  70  .,	///
+	label("Model:")
+  TEXT  tx_id   100       @     80  .,	///
+	label("Cross Section")
+  TEXT  tx_ord   200       @     80  .,	///
+	label("Order")
+  TEXT  tx_gmm   300       @     80  .,	///
+	label("GMM")
+  COMBOBOX cb_cmd1 20    _ss    70   ., ///
+	label("Model")			///
+	contents(cmd1_con )		///
+	value(cmd11_con) option(model)	///
+	onselchangelist(cmd1_sel ) dropdownlist
+  EDIT sp_id   100      @    80  .,	///
+	option("id")			///
+	label("Cross Sections")
+  EDIT sp_ord   200      @    80  .,	///
+	option("order")			///
+	label("Order")
+  EDIT sp_gmm   300      @    80  .,	///
+	option("gmm")			///
+	label("GMM")
+
+ TEXT tx_fn1	_lft	_ls	250 	.,	///
+ label("Weight Matrix File Name (dta)") 
+ TEXT tx_weights 280    @       120     .,	///
+	label("Spatial Weight Matrix")
+ TEXT tx_eigw    420    @      115 .,	///
+	label("Eigenvalue")
+ FILE fi_fn1   _lft    _ss	250 	.,	///
+ label("Brows...")				///
+ option("wmfile")					///
+ filter("Stata dta File (*.dta)|*.dta|All (*.*)|*.*") ///
+ defext(dta)
+ EDIT ed_wmat  280   @   120  ., ///
+	label("Spatial Weight Matrix")	///
+	option("wmat")
+ VARNAME vn_eigw 420    @   115  ., ///
+	label("Eigenvalue")	 ///
+	option("eigw")
+
+ GROUPBOX gb_group1   _lft     _ss       _iwd     _ht9 , 
+  TEXT     tx_yvar     _ilft   +15    _vnwd     .,	/*
+		*/ label("Dependent Variable:")		/*
+		*/
+  TEXT     tx_xvar     _vlx      @      _cwd2     .,	/*
+		*/ label("Independent Variables:")	/*
+		*/
+  VARNAME  vn_yvar     _ilft         _ss       _vnwd   .,	/*
+		*/ label("Dependent Variable")		/*
+		*/
+  VARLIST  vl_xvar     _vlx         @         380      .,	/*
+		*/ label("Independent Variables")	/*
+		*/
+ CHECKBOX ck_nocons   @   _ss      @  ., option("noconstant") /*
+*/ label("Suppress Constant Term") 
+ TEXT tx_aux     _ilft   _ss   510   .,	///
+	label("Auxiliary Variables")
+ VARLIST vl_aux  _ilft   _ss  510    ., ///
+	label("Auxiliary Variables") ///
+	option(aux)
+
+ CHECKBOX ck_model21  5    _xls   _ibwd    _ht2 , 	///
+	groupbox					///
+	onclickon(script ck_mod21_on)			///
+	onclickoff(script ck_mod21_off)		///
+	label("Effects Type:")
+  RADIO rb_re       _ilft   _ss   170     .,		///
+	label("Random-Effects (RE)")		///
+	onclickon(script re_opts)			///
+	first						///
+	option(re)
+  RADIO rb_be       _ilft3_2    @         @       .,	///
+	label("Between-Effects (BE)")			///
+	onclickon(script be_opts)			///
+	option(be)
+  RADIO rb_fe       _ilft3_3       @        @       .,	///
+	label("Fixed-Effects (FE)")			///
+	onclickon(script fe_opts)			///
+	last						///
+	option(fe)
+
+ CHECKBOX ck_option2  5    _xls   _ibwd    _ht8 , 	///
+	groupbox					///
+	onclickon(script ck_mod3_on)			///
+	onclickoff(script ck_mod3_off)		///
+	label("Options:")
+ CHECKBOX ck_stand   _ilft  _ss   400  ., option("stand") /*
+*/ label("Standardized Weight Matrix and Eigenvalue") 
+ CHECKBOX ck_small _ilft     _ss    400 ., option("small") /*
+*/ label("small: Report t, F Tests instead of Z, Chi2 Tests model(gs2sls)")
+ CHECKBOX ck_ec2sls _ilft     _ss    400 ., option("ec2sls") /*
+*/ label("ec2sls: Baltagi EC2SLS Random-Effects (RE) Model")
+ CHECKBOX ck_nosa _ilft     _ss    400 ., option("nosa") /*
+*/ label("nosa: Baltagi-Chang Variance Components instead of Swamy-Arora")
+END
+
+LIST cmd1_con
+BEGIN
+ spgls
+ gs2sls
+ gs2slsar
+END
+
+LIST cmd11_sel
+BEGIN
+ spgls
+ gs2sls
+ gs2slsar
+END
+
+SCRIPT ck_mod21_on
+BEGIN
+ main.rb_re.enable
+ main.rb_be.enable
+ main.rb_fe.enable
+END
+SCRIPT ck_mod21_off
+BEGIN
+ main.rb_re.disable
+ main.rb_be.disable
+ main.rb_fe.disable
+END
+
+SCRIPT ck_mod3_on
+BEGIN
+ main.ck_stand.enable
+ main.ck_small.enable
+ main.ck_ec2sls.enable
+ main.ck_nosa.enable
+END
+SCRIPT ck_mod3_off
+BEGIN
+ main.ck_stand.disable
+ main.ck_small.disable
+ main.ck_ec2sls.disable
+ main.ck_nosa.disable
+END
+
+INCLUDE byifin
+INCLUDE weights_fpai
+INCLUDE se
+
+PROGRAM command
+BEGIN
+ put /program by_output
+ put "gs2slsxt "
+ varlist main.vn_yvar main.vl_xvar
+ put " " /program ifin_output
+ put " " /program weights_output
+ put /program se_prefix_output
+ require main.fi_fn1
+ require main.ed_wmat
+ require main.vn_eigw
+ require main.sp_id 
+beginoptions
+ optionarg main.fi_fn1
+ optionarg main.ed_wmat
+ optionarg main.vn_eigw
+ optionarg main.cb_cmd1
+ optionarg main.sp_id
+ optionarg main.vl_aux
+ option main.ck_nocons
+ option main.ck_stand
+ optionarg main.sp_ord
+ optionarg main.sp_gmm
+ option radio(main rb_re rb_be rb_fe)
+ option main.ck_small
+ option main.ck_ec2sls
+ option main.ck_nosa
+ put " " /program se_output
+ endoptions
+ END
+

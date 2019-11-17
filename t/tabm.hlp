@@ -1,0 +1,110 @@
+{smcl}
+{* 11dec2002/1nov2010}{...}
+{hline}
+help for {hi:tabm}
+{hline}
+
+{title:Tabulation of multiple variables}
+
+{p 8 17 2}
+{cmd:tabm}
+{it:varlist}
+[{it:weight}]
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}] 
+[{cmd:,}
+{cmdab:miss:ing}
+{cmd:replace}
+{cmdab:tr:anspose}
+{cmdab:v:aluelabel(}{it:lblname}{cmd:)}
+{it:tabulate_options}]
+
+{p 4 4 2}
+{cmd:by} {it:...} {cmd::} may be used with {cmd:tabm}: 
+see help {help by}.
+
+{p 4 4 2}
+{cmd:fweight}s, {cmd:aweight}s and {cmd:iweight}s are allowed with
+{cmd:tabm}; see help {help weights}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:tabm} tabulates {it:varlist}, containing two or more comparable
+variables, in a combined two-way table of variables in {it:varlist} by
+values in {it:varlist}. Either all variables should be numeric, or all
+variables should be string: the type of the first variable named is
+taken to indicate the user's intentions. By default, variables are
+listed in the rows of the table and values in the columns.
+
+
+{title:Remarks} 
+
+{p 4 4 2}For further discussion of handling multiple responses in Stata, 
+see Cox and Kohler (2003) and Jann (2005). 
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:missing} specifies that observations with missing values are to be
+included. The default is that any observation with any missing value on
+the variables specified is excluded. 
+
+{p 4 8 2}
+{cmd:replace} specifies that the tabulated data overwrite the data in
+question. The new variables will be {cmd:_stack}, indexing variables,
+{cmd:_values}, the distinct values of {it:varlist}, and (if weights are
+specified) {cmd:_weight}, the weights. {cmd:replace} may not be specified
+with {cmd:by:}. 
+
+{p 4 8 2}
+{cmd:transpose} transposes rows and columns as compared with the
+default.  This option may be needed if there are too many values to show
+as columns.
+ 
+{p 4 8 2}
+{cmd:valuelabel(}{it:lblname}{cmd:)} specifies a value label name to be
+used in tabulation. The default is that any value label associated with
+the first numeric variable in {it:varlist} will be used.  This option
+will be ignored in tabulation of string variables.
+
+{p 4 8 2}
+{it:tabulate_options} are options allowed with {help tabulate}
+{it:varname1 varname2}.
+
+
+{title:Examples} 
+
+{p 4 8 2}{cmd:. tabm q1-q15} 
+
+
+{title:Author} 
+
+{p 4 4 2}Nicholas J. Cox, Durham University, U.K.{break}
+        n.j.cox@durham.ac.uk
+
+
+{title:Acknowledgments} 
+
+{p 4 4 2}Lee Sieswerda suggested making {cmd:tabm} {cmd:by}able and 
+helped in testing. 
+
+
+{title:References} 
+
+{p 4 8 2}
+Cox, N.J. and Kohler, U. 2003. 
+On structure and shape: the case of multiple responses. 
+{it:Stata Journal} 3: 81{c -}99. 
+
+{p 4 8 2}
+Jann, B. 2005. Tabulation of multiple responses. 
+{it:Stata Journal} 5: 92{c -}122. 
+
+
+{title:Also see} 
+
+{p 4 13 2}On-line: help for {help tabulate}; {help mrtab} (if installed) 
+

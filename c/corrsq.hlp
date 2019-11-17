@@ -1,0 +1,43 @@
+{smcl}
+{* *! version 1 28feb2008}{...}
+{cmd:help corrsq}
+{hline}
+
+{title:Title}
+
+{p2colset 5 22 24 2}{...}
+{p2col :{hi:corrsq} {hline 2}}Displays matrix of squared correlation coefficients
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:corrsq} [{cmd:,} {cmdab:m:atrix}({it:mat_name}) ]
+
+{synoptset 20 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Main}
+{synopt:{opt m:atrix()}}Use correlation matrix other than r(C){p_end}
+{synoptline}
+{p2colreset}{...}
+
+{title:Remarks}
+
+{pstd}
+{cmd:corrsq} displays matrix of squared correlation coefficients following {cmd:correlate}
+command.  Starting with the 28Feb2008 update of version 10.0, Stata saves a copy of
+the correlation matrix in r(C).
+Alternatively, you can specify any correlation matrix using the {cmdab:m:atrix} option. 
+
+{title:Examples}
+
+{cmd:. corr read write math science}
+{cmd:. corrsq}
+{cmd:. matrix c = (1,.6\.6,1)}
+{cmd:. corrsq , matrix(c)}
+
+{title:Author}
+
+{p 4 4 2}Phil Ender{break}Statistical Consulting Group
+{break}UCLA Academic Technology Services{break}ender@ucla.edu
+{p_end}

@@ -1,0 +1,73 @@
+{smcl}
+{* 23oct2001}{...}
+{hline}
+help for {hi:hist2}
+{hline}
+
+{title:hist2}
+
+{p 4 11} {cmd:hist2}
+	 [{it:varname}]
+	 [{it:weight}]
+	 [{cmd:if} {it:exp}]
+	 [{cmd:in} {it:range}]
+	 [,
+	 {cmdab:at(}{it:#}{cmd:)} 
+	 {cmdab:b:in(}{it:#}{cmd:)} 
+	 {cmdab:bw:idth(}{it:#}{cmd:)} 
+	 {it:graph_options}
+	 ]
+
+{p}
+All weights are allowed.  {cmd:pweights} are implemented as {cmd:iweights},
+see help {help graph}.
+
+
+{title:Description}
+
+{p}{cmd:hist2} will generate a histogram.  Options to {cmd:hist2} allow the
+user to specify where the histogram starts at, the number of intervals (bins),
+or common width of intervals.
+
+{title:Options}
+
+{p 0 5}{cmdab:at(}{it:#}{cmd:)} specifies the left endpoint of the first
+interval (bin).
+
+{p 0 5}{cmdab:bin(}{it:#}{cmd:)} see {help grhist}.  May be combined with
+{cmd:bwidth()}
+
+{p 0 5}{cmdab:bwidth(}{it:#}{cmd:)} specifies the fixed width of the intervals
+(bins).
+
+{p 0 5}{it:graph_options} see {help graph}.  Note that you should not supply
+the {cmd:xlab()} {cmd:graph} option; it is used within {cmd:hist2}.
+
+{title:Saved Results}
+
+{p 5 0}{cmd:hist2} saves in {cmd:r()}:
+
+{p 0 5}Macros
+
+{p 5 0}{cmd:r(at)} the left endpoint of the first interval
+
+{p 5 0}{cmd:r(bin)} the number of intervals
+
+{p 5 0}{cmd:r(bwidth)} the common width of the intervals
+
+{title:Author}
+
+Jeff Pitblado, StataCorp, 2001.
+
+{title:Examples}
+
+{p 4}{inp:. hist2 gear, at(2) b(14)}
+
+{p 4}{inp:. hist2 gear, at(2) bw(.17)}
+
+{title:Also see}
+
+ Manual:  {hi:[G] graph},
+          {hi:[G] histogram},
+          {hi:[U] 14 Language syntax}
+{p 0 19}On-line:  help for {help graph}, {help grhist}, {help weights}

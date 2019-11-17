@@ -1,0 +1,115 @@
+.-
+help for ^mclest^                                                 (STB-56: sbe37)
+.-
+
+Stata programs for multinomial conditional logit models
+-------------------------------------------------------
+
+    ^mclest^ varlist [weight] [^if^ exp] [^in^ range]
+       [^, sor(^varlist^)^ ^soriter(^#^)^ ^sortol(^#^)^
+       ^rc2(^varname^) eqrc2(^varname^) muby(^varlist^)^ ^nono^rm ^debug^ ]
+
+^fweight^s and ^iweight^s are allowed.
+
+The varlist will typically contain dummies based on the response
+factor specified in @mclgen@ and interactions of these dummies with
+independent variables. This design matrix can be specified using
+@desmat@ (STB-52). The dichotomous dependent variable and the
+stratification variable are automically passed on from @mclgen@ to
+^mclest^ and do not have to be specified.
+
+^mclest^ passes the following arguments on to @clogit@ unaltered:
+
+   ^weight^, ^if^, ^in^ 
+
+
+Description
+-----------
+
+"MCL" refers to a ^Multinomial Conditional Logit^ model. This entails
+estimating a multinomial logistic model using a conditional logit
+program. Doing so provides much more flexibility in imposing contraints
+on the dependent variable. One application of this is to include models
+developed for the analysis of square tables, e.g. quasi-independence,
+uniform association, symmetric association, into a multinomial logistic
+model. ^mclgen^ prepares the data for an MCL model. A companion program,
+@mclest@ can then estimate the model. @mclest@ is also able to estimate
+special nonlinear designs, such as stereotyped ordered regression and
+Goodman's row and columns model 2.
+
+
+Options
+-------
+
+These options are used to request the special nonlinear models
+Sterotyped Ordered Regression (SOR) and/or the Row and Columns model 2
+(RC2).
+
+^sor(^varlist^)^ specifies a list of variables for which the SOR constraint
+  should be used. Note that at least two variables should be specified,
+  unless either the ^rc2^ or ^eqrc2^ option is being used.
+
+^soriter(^#^)^ specifies the maximum number of iterations for estimating a
+  SOR or RC2 model. The default value is 10.
+
+^sortol(^#^)^ specifies the convergence criterion for estimating a SOR or
+  RC2 model. The default value is .0001.
+
+^rc2(^varname^)^ specifies a categorical independent variable for which the
+  RC2 model is to be used. The ^eqrc2^ option will be ignored if the ^rc2^
+  option is specified.
+
+^eqrc2(^varname^)^ specifies a categorical independent variable for which
+  the EQRC2 model is to be used. The ^rc2^ option may not be used together
+  with the ^eqrc2^ option.
+
+^muby(^varlist^)^ specifies one or more variables which affect the
+  association between the rc2 or eqrc2 variable and the dependent
+  variable. Ignored if not used in conjunction with the ^rc2^ or ^eqrc2^
+  option.
+
+^nonorm^ prevents the mclest program from estimating a normalized solution
+  if a SOR and/or RC2 model has been requested. 
+
+^debug^ specifies whether to print intermediate results of ^clogit^. This
+  can be used to determine the source of error if something goes wrong.
+  The default is ^nodebug^.
+
+
+Author
+------
+
+    John Hendrickx
+    Nijmegen Business School, University of Nijmegen
+    P.O. Box 9108
+    6500 HK Nijmegen
+    The Netherlands
+    J.Hendrickx@@mailbox.kun.nl
+
+
+References
+----------
+
+Anderson, J.A. (1984). "Regression and Ordered Categorical Variables."
+Journal of the Royal Statistical Society, Series B 46: 1-30.
+
+Breen, Richard. (1994). "Individual Level Models for Mobility Tables and
+Other Cross-Classifications." Sociological Methods & Research 33:
+147-173.
+
+DiPrete, Thomas A. (1990). "Adding Covariates to Loglinear Models for
+the Study of Social Mobility." American Sociological Review 55: 757-773.
+
+Goodman, Leo A. (1979). "Multiplicative models for the analysis of
+occupational mobility tables and other kinds of cross-classification
+tables." American Journal of Sociology 84: 804-819.
+
+Hendrickx, John. (1995). "Multinomial Conditional Logit Models for the
+Analysis of Status Attainment and Mobility." ICS Working Papers nr. 1.
+
+Hendrickx, John, Ganzeboom, Harry B.G. (1998). "Occupational Status
+Attainment in the Netherlands, 1920-1990. A Multinomial Logistic
+Analysis". European Sociological Review 14: 387-403. 
+
+Logan, John A. (1983). "A Multivariate Model for Mobility Tables."
+American Journal of Sociology 89: 324-349.

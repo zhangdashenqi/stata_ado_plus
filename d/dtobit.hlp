@@ -1,0 +1,83 @@
+{smcl}
+{* 19aug2004}{...}
+{hline}
+help for {hi:dtobit}{right:(STB-56: sg144; SJ4-3: sg144_1)}
+{hline}
+
+
+{title:Marginal effects of the tobit model}
+
+{p 8 16 2}
+{cmd:dtobit} 
+[{cmd:,} {opt at(matname)}
+{opt c:ensor}
+{opt b:rief}
+{opt nod:iscrete} 
+{opt lev:el(#)} ]
+
+
+{title:Description}
+
+{pstd}
+{cmd:dtobit} provides a table of marginal effects evaluated at the means of the
+independent variables by default, or at the observed censoring rate of the
+dependent variable if ^censor^ is specified, or at user specified points if
+{opt at(matname)} is specified.  The marginal effects are computed for the
+latent dependent variable, the expected value of the dependent variable
+conditional on being uncensored, the unconditional expected value of the
+dependent variable, and the probability of being uncensored.  For dummy
+variables, by default, {cmd:dtobit} will report the discrete changes unless
+the {opt nodiscrete} option is specified.
+
+
+{title:Options}
+
+{phang}
+{opt at(matname)} specifies the points around which the marginal effects are
+   to be estimated. The default is to estimate the effects around the means
+   of the independent variables.
+
+{phang}
+{opt censor} specifies that the marginal effects should be evaluated at the
+   observed censoring rate of the dependent variable. This option is not
+   allowed with two-tailed censoring case. {opt at(matname)} and {opt censor}
+   cannot be specified at the same time.
+
+{phang}
+{opt brief} will simplify the output.  Standard deviations of the estimates
+   and the confidence intervals will be excluded from the table.
+
+{phang}
+{opt nodiscrete} treats dummy variables as continuous ones. If nodiscrete is not
+   specified, the marginal effect of a dummy variable is calculated as the
+   discrete change in the expected value of the dependent variable as the
+   dummy variable changes from 0 to 1.
+
+
+{title:Example}
+
+	{cmd:. tobit mpg trunk weight, ll(17)}
+	{cmd:. dtobit}
+	{cmd:. dtobit, brief}
+	{cmd:. dtobit, brief censor}
+	{cmd:. mat M=(12, 2500, 1)}
+	{cmd:. dtobit, at(M)}
+
+
+{title:Author}
+
+   Ronna Cong
+   StataCorp
+   rcong@stata.com
+
+
+{title:Also see}
+
+{psee}
+ Manual:  {hi:[U] 26 Estimation and post-estimation commands}{break}
+          {hi:[U] 35 Overview of model estimation}
+
+{psee}
+Online:  help for {help est}; {help cnreg}, {help intreg},
+{help test}, {help testnl}, {help tobit}, {help vce}
+{p_end}

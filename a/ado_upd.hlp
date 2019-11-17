@@ -1,0 +1,40 @@
+.-
+help for ado_upd
+.-
+
+Re-installation of user-written program on the net
+--------------------------------------------------
+
+	. ado_upd [, all from(dn) ]
+
+dn is a directory name
+        ^STBPLUS^     (default)
+        ^PERSONAL^
+        ^SITE^
+
+
+Description
+-----------
+
+ado_upd re-installs the packages previously installed.
+
+
+Options
+-------
+
+all specifies that that the command equivalent to typing net install
+    followed by net get is to be executed.
+
+
+from(fn) specifies where the packages are installed.  The default is
+    from(STBPLUS).  STBPLUS is a codeword that Stata understands to correspond
+    to a particular directory on your computer that was set at installation
+    time.  What it means is irrelevant if you use the defaults.
+
+
+Also see
+--------
+
+ Manual:  [R] net
+On-line:  help for @stb@, @update@, @ado@
+

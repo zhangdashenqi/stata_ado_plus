@@ -1,0 +1,112 @@
+Regression Test of Group Equality via URNMODEL
+----------------------------------------------
+
+AUTHOR:   Richard Goldstein, Qualitas
+SUPPORT:  Written communication only, EMAIL goldst@@harvarda.bitnet
+	  or 37 Kirkwood Road, Brighton MA 02135.
+
+                 ^urnmodel^ varlist [^in^ range] [^if^ exp]
+
+^urnmodel^ uses an approximation to a randomization test on the residuals of a
+standard linear regression to test the equality of two groups (e.g., males and
+females)--^DO NOT^ include a dummy variable for these groups in your regression.
+The ^first^ variable in varlist should be the group variable to be tested--the 
+code expects this variable to be coded as a 0-1 dummy variable.  The ^second^ 
+variable in varlist is the dependent variable for the regression, and the 
+remaining variables are the right-hand-side variables for the regression.
+
+This model is discussed in some detail in Levin, B and Robbins, H (1983), "Urn
+Models for Regression Analysis, with Applications to Employment Discrimination
+Studies", ^Law and Contemporary Problems^, 46, pp. 247-67, and more briefly in
+Finkelstein, MO and Levin, B (1990), ^Statistics for Lawyers^, New York:
+Springer-Verlag, esp. at pp. 399-402.  A strata-oriented extension of this
+model is described on pp. 253-5 of Levin and Robbins.
+
+Note that this model should be "less significant" than a model that (1)
+includes a sex coefficient, or (2) includes sex by variable interactions,
+since "To the extent that sex is a factor in determining salary, and is
+correlated with the productivity [sic] factors, its effect is assigned to
+those productivity [sic] factors."  (F&L, p. 402) Among other things, this
+means that this procedure will generally have lower power than either of the
+above two procedures.  Both citations show the algebraic relationship between
+the z-test calculated here for the urn model and the t-test resulting from a
+regression with a dummy variable for sex.
+
+If you have available a randomization t-test procedure, that will be more
+accurate than the approximation used here:  write out the residuals with the
+grouping variable to the other package and use the exact randomization test
+there.  If they only have an approximate randomization test, you should
+probably use both ^urnmodel^ and the approximate test.  The approximation used
+here is based on the normal distribution.
+
+Example:
+--------
+
+------------------------------------------------------------------------------
+ . ^use auto^
+ (1978 Automobile Data)
+
+ . ^urnmodel foreign mpg weight weightsq^
+ (obs=74)
+
+   Source |     SS         df       MS           Number of obs =      74
+ ---------+------------------------------        F(  2,    71) =   72.80
+    Model |  1642.52197     2  821.260986        Prob > F      =  0.0000
+ Residual |  800.937487    71  11.2808097        R-square      =  0.6722
+ ---------+------------------------------        Adj R-square  =  0.6630
+    Total |  2443.45946    73  33.4720474        Root MSE      =  3.3587
+
+ Variable |  Coefficient    Std. Error       t    Prob > |t|        Mean
+ ---------+--------------------------------------------------------------
+      mpg |                                                      21.2973
+ ---------+--------------------------------------------------------------
+   weight |    -.0141581      .0038835    -3.646     0.001      3019.459
+ weightsq |     1.32e-06      6.26e-07     2.116     0.038       9713003
+    _cons |     51.18308      5.767884     8.874     0.000             1
+ ---------+--------------------------------------------------------------
+ 
+ Summary of Residuals for Group=0
+
+ Variable |   Obs        Mean   Std. Dev.       Min        Max
+ ---------+---------------------------------------------------
+     _res |    52    .4069727   2.198623  -2.385209   8.896997
+
+ Summary of Residuals for Group=1
+
+ Variable |   Obs        Mean   Std. Dev.       Min        Max
+ ---------+---------------------------------------------------
+     _res |    22   -.9619354   5.002079  -6.754405   13.18774
+
+The test statistic is z= 1.6249259 and its p-value is 0.0521
+------------------------------------------------------------------------------
+
+Let's compare this to the same model with a dummy variable:
+
+
+------------------------------------------------------------------------------
+ . ^reg mpg weight weightsq foreign^
+ (obs=74)
+
+   Source |     SS         df       MS           Number of obs =      74
+ ---------+------------------------------        F(  3,    70) =   52.25
+    Model |  1689.15372     3   563.05124        Prob > F      =  0.0000
+ Residual |   754.30574    70  10.7757963        R-square      =  0.6913
+ ---------+------------------------------        Adj R-square  =  0.6781
+    Total |  2443.45946    73  33.4720474        Root MSE      =  3.2827
+
+ Variable |  Coefficient    Std. Error       t    Prob > |t|        Mean
+ ---------+--------------------------------------------------------------
+      mpg |                                                      21.2973
+ ---------+--------------------------------------------------------------
+   weight |    -.0165729      .0039692    -4.175     0.000      3019.459
+ weightsq |     1.59e-06      6.25e-07     2.546     0.013       9713003
+  foreign |      -2.2035      1.059246    -2.080     0.041      .2972973
+    _cons |     56.53884      6.197383     9.123     0.000             1
+ ---------+--------------------------------------------------------------
+ 
+------------------------------------------------------------------------------
+Note that, as expected, the p-value for foreign is more significant when used
+as a dummy variable than with the approximate randomization test.  However,
+even though the power is lower, it is sometimes desirable to use the
+randomization procedure; see the above article for more.  This is ^not^ a
+randomization regression, though there are such models in the literature.

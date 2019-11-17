@@ -1,0 +1,54 @@
+.-
+help for ^brant^ - 1.0.1 - 11/26/00
+.-
+
+Perform Brant test of parallel regression assumption after @ologit@
+------------------------------------------------------------
+
+    ^brant^ [^,^ ^detail^]
+
+
+^brant^ is for use after ^ologit^; see help @ologit@.
+
+
+Description
+-----------
+
+^brant^ performs a Brant test of the parallel regression assumption (also
+called the proportional odds assumption) after ologit.  The test compares
+slope coefficients of the J-1 binary logits implied by the ordered regression
+model.  Stata reports both the results of an omnibus test for the entire
+model and tests of the assumption for each of the independent variables in
+the model.
+
+The Brant test can only be computed if all of the independent variables in
+the ordered model are retained in all of the implied binary models.  This
+is most likely not to be the case with models that have few observations in
+the extreme categories and many independent variables.
+
+Options
+-------
+
+^detail^ specifies that the coefficients for each of the estimated binary
+logits should be presented.
+
+Example
+-------
+
+    . ^ologit warm yr89 male white age ed prst^
+    . ^brant^
+
+    . ^ologit warm yr89 male white age ed prst^
+    . ^brant, detail^
+
+Also see
+--------
+
+ Manual:  ^[R] ologit^
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+         
+         

@@ -1,0 +1,55 @@
+.-
+help for ^wtest^
+.-
+
+Wtest test
+-------
+
+  . ^wtest depvar indepvar^
+
+The ^wtest^ command performs the W test.  The W test 
+is similar to a one way ANOVA, except that it can be more 
+effective in yielding appropriate Type I error rates 
+under conditions of unequal variances and unequal means
+across groups.  (See also the ^fstar^ command.)
+
+The standard ANOVA F test assumes that the groups have 
+equal variances, and when this assumption is violated, 
+actual type I error rates can exceed nominal type I 
+error rates.  If you suspect this problem, you can 
+download and use the ^simanova^ command to perform
+monte carlo simulations given your variances and 
+sample sizes to compute actual type I error rates
+given that the null hypotheses is true.  If your type I
+error rates are inflated, you can use the ^wtest^ 
+option to see how the W test performs and if it 
+performs to your satisfaction, you may choose to
+use the ^wtest^ command to perform the W test on
+your data.
+
+For more information about the W test, and the 
+inflation of Type I errors under unequal variances
+and unequal sample sizes, you can see
+
+Wilcox, R, Charlin, V, Thompson, K. (1986). ^Communications^
+^in Statistical Simulation and Computation^. 15(4) 933-943.
+
+If you have comments or suggestions, please email 
+Michael Mitchell at mnm@@ucla.edu .
+
+Author
+------
+
+Michael N. Mitchell
+Statistical Computing and Consulting
+UCLA, Academic Technology Services
+mnm@@ucla.edu
+   
+Also see
+--------
+  ^simanova^ 
+    net from http://www.ats.ucla.edu/stat/stata/ado
+    net install simanova
+  ^fstar^ 
+    net from http://www.ats.ucla.edu/stat/stata/ado
+    net install fstar

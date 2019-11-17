@@ -1,0 +1,129 @@
+{smcl}
+{* 05sep2016}{...}
+{cmd:help fetchyahooquotes}{right: ({browse "http://www.stata-journal.com/article.html?article=up0053":SJ16-4: dm0061_2})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 25 27 2}{...}
+{p2col:{hi: fetchyahooquotes} {hline 2}}Downloads historic prices for a list
+of symbols from Yahoo! Finance using Yahoo! Finance's application programming
+interface{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 18 2}
+{cmd:fetchyahooquotes} {it:namelist}{cmd:,}
+{cmd:freq(d}|{cmd:w}|{cmd:m}|{cmd:v)}
+[{it:options}]
+
+{synoptset 18 tabbed}{...}
+{synopthdr}
+{synoptline}
+{p2coldent:* {cmd:freq(d}|{cmd:w}|{cmd:m}|{cmd:v)}}frequency of the data: daily ({cmd:d}), weekly ({cmd:w}), monthly ({cmd:m}), dividends ({cmd:v}) only{p_end}
+{synopt:{opt field(string)}}variables to download along with adjusted close and date{p_end}
+{synopt:{opt chg(string)}}periodic return{p_end}
+{synopt:{opt start(date)}}starting date for the prices{p_end}
+{synopt:{opt end(date)}}ending date for the prices{p_end}
+{synopt:{opt ff3}}daily Fama-French three-factor model{p_end}
+{synopt:{opt merge}}merge by date the downloaded data to the existing data in
+memory{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}* {opt freq()} is required.
+
+{pstd}{it:namelist} is a list of ticker symbols to be downloaded from Yahoo!
+Finance's application programming interface.  Ticker symbols are separated by
+spaces.  The ticker symbol will become part of the variable name.  This poses
+some problems, though, whenever the ticker symbol contains special characters.
+Regardless of whether the symbol includes special characters, the ticker is
+typed (including the special character) exactly as it is used by Yahoo!
+Finance's application programming interface.  Any special characters will be
+replaced, for programming purposes, with underscores ({cmd:_}) because special
+characters are not allowed in Stata variable names.  For example, {cmd:BMW.DE}
+is the ticker for BMW on the XETRA.  The program will create a column of
+adjusted closing stock prices for {cmd:BMW.DE} called adjusted close
+{cmd:BMW_DE}, because the period is considered a special character and so
+{cmd:BMW.DE} is not an allowable variable name.
+
+
+{title:Description}
+
+{pstd}The {cmd:fetchyahooquotes} command is used to download time series of
+the more common financial statistics of multiple financial instruments.
+For example, one could download the daily opening and closing prices over the
+past 10 years of IBM and Microsoft stocks.
+
+{pstd}The {cmd:fetchyahooquotes} command runs a {cmd:clear all} commmand immediately 
+before downloading any data. 
+ 
+
+{title:Options}
+
+{phang}{cmd:freq(d}|{cmd:w}|{cmd:m}|{cmd:v)} specifies the
+frequency of the historic price:  daily ({cmd:d}), weekly
+({cmd:w}), monthly ({cmd:m}), or dividends only ({cmd:v}).  If the
+frequency is either daily, weekly, or monthly, then the variable with the
+symbol name is the adjusted closing price.  If the frequency is to
+include only the dividends, then the symbol name is the dividend payment.
+{cmd:freq()} is required.
+
+{phang}{opt field(string)} specifies variables to download along with
+the adjusted close and the date. These variables can be the following:  open
+({cmd:o}), high ({cmd:h}), low ({cmd:l}), close ({cmd:c}), and volume
+({cmd:v}).
+
+{phang}{opt chg(string)} is the periodic return.  Three different
+periodic changes can be calculated for the adjusted closing price:
+natural log difference ({cmd:ln}), percentage change ({cmd:per}), and
+symmetrical percentage change ({cmd:sper}).  The change is based on the
+continuous trading assumption.  Thus, although the {cmd:tsset} is the date
+(which may contain gaps), returns are calculated assuming there are no
+gaps in the data.
+
+{phang}{opt start(date)} is the starting date for the prices in day-month-year
+format (for example, {cmd:1mar2010}).
+
+{phang}{opt end(date)} is the ending date for the prices in day-month-year
+format (for example, {cmd:23feb2011}).
+
+{phang}{opt ff3} specifies that daily Fama-French three-factor models are
+downloaded from "Kenneth R. French -- Data Library".
+
+{phang}{opt merge} merges by date the downloaded data into the existing data
+in memory.
+
+
+{title:Examples}
+
+{phang}{cmd:. fetchyahooquotes IBM GOOG ^GSPC BMW.DE, freq(d) chg(ln per sper)}
+     {cmd:data(my_portfolio)}
+
+{phang}{cmd:. fetchyahooquotes IBM GOOG ^GSPC BMW.DE, freq(d) field(h l o)}
+
+{phang}{cmd:. fetchyahooquotes IBM GOOG ^GSPC BMW.DE, freq(d)}
+
+{phang}{cmd:. fetchyahooquotes IBM GOOG ^GSPC BMW.DE, freq(d) start(1mar2010)}
+     {cmd:end(23feb2011) ff3}
+
+
+{title:Authors}
+
+{pstd}Mehmet F. Dicle{p_end}
+{pstd}Loyola University New Orleans{p_end}
+{pstd}New Orleans, LA{p_end}
+{pstd}mfdicle@gmail.com{p_end}
+
+{pstd}John Levendis{p_end}
+{pstd}Loyola University New Orleans{p_end}
+{pstd}New Orleans, LA{p_end}
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 16, number 4: {browse "http://www.stata-journal.com/article.html?article=up0053":dm0061_2},{break}
+                    {it:Stata Journal}, volume 12, number 4: {browse "http://www.stata-journal.com/article.html?article=up0038":dm0061_1},{break}
+                    {it:Stata Journal}, volume 11, number 4: {browse "http://www.stata-journal.com/article.html?article=dm0061":dm0061}
+{p_end}

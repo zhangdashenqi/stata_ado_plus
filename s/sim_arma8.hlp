@@ -1,0 +1,138 @@
+{smcl}
+{* 05oct2001}{...}
+{hline}
+help for {hi:sim_arma}
+{hline}
+
+{title:Generating autoregressive moving average data}
+
+{p 8 14 2}
+{cmd:sim_arma} {it:newvarname} {cmd:,}
+	[
+	{cmdab:ar:coef(}{it:numlist}{cmd:)}
+	{cmdab:ma:coef(}{it:numlist}{cmd:)}
+	{it:common_options}
+	]
+
+{p 8 14 2}
+{cmd:sim_arma} {it:newvarname} {cmd:,}
+	[
+	{cmd:arima(}{it:bvec}{cmd:)}
+	{it:common_options}
+	]
+
+{p 4 8 2}
+where {it:common_options} are
+
+{p 8 14 2}
+	{cmd:et(}{it:varname}{cmd:)}
+	{cmdab:n:obs(}{it:#}{cmd:)}
+	{cmd:sigma(}{it:#}{cmd:)}
+	{cmd:spin(}{it:#}{cmd:)}
+	{cmd:time(}{it:varname}{cmd:)}
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:sim_arma} generates autoregressive moving average data and
+places it in {it:newvarname}.
+
+{p 4 4 2}Since simulation is a random process, persons interested in
+reproducibility of results should set the random-number seed by typing
+{cmd:set seed} {it:#} before running {cmd:sim_arma}; see help
+{help generate}.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:et(}{it:varname}{cmd:)} specifies that the simulated white
+noise be saved in {it:varname}.  The default is not to save white noise.
+
+{p 4 8 2}
+{cmd:nobs(}{it:#}{cmd:)} specifies the number of observations to
+generate.
+
+{p 4 8 2}
+{cmd:sigma(}{it:#}{cmd:)} specifies the standard deviation of the
+white noise process.
+
+{p 4 8 2}
+{cmd:spin(}{it:#}{cmd:)} specifies the number of iterations of the
+model to spin (burn in) so that the simulated data has the correct
+autocovariance structure.
+
+{p 4 8 2}
+{cmd:time(}{it:varname}{cmd:)} specifies that the new time variable be
+named {it:varname}.  The default is {cmd:_t}.
+
+
+{title:Specifying the process coefficients}
+
+{p 4 8 2}
+{cmd:arcoef(}{it:numlist}{cmd:)} specifies the autoregressive coefficients
+corresponding to the respective lag.  For example, ar(1.4 .8) indicates
+that the AR coefficients be 1.4 for lag 1, and .8 for lag 2.
+
+{p 4 8 2}
+{cmd:macoef(}{it:numlist}{cmd:)} is similar to {cmd:arcoef()}, but
+specifies the moving average lag coefficients.
+
+
+{title:The ARIMA option}
+
+{p 4 8 2}
+{cmd:arima(}{it:bvec}{cmd:)} specifies the name of a vector with the same
+column name properties as {cmd:e(b)} from {cmd:arima}.  {cmd:arima()} may
+not be specified with {cmd:arcoef()} or {cmd:macoef()}.
+
+{p 8 8 2}
+{cmd:sim_arma} will specifically look for {cmd:sigma:_cons} and treat it as
+a substitute for the {cmd:sigma()} option.
+
+{p 8 8 2}
+The autoregressive coefficients are supplied by columns with names of the
+form {cmd:ARMA:l}{it:#}{cmd:.ar}.  For example {cmd:ARMA:l2.ar} identifies
+the second lag AR coefficient.
+
+{p 8 8 2}
+The moving average coefficients are supplied by columns with names of the
+form {cmd:ARMA:l}{it:#}{cmd:.ma}.  For example {cmd:ARMA:l3.ma} identifies
+the third lag MA coefficient.
+
+
+{title:Examples}
+
+{p 8 8 2}Generate 200 observations from an AR(1) process with an
+autoregressive coefficient of .8.
+
+{p 8 12 2}
+{cmd:. sim_arma y, nobs(200) ar(.8) spin(2000)}
+
+{p 8 8 2}Generate 200 observations from an MA(1) process with a moving
+average coefficient of .5.
+
+{p 8 12 2}
+{cmd:. sim_arma y, nobs(200) ma(.5)}
+
+{p 8 8 2}Generate 200 observations from an ARMA(1,1) process with an
+autoregressive coefficient of .8 and a moving average coefficient of .5.
+
+{p 8 12 2}
+{cmd:. sim_arma y, nobs(200) ar(.8) ma(.5) spin(2000)}
+
+{p 8 8 2}Using the results after running {cmd:arima} on y with regressors,
+generate 200 observations from the estimated model.
+
+{p 8 8 2}
+{cmd:. arima y x1 x2 x3, arima(2,0,2)}{break}
+{cmd:. mat b = e(b)}{break}
+{cmd:. sim_arma simy, nobs(200) arima(b) xbeq(y) spin(2000)}
+
+{title:Also see}
+
+{p 1 14 2}Manual:  {hi:[R] arima}{p_end}
+{p 10 14 2}{hi:[R] sim}{p_end}
+{p 0 19 2}On-line:  help for {help arima}, {help sim}
+{p_end}

@@ -1,0 +1,101 @@
+{smcl}
+{* 05nov2002}{...}
+{hline}
+help for {hi:condgraph}{right:(SJ3-1: st0033)}
+{hline}
+
+{title:Graph size-correct test statistics after IV regression}
+
+{p 8 14 2}{cmd:condgraph ,} {cmd:stats(}{it:string}{cmd:)}
+   [{cmd:reps(}{it:#}{cmd:)}
+   {cmd:points(}{it:#}{cmd:)}
+   {cmd:range(}{it:# #}{cmd:)}
+   {cmd:level(}{it:#}{cmd:)}
+   {cmd:saving(}{it:filename}{cmd:)}
+   {cmd:replace}
+   {cmd:text}
+   {cmd:comma} ]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:condgraph} creates graphs showing conditional test statistics
+and critical values for a range of null hypotheses using the approach of
+Moreira (2001a, 2001b, and 2002).  Using these graphs, the user can then
+determine confidence intervals.  These test statistics yield correct
+rejection probabilities even if the instruments are arbitrarily weak.
+
+{p 4 4 2}In order to use {cmd:condtest}, you must first estimate your model
+using {cmd:condivreg}.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:stats(}{it:string}{cmd:)} lists the test statistics and
+critical values to be included in the graph.  Any one or two of the
+following may be specified: {cmd:AR}, {cmd:LM}, {cmd:LR}, and
+{cmd:Wald}, for the Anderson-Rubin, Lagrange multiplier (score),
+likelihood ratio, and Wald statistics, respectively.
+{cmd:stats(}{it:string}{cmd:)} is not optional.
+
+{p 4 8 2}{cmd:reps(}{it:#}{cmd:)} specifies the number of simulations to
+perform for each value of beta_0 plotted on the graph.  The default is
+200.
+
+{p 4 8 2}{cmd:points(}{it:#}{cmd:)} specifies the number of equally spaced
+values of beta_0 to include on the graph.  The default is 20.
+
+{p 4 8 2}{cmd:range(}{it:# #}{cmd:)} takes two numbers representing
+the minimum and maximum values of beta_0 to include in the graph.  The
+default is to use an interval centered at the previous 2SLS or LIML
+estimate with a radius twice that of a standard confidence interval
+based on the confidence level specified by {cmd:level(}{it:#}{cmd:)}.
+
+{p 4 8 2}{cmd:level(}{it:#}{cmd:)} specifies the nominal significance
+level to be used when displaying the results.  The default is to use the
+value stored in the global macro {cmd:$}{cmd:S_level}.  See {help level}
+
+{p 4 8 2}{cmd:saving(}{it:filename}{cmd:)} requests that a file be saved
+which contains, for each value of beta_0, the four test statistics along
+with their critical values.  The file is saved in Stata's {cmd:.dta}
+dataset format with the name {it:filename}{cmd:.dta} unless the
+{cmd:text} option is specified.
+
+{p 4 8 2}{cmd:replace} instructs the program to replace any existing
+version of the file when saving to disk.  The default is to print out an
+error message and not change the file on disk.  {cmd:replace} can only
+be specified if {cmd:saving(}{it:filename}{cmd:)} is used.
+
+{p 4 8 2}{cmd:text} requests that the test statistics be saved as a text
+file instead of a Stata dataset.  The filename will be
+{it:filename}{cmd:.out}, and the columns will be tab-delimited.  If
+{cmd:text} is requested without the {cmd:saving(}{it:filename}{cmd:)}
+option, an error message is printed.
+
+{p 4 8 2}{cmd:comma} requests that commas be used as column delimiters
+instead of tabs.  If {cmd:comma} is requested without the
+{cmd:saving(}{it:filename}{cmd:)} and {cmd:text} options, an error
+message is printed.
+
+
+{title:Example}
+
+{p 8 12 2}{cmd:. condgraph, stats(ar lm)}
+
+
+{title:References} 
+
+{p 4 8 2}Moreira, M. 2001a. Tests with correct size when instruments can be
+arbitrarily weak. Center for Labor Economics Working Paper 37, UC Berkeley.
+
+{p 4 8 2}Moreira, M. 2001b. A conditional likelihood ratio test for
+structural models. Manuscript, UC Berkeley.
+
+{p 4 8 2}Moreira, M. 2002. {it: Tests with Correct Size in the }
+{it:Simultaneous Equations Model.} PhD Thesis, UC Berkeley.
+
+
+{title:Also see}
+
+{p 4 13 2}Online:  help for {help condivreg}, {help condtest}
+

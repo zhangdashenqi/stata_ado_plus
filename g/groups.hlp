@@ -1,0 +1,228 @@
+{smcl}
+{* 28jul2003/5apr2007/11apr2007/20jan2010/21jan2010/24jan2011/31jan2012}{...}
+{hline}
+help for {hi:groups}
+{hline}
+
+{title:List group frequencies}
+
+{p 8 17 2}
+{cmd:groups}
+{it:varlist}
+[{it:weight}]
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+[{cmd:,}
+    {cmdab:fill:in}
+    {cmdab:form:at(}{it:format}{cmd:)} 
+    {cmd:ge} 
+    {cmd:lt}	
+    {cmdab:miss:ing}
+    {cmdab:ord:er(}{c -(}{cmdab:h:igh}{c |}{cmdab:l:ow}{c )-}{cmd:)}
+    {cmdab:sel:ect(}{c -(}{it:condition}{c |}{it:#}{c )-}{cmd:)} 
+    {cmdab:sh:ow(}{it:frequencies_to_show}{cmd:)} 
+    {cmd:showhead(}{it:header_text_for_frequencies}{cmd:)} 
+    {cmdab:rev:erse} 	
+    {it:list_options} 
+    {cmd:saving(}{it:filename}[{cmd:,} {it:save_options}]{cmd:)}  
+]
+
+
+{p 4 4 2}
+{cmd:by} {it:...}{cmd::} may be used with {cmd:groups}; see help 
+{help by}.  Note in particular that this is the key to controlling how
+percents are calculated; that is, under {cmd:by} percents sum to 100
+within distinct categories defined by its {it:varlist}. 
+
+{p 4 4 2}
+{cmd:fweight}s and {cmd:aweight}s are allowed; see help {help weights}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:groups} lists the distinct groups of {it:varlist} occurring in the
+dataset and their frequencies. {cmd:groups} is perhaps most useful with
+categorical variables, but has other uses. Groups are by default
+presented in the sort order of {it:varlist}. Note that there is no limit 
+on the number of variables in {it:varlist}. 
+
+{p 4 4 2}
+Frequencies are counts or other measures of abundance. 
+Percents are percents of each total frequency.  
+Cumulative frequencies and percents are cumulated in the order of groups 
+and show frequency (percent) in each group and all earlier groups in the listing, 
+unless the {cmd:lt} option is specified. 
+Reverse cumulative frequencies and percents show frequency (percent) in all later 
+groups in the listing, 
+unless the {cmd:ge} option is specified. 
+"Valid" percents are calculated relative to all pertinent non-missing
+values. 
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:fillin} specifies that groups (i.e. cross-combinations) of
+{it:varlist} which do not occur in the data are shown explicitly as
+having zero frequency.  This has no effect with a single variable. Note that this
+option can bite hard as the number of cross-combinations can explode combinatorially. 
+
+{p 4 8 2}
+{cmd:format()} specifies a numeric format for percent and cumulative
+percent frequencies. The default is %6.2f. 
+
+{p 4 8 2}
+{cmd:ge} specifies that reverse frequencies and percents are to be calculated 
+for the current and all later groups, that is, they are for values greater than
+or equal to each value. 
+
+{p 4 8 2}
+{cmd:lt} specifies that cumulative frequencies and percents are to be calculated 
+for only the previous groups, that is, they are for values less than each value. 
+
+{p 4 8 2}
+{cmd:missing} specifies that observations with missing values on any of
+the variables in {it:varlist} are to be included in the listing.  By
+default they are omitted.  Note that "valid" percents will be the same
+as other percents unless the {cmd:missing} option is specified. 
+
+{p 4 8 2}
+{cmd:order()} specifies that groups should be listed in order of their
+frequencies.  Ordering may be {cmd:high} (highest frequencies first) or
+{cmd:low} (lowest frequencies first). {cmd:high} and {cmd:low} may be
+abbreviated, down to as little as {cmd:h} or {cmd:l} respectively. 
+
+{p 4 8 2}
+{cmd:select()} specifies that only selected groups are to be listed.
+There are two syntaxes. 
+
+{p 8 8 2}
+In the first syntax, selection is according to a condition imposed on
+the frequencies, or on the percents, or on the cumulative frequencies,
+or on the cumulative percents, or on the reverse cumulatives. The syntax
+is exemplified by 
+
+{p 8 8 2}{cmd:select(freq == 1)}{p_end}
+{p 8 8 2}{cmd:select(percent > 5)}{p_end}
+{p 8 8 2}{cmd:select(Percent < 50)}
+
+{p 8 8 2}
+The element {cmd:freq}, {cmd:percent}, {cmd:Freq},  {cmd:Percent},
+{cmd:RFreq}, {cmd:RPercent}, {cmd:vpercent}, {cmd:Vpercent} or
+{cmd:rvpercent} may be abbreviated down to unambiguous abbreviations.
+Note that case matters in distinguishing {cmd:freq} and {cmd:Freq},
+{cmd:percent} and {cmd:Percent}, and {cmd:vpercent} and {cmd:Vpercent}.
+What follows must complete a simple true-or-false condition in Stata
+syntax, typically an inequality or equality.
+
+{p 8 8 2}
+In the second syntax, a positive or negative integer is specified.  A
+positive integer specifies that only the {it:first #} groups are to be
+shown. A negative integer specifies that only the {it:last} 
+{c |}{it:#}{c |} groups are to be shown. First and last are determined with
+respect to the listing which would otherwise have been given. Thus with
+{cmd:order(h)},  {cmd:select(5)} shows the 5 groups with the 5 highest
+frequencies, while {cmd:select(-5)} shows the 5 groups with the 5 lowest
+frequencies, ties being broken according to the sort order of
+{it:varlist}. Similarly,  with {cmd:order(l)} the opposite is true.
+Without {cmd:order()}, {cmd:select(5)} shows the first 5 groups of
+{it:varlist} and {cmd:select(-5)} shows the last 5 groups of
+{it:varlist}. The most obviously useful example is when {it:varlist}
+consists of a single variable, so that the listing is of the 5 lowest
+(highest) groups of values of that variable.
+
+{p 4 8 2}
+{cmd:show()} specifies which frequencies should be shown.  By default,
+frequencies, percents and cumulative percents are shown with one
+variable, and frequencies and percents are shown with two or more
+variables, in that order.  {cmd:show()} may be used to specify one or
+two or three of those, and/or cumulative frequencies, and/or reverse
+cumulative frequencies or reverse cumulative percents, and/or equivalent
+percents for "valid" values, or to change the order of presentation.
+The elements {cmd:freq}, {cmd:percent}, {cmd:Freq}, {cmd:Percent},
+{cmd:RFreq}, {cmd:vpercent}, {cmd:Vpercent} and
+{cmd:rvpercent} may be abbreviated, down to unambiguous abbreviations.
+Note that case matters in distinguishing {cmd:freq} and {cmd:Freq}, 
+{cmd:percent} and {cmd:Percent}, or
+{cmd:vpercent} and {cmd:Vpercent}.  Exceptionally, {cmd:none} may be used
+to specify that none of these should be shown.  For example, with
+{cmd:select(f == 1)} the frequencies would all be 1, and thus
+unnecessary, while the percents and cumulative percents may not be of
+interest, so {cmd:show(none)} may be desired.
+ 
+{p 4 8 2}
+{cmd:showhead()} specifies alternative text for the header explaining
+frequency variables. There should be as many elements as the number of
+frequency, percent, cumulative frequency, cumulative percent, reverse
+cumulative frequency, reverse cumulative percent and valid percent
+variables listed and they should occur in the same order as those
+variables are listed. Text containing spaces should be bound in {cmd:" "}. 
+Thus with {cmd:show(f RF)}, {cmd:showhead(# "# bigger")} specifies
+that {cmd:f}requencies are indicated by {cmd:"#"} and the {cmd:r}everse
+cumulative {cmd:f}requencies are indicated by {cmd:"# bigger"}. 
+
+{p 4 8 2}
+{cmd:reverse} reverses what would otherwise be displayed, last values first. 
+
+{p 4 8 2}{it:list_options} are options of {help list}. These offer several ways 
+of changing the appearance of the listing. Note that {cmd:sum} 
+by itself produces sums only of frequencies and percents, where shown.
+
+{p 4 8 2}{cmd:saving()} specifies that the results listed will be saved to a 
+named Stata .dta file using {help save}. That does not include any sums, means
+or similar summaries. Options of {cmd:save} may be specified
+in the usual way. This option may not be combined with {cmd:by:}. 
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. groups foreign}{p_end}
+{p 4 8 2}{cmd:. groups foreign rep78}{p_end}
+{p 4 8 2}{cmd:. groups foreign rep78, fillin}{p_end}
+{p 4 8 2}{cmd:. groups foreign rep78, fillin saving(mytable, replace)}
+
+{p 4 8 2}{cmd:. bysort foreign: groups rep78, ord(h) N}
+
+{p 4 8 2}{cmd:. groups mpg, sel(f == 1) show(none)}{p_end}
+{p 4 8 2}{cmd:. groups mpg, sel(5)}{p_end}
+{p 4 8 2}{cmd:. groups mpg, sel(-5)}{p_end}
+{p 4 8 2}{cmd:. groups mpg, sel(5) ord(h)}
+
+{p 4 8 2}{cmd:. groups foreign rep78, fill sel(f == 0) show(none)} 
+
+{p 4 8 2}{cmd:. groups foreign rep78, sepby(foreign)}{p_end}
+{p 4 8 2}{cmd:. groups foreign rep78, sepby(foreign) showhead(# %)} 
+
+{p 4 8 2}{cmd:. groups rep78, missing show(freq percent vpercent) sep(0)}
+
+{p 4 8 2}{cmd:. groups rep78, show(freq rfreq Rpercent) ge}{p_end}
+{p 4 8 2}{cmd:. groups rep78, show(F f Rf) lt showhead(< = >)}
+
+{p 4 8 2}{cmd:. groups mpg, reverse}{p_end}
+{p 4 8 2}{cmd:. groups mpg, reverse show(f p RP) ge}
+
+
+{title:Author}
+
+{p 4 4 2}
+Nicholas J. Cox, Durham University, U.K.{break}
+n.j.cox@durham.ac.uk 
+
+
+{title:Acknowledgments}
+
+{p 4 4 2}
+Fred Wolfe made very helpful comments. He, Roger Harbord and Eric Zbinden
+all found a bug. A question from Stefan Gawrich led to the {cmd:ge} option.
+A question from James Keeler led to the {cmd:reverse} option. 
+A question from William Parry led to the {cmd:saving()} option. 
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {help tabulate}, {help table}, {help list}; 
+{help duplicates}, {help contract}, {help modes} (if installed), 
+{help fre} (Ben Jann; if installed)  
+

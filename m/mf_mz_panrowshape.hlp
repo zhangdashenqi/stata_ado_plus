@@ -1,0 +1,326 @@
+{smcl}
+{* 25aug2008}{...}
+{cmd:help mata mz_panrowshape()}
+{hline}
+
+{title:Title}
+
+{p 4 14 2}
+{bf:mz_panrowshape() -- Reorganizes, in rows, a panel data matrix for which the panels are presented by columns}
+
+
+{title:Syntax}
+
+{p 4 23 2}
+{it:transmorphic matrix}
+{cmd:mz_panrowshape(}{it:V}{cmd:,} {it:idcol}{cmd:,} {it:f} [{cmd:,} {it:d} ]{cmd:)}
+
+
+{pstd}
+where
+
+{p 14 16 2}
+    {it:V}:  {it:transmorphic matrix} containing panel data
+
+{p 10 16 2}
+{it:idcol}:  {it:real scalar} indicating the column containing the subject identifier
+
+{p 14 16 2}
+    {it:f}:  {it:string scalar} indicating how the user wants the panels to be presented
+
+{p 14 16 2}
+    {it:d}:  {it:real rowvector} containing the columns to be removed and is optional
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:mz_panrowshape()} reshapes a {it:(K * t) x c} panel data set matrix {it:V},
+to a {it:u x (v * K)} panel data matrix, ({it:u} <= {it:t} and {it:v} <= {it:c})
+if the argument {it:f} takes the value {it:"CK"}. {it:K} is the number of panels,
+{it:t} the number of observations in panels and {it:c} the number of columns of
+matrix {it:V}. The {it:"CK"} means that each panel (see the help for {bf:{help mf_panelsetup:[M-5] panelsetup()}}
+for the definition of panel data in {bf:{help mata}}) is merged to the preceding
+until the exhaustion of the panels.
+
+{p 4 4 2}
+{cmd:mz_panrowshape()} returns a {it:u x (K * v)} matrix, ({it:u} <= {it:t} and
+{it:v} <= {it:c}) if the argument {it:f} takes the value {it:"KC"}. The {it:"KC"}
+means that each column is merged  to itself by panel until the exhaustion of panels.
+This action is repeated for all columns of {it:V} and the resulting sub-matrices
+are themselves merged to each other.
+
+{p 4 4 2}
+{cmd:mz_panrowshape()} always returns balanced panels, same number of observations
+in all the panels, even if {it:V} is not balanced. The balancing criterion used is
+{cmd: panelsetup(V, idcol, 2, 0)}. See {bf:{help mf_panelsetup:[M-5] panelsetup()}}
+for more details.
+
+{p 4 4 2}
+It should be noted that the real multiplications {it:(v * K)} and {it:(K * v)} in 
+{it:u x (v * K)} and {it:u x (K * v)} respectively give the same value if {it:u} and
+{it:v} are identical in the two cases but they are used here to emphasize the 
+difference in the arrangement of columns in the returned matrices.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+Remarks are presented under the following headings:
+
+	{help mf_mz_panrowshape##remarks1:Case where {it:f} takes the value {it:"CK"}}
+	{help mf_mz_panrowshape##remarks2:The matrix {it:V} is balanced}
+	{help mf_mz_panrowshape##remarks3:The matrix {it:V} is unbalanced}
+	{help mf_mz_panrowshape##remarks4:Case where {it:f} takes the value {it:"KC"}}
+	{help mf_mz_panrowshape##remarks5:String matrix}
+
+{marker remarks1}{...}
+{title:Case where {it:f} takes the value {it:"CK"}}
+
+{marker remarks2}{...}
+{title:The matrix {it:V} is balanced}
+
+        {com}: V
+        {res}       {txt}1   2     3     4
+            {c TLC}{hline 21}{c TRC}
+          1 {c |}  {res}1   1   3.1   3.7{txt}  {c |}
+          2 {c |}  {res}1   2   9.2   4.2{txt}  {c |}
+          3 {c |}  {res}1   3   2.5   6.5{txt}  {c |}
+          4 {c |}  {res}1   4   8.4     7{txt}  {c |}
+          5 {c |}  {res}1   5   4.6   3.9{txt}  {c |}
+          6 {c |}  {res}2   1   6.2   1.5{txt}  {c |}
+          7 {c |}  {res}2   2   5     3.2{txt}  {c |}
+          8 {c |}  {res}2   3   7.8   9.6{txt}  {c |}
+          9 {c |}  {res}2   4   5.4   7.7{txt}  {c |}
+         10 {c |}  {res}2   5   3.4   9.2{txt}  {c |}
+         11 {c |}  {res}3   1   2.1   2.3{txt}  {c |}
+         12 {c |}  {res}3   2     9   1.5{txt}  {c |}
+         13 {c |}  {res}3   3   1.4   6.7{txt}  {c |}
+         14 {c |}  {res}3   4   4.8   3.3{txt}  {c |}
+         15 {c |}  {res}3   5   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 21}{c BRC}
+
+        {txt}  The first column of {it:V} contains the subject identifier. There are
+        {txt}  three panels, each of them has five observations.
+
+        {com}: mz_panrowshape(V, 1, "CK")
+        {res}       {txt}1   2     3     4   5   6     7     8   9   10   11    12
+            {c TLC}{hline 61}{c TRC}
+          1 {c |}  {res}1   1   3.1   3.7   2   1   6.2   1.5   3   1   2.1   2.3{txt}  {c |}
+          2 {c |}  {res}1   2   9.2   4.2   2   2     5   3.2   3   2     9   1.5{txt}  {c |}
+          3 {c |}  {res}1   3   2.5   6.5   2   3   7.8   9.6   3   3   1.4   6.7{txt}  {c |}
+          4 {c |}  {res}1   4   8.4     7   2   4   5.4   7.7   3   4   4.8   3.3{txt}  {c |}
+          5 {c |}  {res}1   5   4.6   3.9   2   5   3.4   9.2   3   5   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 61}{c BRC}
+
+        {txt} If we want to drop the second column of {it:V}, we set
+
+        {com}: d = 2
+        {com}: d
+        {res}: 2
+
+        {txt} Then
+
+        {com}: mz_panrowshape(V, 1, "CK", d)
+        {res}       {txt}1     2     3   4     5     6   7     8     9
+            {c TLC}{hline 49}{c TRC}
+          1 {c |}  {res}1   3.1   3.7   2   6.2   1.5   3   2.1   2.3{txt}  {c |}
+          2 {c |}  {res}1   9.2   4.2   2     5   3.2   3     9   1.5{txt}  {c |}
+          3 {c |}  {res}1   2.5   6.5   2   7.8   9.6   3   1.4   6.7{txt}  {c |}
+          4 {c |}  {res}1   8.4     7   2   5.4   7.7   3   4.8   3.3{txt}  {c |}
+          5 {c |}  {res}1   4.6   3.9   2   3.4   9.2   3   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 49}{c BRC}
+
+        {txt} If we want to drop the first two columnns, we set
+
+        {com}: d = (1,2)
+        {com}: d
+        {res}:      {txt}1   2
+            {c TLC}{hline 9}{c TRC}
+          1 {c |}  {res}1   2{txt}  {c |}
+            {c BLC}{hline 9}{c BRC}
+
+        {txt} Then
+
+        {com}: mz_panrowshape(V, 1, "CK", d)
+        {res}         {txt}1     2     3     4     5     6
+            {c TLC}{hline 37}{c TRC}
+          1 {c |}  {res}3.1   3.7   6.2   1.5   2.1   2.3{txt}  {c |}
+          2 {c |}  {res}9.2   4.2     5   3.2     9   1.5{txt}  {c |}
+          3 {c |}  {res}2.5   6.5   7.8   9.6   1.4   6.7{txt}  {c |}
+          4 {c |}  {res}8.4     7   5.4   7.7   4.8   3.3{txt}  {c |}
+          5 {c |}  {res}4.6   3.9   3.4   9.2   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 37}{c BRC}
+
+{marker remarks3}{...}
+{title:The matrix {it:V} is unbalanced}
+
+        {com}: V
+        {res}        {txt}1  2     3     4
+            {c TLC}{hline 21}{c TRC}
+          1 {c |}  {res}1   2   9.2   4.2{txt}  {c |}
+          2 {c |}  {res}1   3   2.5   6.5{txt}  {c |}
+          3 {c |}  {res}1   4   8.4     7{txt}  {c |}
+          4 {c |}  {res}1   5   4.6   3.9{txt}  {c |}
+          5 {c |}  {res}2   1   6.2   1.5{txt}  {c |}
+          6 {c |}  {res}2   2     5   3.2{txt}  {c |}
+          7 {c |}  {res}3   1   2.1   2.3{txt}  {c |}
+          8 {c |}  {res}3   2     9   1.5{txt}  {c |}
+          9 {c |}  {res}3   3   1.4   6.7{txt}  {c |}
+            {c BLC}{hline 21}{c BRC}
+
+        {com}: mz_panrowshape(V, 1,"CK")
+        {res}       {txt}1   2     3     4   5   6     7     8   9  10    11    12
+            {c TLC}{hline 61}{c TRC}
+          1 {c |}  {res}1   2   9.2   4.2   2   1   6.2   1.5   3   1   2.1   2.3{txt}  {c |}
+          2 {c |}  {res}1   3   2.5   6.5   2   2     5   3.2   3   2     9   1.5{txt}  {c |}
+            {c BLC}{hline 61}{c BRC}
+
+        {txt}  As the minimum number of observations in panels is two (panel
+        {txt}  number 2), the balancing criterion makes that the result is a
+        {txt}  panel data set with only two observations per panel.
+
+        {txt}  If {it:V} had only one observation in panel number 2,
+
+        {com}: V
+        {res}       {txt}1   2     3     4
+            {c TLC}{hline 21}{c TRC}
+          1 {c |}  {res}1   2   9.2   4.2{txt}  {c |}
+          2 {c |}  {res}1   2   9.2   4.2{txt}  {c |}
+          3 {c |}  {res}1   4   8.4     7{txt}  {c |}
+          4 {c |}  {res}1   5   4.6   3.9{txt}  {c |}
+          5 {c |}  {res}2   1   6.2   1.5{txt}  {c |}
+          6 {c |}  {res}3   1   2.1   2.3{txt}  {c |}
+          7 {c |}  {res}3   2     9   1.5{txt}  {c |}
+          8 {c |}  {res}3   3   1.4   6.7{txt}  {c |}
+            {c BLC}{hline 21}{c BRC}
+
+        {txt}  we would have
+
+        {com}: mz_panrowshape(V, 1, "CK")
+        {res}       {txt}1     2     3     4     5     6     7     8
+            {c TLC}{hline 47}{c TRC}
+          1 {c |}  {res}1     2   9.2   4.2     3     1   2.1   2.3{txt}  {c |}
+          2 {c |}  {res}1     3   2.5   6.5     3     2     9   1.5{txt}  {c |}
+          3 {c |}  {res}1     4   8.4     7     3     3   1.4   6.7{txt}  {c |}
+            {c BLC}{hline 47}{c BRC}
+
+        {txt}  Panel number 2 is dropped because it is a singleton. 
+        {txt}  See {bf:{help mf_panelsetup:[M-5] panelsetup()}} for more details on balancing
+        {txt}  panel data sets with {bf:{help mata}}.
+
+{marker remarks4}{...}
+{title:Case where {it:f} takes the value {it:"KC"}}
+
+        {com}: V
+        {res}       {txt}1   2     3     4
+            {c TLC}{hline 21}{c TRC}
+          1 {c |}  {res}1   1   3.1   3.7{txt}  {c |}
+          2 {c |}  {res}1   2   9.2   4.2{txt}  {c |}
+          3 {c |}  {res}1   3   2.5   6.5{txt}  {c |}
+          4 {c |}  {res}1   4   8.4     7{txt}  {c |}
+          5 {c |}  {res}1   5   4.6   3.9{txt}  {c |}
+          6 {c |}  {res}2   1   6.2   1.5{txt}  {c |}
+          7 {c |}  {res}2   2   5     3.2{txt}  {c |}
+          8 {c |}  {res}2   3   7.8   9.6{txt}  {c |}
+          9 {c |}  {res}2   4   5.4   7.7{txt}  {c |}
+         10 {c |}  {res}2   5   3.4   9.2{txt}  {c |}
+         11 {c |}  {res}3   1   2.1   2.3{txt}  {c |}
+         12 {c |}  {res}3   2     9   1.5{txt}  {c |}
+         13 {c |}  {res}3   3   1.4   6.7{txt}  {c |}
+         14 {c |}  {res}3   4   4.8   3.3{txt}  {c |}
+         15 {c |}  {res}3   5   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 21}{c BRC}
+
+        {com}: mz_panrowshape(V, 1, "KC")
+        {res}       {txt}1   2   3   4   5   6     7     8     9    10    11    12
+            {c TLC}{hline 61}{c TRC}
+          1 {c |}  {res}1   2   3   1   1   1   3.1   6.2   2.1   3.7   1.5   2.3{txt}  {c |}
+          2 {c |}  {res}1   2   3   2   2   2   9.2     5     9   4.2   3.2   1.5{txt}  {c |}
+          3 {c |}  {res}1   2   3   3   3   3   2.5   7.8   1.4   6.5   9.6   6.7{txt}  {c |}
+          4 {c |}  {res}1   2   3   4   4   4   8.4   5.4   4.8     7   7.7   3.3{txt}  {c |}
+          5 {c |}  {res}1   2   3   5   5   5   4.6   3.4   9.5   3.9   9.2   9.7{txt}  {c |}
+            {c BLC}{hline 61}{c BRC}
+            
+        {txt} If we want to drop the first two columnns
+
+        {com}: d = (1,2)
+        {com}: d
+        {res}:      {txt}1   2
+            {c TLC}{hline 9}{c TRC}
+          1 {c |}  {res}1   2{txt}  {c |}
+            {c BLC}{hline 9}{c BRC}
+
+        {com}: mz_panrowshape(V, 1, "KC", d)
+        {res}         {txt}1     2     3     4     5     6
+            {c TLC}{hline 37}{c TRC}
+          1 {c |}  {res}3.1   6.2   2.1   3.7   1.5   2.3{txt}  {c |}
+          2 {c |}  {res}9.2     5     9   4.2   3.2   1.5{txt}  {c |}
+          3 {c |}  {res}2.5   7.8   1.4   6.5   9.6   6.7{txt}  {c |}
+          4 {c |}  {res}8.4   5.4   4.8     7   7.7   3.3{txt}  {c |}
+          5 {c |}  {res}4.6   3.4   9.5   3.9   9.2   9.7{txt}  {c |}
+            {c BLC}{hline 37}{c BRC}
+
+{marker remarks5}{...}
+{title:String matrix}
+
+        {com}: V
+        {res}       {txt}1     2     3
+            {c TLC}{hline 17}{c TRC}
+          1 {c |}  {res}A   a11   a12{txt}  {c |}
+          2 {c |}  {res}A   a21   a22{txt}  {c |}
+          3 {c |}  {res}A   a31   a32{txt}  {c |}
+          4 {c |}  {res}B   b11   b12{txt}  {c |}
+          5 {c |}  {res}B   b21   b22{txt}  {c |}
+          6 {c |}  {res}B   b31   b32{txt}  {c |}
+          7 {c |}  {res}C   c11   c12{txt}  {c |}
+          8 {c |}  {res}C   c21   c22{txt}  {c |}
+          9 {c |}  {res}C   c31   c32{txt}  {c |}
+            {c BLC}{hline 17}{c BRC}
+
+        {com}: d = 1
+        {com}: d
+        {res}: {res}1
+        
+
+        {com}: mz_panrowshape(V, 1, "KC", d)
+        {res}         {txt}1     2     3     4     5     6
+            {c TLC}{hline 37}{c TRC}
+          1 {c |}  {res}a11   b11   c11   a12   b12   c12{txt}  {c |}
+          2 {c |}  {res}a21   b21   c21   a22   b22   c22{txt}  {c |}
+          3 {c |}  {res}a31   b31   c31   a32   b32   c32{txt}  {c |}
+            {c BLC}{hline 37}{c BRC}
+
+{title:Conformability}
+
+    {cmd:mz_panrowshape(}{it:V}{cmd:,} {it:idcol}{cmd:,} {it:f}{cmd:,} {it:d}{cmd:)}
+         {it:V}:  {it:(K * t) x c}
+     {it:idcol}:  {it:1 x 1}
+         {it:f}:  {it:1 x 1}
+         {it:d}:  {it:1 x m}, {it:m < c}    (optional)
+    {it:result}:  {it:u x (v * K)} or {it:u x (K * v)}, {it:u} <= {it:t}, {it:v} <= {it:c}, {it:t} = number
+                of obs. in panel, {it:K} = number of panels
+
+{title:Diagnostics}
+
+{p 4 4 2}
+{cmd:mz_panrowshape()} aborts with error if {it:d} is equal to all columns of {it:V} or if
+{it:V} is not a panel data matrix.
+
+
+{title:Source code}
+
+{p 4 4 2}
+{help ltimbimata_source##mz_panrowshape:mz_panrowshape.mata}
+
+
+{title:Author}
+
+{p 4 4 2} Diallo Ibrahima Amadou, {browse "mailto:zavren@gmail.com":zavren@gmail.com}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {bf:{help mf_panelsetup:[M-5] panelsetup()}}, {bf:{help mf_mz_pancolshape:mz_pancolshape()}}, {bf:{help ltimbimata}}
+{p_end}

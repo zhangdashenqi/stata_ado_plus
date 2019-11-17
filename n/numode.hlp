@@ -1,0 +1,77 @@
+.-
+help for ^numode^                                              [STB-38: snp13]
+.-
+
+Counting and estimation of modes in density/frequency data 
+----------------------------------------------------------
+
+     ^numode^  denvar midvar [^if^ exp] [^in^ range], [^mo^des ]
+
+
+Description
+-----------
+
+This program calculates the number of modes of a density estimation or a
+frequency distribution and if especified lists their estimated values. The user
+must include the variable with the density or frequency values (denvar) and the
+corresponding midpoints (midvar). Useful for histogram or kernel density 
+estimation modes determination.
+
+Options
+-------
+
+^mo^des lists the estimated values for each mode.
+
+
+Examples
+--------
+
+. ^use bufsnow^
+
+. ^warpdenm snow, b(3) m(10) k(6) gen(den3 mid3)^  
+
+. ^numode den3 mid3, modes^
+
+Will display the number of modes and their estimated values
+
+
+References
+----------
+
+   Haerdle, W. (1991) Smoothing Techniques with Implementation in S.
+        Springer-Verlag Chapter 2: 43-84; Chapters 1-2: 1-84.
+   Salgado-Ugarte, I.H., M. Shimizu, and T. Taniuchi (1993) snp6: Exploring
+        the shape of univariate data using kernel density estimators. Stata 
+        Technical Bulletin 16: 8-19.
+   Salgado-Ugarte, I.H., M. Shimizu, and T. Taniuchi (1995) snp6.1: ASH,
+        WARPing, and kernel density estimation for univariate data. Stata
+        Technical Bulletin 26: 23-31.
+   Salgado-Ugarte, I.H., M. Shimizu, and T. Taniuchi (1995) snp6.2: Practical
+        Rules for bandwidth selection in univariate density estimation. Stata
+        Technical Bulletin 27: 5-19.
+   Salgado-Ugarte, I.H., M. Shimizu, and T. Taniuchi (1997) snp6.4: 
+        Nonparametric assessment of multimodality for univariate data. Stata
+        Technical Bulletin XX: XX-XX.
+   Scott, D.W. (1992) Multivariate Density Estimation: Theory, Practice,
+        and Visualization. John Wiley Chapter 6: 125-143; Chapters 3-6: 47-193.
+   Silverman, B.W. (1986) Density Estimation for Statistics and Data 
+        Analysis. Chapman and Hall.
+
+
+Authors
+-------
+
+     Isaias H. Salgado-Ugarte(*), Makoto Shimizu, and Toru Taniuchi
+     (*)Universidad Nacional Autonoma de Mexico
+     Facultad de Estudios Superiores Zaragoza
+     Biologia, Guelatao 66 Col. Ejercito de Oriente
+     Iztapalapa 09230, Mexico D.F., Mexico
+     (Fax 52-5-773-0151)
+     e-mail: fes01@@tzetzal.dcaa.unam.mx; isalgado@@servidor.unam.mx
+
+
+Also see
+--------
+
+    STB: snp6 (STB-16); snp6.1 (STB-26); snp6.2 (STB-27); snp13 (STB-38)
+On-line: ^help^ for @warpdenm@, @kerneld@, @bandw@, @l2cvwarp@, @bcvwarp@, @kernreg@

@@ -1,0 +1,96 @@
+.-
+help for ^xtcount^                                            [jw]  Mar 22, 1999
+.-
+
+Count panels satisfying specified condition
+-------------------------------------------
+
+   ^xtcount if^ exp [^, i(^varname^) if^by^(^exp^) in^by^(^range^) c^ases^(^numlist^)^ 
+                         { ^al^ways | ^ev^er } ^markout(^varlist^)  strok^ ]
+
+
+Description
+-----------
+
+^xtcount^ returns the number of panels for which the condition always holds, 
+sometimes holds, and never holds. Via selection-options it is possible to 
+reduce the set of panels to which these counts refer.
+
+
+Options
+-------
+
+^i(^varname^)^ specifies the variable name corresponding to ^i^; see help ^xt^.
+
+
+Options to select time points and panels
+----------------------------------------
+
+^xtcount^ allows (i,t) measurements to be dropped on the basis of missing values,
+
+  ^markout^(varlist) specifies a varlist so that all (i,t) observations that 
+     have missing values in any of the variables are dropped. 
+
+  ^strok^ specifies that string variables are allowable in varlist.
+     See [R] mark.
+
+^xtcount^ implements different ways to select panels.
+
+  ^cases^(numlist) selects panels via a numlist for ^i^-values. 
+
+  ^inby(^range^)^ selects panels in the order that results by sorting on the 
+     ^i^-variable. The standard range syntax applies. Thus, ^inby(1/10)^ 
+     selects the initial 10 panels, ^inby(-3/-1)^ the last 3 panels, and 
+     ^inby(l)^ the last panel.
+
+  ^ifby^(exp^)^ selects panels via a panel-level condition, i.e., a condition that
+     is either true of false for all time-points units within each panel. If 
+     the condition may differ between time-points within a panel, we provide 
+     2 aggregation methods to obtain a panel-level characteristic.
+
+     ^ever^ specifies that a panel is selected iff the ^ifby^-expression 
+        evaluates to true for *at least one* time point.
+
+     ^always^ specifies that a panel is selected iff the ^ifby^-expression 
+        evaluates to true for *all* time points.
+
+
+Examples
+--------
+
+   . ^xtcount if income>100^
+   . ^xtcount if income>100, ifby(religion=="catholic")^
+   . ^xtcount if income>100, ifby(age>50) always^
+
+
+Saved results
+-------------
+
+   scalar
+      ^r(N_by)^        number of panels. 
+      ^r(never)^       number of panels that -never- satisfies condition
+      ^r(ever)^        number of panels that -ever- satisfies condition
+      ^r(always)^      number of panels that -always- satisfies condition
+
+   If options are specified to select panels, these values refer to the 
+   selected set of panels.
+
+
+Author
+------
+
+   Jeroen Weesie
+   Dept of Sociology/ICS
+   Utrecht University
+   J.Weesie @@ fss.uu.nl
+
+This project was supported by grant PGS 50-370 of the Netherlands Organization
+for Scientific Research. 
+
+
+Also See
+--------
+
+ Manual: ^[R] count^
+On-line: help on @countby@, @stcount@.
+

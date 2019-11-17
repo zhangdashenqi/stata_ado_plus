@@ -1,0 +1,88 @@
+{smcl}
+{* 03Dec2004}{...}
+{hline}
+help for {hi:nsplit}{right:manual:  {hi:none}}
+{hline}
+
+{title:Split numeric variables with integer values into new smaller numeric variables.}
+
+{p 8 17 2}
+{cmd:nsplit}
+[{it:varname}]
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+{cmd:,}
+    {cmdab:d:igits:(}{it:digit pattern in existing variable}{cmd:)}
+    [{cmdab:g:enerate:(}{it:newvarlist or stub}{cmd:)}
+]
+
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:nsplit} creates however many new numeric variables it takes to split a numeric variable into {it:digit pattern}.  
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:digits(}{it:digit pattern in existing variable}{cmd:)} describes the pattern in
+the existing numeric variable.  If it is a repeated pattern then you only need to supply
+the number of digits the new variables should contain.  For example:
+
+{p 8 8 2} {cmd:. nsplit id, digits(2)}
+
+{p 8 8 2} for an id variable with 6 digits is equivalent to:
+
+{p 8 8 2} {cmd:. nsplit id, digits(2 2 2)}
+
+{p 4 8 2}
+{cmd:generate(}{it:newvarlist or stub}{cmd:)} states what you want the new variable names to be.  If only one name is listed then that will be the first characters of the new variable names: {it:stub}1 {it:stub}2 etc.  If no new variable name is used, then the original variable name will be used as the stub.
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. nsplit id, digits(2 3)}
+
+{p 4 8 2}{cmd:. list id*}
+
+{p 4 8 2}{cmd:  id   id1   id2}
+
+{p 4 8 2}{cmd:  12345  12   345}
+
+{p 4 8 2}{cmd:   2305   2   305}
+
+{p 4 8 2}{cmd:   2003   2     3}
+
+
+{p 4 8 2}{cmd:. nsplit date, digits(2) generate(month year)}
+
+{p 4 8 2}{cmd:. list date month year}
+
+{p 4 8 2}{cmd:  date month year}
+
+{p 4 8 2}{cmd:  1294  12   94}
+
+{p 4 8 2}{cmd:   588   5   88}
+
+
+{title:Author}
+
+{p 4 4 2}Dan Blanchette
+
+{p 4 4 2}The Carolina Population Center
+
+{p 4 4 2}University of North Carolina - Chapel Hill, USA
+
+{p 4 4 2}dan_blanchette@unc.edu
+
+{title:Acknowledgements}
+
+{p 4 4 2} Many suggestions were implemented that were made by:
+
+{p 4 4 2} Nicholas J. Cox, University of Durham, U.K.
+
+{title:Also see}
+
+{p 0 10}On-line: {help split}, {help mod()}, {help int()}, {help dexfcns}
+

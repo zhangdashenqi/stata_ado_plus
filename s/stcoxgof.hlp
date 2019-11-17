@@ -1,0 +1,80 @@
+.-
+help for ^stcoxgof^                                           
+.-
+
+Perform goodness-of-fit test and plot after a proportional hazards model
+------------------------------------------------------------------------
+
+  ^stcoxgof^ [^,^ ^gr^oup^(^#^)^ ^gen(^string^)^ ^poi^dis ^plot(^#^)^
+                ^sa^ving^(^filename^)^ graph_options ]
+
+
+
+^stcoxgof^ is for use after estimation of a proportional hazards model.
+If used after ^stcox^ this command requires that you previously specified
+^stcox^'s ^mgale()^ option; see help @stcox@.
+It can be used after a parametric proportional hazards model as well. Then
+^streg^ with ^exponential^, ^weibull^ or ^gompertz^ distribution has to be
+previously specified; see help @streg@.
+
+
+Description
+-----------
+When used without options ^stcoxgof^ shows a two by ten table presenting
+the observed and expected numbers of events in each decile of risk.
+According to May and Hosmer z-score and two-tailed p-value from standard
+normal distrubution are also tabulated. If ^plot^ option is given Arjas
+plots by quantiles of risk are displayed.
+
+
+Options
+-------
+
+^group(^#^)^ specifies the number of quantiles of risk to be used to group
+    observed ed expected numbers of events. Default is 10. Values allowed
+    are from 4 to 10.
+
+^gen(^string^)^ supplies the name of a new variable to hold the quantiles of
+    risk indicators. Including this variable as design variables you can
+    estimate likelihood ratio test for the fitted proportional hazard model.
+
+^poidis^ estimates the probability of observed counts within each decile of
+    risk according to Poisson distibution with mean equal to the estimated
+    expected number of counts.
+
+^plot(^#^)^ specifies the number of quantiles of risk used to group the
+    data for Arjas plots. Values allowed are from 2 to 10. If more than 6
+    quantiles of risk are used, two combined plots are displayed. To
+    implement this option ^forgraph^ (STB-49: gr36) is called. See help
+    @net@ to install user-written additions from the net.
+
+^separate^ requests that for each quantile of risk a separate graph should
+    be shown.
+
+^saving(^filename^,^[^replace^]^)^ saves graph(s) in file(s) that can be
+    reviewed by ^graph using^ and printed.    
+
+
+Examples
+--------
+
+        . ^stcoxgof^
+        . ^stcoxgof, gr(5)^
+        . ^stcoxgof, plot(4)^
+        . ^stcoxgof, gen(decile)^
+        . ^stcoxgof, poidis^ 
+        . ^stcoxgof, plot(8) sa(Arjas,replace)^
+
+
+Also see
+--------
+
+ Manual:  ^[R] stcox^
+On-line:  help for @stcox@; 
+
+
+Reference
+---------
+
+Hosmer DW,jr and Lemeshow S: Applied Survival Analysis (1999) p. 225 - 230.
+                             John Wiley & Sons - New York.

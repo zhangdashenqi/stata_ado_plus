@@ -1,0 +1,298 @@
+{smcl}
+{* MLB 17Jul2009}{...}
+{hline}
+help for {hi:seqlogit}
+{hline}
+
+{title:Sequential logit model}
+
+{p 8 17 2}
+{cmd:seqlogit} {depvar} [{indepvars}] {ifin} {weight} 
+{cmd:,} 
+{opt tree(tree)}
+[ 
+{opt ofint:erest(varname)}
+{opt over(varlist)}
+{opt l:evels(levellist)}
+{opt sd(#)}
+{opt rho(#)}
+{opt draws(#)}
+{opt drawstart(#)}
+{cmd:or}
+{opt c:onstraints(numlist)}
+{cmdab:r:obust}
+{opt cl:uster(clustervar)}
+{cmd:nolog}
+{opt l:evel(#)} 
+{it:{help seqlogit##maximize_options:maximize_options}} 
+]
+
+{p 4 4 2}{cmd:by} {it:...} {cmd::} may be used with {cmd:seqlogit}; see help
+{help by}. 
+
+{p 4 4 2}{cmd:pweight}s, {cmd:fweight}s and {cmd:iweight}s are allowed; see 
+help {help weights}.
+
+
+{title:Description}
+
+{p 4 4 2} {cmd:seqlogit} fits a sequential logit model. This model is know 
+under a variety of other names: sequential logit model (Tutz 1991),sequential 
+response model (maddala 1983), continuation ratio logit (Agresti 2002), model 
+for nested dichotomies (fox 1997), and the Mare model (shavit and blossfeld93) 
+(after (Mare 1981)). 
+
+{p 4 4 2}
+This model estimates the effect of the explanatory variables on the 
+probabilities of passing a set of transitions. For example, given a highest
+achieved level of education the researcher studies the effect of s
+socio-economic status on the probabilities of passing the different 
+transitions between levels of education. The user can specify any decision 
+tree as long as each level of the dependent variable (e.g. level of education) 
+can be reached through one and only one sequence of transitions. If these 
+levels have values (e.g. years of education) than this model also implies an 
+effect of the explanatory variable on the highest achieved level. The program 
+{helpb seqlogit postestimation##seqlogitdecomp:seqlogitdecomp}, which is part 
+of the seqlogit package, displays a decomposition proposed by Buis (2007) of 
+the effect on the highest achieved level into parts that measure the effect on 
+the probabilities of passing the transitions and the importance of each 
+transition.
+
+
+{p 4 4 2}{cmd:seqlogit} also allows for the estimation of scenarios concerning
+the influence of unobserved heterogeneity, as proposed by Buis (2008). In 
+particular these scenarios assume that there is a normally distributed 
+unobserved variable. The standard deviation of this unobserved variable during 
+the first transition is specified in the {opt sd()} option. The correlation 
+during the first transition between this unobserved variable and the variable 
+specified in the {cmd:ofinterest()} option is specified in the {cmd:rho()} 
+option.  A regular sequential logit model, which assumes that there is no 
+unobserved heterogeneity, is estimated if the {opt sd()} option is not 
+specified. The scenarios are estimated using maximum simulated likelihood, 
+while the regular sequential logit model is estimated using regular maximum 
+likelihood.
+
+
+{title:Options}
+
+{phang}
+{opt tree(tree)} specifies the sequence of transitions that make up the model.
+The transitions are seperated with commas and the choices within transitions
+are seperated with colons. The levels are represented by the levels of the
+{it:depvar}. It is thus convenient to code {it:depvar} as a series of integers. For
+example, say there are three levels, 1, 2, and 3, and the first transition 
+consist of a choice between value 1 versus values 2 or 3, and the second 
+transition consists (for those who didn't choose value 1) of a choice between 
+values 2 and 3. The tree option should than be: tree(1 : 2 3 , 2 : 3).
+
+{p 8 8 2}All values of {it:depvar} must be specified in the tree and all 
+values in the tree must occur in {it:depvar}. Furthermore, all levels must be 
+reachable through one and only one path through the tree. 
+
+{phang}
+{opt ofint:erest(varname)} specifies the variable whose effect will be 
+decomposed when using the 
+{helpb seqlogit postestimation##seqlogitdecomp:seqlogitdecomp} command. 
+The variable specified is added to the list of explanatory variables. 
+
+{phang}
+{opt over(varlist)} specifies the variable(s) over which the effect of 
+the variable specified in the {opt ofinterest()} option is allowed to change.
+This/these variable(s) and the interaction effect between the variable(s) 
+spefied in {opt over()} and {opt ofinterest()} are added to the list of 
+explanatory variables. {opt ofinterest()} needs to be specified when
+specifying {opt over()}.
+
+{phang}
+{opt l:evels(levellist)} specifies the values attached to each level of the
+dependent variable. If it is not specified the values of the dependent 
+variabel will be used. The syntax for {it:levels} is: # = # [, # = #, ...] 
+Specifying this option will not influence the estimated parameters, but
+these values will be used in {helpb seqlogit postestimation##seqlogitdecomp:seqlogitdecomp}
+and {helpb seqlogit postestimation##predict:predict} with the {cmd:trgain}, 
+{cmd:trweight}, {cmd:y}, {cmd:effect}, and {cmd:residuals} option.
+
+{phang}
+{opt sd(#)} specifies the standard deviation of the unobserved variable. The
+default is 0.
+
+{phang}
+{opt rho(#)} specifies the correlation of the unobserved variable and the 
+variable specified in {cmd:ofinterest()}. The default is 0.
+
+{phang}
+{opt draws(#)} specifies the number of pseudo random draws per observation used 
+when calculating the simulated likelihood. The default is 100. Because maximum 
+simulated likelihood is only used when the {cmd:sd()} option is specified, the 
+{opt draws()} option can only be specified when the {cmd:sd()} option is specified.
+
+{phang}
+{opt drawstart(#)} specifies the index at which the Halton sequence starts. The
+default is 15.
+
+{phang}
+{opt or} report odds ratios 
+
+{phang}
+{opt c:onstraints(numlist)} specifies linear constraints to be applied during
+estimation, see {helpb constraint}.
+
+{phang}
+{opt r:obust} specifies that the Huber/White/sandwich estimator
+of variance is to be used in place of the traditional calculation; see
+{hi:[U] 23.14 Obtaining robust variance estimates}.  {cmd:robust}
+combined with {cmd:cluster()} allows observations which are not
+independent within cluster (although they must be independent between
+clusters). 
+
+{phang}
+{opt c:luster(clustervar)} specifies that the observations
+are independent across groups (clusters) but not necessarily within groups.
+{it:clustervar} specifies to which group each observation belongs; e.g.,
+{cmd:cluster(personid)} in data with repeated observations on individuals.  See
+{hi:[U] 23.14 Obtaining robust variance estimates}.  Specifying {cmd:cluster()}
+implies {cmd:robust}.
+
+{phang}
+{opt l:evel(#)} specifies the confidence level, in percent,
+for the confidence intervals of the coefficients; see help {help level}.
+
+{phang}
+{opt nolog} suppresses an iteration log of the log likelihood
+
+{marker maximize_options}{...}
+{phang}
+{opt maximize_options}:
+{opt diff:icult},
+{opt tech:nique(algorithm_spec)},
+{opt iter:ate(#)},
+{opt tr:ace},
+{opt grad:ient},
+{opt showstep},
+{opt hess:ian},
+{opt shownr:tolerance},
+{opt tol:erance(#)},
+{opt ltol:erance(#)},
+{opt gtol:erance(#)},
+{opt nrtol:erance(#)},
+{opt nonrtol:erance(#)};
+see {help maximize}.  These options are seldom used.
+
+
+{title:Example}
+
+{cmd}
+    sysuse nlsw88, clear
+    gen ed = cond(grade< 12, 1, ///
+             cond(grade==12, 2, ///
+             cond(grade<16,3,4))) if grade < .
+    gen byr = (1988-age-1950)/10
+    gen white = race == 1 if race < .
+
+    seqlogit ed byr south,                   ///   
+             ofinterest(white) over(byr)     ///
+             tree(1 : 2 3 4, 2 : 3 4, 3 : 4) ///
+             levels(1=6, 2=12, 3=14, 4= 16)  ///
+             or
+
+    seqlogitdecomp,                                     ///
+             overat(byr -.5, byr 0, byr .4)             ///
+             subtitle("1945" "1950" "1954")             ///
+             eqlabel(`""finish" "high school""'         ///
+                     `""high school v" "some college""' ///
+                     `""some college v" "college""')    ///
+             xline(0) yline(0)  
+
+    capture drop _white_X_byr
+    seqlogit ed byr south,                   ///   
+             ofinterest(white) over(byr)     ///
+             tree(1 : 2 3 4, 2 : 3 4, 3 : 4) ///
+             levels(1=6, 2=12, 3=14, 4= 16)  ///
+             or sd(1)
+    
+    uhdesc
+{txt}
+
+
+{title:Author}
+
+{p 4 4 2}Maarten L. Buis{break}
+         Universitaet Tuebingen{break} 
+         Institut fuer Soziologie{break}
+         maarten.buis@ifsoz.uni-tuebingen.de 
+
+
+{title:Suggested citation if using seqlogit in published work}
+
+{p 4 4 2}
+{cmd:seqlogit} is not an official Stata command. It is a free contribution 
+to the research community, like a paper. Please cite it as such.
+
+{p 4 4 2}
+Buis, Maarten L.  2007. "SEQLOGIT: Stata module to fit a sequential logit model" 
+{browse "http://ideas.repec.org/c/boc/bocode/s456843.html"}
+
+{p 4 4 2} or:
+
+{p 4 4 2}
+Buis, Maarten L. 2007
+``Not all transitions are equal: The relationship between inequality of 
+educational opportunities and inequality of educational outcomes''
+{browse "http://home.fsw.vu.nl/m.buis/wp/distmare.html"}
+
+{p 4 4 2} or:
+
+{p 4 4 2}
+Buis, Maarten L. 2008
+``The consequences of unobserved heterogeneity in a sequential logit model''
+{browse "http://home.fsw.vu.nl/m.buis/wp/unobserved_het.pdf"}
+
+
+{title:References}
+
+{p 4 4 2}
+Agresti, Alan 2002 . 
+{it:Categorical Data Analysis, 2nd edition.}
+Hoboken, NJ: Wiley-Interscience. 
+
+{p 4 4 2}
+Buis, Maarten L. 2007
+``Not all transitions are equal: The relationship between inequality of 
+educational opportunities and inequality of educational outcomes''
+{browse "http://home.fsw.vu.nl/m.buis/wp/distmare.html"}
+
+{p 4 4 2}
+Buis, Maarten L. 2008
+``The consequences of unobserved heterogeneity in a sequential logit model''
+{browse "http://home.fsw.vu.nl/m.buis/wp/unobserved_het.pdf"}
+
+{p 4 4 2}
+Fox, John 1997
+{it:Applied Regression Analysis, Linear Models, and Related Methods.}
+Thousand Oaks: Sage.
+
+{p 4 4 2}
+Maddala, G.S. 1983
+{it:Limited Dependent and Qualitative Variables in Econometrics}
+Cambridge: Cambridge University Press.
+
+{p 4 4 2}
+Mare, Robert D. 1981
+``Change and Stability in educational Stratification''
+{it:American Sociological Review}, 46(1), p.p. 72-87.
+
+{p 4 4 2}
+Shavit, Yossi and Hans-Peter Blossfeld 1993
+{it:Persistent Inequality: Changing Educational Attainment in Thirteen Countries}
+Boulder: Westview Press.
+
+{p 4 4 2}
+Tutz, Gerhard 1991
+``Sequential models in categorical regression''
+{it:Computational Statistics & Data Analysis}, 11(3), p.p. 275-295.
+
+{title:Also see}
+
+{p 4 13 2}
+Online: help for {help seqlogit postestimation}, {help logit}, {help mlogit}, {help nlogit}
+

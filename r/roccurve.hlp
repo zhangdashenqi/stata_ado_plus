@@ -1,0 +1,357 @@
+{smcl}
+{* 26 January 2009 version 1.4.7}{...}
+{cmd:help roccurve}{right: ({browse "http://www.stata-journal.com/article.html?article=st0154":SJ9-1: st0154})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col :{hi:roccurve} {hline 2}}Receiver operating characteristic (ROC) curves based on percentile value (PV) calculations{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 16 2}
+{cmd:roccurve} {it:{help varname:disease_var}} {it:{help varlist:test_varlist}}
+{ifin}
+[{cmd:,} {it:options}]
+
+{synoptset 18 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:ROC calculation}
+{synopt :{opt rocm:eth(method)}}specify ROC method; {cmd:nonparametric}
+(default) or {cmd:parametric}{p_end}
+{synopt :{opt li:nk(function)}}{cmd:probit} (default) or {cmd:logit} link
+function; for use with
+{cmd:rocmeth(parametric)} only{p_end}
+{synopt :{opt int:erval(a b np)}}interval ({it:a},{it:b}) and number of points,
+{it:np}, over which parametric curve is to be fit{p_end}
+
+{syntab:Graph}
+{synopt :{opt nogr:aph}}omit ROC plot{p_end}
+{synopt :{opt roc(f)}}plot confidence intervals (CIs) for ROC(f) at specified {it:f}{p_end}
+{synopt :{opt rocinv(t)}}plot CIs for ROC^(-1)(t) at specified {it:t};
+only one of {opt roc(f)} or {opt rocinv(t)} can be specified{p_end}
+{synopt :{opt offset(#)}}specify offset from {it:f} (or {it:t}) for second and subsequent marker CIs; default is {cmd:offset(0.006)}{p_end}
+{synopt :{it:{help connect_options}}}specify pattern, color, and thickness of ROC curve lines{p_end}
+{synopt :{it:{help twoway_options}}}include axis, title, caption, and overall options allowed with {helpb twoway line}{p_end}
+
+{syntab:Standardization method}
+{synopt :{opt pvcm:eth(method)}}specify PV calculation method; {cmd:empirical} (default) or {cmd:normal}{p_end}
+{synopt :{opt tiec:orr}}correction for ties{p_end}
+
+{syntab:Covariate adjustment}
+{synopt :{opt adjc:ov(varlist)}}specify covariates to adjust for{p_end}
+{synopt :{opt adjm:odel(model)}}specify model adjustment; {cmd:stratified} (default) or {cmd:linear}{p_end}
+
+{syntab:Sampling variability}
+{synopt :{opt ns:amp(#)}}specify number of bootstrap samples; default is {cmd:nsamp(1000)}{p_end}
+{synopt :{opt noccs:amp}}specify cohort rather than case-control bootstrap sampling{p_end}
+{synopt :{opt nosts:amp}}draw samples without respect to covariate strata{p_end}
+{synopt :{opt cl:uster(varlist)}}specify variables identifying bootstrap resampling clusters{p_end}
+{synopt :{opt l:evel(#)}}specify confidence level; default is {cmd:level(95)}{p_end}
+
+{syntab:New variable}
+{synopt :{opt genr:ocvars}}generate new variables, {cmd:tpr}{it:#} and {cmd:fpr}{it:#},
+to hold (TPR,FPR) coordinates for each marker {it:#}{p_end}
+{synopt :{opt genp:cv}}generate new variable, {cmd:pcv}{it:#}, to hold PVs for marker {it:#}{p_end}
+{synopt :{opt replace}}overwrite existing {cmd:tpr}{it:#}, {cmd:fpr}{it:#}, or
+{cmd:pcv}{it:#} variables{p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd} {cmd:roccurve} plots ROC curves for one or more continuous markers or
+test variables in {it:test_varlist} and the 0/1 disease indicator variable
+{it:disease_var}.  Bootstrap CIs for either the ROC(f) at specified {it:f} or
+the inverse, ROC^(-1)(t), at specified {it:t} are optionally included.
+
+{pstd} ROC calculations are based on PVs of the case measures relative to the
+corresponding marker distribution among controls
+({help roccurve##refrlink:Pepe and Longton 2005; Huang and Pepe Forthcoming}).
+
+{pstd} The empirical ROC curve is calculated as the empirical cumulative
+distribution function of the case PV complements
+(1 - PV):{p_end}
+
+{pmore}
+ROC(f) = P( 1-PV_D <= f ) = P( PV_D >= 1-f )
+
+{pstd}
+A parametric distribution-free estimator of either the classic binormal ROC, {p_end}
+
+{pmore}
+PHI^(-1){ROC(f)} = a + b * PHI^(-1)(f) {p_end}
+
+{pstd}
+or the bilogistic ROC, {p_end}
+
+{pmore}
+logit{ROC(f)} = a + b * logit(f) {p_end}
+
+{pstd}
+can be optionally fit within a generalized linear models binary regression
+framework by specifying {cmd:rocmeth(parametric)} and either
+{cmd:link(probit)} or {cmd:link(logit)}, respectively
+({help roccurve##refrlink:Pepe 2003, sec. 5.5.2; Alonzo and Pepe 2002}).
+{p_end}
+
+{pstd}
+Optional covariate adjustment can be achieved either by stratification or with
+a linear regression approach
+({help roccurve##refrlink:Janes and Pepe 2008; Janes and Pepe Forthcoming}).
+
+
+{title:Options}
+
+{dlgtab:ROC calculation}
+
+{phang} {opt rocmeth(method)} specifies whether {cmd:nonparametric} (empirical ROC, the default) or {cmd:parametric} ROCs are to be calculated.
+
+{phang} {opt link(function)} specifies the ROC generalized linear models link
+function and is valid only if {cmd:rocmeth(parametric)} is specified.
+{it:function} can be one of the following:
+
+{phang2} {opt probit}, the default, corresponds to the binormal ROC model.
+That is, {bind:PHI^(-1){ROC(f)} = intercept + slope * PHI^(-1)(f)}, where
+PHI is the standard normal cumulative distribution function.
+
+{phang2}
+{opt logit} corresponds to the bilogistic ROC model.  That is, {bind:logit{ROC(f)} = intercept + slope * logit(f)}.
+
+{phang} {opt interval(a b np)} specifies the interval ({it:a,b}) and the
+number of points ({it:np}) in the interval over which the parametric ROC model
+is to be fit.  The default is {cmd:interval(0 1 10)}.
+
+
+{dlgtab:Graph}
+
+{phang}
+{opt nograph} suppresses the ROC plot when only returned numerical results are
+desired.{p_end}
+
+{phang}{opt roc(f)} indicates that bootstrap percentile-based CIs for the ROC
+at specified false positive rate FPR = {it:f} are to be included on
+the plot.  The argument must be between 0 and 1. Only one of the {opt roc(f)}
+or {opt rocinv(t)} options can be specified.{p_end}
+
+{phang}{opt rocinv(t)} indicates that bootstrap percentile-based CIs for
+the inverse ROC at specified true positive rate TPR = {it:t} are to be
+included on the plot.  The argument must be between 0 and 1.  Only one of the
+{opt roc(f)} or {opt rocinv(t)} options can be specified.{p_end}
+
+{phang} {opt offset(#)} specifies the x- or y-axis offset from {it:t} or {it:f}
+for the placement of second and subsequent CIs, to avoid superimposed interval
+bars.  The argument must be between 0 and 0.02; the default is
+{cmd:offset(0.006)}.{p_end}
+
+{phang}{it:connect_options}, the current {help scheme} defaults for
+ROC connecting line color, pattern, and width, can be overridden with
+the {cmdab:lc:olor:(}{it:{help colorstyle}}{cmd:)},
+{cmdab:lp:attern:(}{it:{help linepatternstyle}}{cmd:)}, and
+{cmdab:lw:idth:(}{it:{help linewidthstyle}}{cmd:)} options. See
+{manhelpi connect_options G}.{p_end}
+
+{phang}{it:twoway_options} include various graph options that override default
+axis options, titles, and overall graph appearance; see {manhelpi twoway_options G}.  Exceptions include
+{it:marker_options} and the {cmd:by()} option.{p_end}
+
+{pmore}The default {it:{help region_options}}, {opt xsize(#)} and
+{opt ysize(#)}, are 7 and 5, respectively.  These can be overridden.  If only
+one is specified, the other will be calculated to maintain a 7x5 graph-region
+ratio.  Specifying both {opt xsize(#)} and {opt ysize(#)} at a different ratio
+is allowed, but this can result in the separation of plot axes from the ROC
+plot because of the square plot aspect-ratio constraint.  {p_end}
+
+{dlgtab:Standardization method}
+
+{phang} {opt pvcmeth(method)} specifies how the PVs are to be
+calculated.  {it:method} can be one of the following:
+
+{phang2} {opt empirical}, the default, uses the empirical distribution of the
+test measure among controls (D=0) as the reference distribution for the
+calculation of case PVs.  The PV for the case measure y_i is the proportion of
+control measures Y_Db < y_i.
+
+{phang2} {opt normal} models the test measure among controls with a normal
+distribution.  The PV for the case measure y_i is the standard normal
+cumulative distribution function of {bind:(y_i - mean)/sd},
+where the mean and the standard deviation are calculated by using the control sample.
+
+{phang} {opt tiecorr} indicates that a correction for ties between case and
+control values is included in the empirical PV calculation.  The correction is
+important only in calculating summary indices, such as the area under the ROC
+curve.  The tie-corrected PV for a case with the marker value y_i is the
+proportion of control values {bind:Y_Db < y_i} plus one half the proportion of
+control values {bind:Y_Db = y_i}, where Y_Db denotes controls.  By default, the
+PV calculation includes only the first term, i.e., the proportion of control
+values {bind:Y_Db < y_i}. This option applies only to the empirical PV
+calculation method.
+
+{dlgtab:Covariate adjustment}
+
+{phang}
+{opth adjcov(varlist)} specifies the variables to be included in the adjustment.
+
+{phang}
+{opt adjmodel(model)} specifies how the covariate adjustment is to be done.
+{it:model} can be one of the following:
+
+{phang2} {opt stra:tified} PVs are calculated separately for each
+stratum defined by {it:{help varlist}} in {opt adjcov()}.  This
+is the default if {cmd:adjmodel()} is not specified and {cmd:adjcov()}
+is.  Each case-containing stratum must include at least two controls.
+Strata that do not include cases are excluded from calculations.
+
+{phang2}
+{opt line:ar} fits a linear regression of the marker distribution on the
+adjustment covariates among controls. Standardized residuals based on this
+fitted linear model are used in place of the marker values for cases and
+controls.
+
+{dlgtab:Sampling variability}
+
+{p 4 4 2} These options are relevant only if either the {opt roc(f)} or the
+{opt rocinv(t)} option is specified.
+
+{phang} {opt nsamp(#)} specifies the number of bootstrap samples to be
+drawn for estimating CIs.  The default is {cmd:nsamp(1000)}.
+
+{phang} {opt noccsamp} specifies that bootstrap samples be drawn from the
+combined sample rather than sampling separately from cases and controls;
+case-control sampling is the default.
+
+{phang} {opt nostsamp} draws bootstrap samples without respect to covariate
+strata. By default, samples are drawn from within covariate strata when
+stratified covariate adjustment is requested via the {opt adjcov()} and {opt adjmodel()} options.
+
+{phang} {opth cluster(varlist)} specifies variables identifying bootstrap
+resampling clusters.  See the {cmd:cluster()} option in {manhelp bootstrap R}.
+
+{phang} {opt level(#)} specifies the confidence level for CIs as a percentage.
+The default is {cmd:level(95)} or as set by {helpb set level}.
+
+
+{dlgtab:New variable}
+
+{phang} {opt genrocvars} generates new pairs of variables, {cmd:fpr}{it:#} and
+{cmd:tpr}{it:#}, for each marker in {it:test_varlist}, with ROC coordinates for
+corresponding marker values.  Points resulting from the empirical
+{cmd:rocmeth()} are to be plotted as a right-continuous step function.  New
+variable names are numbered ({it:#}) according to the marker variable order in
+{it:test_varlist}.
+
+{phang} {opt genpcv} generates variables, {cmd:pcv}{it:#}, to hold PVs for
+each marker in {it:test_varlist}.  New variable numbers ({it:#}) correspond to
+the marker variable order in {it:test_varlist}.
+
+{phang} {opt replace} requests that the existing {cmd:fpr}{it:#},
+{cmd:tpr}{it:#}, or {cmd:pcv}{it:#} variables be overwritten by
+{cmd:genrocvars} or {cmd:genpcv}.
+
+
+{title:Saved results}
+
+{pstd} Confidence limits for {opt roc(f)} or {opt rocinv(t)} and parameters
+for the ROC generalized linear models parametric curve are saved in {cmd:r()}
+when the corresponding options are specified:
+
+{synoptset 11 tabbed}{...}
+{p2col 5 11 15 2:Matrices}{p_end}
+{synopt:{cmd:r(ROC_ci)}} n x 3 matrix of {opt roc(f)} or {opt rocinv(t)}
+estimates and confidence limits returned when either option is specified.
+Columns correspond to the point estimate and the lower and upper confidence
+bounds.  Rows correspond to the marker variables included in
+{it:test_varlist}.{p_end}
+{synopt:{cmd:r(BNParm)}} n x 2 matrix of binormal or bilogistic curve
+parameter estimates when {cmd:rocmeth(parametric)} is specified. Columns
+correspond to alpha_0 and alpha_1 parameters, and rows correspond to markers.
+{p_end}
+{p2colreset}{...}
+
+
+{title:Examples}
+
+{phang} {cmd:. roccurve d y1}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, roc(.10) nsamp(5000)}{p_end}
+
+{phang} {cmd:. roccurve d y1-y3, roc(.15) level(90)}{p_end}
+
+{phang} {cmd:. roccurve d y1-y3, roc(.15) level(90) cluster(z1)}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, tiecorr}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, pvcmeth(normal)}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, adjcov(agegroup gender)}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, adjcov(age gender) adjmodel(linear)}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, adjcov(age) adjmodel(linear) pvcmeth(normal) roc(.20)}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, adjcov(age) rocmeth(binormal)}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, adjcov(age) rocmeth(binormal) interval(0 .2 5)}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, adjcov(age) adjmodel(linear) pvcmeth(normal) roc(.20)}{p_end}
+
+{phang} {cmd:. roccurve d y1 y2, adjcov(age) genrocvars genpcv}{p_end}
+
+
+{marker refrlink}{...}
+{title:References}
+
+{phang}Alonzo, T. A., and M. S. Pepe. 2002.  Distribution-free ROC analysis
+using binary regression techniques.  {it:Biostatistics} 3: 421-432.
+
+{phang}Huang, Y., and M. S. Pepe.  Forthcoming.  Biomarker evaluation and
+comparison using the controls as a reference population.  {it:Biostatistics}.
+
+{phang}Janes, H., and M. S. Pepe. 2008.
+{browse "http://aje.oxfordjournals.org/cgi/reprint/168/1/89.pdf":Adjusting for covariates in studies of diagnostic, screening, or prognostic markers: An old concept in a new setting.}
+{it:American Journal of Epidemiology} 168: 89-97.
+
+{phang}------.  Forthcoming.
+{browse "http://www.bepress.com/uwbiostat/paper283":Adjusting for covariate effects on classification accuracy using the covariate-adjusted ROC curve.}
+{it:Biometrika}.
+
+{phang}Pepe, M. S.  2003.  {browse "http://www.stata.com/bookstore/pepe.html":{it:The Statistical Evaluation of Medical Tests for Classification and Prediction.}}
+Oxford University Press.
+
+{phang}Pepe, M. S., and G. Longton.  2005.  Standardizing diagnostic markers to
+evaluate and compare their performances. {it:Epidemiology} 16: 598-603.
+
+
+{title:Authors}
+
+{phang}Gary Longton{p_end}
+{phang}Fred Hutchinson Cancer Research Center{p_end}
+{phang}Seattle, WA{p_end}
+{phang}glongton@fhcrc.org{p_end}
+
+{phang}Margaret Pepe{p_end}
+{phang}Fred Hutchinson Cancer Research Center and University of
+Washington{p_end}
+{phang}Seattle, WA{p_end}
+{phang}mspepe@u.washington.edu{p_end}
+
+{phang}Holly Janes{p_end}
+{phang}Fred Hutchinson Cancer Research Center{p_end}
+{phang}Seattle, WA{p_end}
+{phang}hjanes@fhcrc.org{p_end}
+
+
+{title:Also See}
+
+{psee}
+Article: {it:Stata Journal}, volume 9, number 1: {browse "http://www.stata-journal.com/article.html?article=st0154":st0154}, {browse "http://www.stata-journal.com/article.html?article=st0155":st0155}
+
+{psee}
+Online:  {helpb comproc} (if installed){p_end}

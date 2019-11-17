@@ -1,0 +1,99 @@
+{smcl}
+{* 22sep2005}{...}
+{hline}
+help for {hi:akdensity}{right:(SJ5-4: st0037_2; SJ4-1: st0037_1; SJ3-2: st0037)}
+{hline}
+
+{title:Adaptive kernel density estimation}
+
+{p 8 17 2}{cmd:akdensity} {it:varname} [{it:weight}]
+{ifin} {bind:[{cmd:,} {cmdab:nogr:aph}}
+{cmdab:noadap:tive} {cmdab:g:enerate}{cmd:(}{it:newvarx} {it:newvard}{cmd:)} {cmd:n(}{it:#}{cmd:)}
+{cmdab:w:idth}{cmd:(}{it:#}{cmd:)}
+[{cmdab:ep:an}|{cmd:epan2}|{cmdab:gau:ss}]
+{cmdab:nor:mal} {cmdab:stu:d}{cmd:(}{it:#}{cmd:)}
+{cmd:at(}{it:varx}{cmd:)} {cmdab:stdb:ands}{cmd:(}{it:#}{cmd:)} {cmdab:s:ymbol}{cmd:(}{it:...}{cmd:)}
+{cmdab:c:onnect}{cmd:(}{it:...}{cmd:)}
+{cmdab:t:itle}{cmd:(}{it:string}{cmd:)} {it:graph_options} ]
+
+{p 8 17 2}{cmd:akdensity0} {it:varname} [{it:weight}]
+{ifin}
+{bind:{cmd:,} {cmdab:g:enerate}{cmd:(}{it:newvard}{cmd:)}}
+{cmdab:w:idth}{cmd:(}{it:#}|{it:varname}{cmd:)} {cmd:at(}{it:varx}{cmd:)}
+{bind:[{cmdab:stdb:ands}{cmd:(}{it:#}{cmd:)}}
+[{cmdab:ep:an}|{cmd:epan2}|{cmdab:gau:ss}] {cmd:lambda(}{it:newvar}{cmd:)}
+{cmd:double} ]
+
+{p 4 4 2}{cmd:fweight}s and {cmd:aweight}s are allowed; see {help weight}.
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:akdensity} produces density estimates using adaptive kernel
+estimation methods. The density estimates can be plotted and saved
+in new variables. {cmd:akdensity0} is the engine
+used by {cmd:akdensity} to obtain the estimates. These modules also
+provide variability bands (standard error bands).
+
+{p 4 4 2}The syntax of {cmd:akdensity} mimics the syntax of the official
+{cmd:kdensity} that uses fixed kernel estimation methods.
+
+
+{title:Options}
+
+{p 4 4 2}Most options for {cmd:akdensity} are the same as for {helpb kdensity}
+(see {hi:[R] kdensity}). The specific options are the following.
+
+{p 4 4 2}For {cmd:akdensity}:
+
+{p 4 8 2}{cmd:stdbands(}{it:#}{cmd:)} requests the estimation of variability
+bands and specifies the number of standard errors above
+and below the estimates to be used (a positive number).
+If the {cmd:generate} option is specified, the estimated bands
+are stored in two new variables: {it:newvard_up} and {it:newvard_lo}.
+
+{p 4 8 2}{cmd:noadaptive} can be specified to obtain the standard fixed
+bandwidth kernel density estimate. The resulting density is
+exactly as produced by {cmd:kdensity}. This may be used
+to obtain the variability bands around the fixed kernel density
+estimates.
+
+{p 4 4 2}For {cmd:akdensity0}:
+
+{p 4 4 2}{cmd:at}, {cmd:width}, and {cmd:generate} are not optional.
+Most options are as in {cmd:kdensity} or {cmd:akdensity}.
+Note, however, that the {cmd:width} option can here be either
+a scalar or a variable name containing observation-specific
+bandwidths. Also, {cmd:generate} must specify a single new
+variable name to store the estimated value of the
+density function at the grid points.
+
+{p 4 8 2}{cmd:lambda(}{it:newvarname}{cmd:)} requests the
+estimation of local bandwidth factors based on the estimated
+density function, and specifies a new variable name
+where these values are to be stored.
+
+{p 4 8 2}{cmd:double} requests the use of double precision in the
+estimation of the density functions and standard error
+bands.
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. akdensity length, xlabel ylabel}
+
+{p 8 12 2}{cmd:. akdensity length, xlabel ylabel w(5) stdbands(2) gen(x fx)}
+
+
+{title:Acknowledgment}
+
+{p 4 4 2}A bug report from Ben Jann lead to a major fix.
+
+
+{title:Also see}
+
+{p 4 4 2} Manual:  {hi:[R] kdensity}{p_end}
+{p 7 4 2}    STB:  {hi:snp6 (STB-16)}{p_end}
+{p 4 19 2}Online:  help for {help kdensity}, {help graph} and {help hist}, and help for
+{help adgakern}, {help adgaker2}, {help varwiker} and {help varwike2} if installed
+{p_end}

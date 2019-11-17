@@ -1,0 +1,78 @@
+.-
+help for ^prcounts^ - 11Mar2005
+.-
+
+Compute the predicted rate and probabilities for count models
+-------------------------------------------------------------
+
+    ^prcounts^ varname [^if^ exp] [^in^ range] [^, m^ax^(^max^)^ ^p^lot]
+
+Description
+-----------
+
+^prcounts^ computes the predicted rate and probabilities of counts from 0
+through the specified maximum count based on the last estimates from the
+count models ^poisson^, ^nbreg^, ^zip^, ^zinb^. ^prcounts^ optionally generates
+variables for the graphical comparison of observed and expected counts
+for one model or for competing models.
+
+For each observation ^prcounts^ computes the variables:
+
+    namerate = predicted count or rate
+    namepr^k^ = probability of a count of ^k^ for ^k^=0 to max
+    namecu^k^ = cumulative probabiliy of a count  <=^k^ for ^k^=0 to max
+
+For zip or zinb models, prcounts also generates:
+
+    namell0 = probability of being in the 'always zero' group
+
+For ztp or ztnb models, prcounts also generates:
+
+    nameCrate = predicted count or rate conditional on y>0
+    nameCpr^k^ = probability of a count of ^k^ for ^k^=0 to max conditional
+                    on y>0
+    nameCcu^k^ = cumulative probabiliy of a count  <=^k^ for ^k^=0 to max
+                    conditional on y>0
+
+Options
+-------
+
+^max(^value^)^  The maximum count for which variables are generated.
+    value must be an integer between 0 and 99; the default is 9.
+
+^plot^ causes Stata to generate extra variables that are useful for plotting.
+    The created variables will have values for the first max+1 rows of the
+    data set.
+
+    nameval = value of y
+    nameobeq = observed probability of counts = y
+    nameoble = cumulative observed probability of counts <= y
+    namepreq = predicted probability of counts = y
+    nameprle = predicted cumulative probability of counts <= y
+
+For these variables, each observation provides information about the
+probabilities of a given count for the entire sample.  In other words, what
+an observation consists of for these variables is different than for the rest
+of the variables in one's dataset.
+
+Note: the summary statistics computed by ^plot^ are automatically based on
+the estimation sample, plus any further restrictions implied by the use of
+^if^ or ^in^.
+
+Examples
+--------
+
+ . ^zinb art fem mar kid5 phd ment, inf(fem mar kid5 phd ment)^
+ . ^prcounts cnt^
+ . ^summarize cnt*^
+
+To graphically compare predicted and observed counts for a model:
+
+ .^ poisson art fem mar kid5 phd ment^
+ .^ prcounts pois, max(8) plot^
+ .^ graph poispreq poisobeq poisval, c(ll)^
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jsl650/spost.htm
+         spostsup@@indiana.edu

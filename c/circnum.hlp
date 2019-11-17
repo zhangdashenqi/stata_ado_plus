@@ -1,0 +1,277 @@
+{smcl}
+{* *! version january 2007}{...}
+{cmd:help circnum}
+{hline}
+
+{title:Title}
+
+{p2colset 5 16 21 2}{...}
+{p2col :{hi:circnum} {hline 2}}Count data points in a geographic radius of each point, on a spherical world{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 16 2}
+{opt circnum} {help newvar} {ifin} {cmd:,} {opt r:adius(#)} [{it:options}]
+
+{synoptset 20 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Main}
+{synopt:{opt r:adius(#)}}radius within which to count data points (in kilometers by default){p_end}
+{synopt:{opt m:iles}}specify the radius in miles instead of kilometers{p_end}
+{synopt:{opth s:um(exp)}}expression to sum across the points{p_end}
+{synopt:{opt o:thersonly}}when counting or summing nearby points, ignore the data point itself{p_end}
+{synopt:{opth latv:ar(varname)}}name of variable with latitudes, if not "lat"{p_end}
+{synopt:{opth lonv:ar(varname)}}name of variable with longitudes, if not "lon"{p_end}
+{synopt:{opt worldrad:ius(#)}}radius of spherical world in kilometers {p_end}
+{syntab:Extra Locations for Some or All Observations}
+{synopt:{opt e:xtralatlons(#)}}indicates additional locations are in variables lat1,...,lat{it:#} and lon1,...,lon{it:#}{p_end}
+{synopt:{opt w:holeextras}}count extra locations as 1 point each, instead of 1/{it:m} where {it:m} is # of extra locations {p_end}
+{syntab:For Backward Compatability}
+{synopt:{opth by(varlist)}}analyze separately by by-group{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+{cmd:by} may be used with {cmd:circnum}; see {helpb by}.{p_end}
+
+
+{title:Description}
+
+{pstd}
+{cmd:circnum} uses geographic data on latitudes and longitudes to determine the
+(optionally weighted) number of observations within a given distance of each
+observation.  The observations are treated as being on the surface of a planet, by default the Earth,
+which is approximated as a perfect
+sphere.  The relevant latitudes and longitudes must exist in variables lat and
+lon (or specify other names), and the resulting number is placed in a new variable.  The distance
+(radius) you specify is assumed to be measured in kilometers, unless you use
+the miles option.
+
+{pstd}
+Missing locations are ignored when counting observations in the relevant radius.
+
+{pstd}
+Options are available to ignore a point when counting its neighbors, to sum a formula across points,
+and to handle multiple points per observation.  To leave out the point at the center and count only
+other points within the radius, use the {opt othersonly} option.  To sum a formula across the data
+points within the radius, instead of counting the number of points, using the {opth sum(exp)} option.  To
+indicate that some or all observations have extra locations, use the {opt extralatlons(#)} option; the
+extra locations must be specified in variables named lat1,...,lat# and lon1,...,lon#.  With extra
+locations, {cmd:circnum} will count (or sum across) points within the radius of each location, including
+each other if they are close enough, and the average result across locations will be used (or the
+total result will be used if the {opt wholeextras} option is specified).  If some locations do not
+have # extra locations, then enter either missing or 999 for the corresponding latitudes and longitudes.  Nonmissing
+(and non-999) values for extra locations must be stored in the lowest-numbered variables for extra
+locations - for example when using {bf:extralatlons(2)} an observation should never have missing values
+for the first extra location but non-missing values for the second extra location - and nonmissing
+values are allowed only in observations for which the main location variables (lat and lon) have
+non-missing values; an error will result if the data do not meet these requirements.
+
+{pstd}
+Results depend on the world-radius assumed for Earth.  By default
+the world-radius is chosen to equal Earth's world-radius, from its center to sea level, at
+the mean latitude of the data used.  This result is returned as {bf:r(worldRadius)}.  Earth
+is thicker at the equators than at the poles, with a world-radius of 6378.135 km from
+center to equator but 6356.750 km from center to North and South Poles.  To
+keep the assumed world-radius constant across multiple calculations, use the {opt worldradius(#)}
+option to specify a radius in kilometers.  You can also use the {opt worldradius(#)} option to
+specify world-radii for planets other than Earth.  The world-radius option {it:must} be specified in
+kilometers even if the {opt miles} option is used, although {bf:r(worldRadius)} will be in miles if
+the {opt miles} option is used.
+
+{pstd}
+The program returns {bf:r(radius)} which is the radius used, {bf:r(units)} which is
+"kilometers" or "miles", {bf:r(othersonly)} which
+is 0 if each observation is itself included in its sum or 1 if not, {bf:r(sum)} which is the formula
+used for the sum, {bf:r(by)} which is the list of variables used to distinguish by-groups or a
+space if by was not used, and {bf:r(worldRadius)} which is the world-radius used in kilometers or miles.
+
+
+{title:Options}
+
+{dlgtab:Main}
+
+{phang}
+{opt radius(#)} specifies the radius within which observations are to be summed.  The radius must be
+in kilometers, or use the {opt miles} option for a radius in miles.  Around each data point on the
+globe, draw a circle with this radius; all data points within (or on the edge of) the circle are included
+in the sum across nearby observations.
+
+{phang}
+{opt miles} indicates that the radius is in miles.  (The radius should not be confused with the
+world-radius, which must always be specified in kilometers.)
+
+{phang}
+{opth sum(exp)} causes {cmd:circnum} to sum an expression across the nearby observations.  The default is {bf:sum(}1{bf:)},
+i.e., counting the number of nearby observations.  For each observation i, the sum computed will
+consider observations j within the specified radius.  Optionally, [i] or [j] may be specified after
+variable names in the expression to be summed.  The ordinary usage is [j], which is assumed if no
+[i] or [j] is specified.
+
+{phang}
+{opt othersonly} causes {cmd:circnum} to sum only {it:other} observations within the radius,
+ignoring the observation itself.  For example if point A has two other points within the radius,
+the resulting count for point A would be 3 usually but 2 if {opt othersonly} is specified.
+
+{phang}
+{opth latvar(varname)} specifies the name of the variable containing latitudes.  By default the name is "lat".
+
+{phang}
+{opth lonvar(varname)} specifies the name of the variable containing longitudes.  By default the name is "lon".
+
+{phang}
+{opt worldradius(# |"auto")} specifies the world-radius, from the center of the sphere to its surface, on
+which distances across the globe are to be calculated.  The default option, "auto", uses the radius of Earth
+at the average latitude in the data.  The alternative is a number of kilometers.  Note that even if the {opt miles}
+option is specified, this number must still be entered in kilometers.
+
+{dlgtab:Extra Locations for Some or All Observations}
+
+{phang}
+{opt extralatlons(#)} specifies the maximum number of extra locations per observation.  The additional locations data must be
+stored in variables named lat1,...,lat{it:#} and lon1,...,lon{it:#}.  Missing values, and values of exactly 999, will
+be taken to mean than an extra location does not exist.  Nonmissing values must be stored first in the main location
+variables and then in the lowest-numbered extra location variables.  The result of the calculation will be the
+average of the sum around each of the non-missing locations.
+
+{phang}
+{opt wholeextras} specifies that instead of computing the average result across locations within each observation, the total of the results
+should be computed.
+
+{dlgtab:For Backward Compatability}
+
+{phang}
+{opth by(varlist)} indicates the sum is to be performed separately for each by-group.  Stata's more recent format for
+{cmd:by} may instead be used with {cmd:circnum}; see {helpb by}.
+
+
+{title:Remarks}
+
+{pstd}
+Use a plus sign for northern latitudes and a minus sign for southern
+latitudes.  Use a plus sign for eastern-hemisphere longitudes (as for Asia) and 
+a minus sign for western-hemisphere longitudes (as for the Americas).  All latitudes and
+longitudes are assumed to be measured in degrees, not degrees and
+minutes; decimal fractions must be out of 100 rather than out of 60.
+
+{pstd}
+Be patient - for large datasets, {cmd:circnum} can take a substantial amount
+of time.  The command will work much faster if many of the data points
+have exactly the same geographic location.
+
+{pstd}
+Testing of this program has been limited.  Accuracy has not been checked for
+distances under 0.1 kilometer.
+
+{pstd}
+This is part of a suite of programs.  Program {helpb globdist} determines the distance between points on the sphere.  Program {helpb exlocs} helps
+when handling multiple locations per observation (it works somewhat like
+{helpb reshape}).
+
+
+{title:Revision History}
+
+{pstd}
+1. Counts (not sums) totaling over 100 resulted in missing values in version 1 (1999); this is
+fixed in version 2 (2007).
+
+{pstd}
+2. Version 2 (2007) is faster than the previous version.
+
+{pstd}
+3. Version 2 (2007) added some options, including the ability to choose the world-radius and
+the automatic choice of world-radius.  Version 1 (1999) assumed a world-radius of 6365 kilometers, 
+instead of the new default procedure which uses Earth's radius at the average latitude in the data.
+
+{pstd}
+4. The latvar() or lonvar() options sometimes resulted in the program trying to use variables
+named (or with names beginning) lat and lon instead of the specified variables (this could 
+yield erroneous results if such variables existed); this is fixed in version 3 (2010).
+
+{pstd}
+5. Version 3 (2010) added the possibility of using "[i]" and "[j]" in sum() expressions.
+
+{pstd}
+6. Improved this help file for complicated sums using "[i]" and "[j]" (17 June 2010).
+
+
+{title:Examples}
+
+{phang}{cmd:. circnum localpop, radius(50) miles}
+
+{phang}{cmd:. circnum lpop_others, radius(50) miles othersonly}
+
+{phang}{cmd:. circnum locwages, radius(50) miles sum(wages)}
+
+{phang}{cmd:. gen exlat1 = sechomex}      (sechomex is latitude of person's second home)
+
+{phang}{cmd:. gen exlon1 = sechomey}      (sechomey is longitude of person's second home)
+
+{phang}{cmd:. circnum localpop, radius(50) miles extralatlons(1)}
+
+{phang}{cmd:. circnum locwages, radius(50) miles extralatlons(1) sum(wages) wholeextras}
+
+{phang}{cmd:. by year: circnum lpop_year, radius(50) miles}
+
+
+{title:Examples for Complicated Sums}
+
+{pstd}
+Complicated calculations can often be handled with [i] and [j] notation in the {bf:sum(exp)}
+option.  Recall that for each observation i, the sum computed will consider observations j
+within the specified radius.  Expressions summed could include formulas such as:
+
+{phang}{cmd:business[j]==business[i]}      (1 if rows i and j have the same business, 0 otherwise)
+
+{phang}{cmd:business==business[i]}         (same as above, since [j] is the default)
+
+{phang}{cmd:business[j]==7 & business[i]==7}    (1 if both i and j are in business 7, 0 otherwise)
+
+{phang}{cmd:cond(business[j]==7 & business[i]==1, size[j], 0)}    (for i in business 1 and j in business 7, j's size, else 0)
+
+{phang}{cmd:size[j] >= size[i]}    (1 if j is at least as big as i, else 0)
+
+{phang}{cmd:cond(size[j] >= size[i], employees[j], 0)}    (j's employees if j is at least as big as i, else 0)
+
+{phang}{cmd:cond(size[j]>=size[i] & size[j]<. & size[i]<., employees[j], 0)}    (since in Stata missing
+values are treated like infinitely big positive numbers, you may need to carefully specify how missing
+values are treated -- in this expression if size is missing for i or j then the formula returns 0)
+
+{pstd}
+Expressions such as the above can be used in the {bf:sum(exp)} option:
+
+{phang}{cmd:. circnum employmentOfBiggerNearbyFirms, radius(100) miles sum(cond(size[j]>size[i],employees[j],0))}
+
+{pstd}
+Some complicated examples require two steps, as for computing a local Herfindahl concentration
+index.  The following example first computes the total output of firms in a geographic radius
+around each firm, then uses that first result to compute a Herfindahl index of concentration
+within the same geographic radius.  In the second command, size[j]/localTotalSize[i] is observation j's
+share of the total size, using the total size within a 25 mile radius of i.  (The [j] does
+not need to be specified after the variable size, since [j] is the default.)  Adding up the 
+squared shares across all observations j within 25 miles of i, {cmd:circnum} determines the
+Herfindahl index (sum of squared shares) for each observation i.  It is crucial to use
+localTotalSize[i], not localTotalSize[j], to determine the market shares; localTotalSize[i]
+is constant across observations used in each summation, wherease localTotalSize[j] can vary
+across observations used in each summation.
+
+{phang}{cmd:. circnum localTotalSize, radius(25) miles sum(size)}
+
+{phang}{cmd:. circnum localHerfindahl, radius(25) miles sum("(size[j]/localTotalSize[i])^2")}
+
+
+{title:Author}
+
+{p 4}Kenneth L. Simons{p_end}
+{p 4}Department of Economics {p_end}
+{p 4}Rensselaer Polytechnic Institute{p_end}
+{p 4}{browse "http://www.rpi.edu/~simonk"}{p_end}
+
+
+{title:Also see}
+
+{psee}
+Online:  {helpb globdist}, {helpb exlocs}  (if installed)
+

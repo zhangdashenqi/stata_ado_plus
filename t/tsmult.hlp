@@ -1,0 +1,21 @@
+Long-run multipliers and Granger tests                           (STB-15: sts4)
+--------------------------------------
+
+	        ^tsmult^
+
+displays a table of hypothesis tests and long-run multipliers calculated from
+the most recent time series regression estimated by ^tsfit^ or ^tsreg^.
+
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts4 (STB-15)
+On-line:  ^help^ for ^datevars^, ^period^, ^tsfit^, and ^tsreg^
+

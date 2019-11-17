@@ -1,0 +1,231 @@
+{smcl}
+{hline}
+help for {hi:pstest}
+{hline}
+
+{title:Covariate imbalance testing and graphing}
+
+{p 8 21 2}{cmdab:pstest}
+{cmd:[}{it:varlist}{cmd:]}
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+{cmd:[,}
+	{cmdab:t:reated}{cmd:(}{it:varname}{cmd:)}
+	{cmd:both}
+	{cmd:raw}
+	{cmdab:mw:eight}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:sup:port}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:not:able}
+	{cmdab:lab:el}
+	{cmdab:only:sig}
+	{cmdab:nod:ist}
+	{cmdab:gr:aph}
+	{cmd:hist}
+	{cmd:atu}
+	{it:graph_options} {cmd:]}
+
+{title:Description}
+
+{p 4 4 2}{cmd:pstest} calculates and optionally graphs several measures of the balancing of the variables in {it:varlist}
+between two groups (if {it:varlist} is not specified, {cmd:pstest} will look for the variables that were
+specified in the latest call of {cmd:psmatch2} or of {cmd:pstest}). In particular it can be used to gauge comparability in terms of {it:varlist} between:
+
+{p 4 4 2}1. Two matched samples (the default).
+
+{p 7 7 2}{cmd:pstest} can be called directly after {cmd:psmatch2}, or
+it can be fed matching weights via option {cmd:mweight} to assess the extent of balancing achieved
+on the two matched samples. A particularly useful way to use {cmd:pstest} is in search of a matching method and set
+of matching parameters that achieves good balancing; {cmd:psmatch2} can be called repeatedly prefixed by {cmd:quietly}
+and the extent of corresponding balancing can each time be displayed by calling {cmd:pstest}.
+
+{p 4 4 2}2. Any two samples (option {cmd:raw}).
+
+{p 7 7 2}{cmd:pstest} can be called to assess the comparability of {it:any} two groups. This may be
+before performing matching, or completely unrelated to matching purposes. (The groups are in any case
+referred to as Treated and Controls, but they could be males and females, employed and non-employed etc.).
+
+{p 4 4 2}3. Two samples before and after having performed matching (option {cmd:both}).
+
+{p 7 7 2}In this case {cmd:pstest} compares the extent of balancing between the two samples before
+and after having performed matching.
+
+{p 4 4 2}For each variable in {it:varlist} it calculates:
+
+{p 8 8 2}(a) t-tests for equality of means in the two samples (before
+and after matching if option {cmd:both} is specified). T-tests are based on a regression of the variable on a treatment indicator.
+Before matching or on {cmd:raw} samples this is an unweighted regression on the whole sample, after matching the regression is weighted using the
+matching weight variable _weight or user-given weight variable in {cmd:mweight} and based on the on-support sample;
+
+{p 8 8 2}(b) the standardised percentage bias. If option {cmd:both} is specified, the standardised percentage bias is shown before and after matching,
+together with the achieved percentage reduction in abs(bias).
+The standardised % bias is the % difference of the sample means in the treated and non-treated (full or
+matched) sub-samples as a percentage of the square root of the average of the
+sample variances in the treated and non-treated groups (formulae from Rosenbaum and Rubin, 1985).
+
+{p 4 4 2}It also calculates overall measures of covariate imbalance:
+
+{p 8 8 2}(a) Pseudo R2 from probit estimation of the conditional treatment probability (propensity score)
+on all the variables in {it:varlist} on {cmd:raw} samples, matched samples (default) or {cmd:both} before and
+after matching. Also displayed are the corresponding P-values of the likelihood-ratio test of the joint insignificance of all the regressors (before and after matching
+if option {cmd:both} is specified);
+
+{p 8 8 2}(b) the mean and median bias as summary indicators of the distribution of the abs(bias) (before and after matching
+if option {cmd:both} is specified);
+
+{p 4 4 2}Optionally {cmd:pstest} graphs the extent of covariate imbalance in terms of standardised
+percentage differences using dot charts (option {cmd:graph}) or histograms (option {cmd:hist}).
+
+{p 4 4 2}One only need type {cmd:pstest[, both]} directly after {cmd:psmatch2} to inspect the extent of covariate balancing
+in matched samples if {cmd:psmatch2} has been called with a {it:varlist}.
+
+{p 4 4 2}If option {cmd:both} is specified, {cmd:pstest} returns the following diagnostics of
+covariate balancing before and after matching: {it:r(meanbiasbef)} and {it:r(meanbiasaft)} the mean absolute standardised bias,  
+{it:r(medbiasbef)} and {it:r(medbiasaft)} the median absolute standardised bias,  
+{it:r(r2bef)} and {it:r(r2aft)} the pseudo R2 from probit estimation and
+{it:r(chiprobbef)} and {it:r(chiprobaft)} the P-value of the likelihood-ratio test. If the two groups
+are compared only once (matched samples as default or two unmatched samples if option {cmd:raw} is specified),
+{cmd:pstest} returns {it:r(meanbias)}, {it:r(medbias)}, {it:r(r2)} and {it:r(chiprob)}.
+{cmd:pstest} always returns in {it:r(exog)} the names of the variables for which it has tested
+the extent of balancing.
+
+
+{title:Important notes}
+
+{p 4 4 2}{cmd:pstest} by default considers balancing for the treated. If called after
+{cmd:psmatch2, ate} one can specify the option 	{cmd:atu} to consider balancing for the untreated.
+
+{p 4 4 2}Spline matching as in {cmd:psmatch2, spline} as well as the default (tricube) local
+linear regression matching as in {cmd:psmatch2, llr} first smooth the outcome and then perform
+nearest neighbor matching. {cmd:pstest} does not make sense in these cases since
+more non-treated are used to calculate the counterfactual outcome than the nearest neighbor only.
+
+
+{title:Detailed Syntax}
+
+{phang}
+{bf:Matched samples:}
+
+{p 8 21 2}{cmdab:pstest}
+{cmd:[}{it:varlist}{cmd:]}
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+{cmd:[,}
+	{cmdab:t:reated}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:mw:eight}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:sup:port}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:not:able}
+	{cmdab:nod:ist}
+	{cmdab:lab:el}
+	{cmdab:only:sig}
+	{cmdab:gr:aph}
+	{cmd:hist}
+	{it:graph_options} {cmd:]}
+
+
+{phang}
+{bf:Raw samples:}
+
+{p 8 21 2}{cmdab:pstest}
+{cmd:[}{it:varlist}{cmd:]}
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+{cmd:,}
+	{cmd:raw}
+	{cmdab:t:reated}{cmd:(}{it:varname}{cmd:)}
+	{cmd:[}
+	{cmdab:not:able}
+	{cmdab:nod:ist}
+	{cmdab:lab:el}
+	{cmdab:only:sig}
+	{cmdab:gr:aph}
+	{cmd:hist}
+	{it:graph_options} {cmd:]}
+
+{phang}
+{bf:Before and after matching:}
+
+{p 8 21 2}{cmdab:pstest}
+{cmd:[}{it:varlist}{cmd:]}
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+{cmd:,}
+	{cmd:both}
+	{cmd:[}
+	{cmdab:t:reated}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:mw:eight}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:sup:port}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:not:able}
+	{cmdab:nod:ist}
+	{cmdab:lab:el}
+	{cmdab:gr:aph}
+	{cmd:hist}
+	{it:graph_options} {cmd:]}
+
+	
+{title:Options}
+
+{p 4 8 2}{cmdab:t:reated}{cmd:(}{it:varname}{cmd:)} Treatment (or group) indicator (0/1).
+If option {cmd:raw} is not specified, default is _treated left behind from the latest {cmd:psmatch2} call.
+
+{p 4 8 2}{cmd:both} Requires comparability to be assessed both before and after matching.
+Default is only after matching.
+
+{p 4 8 2}{cmd:raw} Requires comparability to be assessed between any two (unweighted) groups.
+This can be before wishing to perform matching, but also unrelated to matching purposes, e.g.
+to quickly assess how randomisation has worked.
+
+{p 4 8 2}{cmdab:mw:eight}{cmd:(}{it:varname}{cmd:)} Weight of matches.
+If option {cmd:raw} is not specified, default is _weight left behind from the latest {cmd:psmatch2} call.
+
+{p 4 8 2}{cmdab:sup:port}{cmd:(}{it:varname}{cmd:)} Common support indicator (0/1).
+If option {cmd:raw} is not specified, default is _support left behind from the latest {cmd:psmatch2} call.
+
+{p 4 8 2}{cmdab:not:able} Do not display the table with the individual covariate imbalance
+indicators (standardised percentage bias, t-tests, and if option {cmd:both} is specified
+achieved percentage reduction in absolute bias) for each variable in {it:varlist}.
+
+{p 4 8 2}{cmdab:lab:el} Display variable labels instead of variable names in the variable-by-variable
+table.
+
+{p 4 8 2}{cmdab:only:sig} In the variable-by-variable table only display those variables
+which are significantly unbalanced (p<=0.10). This option is ignored if option {cmd:both} is specified.
+
+{p 4 8 2}{cmdab:nod:ist} Do not display the distribution summary of the absolute standardised percentage
+bias across all variables in {it:varlist}.
+
+{p 4 8 2}{cmdab:gr:aph} Display a graphical summary of covariate imbalance via a dot chart, showing the
+standardised percentage bias for each covariate. If option {cmd:both} is specified, information
+before and after matching is displayed in the same dot chart. If more than 30 covariates are specified, they are not labelled.  
+
+{p 4 8 2}{cmdab:hist} Display a graphical summary of covariate imbalance via a histogram,
+showing the distribution of the standardised percentage bias across covariates. If option {cmd:both} is specified, imbalance before and after matching is displayed in two histograms. Recommended for a large number of covariates.
+
+{p 4 8 2}{it:graph_options} Additional options can be specified for the relevant graph type
+(dot graph or histogram). Useful examples are {cmd:yscale(range(}{it:numlist}{cmd:))},
+{cmd:ylabel(}{it:numlist}{cmd:))} or {cmd:legend(off)} for the former and {cmd:bin(}#{cmd:)} for the latter.
+
+{p 4 8 2}{cmd:atu} After {cmd:psmatch2, ate} one can specify this option to consider balancing for the untreated.
+
+
+{title:Examples}
+
+    {inp: . pstest age gender foreign exper, t(training) mw(_weight) onlysig graph}
+    {inp: . pstest age foreign exper if district==1, raw t(male) label hist}
+	
+    {inp: . psmatch2 treated age gender foreign exper, outcome(wage)}
+    {inp: . pstest}
+    {inp: . pstest, both}
+
+{title:Also see}
+
+{p 4 4 2}The commands {help psmatch2}, {help psgraph}.
+
+{title:Background Reading}
+
+{p 0 2}Rosenbaum, P.R. and Rubin, D.B. (1985), "Constructing a Control Group Using Multivariate Matched Sampling Methods that Incorporate the Propensity Score", {it:The American Statistician 39(1)}, 33-38.
+
+{title:Author}
+
+{p 4 4 2}Edwin Leuven, University of Oslo. If you observe any problems {browse "mailto:e.leuven@gmail.com"}.
+
+{p 4 4 2}Barbara Sianesi, Institute for Fiscal Studies, London, UK.

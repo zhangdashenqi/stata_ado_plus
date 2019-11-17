@@ -1,0 +1,58 @@
+Psychological comments -- for the puzzled
+-----------------------------------------
+
+The main motive for transformation is greater ease of description.
+Although transformed scales may seem less natural, this is largely a
+psychological objection. Greater experience with transformation tends to
+reduce this feeling, simply because transformation so often works so
+well. In fact, many familiar measured scales are really transformed
+scales: decibels, pH and the Richter scale of earthquake magnitude are
+all logarithmic.
+
+Often it helps to transform results back again, using the reverse or
+^inverse^ transformation:
+
+    reciprocal             also reciprocal
+
+    t = 1 / x              x = 1 / t
+
+    logarithm base 10      10 to the power
+
+                                 x
+    t = log  x             t = 10
+           10
+
+    logarithm base e       e to the power
+
+                                x
+    t = log x = ln x       t = e
+           e
+
+    logarithm base 2       2 to the power
+
+                                x
+    t = log x              t = 2
+           2
+
+    cube root              cube
+
+         1/3                    3
+    t = x                  x = t
+
+    square root            square
+
+         1/2                    2
+    t = x                  x = t
+
+
+Also see:
+---------
+
+Reasons for using transformations                         help @trreason@
+
+Review of most common transformations                     help @trreview@
+
+Transformations for proportions and percents              help @trpropor@
+
+How to do transformations in Stata                        help @trstata@
+

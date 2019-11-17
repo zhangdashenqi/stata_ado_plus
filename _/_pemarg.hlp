@@ -1,0 +1,15 @@
+.-
+help for ^_pemarg^
+.-
+
+    ^_pemarg^
+
+^_pemarg^ computes marginal effects for some regression models.  ^_pemarg^ 
+takes as its input the contents of the PE_base matrix created by ^_pebase^.  
+^_pemarg^ returns the marginal effects in r() class matrix r(marginal)
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+         

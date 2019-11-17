@@ -1,0 +1,66 @@
+.-
+help for ^poisml^                                           (STB-45: sg91)
+.-
+
+Robust variance estimator for maximum-likelihood Poisson regression
+-------------------------------------------------------------------
+
+Command line:
+
+  ^poisml^ depvar [varlist] [weight] [^if^ exp] [^in^ range]  
+  [, ^lt^olerance^(^#^)^ ^ir^r ^of^fset^(^var^)^ ^nolo^g ^r^obust ^sc^ore^(^var^)^ ^cl^uster^(^var^)^]
+  
+
+Options
+-------
+
+^level(^#^)^ specifies the confidence level, in percent, for confidence inter-
+    vals of the coefficients; see help @level@.
+
+^irr^ specifies that parameter estimates are to be displayed in exponential
+    form; standard errors and CIs adjusted.
+
+^offset()^ specifies the offset variable - log raw var prior to using as offset.
+
+^nolog^ suppress display of the iteration log.
+
+^cluster()^ identifies variable used for clustering.
+
+^robust^ displays robust variance estimator; implied when ^cluster()^
+    is specified.
+
+^score()^ creates a variable with score value.
+
+^ltolerance(^#^)^ is the tolerance for convergence; it should never need to
+    be specified.
+
+
+Results may be redisplayed by entering the command.  ^irr^ and ^level(^#^)^
+are allowed as options without reestimation.
+
+
+Examples
+--------
+
+ . ^poisml studytim died drug2 drug3, irr nolog^
+ 
+ . ^poisml infected cases cd4 cd8, nolog irr off(cases) cluster(prov)^
+
+ . ^poisml, level(90)^    [redisplay]
+
+
+Author
+------
+
+     Joseph Hilbe
+     Arizona State University
+     atjmh@@asuvm.inre.asu.edu 
+
+
+Also see
+--------
+
+    STB:  sg91 (STB-45)
+ Manual:  [R] poisson, glm
+On-line:  help for @poisson@, @glm@
+

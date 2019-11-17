@@ -1,0 +1,146 @@
+{smcl}
+{* 25march2006}{...}
+{cmd:help sqom}{right:SJ6-4: st0111)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 11 13 2}{...}
+{p2col :{hi:sqom} {hline 2} Optimal matching of sequences}{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmdab:sqom}
+{ifin}
+[{cmd:,} {it:options}]
+
+{synoptset 38}{...}
+{synopthdr}
+{synoptline}
+{synopt:{opt indel:cost(#)}}set indel costs to {it:#}{p_end}
+{synopt:{cmdab:sub:cost(}{it:#}|{cmd:rawdistance}|{it:matexp}|{it:matname}{cmd:)}}specify substitution costs{p_end}
+{synopt:{opt name(varname)}}specify substitution costs{p_end}
+{synopt:{opt ref:seqid(spec)}}select reference sequence{p_end}
+{synopt:{opt full}}calculate full dissimilarity matrix between sequences{p_end}
+{synopt:{opt k(#)}}restrict indels (to save calculation time){p_end}
+{synopt:{cmdab:st:andard(}{it:#}|{cmd:cut}|{cmd:longer}|{cmd:longest}|{cmd:none)}}standardization of sequences of different length{p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd} {cmd:sqom} performs optimal matching of sequences. The command
+uses the Needleman-Wunsch algorithm to find the alignment between two
+sequences that have the lowest Levenshtein distance. The Levenshtein
+distances are then stored for further use.
+
+{pstd}By default, all sequences are compared to the most frequent
+sequence and the resulting distances are stored in a variable. It is,
+however, possible to compare all sequences with a preselected
+reference distance or to compare all sequences with every other
+sequence. In the latter case, the resulting distances are stored in a
+Stata variable. 
+
+{pstd}Comparing all sequences with any other sequence is computationally
+intensive.
+
+
+{title:Options}
+
+{phang} {opt indelcost(#)} specifies the cost attached to an
+insertion or deletion of an alignment. The default is {cmd:indelcost(1)}.
+
+{phang}
+{cmdab:sub:cost(}#|{cmd:rawdistance}|{it:matexp}|{it:matname}{cmd:)}
+specifies the cost attached to a substitution in an alignment. The
+default is two times the value specified as indel cost. Substitution
+costs may be specified as real number, as implied formula, or as full
+matrix. Specifying substitution cost as, for example,
+{cmd:subcost(3)} will attach the cost of 3 to any substitution
+necessary in an alignment, regardless of how similar the
+substituted values may be.  {cmd:subcost(rawdistance)} will use the
+absolute value of the difference between the two substituted values. A
+full substitution cost matrix can be specified either by specifying
+the name of a matrix containing the substitution cost or by typing
+valid matrix syntax into the option itself.  The matrix has to be a
+symmetric k*k matrix, where k is the number of different
+elements in all sequences. Specifying a full substitution
+cost matrix can increase the running time of the program considerably.
+Option {cmd:k()} might be considered for {cmd:sqom} with full
+substitution cost matrix.
+
+{phang} {opt name(varname)} is used to specify the name of the
+variable in which the distances are stored. If not specified,
+{cmd:_SQdist} is used. The automatically generated distance
+variable will get overwritten without warning whenever a {cmd:sqom}
+command without {cmd:name()} is invoked.
+
+{phang} {opt refseqid(spec)} is used to select the
+reference sequence against which all sequences in the dataset are
+being tested. Within the parentheses, an existing value of the sequence
+identifier has to be stated.
+
+{phang} {cmd:full} is used to perform optimal matching for all
+sequences in the dataset against any other. The results of these
+comparisons are stored in the distance matrix "SQdist". Specifying
+the option {cmd:full} will increase the running time of the program
+considerably. Option {cmd:k()} might be used for {cmd:sqom} with
+{cmd:full}.
+
+{pmore}Two companion programs, {help sqclusterdat} and {help sqclustermat},
+help to further analyze the distance matrix produced with {cmd: sqom, full}. 
+
+{phang}{opt k(#)} is used to speed up the calculation of the
+optimal matching algorithm. Within the parentheses, an integer
+positive number between 1  and the number of positions of the longest
+sequence can be given. The speed up will be higher with small numbers.
+Very small numbers can have the effect that the algorithm doesn't find
+the best alignment between some sequences, and this problem tends to
+increase if substitution costs are high relative to indel
+costs.
+
+{p 8 8 2}Note: The implementation of the {cmd:k()} is based partly on the
+source code of TDA, written by Goetz Rohwer and Ulrich Poetter. TDA is
+a very powerful program for transitory data analysis. It is programmed
+in C and distributed as freeware under the terms of the General
+Public License. It is downloadable from
+{browse "http://www.stat.ruhr-uni-bochum.de/tda.html"}.
+
+{phang}
+{cmdab:st:andard(}#|{cmd:cut}|{cmd:longer}|{cmd:longest}|{cmd:none)}
+is used to define the standardization of the resulting distances. With
+{cmd:standard(#)} all sequences are cut to the length {it:#}.  The keyword
+{cmd:cut} automatically cuts all sequences to the length of the
+shortest sequence in the dataset. {cmd:standard(longer)} divides all
+distances by the length of the longer sequence of the respective
+alignment. {cmd:standard(longest)} divides all distances by the length
+of the longest sequence in the dataset; this is the
+default. {cmd:none} is specified if no standardization is needed.
+
+
+{title:Authors}
+
+{pstd}Ulrich Kohler, WZB, kohler@wz-berlin.de{p_end}
+{pstd}Magdalena Luniak, WZB, luniak@wz-berlin.de{p_end}
+
+
+{title:Examples}
+
+{phang}{cmd:. sqom, name(mydist)}{p_end}
+{phang}{cmd:. sqindexplot, order(mydist)}{p_end}
+
+{phang}{cmd:. sqom, full k(2)}{p_end}
+{phang}{cmd:. sqclustermat ward, name(mydist2)}{p_end}
+{phang}{cmd:. sqindexplot, order(mydist2)}{p_end}
+
+
+{title:Also see}
+
+{psee} Online: {helpb sq},
+{helpb sqdemo}, {helpb sqset}, {helpb sqdes}, {helpb sqegen}, {helpb sqstat},
+{helpb sqindexplot}, {helpb sqparcoord}, {helpb sqom},
+{helpb sqclusterdat}, {helpb sqclustermat} {p_end}

@@ -1,0 +1,62 @@
+{smcl}
+{* 25march2006}{...}
+{cmd:help sqclustermat}{right:(SJ6-4: st0111)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 21 23 2}{...}
+{p2col :{hi:sqclustermat} {hline 2}}Cluster analysis of dissimilarity matrix from sqom{p_end}
+{p2colreset}{...}
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:sqclustermat} {it:method matname} [{cmd:,} {it:clustermat_options}]
+
+
+{title:Description}
+
+{pstd}If the command {helpb sqom} was performed with option {cmd:full},
+further analysis of the resulting dissimilarity matrix becomes
+indispensable. Cluster analysis is the most common technique for this
+step. Unfortunately, sequence data and the resulting dissimilarity
+matrices have different dimensions, so that the cluster variables
+cannot easily be attached to the sequence data on a row-by-row
+basis. {cmd:sqclustermat} allows specifying an arbitrary
+{helpb clustermat} command. The variables produced by the user-specified
+{cmd:cluster} command are automatically written to the original sequence data.
+
+{pstd}Postclustering commands do not work for cluster analysis performed with
+{cmd:sqclustermat}. If you are serious in performing cluster analysis of
+sequences, you might prefer to use {helpb sqclusterdat}. 
+
+
+{title:Option}
+
+{phang}
+{it:clustermat_options} are any of the options allowed with 
+{helpb clustermat}.
+
+
+{title:Author}
+
+{pstd}Ulrich Kohler, WZB, kohler@wz-berlin.de{p_end}
+
+
+{title:Examples}
+
+{phang}{cmd:. sqom, full k(2)}{p_end}
+{phang}{cmd:. sqclustermat}{p_end}
+{phang}{cmd:. sqclustermat singlelinkage, name(single)}{p_end}
+
+
+{title:Also see}
+
+{psee}
+Manual:  {bf:[MV] clustermat}
+
+{psee} Online: {helpb sq},
+{helpb sqdemo}, {helpb sqset}, {helpb sqdes}, {helpb sqegen}, {helpb sqstat},
+{helpb sqindexplot}, {helpb sqparcoord}, {helpb sqom},
+{helpb sqclusterdat}, {helpb sqclustermat} {p_end}

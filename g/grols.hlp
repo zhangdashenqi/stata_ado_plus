@@ -1,0 +1,45 @@
+.-
+help for ^grols^
+.-
+
+Graphing OLS Regression
+-----------------------
+
+To invoke, type
+
+^. grols^
+
+This program shows the regression line between X and Y
+using Ordinary Least Squares (OLS) Regression.  
+
+.-
+
+When you run ^grols^ a simple regression line 
+is displayed and with a single point which is the 
+predicted value for Y when X is 0.  You can change
+the intercept (a) and slope (b) of the line, and you
+can increase/decrease X to show how the predicted 
+value of Y changes as X changes, as described below.
+
+The dialog box allows you to adjust
+  a-.1 and a+.1 : adding and subtracting .1 from the intercept.
+  b-.1 and b+.1 : adding and subtracting .1 from the slope.
+  X-1  and X+1 (if you choose "show point at prected value of X")
+    This allows you to add and subtract 1 from X, and see
+    how it impacts the predicted value of Y.
+
+  The "Done" button quits the program.
+  The "Reset" button resets a, b and X to their default
+    values, i.e. a=0, b=1, and X=0.
+  The "Help" button brings up this help screen.
+
+If you have comments or suggestions, please email 
+Michael Mitchell at mnm@ucla.edu .
+
+Author
+------
+
+Michael N. Mitchell
+Statistical Computing and Consulting
+UCLA, Academic Technology Services
+mnm@@ucla.edu

@@ -1,0 +1,132 @@
+.-
+help for ^roblpr^                                                 (STB-57: sts16)
+.-
+
+Estimate long memory in a set of timeseries via Log-Periodogram Regression
+--------------------------------------------------------------------------
+
+	^roblpr^  varlist  [^if^ exp] [^in^ range] [^, p^owers^(^numlist^)^ 
+			 ^l(^#^)^ ^j(^#^) c^onstraints^(^numlist^)^] 
+
+^roblpr^ is for use with time-series data.  You must ^tsset^ your data before 
+using ^roblpr^; see help @tsset@. 
+
+
+Description
+-----------
+
+^roblpr^ computes the Robinson (1995) multivariate semiparametric
+estimate of the long memory (fractional integration) parameters, d(g), of a
+set of timeseries, y(g), g=1,G. G may be one. If a series
+exhibits long memory, it is neither stationary (I[0]) nor is it a unit 
+root (I{1}) process; it is an I(d) process, with d a real number. When
+applied to a set of timeseries, the d(g) parameter for each series is 
+estimated from a single log-periodogram regression, which allows the
+intercept and slope to differ for each series. The standard errors for
+the estimated parameters are derived from a pooled estimate of the variance
+in the multivariate case, so that their interval estimates differ from those
+of their univariate counterparts.
+
+A choice must be made of the number of harmonic ordinates to be included
+in the spectral regression. One of the innovations of Robinson's estimator
+is that it is not restricted to using a small fraction of the ordinates of
+the empirical periodogram of the series. The estimator also allows for the
+removal of one or more initial ordinates and for the averaging of the
+periodogram over adjacent frequencies. 
+
+Results of the estimation are returned after the command; type ^return list^
+to see the returned results. If more than one series is specified in
+varlist, an F-test of the equality of the d(g) coefficients is performed,
+and those values are returned as well.
+
+Options
+-------
+
+^powers(^numlist^)^ specifies the number of ordinates (nord) entering the 
+    log-periodogram regression. Each value in numlist is taken as the value p
+    in nord = N^^p.  The default value of p, following Robinson, is 0.9. More
+    than one p may be specified in numlist, only if there is a single
+    variable in the varlist.
+
+^l(^#^)^ specifies the number of initial ordinates to be excluded from the 
+    log-periodogram regression. Some researchers have found that such
+    exclusion improves the properties of tests based on log-periodogram
+    regressions. The default value of l is zero.
+
+^j(^#^)^ specifies that the log-periodogram is to be computed from sums of 
+    adjacent periodogram ordinates. The default value of j is 1, so that no
+    averaging is performed. With j=2, the number of ordinates is halved; with
+    j=3, divided by three; and so on.
+
+^constraints(^numlist^)^ specifies the constraint numbers of the linear
+    constraints to be applied during estimation; see help @constraint@.  The
+    default is to perform unconstrained estimation.
+
+    This option allows the imposition of linear constraints prior to
+    estimation of the pooled coefficient vector. For instance, if the
+    varlist contains prices, dividends, and returns, and your prior (or
+    previous findings) states that prices' and dividends' order of integration
+    is indistinguishable, one might impose that constraint to improve the
+    power of the F-test provided by ^roblpr^.  One would specify the
+    constraints prior to the ^roblpr^ command and then provide the list of
+    constraints in the constraints option to ^roblpr^.
+    
+    Technical note on constraints.  When constraints are imposed, it is
+    difficult to identify the number of numerator degrees of freedom in the 
+    test for equality of d coefficients reported at the bottom of ^roblpr^'s 
+    output. Since constraints can be of any general form and it is possible
+    to specify constraints that are not unique, ^roblpr^ determines the
+    degrees of freedom from the rank of the matrix used to compute the Wald
+    statistic. Determining that matrix rank from a numerical standpoint can be
+    problematic, in which case ^roblpr^ may overstate the number
+    of constraints being tested and thereby incorrectly compute the numerator 
+    degrees of freedom for the test.  This rarely has a meaningful impact on
+    the statistical test, but you may wish to test only the unconstrained
+    coefficients if the computed degrees of freedom are wrong.
+
+    For example, after the final example below, we could perform the test by
+    typing ^test ftap == ftaret^.  In this case, the degrees of freedom were
+    correct, so we needn't have gone to the trouble.
+
+
+Examples
+--------
+
+        . ^use http://fmwww.bc.edu/ec-p/data/Mills2d/fta.dta^
+
+	. ^roblpr ftap^
+
+	. ^roblpr ftap ftadiv^
+
+	. ^roblpr ftap ftadiv ftaret, j(2)^
+
+	. ^roblpr ftap, power(0.7 0.75:0.9)^
+
+	. ^roblpr ftap, j(2)^
+
+	. ^roblpr D.ftap, j(2) l(1)^
+
+	. ^constraint define 1 ftap = ftadiv^
+	. ^roblpr ftap ftadiv ftaret, c(1)^
+
+References
+----------
+      
+Robinson, P.M. Log-Periodogram Regression of Time Series with Long
+       Range Dependence. Annals of Statistics 23:3, 1995, 1048-1072.
+      
+Authors
+-------
+
+        Christopher F Baum, Boston College, USA
+        baum@@bc.edu
+                
+        Vince Wiggins, Stata Corporation
+        vwiggins@@stata.com
+        
+Also see
+--------
+
+ Manual:  ^[R] regress^
+On-line:  help for @regress@, @time@, @tsset@; @ac@; @corrgram@;
+          @gphudak@ (if installed); @modlpr@ (if installed)

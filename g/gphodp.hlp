@@ -1,0 +1,62 @@
+{smcl}
+{* 23.01.2007}{...}
+{hi:help gphodp}
+{hline}
+
+{title:Title}
+
+{p 4 8}{hi:gphodp} - Convert Stata graphics to OpenDocument Presentations
+
+{title:Syntax}
+
+{p 4 8}{cmd:gphodp} {it:filename} [{it:filename} ...]{cmd:,}
+{opt gen:erate(filename)} [{opt st:ub(string)} {opt p:agesize(string)}
+{opt f:ontface(string)} {opt m:argin(real)} {opt sch:eme(string)}
+{opt o:rientation(string)} {opt replace}]
+
+{title:Description}
+
+{p 4 4} Convert Stata graphic files to a OpenDocument Presentation.
+Each Stata graphics file is converted to one page of the presentation.
+OpenDocument styles are created for each different occurence of text
+and pens in the graphs. The filename extensions may be omitted. 
+Wildcards in the .gph filenames are possible, like using * for all 
+.gph files in the current directory.
+The operating system must have the program {cmd:zip} installed
+({browse "http://www.info-zip.org"}).
+
+{title:Options}
+
+{p 4 8}{cmd:generate(}{it:filename}{cmd:)} Name of the OpenDocument
+Presentation to be created. The filename extension .odp may be omitted.
+
+{p 4 8}{cmd:stub(}{it:string}{cmd:)} Stub of the OpenDocument style names
+that are created for each combination of size, color and alignment for text
+and for each combination of color, width and shading for pens
+occurring in the graphs.
+This makes is possible to change the appearance of all graphs at once
+(line thickness, color, font etc.) by just changing the associated style
+(default is {cmd:Gph}).
+
+{p 4 8}{cmd:pagesize(}{it:string}{cmd:)} The default pagesize is for
+a presentation on the screen. It can be changed to {cmd:A4},
+{cmd:letter} or {cmd:legal}.
+
+{p 4 8}{cmd:fontface(}{it:string}{cmd:)} is the font to be used
+for labels and titles. The default is Arial.
+
+{p 4 8}{cmd:margin(}{it:string}{cmd:)} is the page margin in inch.
+The default is 1 inch.
+
+{p 4 8}{cmd:scheme(}{it:string}{cmd:)} is the graph scheme to be used.
+
+{p 4 8}{cmd:orientation(}{it:string}{cmd:)} The orientation is either
+{cmd:portrait} or {cmd:landscape} (the default).
+
+{p 4 8}{cmd:replace} permits to overwrite an existing drawing.
+
+{title:Author}
+
+    Peter Parzer
+    University of Heidelberg
+    peter.parzer@med.uni-heidelberg.de

@@ -1,0 +1,176 @@
+{smcl}
+{* 18February2010}{...}
+{cmd:help rddte}
+{hline}
+
+{title:Title}
+
+{p 4 8 2}
+{bf:Quantile treatment effects in the regression discontinuity design}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmdab:rddqte} {depvar} {it:treatment} {it:running} {ifin} {cmd:,} {opt bandwidth(#)} [{it:options}]
+
+
+{synoptset 25 tabbed}{...}
+{synopthdr :options}
+{synoptline}
+{syntab :Model}
+{synopt:{opt b:andwidth(#)}}bandwidth; this option is required.{p_end}
+{synopt:{opt d:iscontinuity(varname or #)}}either a scalar or a variable containing the value of the running variable at which the relationship is discontinuous.{p_end}
+{synopt:{opth q:uantiles(numlist)}}sets the quantile(s) at which the effects will be estimated.{p_end}
+{synopt:{opth con:trol(varlist)}}gives the name(s) of the control variables.{p_end}
+{synopt:{opt k:ernel(kernel)}}type of kernel function used to calculate the propensity score, where {it:kernel} is
+  {opt epan2} (Epanechnikov, the default),
+  {opt b:iweight},
+  {opt triw:eight},
+  {opt c:osine},
+  {opt g:aussian},
+  {opt p:arzen},
+  {opt r:ectangle},
+  {opt t:riangle},
+  {opt epanechnikov_o4},
+  {opt epanechnikov_o6},
+  {opt gaussian_o4},
+  {opt gaussian_o6}
+  or {opt gaussian_o8}.
+  {p_end}
+{synopt:{opt nr:eg(#)}}sets the number of distribution regressions estimated; default is 100.{p_end}
+
+{syntab:Inference}
+{synopt:{opt novar_qte}}suppresses the estimation of the variance of the QTEs.{p_end}
+{synopt:{opt cov:_qte}}activates the estimation of the covariances between the QTEs.{p_end}
+{synopt:{opt var_dte}}activates the estimation of the variance of the DTEs.{p_end}
+{synopt:{opt var_lte}}activates the estimation of the variance of the LTEs.{p_end}
+{synopt:{opt var_summary}}activates the estimation of the variance of the summary statistics.{p_end}
+
+{syntab:Reporting}
+{synopt :{opt l:evel(#)}}set confidence level; default is {cmd:level(95)}{p_end}
+{synopt :{opt report(string)}}determines the results printed on screen. This option can take the following values: all, none, qte (default), dte, lte, summary.{p_end}
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:rddqte} computes the quantile treatment effects of a binary treatment variable using 
+the regression discontinuity design. The estimators have been described in Froelich and Melly (2010).
+
+
+{title:Options}
+
+{dlgtab:Model}
+
+{phang}
+{opt quantiles(numlist)} specifies the quantiles at which the effects are 
+estimated and should contain numbers between 0 and 1. 
+Note that the computational time needed to estimate an additional quantile is very short compared to the 
+time needed to estimate the preliminary nonparametric regressions. Note also that, when conditional QTE 
+are estimated, only one quantile may be specified. If one is interested in several QTE, one 
+can save the estimated weights for later use by using the option {opt generate_w}.
+
+{phang}
+{opt kernel(kernel)} specifies the kernel function. {it:kernel} may
+be {opt epan2} (Epanechnikov kernel function; the default),
+{opt biweight} (biweight kernel function),
+{opt triweight} (triweight kernel function),
+{opt cosine} (cosine trace),
+{opt gaussian} (Gaussian kernel function),
+{opt parzen} (Parzen kernel function),
+{opt rectangle} (rectangle kernel function)
+or {opt triangle} (triangle kernel function). 
+By default, {opt epan2}, specifying the Epanechnikov kernel, is used. 
+
+{phang}
+{opt bandwidth(#)} sets the bandwidth used to smooth over the running variable. 
+If the bandwidth is set to the missing value ".", an infinite bandwidth is used. 
+
+
+{dlgtab:Inference}
+
+{phang}{opt level(#)}; see 
+{helpb estimation options##level():[R] estimation options}.
+
+
+{title:Saved results}
+
+{phang}{cmd:ivqte} saves the following results in {cmd:e()}:
+
+{phang}Scalars{p_end}
+{col 10}{cmd:e(N)}{col 25}Number of observations
+{col 10}{cmd:e(bandwidth)}{col 25}Bandwidth
+{col 10}{cmd:e(nreg)}{col 25}Number of distribution regressions
+
+{phang}Macros{p_end}
+{col 10}{cmd:e(command)}{col 25}Name of the command: ivqte
+{col 10}{cmd:e(depvar)}{col 25}Name of the dependent variable
+{col 10}{cmd:e(treatment)}{col 25}Name of the treatment variable
+{col 10}{cmd:e(running)}{col 25}Name of the running variable
+{col 10}{cmd:e(control)}{col 25}Names of the control variables
+{col 10}{cmd:e(kernel)}{col 25}Kernel function
+
+{phang}Matrices{p_end}
+{col 10}{cmd:e(b)}{col 25}Row vector containing the quantile treatment effects.
+{col 10}{cmd:e(V)}{col 25}Matrix containing the variances of the estimated QTEs.
+{col 10}{cmd:e(quantiles)}{col 25}Row vector containing the quantiles at which the QTEs have been estimated.
+{col 10}{cmd:e(dist_level)}{col 25}Row vector containing the quantiles at which the QTEs have been estimated.
+{col 10}{cmd:e(summary)}{col 25}Matrix containing the summary statistics and their s.e.
+{col 10}{cmd:e(qte)}{col 25}Matrix containing the quantiles and their s.e.
+{col 10}{cmd:e(lte)}{col 25}Matrix containing the distribution functions and their s.e.
+{col 10}{cmd:e(dte)}{col 25}Matrix containing the lorenz functions and their s.e.
+
+{phang}Functions{p_end}
+{col 10}{cmd:e(sample)}{col 25}Marks estimation sample
+
+
+{title:Version requirements}
+
+{p 4 4 2}This command requires Stata 9.2.
+It also requires the {cmd:moremata} (see Jann, 2005) packages. Type
+{net "describe moremata, from(http://fmwww.bc.edu/repec/bocode/m/)":ssc describe moremata}{txt}.
+
+
+{title:Methods and Formulas}
+
+{p 4 6} See Froelich and Melly (2010).
+
+
+{title:References}
+
+
+{p 4 6} Markus Froelich and Blaise Melly (2010): Quantile treatment effects in the regression discontinuity design. Mimeo
+
+{p 4 6} Ben Jann (2005): moremata: Stata module (Mata) to provide various > functions.Available from
+{browse ideas.repec.org/c/boc/bocode/s455001.html}.
+
+
+{title:Remarks}
+
+{p 4 4}This is a preliminary version. Please feel free to share your comments, reports of bugs and
+propositions for extensions.
+
+{p 4 4}If you use this command in your work, please cite Froelich and Melly (2010).
+
+
+{title:Disclaimer}
+
+{p 4 4 2}THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED 
+OR IMPLIED. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. 
+SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+{p 4 4 2}IN NO EVENT WILL THE COPYRIGHT HOLDERS OR THEIR EMPLOYERS, OR ANY OTHER PARTY WHO
+MAY MODIFY AND/OR REDISTRIBUTE THIS SOFTWARE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY 
+GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM.
+
+
+{title:Authors}
+
+{p 4 6}Markus Froelich and Blaise Melly{p_end}
+{p 4 6}University of Mannheim and Brown University{p_end}
+{p 4 6}blaise_melly@brown.edu{p_end}
+{p 4 6}March 2010{p_end}
+
+
+

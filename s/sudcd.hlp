@@ -1,0 +1,124 @@
+{smcl}
+{hline}
+help for {cmd:sudcd}
+{hline}
+
+{title:Seemingly Unrelated Discrete-Choice Duration Estimators}
+
+{p 8 12}{cmd:sudcd} {it:{help depvar}} [{it:{help indvars}}] [{cmd:{help if}} {it:exp}] 
+	[{cmd:{help in}} {it:range}], {cmdab:disc:rete}({it:depvar_d} {cmd:=} {it:indvars_d}) 
+	{cmdab:d:ist}({it:modelname}) {it:options}}
+
+{p}{cmd:pweight}s, {cmd:aweight}s, {cmd:fweight}s, and {cmd:iweight}s are
+allowed; see help {help weights}.
+
+{title:Description}
+
+{p 0 4}{cmd:sudcd} allows the user to estimate exponential, Weibull or lognormal 
+    seemingly unrelated discrete-choice duration models. The underlying principle
+    is similar to a SUR model, but instead of two regressions, {cmd:sudcd} jointly
+    estimates a discrete choice model and a duration (or survival) model.
+
+{title:Options}
+
+{p 0 4}{cmdab:disc:rete}({it:depvar_d} {cmd:=} {it:indvars_d}) specifies the dependent and 
+    independent variables for the discrete choice equation. At least one independent variable 
+    must be specifed.
+
+{p 0 4}{cmdab:d:ist(}{it:distname}{cmd:)} must be one of {cmd:exp}, {cmd:weibull},
+    or {cmd:lognormal}. This allows the user to specify either an exponential, Weibull 
+    or lognormal duration model. In addition, this option sets the form of the discrete
+    choice model: specifying {cmd:lognormal} leads to a probit model while specifying
+    {cmd:exp} or {cmd:weibull} produces a binary exponential model.
+
+{p 0 4}{cmdab:ti:me} reports the accelerated failure time interpretation of the coefficients.
+
+{p 0 4}{cmdab:rtc:ensor(}{it:{help varname}}{cmd:)} allows the user to specify that the duration 
+    data are right-censored (observations exit the study before failure is observed). This 
+    variable is coded 1 for observations that are right-censored and 0 for observations that fail.
+
+{p 0 4}{cmdab:rh:o}({it:{help varlist}}) allows the user to model the correlation 
+    parameter as a linear function of {it:{help varlist}}.
+
+{p 0 4}{cmdab:rob:ust} uses the Huber/White/sandwich estimator of the
+    variance in place of the conventional MLE variance estimator.
+
+{p 0 4}{cmdab:cl:uster(}{it:{help varname}}{cmd:)} specifies that the observations are
+    independent across groups (clusters) given by {it:{help varname}} but not necessarily 
+    within groups.
+
+{p 0 4} {it:{help maximize_options}} allows the user to add options to Stata's maximize 
+    command (e.g., {it:difficult}, {it:trace}, {it:iterate(#)} {it:constraint(#)}, etc.). 
+
+{title:Notes}
+
+{p 0 4}1. {cmd:sudcd} reports the coefficients of the duration model (hazard interpretation), 
+    hazard ratios are not available at this time. Thus the default sudcd coefficients are 
+    comparable to those obtained when running {help streg} with the {cmd:nohr} option.
+    Specifying the {cmdab:tim:me} option has the same effect as specifying it when running 
+    {help streg} and reports values of (-beta) rather than (beta*p). In the hazard interpretation
+    larger coefficients correspond to shorter times until failure; in the accelerated failure
+    time interpretation larger coefficients correspond to longer times until failure. The {cmdab:ti:me} 
+    option is not available for the lognormal model, which reports an accelerated failure time 
+    interpretation by default.
+
+{p 0 4}2. The assumed bivariate distribution for the exponential and Weibull distributions requires 
+    that the correlation between the stochastic terms in the selection and duration equations be 
+    between -0.25 and 0.25. The maximum likelihood estimates ({it:Z_alpha}) use the inverse of 
+    Fisher's Z transformation to restrict the correlation to lie in this interval.
+    The lognormal allows the correlation to range from -1 to 1.
+
+{p 0 4}3. {cmd:sudcd} does not allow for time-varying covariates in the duration equation. 
+
+{p 0 4}4. If the {cmdab:rh:o()}({it:{help varlist}}) option is not specified, {cmd:sudcd} 
+    reports the estimated correlation between the error terms in the
+    discrete choice and duration equations in more than one way. The likelihood function uses 
+    the inverse of Fisher's Z transformation to restrict the correlation parameter to lie 
+    between -1 and 1. This correlation parameter is {it:alpha} and the corresponding
+    unbounded argument of the transformation is ({it:Z_alpha}). In the lognormal model,
+    the correlation between the error terms is {it: rho = alpha} whereas in the exponential
+    and Weibull models, {it:rho = alpha/4}. Standard errors for {it:alpha} and {it:rho} are 
+    estimated using the delta method. Most users will be interested in the value of {it:rho}.
+    If the {cmdab:rh:o}({it:{help varlist}}) option is specified, the corresponding values can
+    be obtained by manunally applying the transformations at the desired values of the variables 
+    in {it:{help varlist}}.
+
+{title:Examples}
+
+{p 2 8}Download, unzip, and use Stata to open the dataset in 
+    http://myweb.uiowa.edu/fboehmke/Data/boehmke2006pa.zip.{p_end}
+{p 2 8}Run the model. For example:  {p_end}
+{p 4 8}{inp:. sudcd timing labtpct corptpct, disc(vote=hhcenter) dist(weibull) time}{p_end}
+{p 4 8}{inp:. sudcd timing labtpct corptpct, disc(vote=hhcenter) d(lognormal) rtc(rtcensr) rho(partyid) robust}{p_end}
+
+{p 2 2}where:
+
+{p 4 8}{it:timing} is the variable that records the duration for each observation;
+
+{p 4 8}{it:labtpct} and {it:corptpct} are variables that explain time until failure in the 
+    duration equation;
+
+{p 4 8}{it:vote} is the dichotomous choice variable;
+
+{p 4 8}{it:hhcenter} is a variable that explains the discrete outcome;
+
+{p 4 8}{it:rtcensr} is the variable that records whether an observed duration is right-censored;
+
+{p 4 8}{it:partyid} is a variable that explains the correlation parameter.
+
+{title:References}
+
+{p 0 4}If you use {cmd:sudcd}, please cite:
+
+{p 4 4} Boehmke, Frederick J. 2006. "The Influence of Unobserved Factors on Position Timing and Content 
+    in the NAFTA Vote." Political Analysis 14 (4): 421-438.
+
+{title:Author}
+
+    Frederick J. Boehmke
+    University of Iowa
+    Department of Political Science
+    341 Schaeffer Hall
+    Iowa City, IA 52242
+    frederick-boehmke@uiowa.edu
+    http://www.fredboehmke.net

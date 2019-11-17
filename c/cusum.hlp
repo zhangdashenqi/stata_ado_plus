@@ -1,0 +1,69 @@
+Graph CUSUM and CUSUM squared
+-----------------------------
+
+	^cusum^ varlist [^, noc^onstant ^d^ate(varname) ^nop^lot graph-options 
+
+			 other-options]
+
+
+
+
+Description
+-----------
+
+^cusum^ calculates and graphs the cumulative sums (CUSUM) of the recursive
+residuals and their squares from the regression specified by "varlist".  Each
+graph includes a 95 percent confidence band.
+
+
+Options
+-------
+
+^noc^onstant eliminates the constant from the regressions.
+
+^d^ate(varname) specifies the variable to display on the horizontal axis
+  of each graph.
+
+^nop^lot suppresses the graphs.
+
+graph-options specify options to apply to both the CUSUM and the CUSUM of 
+  squares graphs
+
+
+Other options
+-------------
+
+The CUSUM statistics and the confidence bands can be stored for later use.
+The options for storing these variables are
+
+    CUSUM information
+    -----------------
+
+    ^c^s(varname) stores the CUSUM.
+
+    ^l^w(varname) stores the lower limit of the confidence band.
+
+    ^u^w(varname) stores the upper limit of the confidence bankd.
+
+
+    CUSUM of squares information
+    ----------------------------
+
+    ^c^s2(varname) stores the CUSUM of squares.
+
+    ^lww^(varname) stores the lower limit of the confidence band.
+
+    ^s^qline(varname) stores the reference line.
+
+    ^uww^(varname) stores the upper limit of the confidence bankd.
+
+
+
+References
+----------
+
+Brown, R.L., J. Durbin, and J.M. Evans (1975). "Techniques for testing the
+  constancy of regression relationships over time (with discussion)," ^Journal^
+  ^of the Royal Statistical Society^. Series B, Volume 37, pp. 149-192.
+
+Harvey, A.C. (1990).  ^The Econometric Analysis of Time Series^.  MIT Press.

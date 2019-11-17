@@ -1,0 +1,25 @@
+.-
+help for ^extrans^
+.-
+
+Examine Effects of Transformations
+----------------------------------
+
+Syntax
+------
+
+  ^extrans^ variable(s)
+
+The ^extrans^ command shows the effects of square root, log, and
+-1/square root transformation on the values of Q1, Q2, Q3 and 
+(Q3-Q2)/(Q2-Q1).  When a distribution is symmetric, the value
+of (Q3-Q2)/(Q2-Q1) should be 1.  You can examine how these
+transformations influence the symmetry of the distribution
+using this measure.
+
+Author
+------
+
+     Statistical Consulting Group
+     Institute for Digital Research and Education, UCLA
+     idrestat@ucla.edu 

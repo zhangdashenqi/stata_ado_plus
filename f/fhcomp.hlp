@@ -1,0 +1,50 @@
+.-
+help for ^fhcomp^
+.-
+
+Fisher-Hayter pairwise comparisons
+----------------------------------
+ 
+	^fhcomp^ var [if] [, Level(sig) nu(dfe) mse(mse) ]
+
+
+Description
+-----------
+
+^fhcomp^ performs Fisher-Hayter pairwise comparisons after
+       running ^anova^.
+       
+       ^fhcomp^ requires the ^gsturng^ and the ^sturng*^ files.
+
+
+Examples
+--------
+
+ . ^anova y b^
+ . ^fhcomp b^
+ . ^fhcomp b, level(.99) ^
+ 
+  ^/* differences in b at a==3 */^
+ . ^anova y a b a*b^
+ . ^fhcomp b if a==3^
+ . ^fhcomp b if a==3, nu(3) mse(71.6)^
+
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+      
+      
+Acknowledgements
+----------------
+
+      John R. Gleason
+      Syracuse University
+      loesljrg@ican.net
+      
+      For ^gsturng^ and ^strung*^
+      STB-47/sg101

@@ -1,0 +1,71 @@
+.-
+help for ^xfrac^                                (STB-48: sg104)
+.-
+
+Tabulation using categories defined by fractions of a cut-off value
+-------------------------------------------------------------------
+
+^xfrac^ varname [weight] [^if^ exp ^in^ range]
+			^,^ ^cut^off^(^#^)^ [ ^gp(^gpname^)^ ]
+
+
+^fweight^s and ^aweight^s are allowed; see help @weights@.
+
+Description
+-----------
+
+^xfrac^ provides a specialized tabulation (a 'wrapper' for -tabulate-).
+Each valid observation is first partitioned by varname into one of a set
+of 20 mutually-exclusive categories, the boundaries of which are defined 
+by 'hard-wired' fractions of a user-specified cut-off value (in the same
+units as varname), with fractions ranging from 0.1 through to 3.0. This 
+classification is then tabulated and, optionally, can be retained 
+as a new variable.
+
+In effect ^xfrac^ provides a discrete representation of the distribution 
+function for varname.
+
+Example: let varname be a measure of income and the cut-off be mean
+income. ^xfrac^ shows the proportion of observations with income
+less than 10% of mean income, between 10% and 20% of mean income, 
+between 20% and 30% of mean income, and so on (20 categories). 
+Cumulative proportions are also shown.
+
+
+Mandatory
+---------
+
+^cutoff(^#^)^  The user must specify a value for the cut-off value
+                 (in the same units as varname).
+
+
+Options
+-------
+
+^gp(^gpname^)^ creates a new categorical variable, gpname, containing
+	      categories summarising group membership.
+
+
+Example
+-------
+
+   . ^sum x [aw=wgt]^
+   . ^local mean = _result(3)^
+   . ^xfrac x [aw=wgt], cut(`mean') gp(gpname)^  
+
+
+Author
+------
+
+      Stephen P. Jenkins 
+      Institute for Social and Economic Research
+      University of Essex, Colchester CO4 3SQ, U.K.
+      stephenj@@essex.ac.uk
+
+
+Also see
+--------
+
+    STB: STB-48 sg104
+ Manual: [R] pctile, [R] tabulate, [R] cumul
+On-line: @pctile@, @xtile@, @tabulate@, @cumul@, @sumdist@ (if installed)

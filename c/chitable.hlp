@@ -1,0 +1,41 @@
+.-
+help for ^chitable^
+.-
+
+Table of Chi-square
+-------------------
+ 
+	^chitable^ [ ^df^ ]
+
+
+
+
+Description
+-----------
+
+^chitable^ display a table of the critical values of 
+    chi-square for selected degrees of freedom from 
+    1 to 100.
+
+ 
+ Options
+ -------
+ 
+ ^df^  critical values of chi-square for a specific df.
+
+
+Examples
+--------
+
+ . ^chitable^
+ . ^chitable 43^
+
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA Academic Technology Services
+      ender@@ucla.edu 

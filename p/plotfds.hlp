@@ -1,0 +1,157 @@
+{smcl}
+{hline}
+help for {cmd:plotfds}
+{hline}
+
+{title: Plot first differences after a regression command.}
+
+{p 8 12}{cmd:plotfds} [{it:{help if}} {it:exp}], [{cmdab:cont:inuous}({it:{help varlist}})]
+	[{cmdab:disc:rete}({it:{help varlist}})] 
+	[{cmdab:sort:order}({it:{help varlist}}) {cmdab:outc:ome}({it:#}) {cmdab:clev:el}({it:#}) 
+	{cmdab:nos:etx} {cmdab:changex:cont}({it:value1 value2}) {cmdab:lab:el} 
+	{cmdab:saved:ata}({it:{help string}}) {it:{help twoway_options}}] 
+
+	
+{title:Description}
+
+{p 1 4}{cmd:plotfds} allows the user to generate and plot first differences for various 
+	regression models, allowing a more meaningful comparison of substantive effects. 
+	Supported models include OLS, logit, probit, poisson, negative binomial, and 
+	weibull models. {cmd:plotfds} operates as a front-end for Clarify (Tomz, Wittenberg, 
+	and King) and is run after the {cmd:estsimp} command. {cmd:plotfds} will specify values at
+	which the the independent variables are held constant and allows both continuous 
+	and dichotomous variables. Optionally, users can set these values themselves using
+	Clarify's {cmd:setx} command.{p_end}
+	
+{p 1 4}{cmd:plotfds} calculates first differences for a number of quantities of interest,
+	depending on the estimation model. By default, for dichotomous, ordered, and multinomial 
+	outcome variables, it calculates the the change in the probability of the dependent
+	variable taking on the value 1; for count or continuous outcomes it calculates
+	the change in the expected value. Users can optionally specify that it calculate the
+	change in a specific outcome value of interest (e.g., for an ordered model).{p_end}
+	
+{p 1 4}The calculated first differences represent the change in the outcome of interest
+	resulting from a change in each listed independent variable, holding the other
+	variables fixed. First differences for variables listed in the {cmdab:cont:inuous} 
+	option are increased from one standard deviation below their mean to one standard
+	deviation above it. The default can be changed to any accepted values 
+	in CLARIFY using the {cmdab:changex:cont} option. For variables listed in the 
+	{cmdab:disc:rete} option, the first differences corresponds to a change from 0 to 1.{p_end}
+
+{p 1 4}For more information on the Clarify suite, see {it:{help estsimp}}, see {it: {help setx}}, 
+	and see {it:{help simqi}}. Clarify must be installed for {cmd: plotfds} to run.{p_end}
+
+	
+{title:Options}
+
+{p 1 4}{cmdab:cont:inuous}({it:{help varlist}}) specifies which variables are treated as continuous.
+	First difference for continuous variables are calculated as the difference in the
+	dependent variables resulting from a change in the independent variable from one 
+	standard deviation below their mean to one standard deviation above it.{p_end}
+
+{p 1 4}{cmdab:disc:rete}({it:{help varlist}}) specifies which variables are treated as dichotomous.
+	First difference for dichotomous variables are calculated as the difference in the
+	dependent variable resulting from a change in the independent variable from 0 to 1.{p_end}
+
+{p 1 4}{cmdab:sort:order}({it:{help varlist}}) allows the user to set the order of the 
+	variables as they appear in the graph. Variables listed in this option will be placed
+	at the top in the order listed. Variables not listed will appear at the bottom in
+	their default order.{p_end}
+
+{p 1 4}{cmdab:outc:ome}({it:#}) specifies the value of the dependent variable for
+	which to calculate the first difference in its probability. This is useful to
+	calculate the probability of specific outcomes in ordered and multinomial models;
+	it can also be useful in count models.{p_end}
+
+{p 1 4}{cmdab:cl:evel}({it:#}) Allows the user to specify the level, between 0 and 100, used 
+	to construct the confidence interval for the marginal effect. If not specified, a 95% 
+	confidence interval is calculated.{p_end}
+
+{p 1 4}{cmdab:changex:cont}({it:{value1 value2}}) Allows the user to specify the two values
+	used to calculate the first difference. This option only aplies to continuous 
+	variables. It accepts any valid option for CLARIFY's {cmdab:setx} command (e.g., 
+	min, max, median, mean, p25, p90, etc.). See {it:{help setx}} for more information. 
+	Note that the user does not specify the variable names, just the two values.
+	
+{p 1 4}{cmdab:nos:etx} specifies that {cmd:plotfds} should not set the values of the 
+	independent variables. Rather, it will use the most recently specified values
+	(these can be displayed by typing {cmd:setx} with no arguments). This allows
+	the user to calculate the first differences with other variables set at 
+	any values. If you specify this option, you must have values set for all the
+	independent variables.{p_end}
+
+{p 1 4}{cmdab:lab:el} specifies that variable labels, if they exist, are displayed on the 
+	graph rather than variable names.{p_end}
+
+{p 1 4}{cmdab:saved:ata}({it:string}) saves the calculated first differeces, standard errors,
+	and confidence interval data.{p_end}
+
+{p 1 4}{it:{help twoway_options}} Adds any options (title, axis, caption, etc.) other than 
+	{opt by()} documented in {bind:{bf:[G]} {it:twoway_options}.} Some features
+	of the {cmd:rcap} plot (see {it:{help twoway rcap}}) can not currently be changed 
+	(e.g., spike width, pattern, etc.){p_end}
+
+	
+{title:Notes}
+
+{p 1 4}1. {cmd:estsimp} must be run before {cmd:plotfds}; first differences will be calculated
+	using the results from the most recent {cmd:estsimp} command. See {it:{help estsimp}}
+	for more information.{p_end}
+
+{p 1 4}2. You must specify at least one of {cmdab:disc:rete}({it:varname}) or 
+	{cmdab:cont:inuous}({it:varname}). You must specify at least two variables as well, 
+	though you do not need to specify all the variables included in the regression model.{p_end} 
+
+{p 1 4}3. The other independent variables held constant while calculating first differences for one
+	variable. Continuous variables are fixed at their mean while dichotomous variables are
+	fixed at their median value.{p_end}
+
+{p 1 4}4. The values of the independent variables are calculated from the estimation sample
+	unless the {it:if} option is specified.{p_end}
+
+{p 1 4}5. {cmd:plotfds} is inspired by Adrian Mander's {cmd:plotbeta}; see {it:{help plotbeta}} 
+	if installed or find it online ({it:{net search plotbeta}}) otherwise.
+
+	
+{title:Examples}
+
+{p 4 8}{inp:. estsimp logit turnout female age income}{p_end}
+{p 4 8}{inp:. plotfds, discrete(female) continuous(age income)}{p_end}
+{p 4 8}{inp:. plotfds, discrete(female) continuous(age income) sortorder(female) changexcont(min max)}{p_end}
+
+{p 4 8}{inp:. estsimp ologit partyid female age income}{p_end}
+{p 4 8}{inp:. plotfds, disc(female) cont(income) outcome(3) clevel(90) savedata(partyid-fds, replace)}{p_end}
+
+{p 4 8}{inp:. estsimp poisson numvotes female age income}{p_end}
+{p 4 8}{inp:. setx (min) female (p25) age (mean) income}{p_end}
+{p 4 8}{inp:. plotfds, disc(female) cont(age income) changex(p25 p75) nosetx labels xline(0)}{p_end}
+
+
+{title:Author}
+
+    Frederick J. Boehmke
+    University of Iowa
+    Department of Political Science
+    341 Schaeffer Hall
+    Iowa City, IA 52242
+    frederick-boehmke@uiowa.edu
+    http://www.fredboehmke.net
+
+    
+{title:References}
+
+{p 4 4}If you use this program, please follow the citation guidelines for CLARIFY 
+    (see {it:{help estsimp}}) and cite:
+
+{p 4 4}Michael Tomz, Jason Wittenberg, and Gary King.  2003.  CLARIFY: 
+    Software for Interpreting and Presenting Statistical Results.  
+    Version 2.1.  Stanford University, University of Wisconsin, 
+    and Harvard University.  January 5.  Available at 
+    http://gking.harvard.edu/
+
+{p 4 4}and
+
+{p 4 4}Gary King, Michael Tomz, and Jason Wittenberg.  2000.  "Making
+    the Most of Statistical Analyses: Improving Interpretation and
+    Presentation."  American Journal of Political Science 44, no. 2
+    (April): 347-61.

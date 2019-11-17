@@ -1,0 +1,29 @@
+{smcl}
+{* 24feb2003}{...}
+{hline}
+help for {hi:partcorr}
+{hline}
+  
+{title:Partial and Semipartial Correlation}
+
+{p 8 14}{cmd:partcorr} {it:varlist} [{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]{cmd:,} {cmd:part(}{it:varlist2}{cmd:)} [{cmd:help}]
+
+{title:Description}
+{p 1 1}{cmd:partcorr} computes the squared multiple, squared partial and squared 
+semipartial correlations.  For partial correlation, {it:varlist2} is partialed out 
+of all variables.  For semipartial correlation, {it:varlist2} is partialed only out 
+of the predictor variables.{p_end}
+
+{title:Examples}
+{p 5 5}{inp:. partcorr write read female, part(math science)}{p_end}
+{p 5 5}{inp:. partcorr write read female, part(math science) help}{p_end}
+
+{title:Author}
+{p 5 5}
+Philip B. Ender{break}
+UCLA Academic Technology Services{break}
+ender@ucla.edu 
+{p_end}
+
+  

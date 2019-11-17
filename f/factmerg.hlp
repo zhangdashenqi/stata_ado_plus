@@ -1,0 +1,126 @@
+{smcl}
+{hline}
+help for {cmd:factmerg} {right:(SJ3-3: st0043; SJ4-3: st0043_1)}
+{hline}
+
+{title:Merge a list of factors to create string variables containing factor values, names and labels}
+
+{p 8 18 2}{cmd:factmerg} [{it:varlist}] [{cmd:if} {it:exp}] [{cmd:in} {it:range}] [ {cmd:,}
+ {cmdab:fv:alue}{cmd:(}{it:newvarname}{cmd:)}
+ {cmdab:fn:ame}{cmd:(}{it:newvarname}{cmd:)} {cmdab:fl:abel}{cmd:(}{it:newvarname}{cmd:)}
+ {cmdab:mv:alue}{cmd:(}{it:string_expression}{cmd:)}
+ {cmdab:mn:ame}{cmd:(}{it:string_expression}{cmd:)} {cmdab:ml:abel}{cmd:(}{it:string_expression}{cmd:)}
+ {cmdab:fm:issing}{cmd:(}{it:newvarname}{)} ]
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:factmerg} takes, as input, a list of variables (numeric or string),
+representing discrete factors in a model.  It creates, as output, one to three
+string variables, containing, in each observation, a value, a factor name, or
+a factor variable label, respectively, copied from the first factor variable
+in the input variable list with a nonmissing value for that observation.
+{cmd:factmerg} is intended for use with a list of input variables created by
+{help factext} after a call to {help parmby} or {help parmest}. The output
+variables are intended to be used in creating row labels for output tables or
+plots, possibly using the {help sencode} package.  The input factors are
+usually either created in a {help parmest} or {help parmby} output dataset by
+using the {help factext} package or are in a dataset created by concatenating
+multiple {help xcontract} output datasets using the {help dsconcat} package.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:fvalue(}{it:newvarname}{cmd:)} specifies an output variable
+(string or numeric) containing, in each observation, a value copied from the
+first variable in the input {it:varlist} with a nonmissing value for that
+observation.
+
+{p 4 8 2}{cmd:fname(}{it:newvarname}{cmd:)} specifies a string output variable
+containing, in each observation, the name of the input variable from which the
+value of the {cmd:fvalue()} variable is copied for that observation.
+
+{p 4 8 2}{cmd:flabel(}{it:newvarname}{cmd:)} specifies a string output
+variable containing, in each observation, the variable label of the input
+variable from which the value of the {cmd:fvalue()} variable is copied for
+that observation.
+
+{p 4 8 2}{cmd:mvalue(}{it:string_expression}{cmd:)} specifies a string
+expression, used to define values for the {cmd:fvalue()} variable for
+observations with missing values for all variables in the input {it:varlist}.
+
+{p 4 8 2}{cmd:mname(}{it:string_expression}{cmd:)} specifies a string
+expression, used to define values for the {cmd:fname()} variable for
+observations with missing values for all variables in the input {it:varlist}.
+
+{p 4 8 2}{cmd:mlabel(}{it:string_expression}{cmd:)} specifies a string
+expression, used to define values for the {cmd:flabel()} variable for
+observations with missing values for all variables in the input {it:varlist}.
+
+{p 4 8 2}{cmd:fmissing(}{it:newvarname}{cmd:)} specifies the name of a new
+binary variable to be generated, containing missing values for observations
+excluded by the {help if} and {help in} qualifiers, 1 for other observations
+in which all the input factors are missing, and 0 for other observations in
+which at least one of the input factors is nonmissing.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:factmerg} is typically used with {help factext}, which is used with 
+{help parmby}, {help parmest}, and {help descsave} to create a list of factors.
+The output {cmd:fvalue()} variable created by {cmd:factmerg} may be output
+using {help outsheet} or {help listtex} to create a table with one row per
+model parameter and data on the estimates, confidence limits, or {it:p}-values.
+Alternatively, the {cmd:fvalue()} variable may be encoded to a numeric
+variable using {cmd:sencode} and then plotted, using {help graph}, 
+{help hplot}, or {help eclplot} to create a confidence interval plot with one
+axis label per model parameter.  The {cmd:fvalue}, {cmd:fname}, and
+{cmd:flabel} variables may be used in string expressions to generate labels
+for the rows of the table or for positions on the axis of a confidence
+interval plot, specifying the parameters in a human-readable format.  The
+packages {help descsave}, {help eclplot}, {help factext}, {help factref},
+{help hplot}, {help listtex}, {help parmby}, {help parmest}, {help sdecode},
+and {help sencode} are not supplied with official Stata but can be installed
+from {help ssc:SSC}.  Further information on the use of some of these packages
+can be found in Newson (2003).
+
+
+{title:Examples}
+
+{p 4 4 2}
+The following example will work with the {hi:auto} data if {help parmest},
+{help parmby} and {help factext} are installed.
+
+{p 8 16 2}{cmd:. tempfile tf0}{p_end}
+{p 8 16 2}{cmd:. descsave rep78 foreign, do(`tf0',replace)}{p_end}
+{p 8 16 2}{cmd:. parmby "xi:regress mpg weight i.rep78 i.foreign, robust",label norestore format(estimate min* max* %8.2f p %8.2g)}{p_end}
+{p 8 16 2}{cmd:. factext,do(`tf0')}{p_end}
+{p 8 16 2}{cmd:. factmerg foreign rep78, fn(faname) fl(falab) fv(faval) mn(parm) ml(label)}{p_end}
+{p 8 16 2}{cmd:. list parm label rep78 foreign faname falab faval}{p_end}
+
+
+{title:Author}
+
+{p 4 4 2}
+Roger Newson, King's College, London, UK.{break}
+Email: {browse "mailto:roger.newson@kcl.ac.uk":roger.newson@kcl.ac.uk}
+
+
+{title:References}
+
+{p 4 4 2}Newson, R. 2003. Confidence intervals and {it:p}-values for delivery
+to the end user.  {it:The Stata Journal} 3(3): 245-269. Also downloadable from
+{net "from http://www.kcl-phs.org.uk/rogernewson/papers":Roger Newson's web site at http://www.kcl-phs.org.uk/rogernewson}.
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:   help for {help describe}, {help tabulate}, {help xi}, 
+           {help graph}{break}
+          help for {help descsave}, {help eclplot}, {help factext}, 
+	  {help factref}, {help hplot}, {help listtex}, {help parmby}, 
+	  {help parmest}, {help sdecode}, {help sencode}, {help xcontract} if
+	  installed {p_end}

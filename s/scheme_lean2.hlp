@@ -1,0 +1,79 @@
+{smcl}
+{* 17apr2003}{...}
+{hline}
+help for {hi:scheme_lean2}{right:(SJ3-3: gr0002; SJ4-1: gr0002_1; SJ4-2: gr0002_2; SJ4-3: gr0002_3)}
+{hline}
+
+{* index schemes}{...}
+{title:Scheme description:  lean2}
+
+{p 4 4 2}
+The {cmd:lean2} scheme is
+
+	{it:schemename}{col 22}foreground{col 34}background{col 46}description
+	{hline 70}
+	{cmd:lean2}{...}
+{col 22}monochrome{...}
+{col 36}white{...}
+{col 46}black on white
+	{hline 70}
+
+{p 4 4 2}
+For instance, you might type
+
+{p 8 16 2}
+{cmd:. graph}
+...{cmd:,}
+...
+{cmd:scheme(lean2)}
+
+{p 8 16 2}
+{cmd:. set}
+{cmd:scheme}
+{cmd:lean2}
+[{cmd:,}
+{cmdab:perm:anently}
+]
+
+{p 4 4 2}
+See help {help scheme_option} and help {help set_scheme}.
+
+
+{title:Description}
+
+{p 4 4 2}
+Schemes determine the overall look of a graph; see help {help schemes}.
+
+{p 4 4 2}
+Scheme {cmd:lean2} specifies a lean black-and-white look similar to that 
+used by many scientific journals. The plot area has horizontal gridlines 
+like schemes {cmd:s2color} and {cmd:s2mono}.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+The schemes {cmd:lean1} and {cmd:lean2} have no background tinting; markers are black; bars and areas have black outline; y-axis labels are horizontal; and legends are placed to the right of the plot area. The difference between the two 
+is that scheme {help scheme_lean1:lean1} has a framed plot area without gridlines, while {cmd:lean2} has horizontal gridlines, but no frame. The general idea is described in:
+
+{p 4 8 2}
+Juul, S. 2003. Lean mainstream schemes for Stata 8 graphics. 
+{it:Stata Journal} 3(3): 295-301.
+
+
+{title:Author}
+
+{p 4 4 2}
+{browse "mailto:sj@soci.au.dk":Svend Juul}, Department of Epidemiology and Social Medicine,
+University of Aarhus, Denmark.
+
+
+{title:Also see}
+
+{p 4 14 2}
+Online:  help for {help schemes};
+{it:{help scheme_option}},
+{help set_scheme}
+{p_end}
+
+

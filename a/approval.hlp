@@ -1,0 +1,90 @@
+{smcl}
+{* 31jan2012}{...}
+{cmd:help approval}{right: ({browse "http://www.stata-journal.com/article.html?article=dm0064":SJ12-3: dm0064})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col:{hi: approval} {hline 2}}Downloads the presidential approval poll
+results from The American Presidency Project{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 18 2}
+{cmd:approval}{cmd:,} {opth president(numlist)} 
+[{opth save(filename)} {opt timeseries}]
+
+
+{title:Description}
+
+{pstd}
+{opt approval} downloads the presidential approval poll results from The
+American Presidency Project, available at 
+{browse "http://www.presidency.ucsb.edu"}.  The programmers and the
+program have no association with the data source.  The poll results data
+are not available as a downloadable delimited file.  Thus {cmd:approval}
+is used to parse the poll results from the HTML table available at the
+data source website.
+
+
+{title:Options}
+
+{phang}{cmd:president(}{it:numlist}{cmd:)} is the list of U.S. presidents' 
+presidency numbers.  The list may contain only one president or multiple
+presidents.  {cmd:president()} is required.  The name of the president
+will become the content of the variable {cmd:president}, which will be
+based on the presidency number provided.  The presidency number will
+become the content of the variable {cmd:president2}.  {it:numlist} must
+be greater than 31.
+
+{pmore}Presidential numbers are as follows:{break}
+Franklin D. Roosevelt is the 32nd president{break}
+Harry S. Truman is the 33rd president{break}
+Dwight D. Eisenhower is the 34th president{break}
+John F. Kennedy is the 35th president{break}
+Lyndon B. Johnson is the 36th president{break}
+Richard Nixon is the 37th president{break}
+Gerald R. Ford is the 38th president{break}
+Jimmy Carter is the 39th president{break}
+Ronald Reagan is the 40th president{break}
+George Bush is the 41st president{break}
+William J. Clinton is the 42nd president{break}
+George W. Bush is the 43rd president{break}
+Barack Obama is the 44th president{break}
+
+{phang}{opt save(filename)} is the output filename.  A Stata data file is
+created in the current working directory.
+
+{phang}{opt timeseries} converts the data into a time series.  If a poll
+starts on April 23 and ends on April 27, then the days between April 23
+and April 27 are filled in with {cmd:tsfill} (not {cmd:tsfill, force}
+across presidents though).  Thus, for instance, April 24 will have the
+same approval rating as April 23, etc.
+
+
+{title:Examples}
+
+{phang}{cmd:. approval, president(42)}{p_end}
+{phang}{cmd:. approval, president(42 43 44)}{p_end}
+{phang}{cmd:. approval, president(32/44) save("all_US_presidents.dta")}{p_end}
+
+
+{title:Authors}
+
+{pstd}Mehmet F. Dicle{p_end}
+{pstd}Loyola University{p_end}
+{pstd}New Orleans, LA{p_end}
+{pstd}mfdicle@loyno.edu{p_end}
+
+{pstd}Betul Dicle{p_end}
+{pstd}Louisiana State University{p_end}
+{pstd}Baton Rouge, LA{p_end}
+{pstd}bdicle1@tigers.lsu.edu{p_end}
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 12, number 3: {browse "http://www.stata-journal.com/article.html?article=dm0064":dm0064}{p_end}

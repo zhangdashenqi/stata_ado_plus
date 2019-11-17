@@ -1,0 +1,87 @@
+{smcl}
+{* 19jun2003}{...}
+{hline}
+help for {hi:sneop}{right:SJ4-1: st0056)}
+{hline}
+
+{title:Semi-nonparametric estimation of extended ordered probit model}
+
+{p 4 12 2}{cmd:sneop} {it:depvar} [{it:varlist}] [{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:weight}] 
+	[{cmd:,} {cmdab:order(}{it:#}{cmd:)} {cmdab:r:obust} {cmdab:f:rom(}{it:matname}{cmd:)} ]
+
+{p 4 8 2}{cmd:fweight}s, {cmd:pweight}s, and {cmd:iweight}s are allowed; see
+{help weights}.
+
+{p 4 8 2}{cmd:sneop} shares the features of all estimation commands; see help
+{help est}.
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:sneop} fits a generalized ordered response model that nests
+the ordered probit using the semi-nonparametric estimator of Gallant and
+Nychka (1987).  The unknown distribution of the stochastic error term in the
+underlying latent variable model is approximated using a Hermite series
+expansion.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:order(}{it:#}{cmd:)} specifies the order of the Hermite
+polynomial to be used.  The default is 3. Orders 1 and 2 give models
+equivalent to the ordered probit.
+
+{p 4 8 2}{cmd:robust} specifies that the Huber/White/sandwich estimator of
+variance is to be used in place of the traditional calculation; see
+{hi:[U] 23.11 Obtaining robust variance estimates}.
+
+{p 4 8 2}{cmd:from(}{it:matname}{cmd:)} specifies a matrix containing starting
+values.  This option can be used to investigate whether global maximum found.
+The default uses the ordered probit estimates as starting values.
+
+
+{title:Remarks}
+
+{p 4 4 2}For more details of the estimator and an illustration, see Stewart
+(2003).
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. sneop ordvar x1 x2 x3 x4, order(4)}
+
+{p 4 4 2}which will fit the extended model equivalent to:
+
+{p 8 12 2}{cmd:. oprobit ordvar x1 x2 x3 x4 }
+
+{p 4 4 2}To use lower order model to provide starting values:
+
+{p 8 12 2}{cmd:. sneop ordvar x1 x2 x3 x4, order(3) }
+
+{p 8 12 2}{cmd:. mat start = e(b) }
+
+{p 8 12 2}{cmd:. sneop ordvar x1 x2 x3 x4, order(4) from(start) }
+
+
+{title:Author}
+
+{p 4 4 2}Mark Stewart, Economics Department, University of Warwick, U.K.{break}
+<Mark.Stewart@warwick.ac.uk>
+
+
+{title:References}
+
+{p 4 8 2} Gallant, A. R. and D. W. Nychka. 1987. Semi-nonparametric maximum
+likelihood estimation. {it:Econometrica} 55: 363--390.
+
+{p 4 8 2} Stewart, M. B. 2003. Semi-nonparametric estimation of extended
+ordered probit models. Mimeo. University of Warwick.
+
+ 
+{title:Also see}
+
+{p 4 14 2}Manual:  {hi:[U] 23 Estimation and post-estimation commands},{p_end}
+{p 13 13 2}{hi:[U] 29 Overview of model estimation in Stata},{p_end}
+{p 13 13 2}{hi:[R] oprobit}
+
+{p 4 13 2}Online:  help for {help est}, {help ml}, {help oprobit}

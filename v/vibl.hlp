@@ -1,0 +1,62 @@
+{smcl}
+{hline}
+help for {hi:vibl}{right:(SJ5-1: st0081)}
+{hline}
+
+{title:vibl - VIsualizing Binary Logistic models}
+
+{p 4 4 2}
+This is a suite of tools to help you visualize the results
+from binary logistic models, all of the tools start with
+the funny name {it:vibl} (it rhymes with kibble).
+There are two general categories of tools, those
+for main effects, vibl{it:m}, and those for interactions
+vibl{it:i}. 
+
+{p 4 4 2}
+The help files associated with these tools convey the
+mechanics of using these tools, but we admit that this is 
+probably not enough to understand why the tools would be 
+useful. For additional information, we recommend seeing 
+our {browse www.ats.ucla.edu/stat/seminars:Seminar Page}
+and then seeing the Stata seminar on 
+{it:Visualizing Main Effects and Interactions for Binary Logit Models in Stata}.
+
+{p 4 4 2}
+The tools for visualizing binary logistic models focusing on main effects
+are.
+
+{p 4 8 2}
+{help viblmdb} This is a point and click dialog box (db) 
+for exploring main effects.
+
+{p 4 8 2}
+{help viblmgraph} This is command based program for creating graphs
+illustrating main effects.
+
+{p 4 8 2}
+{help viblmcc} This is command for computing "covariate contributions",
+a concept developed in the seminar noted above.
+
+{p 4 4 2}
+The tools for visualizing binary logistic models focusing on interactions are.
+
+{p 4 8 2}
+{help viblidb} This is a point and click dialog box (db) 
+for exploring interactions.
+
+{p 4 8 2}
+{help vibligraph} This is command based program for creating graphs
+illustrating interactions.
+
+{p 4 8 2}
+{help viblicc} This is command for computing "covariate contributions",
+a concept developed in the seminar noted above.
+
+
+{title:Authors}
+
+        Michael Mitchell and Xiao Chen 
+        UCLA Academic Technology Services
+        mnm@ucla.edu & jingy1@ucla.edu
+{p_end}

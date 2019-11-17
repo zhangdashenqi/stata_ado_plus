@@ -1,0 +1,270 @@
+{smcl}
+{hline}
+help for {cmd:ingap} {right:(SJ3-3: st0043; SJ4-3: st0043_1)}
+{hline}
+
+{title:Insert gap observations in a dataset}
+
+{p 8 27 2}
+{cmd:ingap} [{it:numlist}]
+ [{cmd:if} {it:expression}] [{cmd:in} {it:range}]
+ [ {cmd:,} {cmdab:af:ter}
+   {cmdab:g:apindicator}{cmd:(}{it:newvarname}{cmd:)} {cmdab:newo:rder}{cmd:(}{it:newvarname}{cmd:)}
+   {cmdab:ro:wlabel}{cmd:(}{it:string_varname}{cmd:)} {cmdab:gr:owlabels}{cmd:(}{it:string_list}{cmd:)}
+   {cmdab:gre:xpression}{cmd:(}{it:gap_row_label_expression}{cmd:)}
+   {cmdab:rs:tring}{cmd:(}{it:string_replacement_option}{cmd:)}
+ ]
+
+{p 4 4 2}
+where {it:numlist} is an optional list of integers, {it:string_list} is a list
+of strings, {it:gap_row_label_expression} is a string-valued expression, and
+{it:string_replacement_option} can be {cmd:name}, {cmd:label}, or
+{cmd:labname}.
+
+{p 4 4 2}
+{cmd:by {it:varlist}:} may be used with {cmd:ingap}; see help for {help by}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:ingap} inserts gap observations into a list of positions in an existing
+dataset. All existing variables in the dataset will have missing values in
+the gap observations, unless the user specifies otherwise.  Often, the user
+specifies nonmissing values in the gap observations for one particular
+existing string variable, known as the row label variable. This row label
+variable may then be output with a list of other variables to form a
+publication-ready table using the {help listtex} package.  Alternatively, the
+row label variable may be encoded, using the {help sencode} package, to form a
+numeric variable with {help label:value labels}, which can then be plotted on
+one axis of a {help graph:graph} to define axis labels.  The {help sencode}
+and {help listtex} packages are downloadable from {help ssc:SSC}.
+
+{p 4 4 2}
+{cmd:ingap} inserts a gap observation next to (before or after) each of a list
+of observations specified by the {it:numlist}. A positive number {it:i} in the
+{it:numlist} specifies the {it:i}th existing observation in the dataset, or
+in each by-group if {cmd:by {it:varlist}:} is specified. A negative number
+{it:-i} in the {it:numlist} specifies the {it:i}th existing observation, in
+reverse order, from the end of the dataset, or from the end of each by-group
+if {cmd:by {it:varlist}:} is specified.  A zero or out-of-range number in the
+{it:numlist} is ignored. The {it:numlist} is set to 1 if not specified by the
+user. {cmd:ingap} assumes that the dataset in memory has up to 3 classes of
+variables.  These are the by-variables (which define by-groups possibly
+representing the pages of a table), a row label variable (possibly containing
+the row labels in the left margin of the table), and the remaining variables
+(which may form the entries in the table rows).  A gap observation inserted by
+{cmd:ingap} has the same values for the by-variables as the observation next
+to which it was inserted, a row label value specified by the
+{cmd:growlabels()} or {cmd:grexpression()} options, and missing values (or
+possibly column headings) in the remaining variables. {cmd:ingap} may also
+generate new variables, indicating whether the observation is a gap
+observation or the new order of the observation in the dataset (or
+by-group) after the gap observations have been inserted.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:after} specifies that each gap observation will be inserted
+after the corresponding existing observation in the dataset or by-group
+specified in the {it:numlist}. If {cmd:after} is not specified, then each gap
+observation will be inserted before the corresponding existing observation.
+
+{p 4 8 2}{cmd:gapindicator(}{it:newvarname}{cmd:)} specifies the name of a new
+variable to be generated, equal to 1 for the newly-inserted gap observations
+and 0 for all other observations.
+
+{p 4 8 2}{cmd:neworder(}{it:newvarname}{cmd:)} specifies the name of a new
+variable to be generated, equal to the new sequential order of the observation
+within the dataset (or within the by-group if {cmd:by {it:varlist}:} is
+specified), after the gap observations have been inserted.  The new variable
+has no missing values. After execution of {cmd:ingap}, the dataset in memory
+is sorted primarily by the by-variables (if specified) and secondarily by the
+{cmd:neworder()} variable (if specified).
+
+{p 4 8 2}{cmd:rowlabel(}{it:string_varname}{cmd:)} specifies the name of an
+existing string variable, used as the row labels for a table whose rows are
+the observations. In the gap observations, this string variable is set to the
+value specified by the corresponding string listed in the {cmd:growlabels()}
+option if that option is specified (see below) or to a missing value
+otherwise.  The {cmd:rowlabel()} variable may not be a by-variable.
+
+{p 4 8 2}{cmd:growlabels(}{it:string_list}{cmd:)} specifies a string value for
+each of the row labels in the gap observations. The {it:j}th string in the
+{it:string_list} is written to the {cmd:rowlabel} variable in the
+newly-inserted  gap observation inserted next to the {it:j}th observation
+mentioned in the {it:numlist}. If the {cmd:rowlabel()} option is present and the
+{cmd:growlabel()} option is absent, the {cmd:rowlabel()} variable is
+initialized to missing in the gap observations.
+
+{p 4 8 2}{cmd:grexpression(}{it:gap_row_label_expression}{cmd:)} specifies a
+string expression, to be evaluated in all gap observations to give the final
+values of the {cmd:rowlabel()} variables in these gap observations. If
+{cmd:grexpression()} and {cmd:growlabels()} are both specified, then the
+result of {cmd:grexpression()} replaces any values set by {cmd:growlabels()}.
+(However, the name of the {cmd:rowlabels()} variable may appear in the
+{cmd:grexpression()} expression, so that the values of the {cmd:rowlabels()}
+variable can be modified in ways depending on the original values set by the
+{cmd:growlabels()} list.) Note that, when the {cmd:grexpression()} expression
+is evaluated, all variables other than the {cmd:rowlabels()} variable have
+been set to their final values, which are missing for all variables except the
+by-variables and the {cmd:rowlabel()} variable, except if they have been set
+to other values by the {cmd:rstring()} option (see below). However, the
+{cmd:grexpression()} expression may access values of variables in adjacent
+observations using {help subscripting}. If by-variables are present, then any
+subscripts in the expression specified by {cmd:grexpression()} are defined
+within by-groups, and are defined including the gap observations. For
+instance, if a gap observation is inserted at the beginning of each by-group,
+then the value of {hi:_n} in these gap observations will be 1.
+
+{p 4 8 2}{cmd:rstring(}{it:string_replacement_option}{cmd:)} specifies a rule
+for replacing the values of string variables (other than the by-variables and
+row label variables)) in gap observations.  If {cmd:rstring()} is set to
+{cmd:name}, then string variables which are not by-variables or row label
+variables are reset to their variable names in by-gap observations. If
+{cmd:rstring()} is set to {cmd:label}, string variables that are not
+by-variables or row label variables are set to their variable labels in by-gap
+observations or to missing values if their variable labels are missing.  If
+{cmd:rstring()} is set to {cmd:labname}, string variables that are not
+by-variables or row label variables are set to their variable labels in by-gap
+observations or to their variable names if their variable labels are missing.
+If {cmd:rstring()} is set to any other value or not set, string
+variables that are not by-variables or row label variables are set to missing
+values.  (Note that numeric variables that are not by-variables are always set
+to numeric missing values in gap observations.) The {cmd:rstring()} option
+allows the user to add a row of column headings to a dataset of string
+variables or to add a row of column headings to each by-group of a dataset
+of string variables.  Note that numeric variables may be converted to string
+variables using the {help sdecode} package, downloadable from {help ssc:SSC},
+before using {cmd:ingap} and {help listtex}. This allows the user to use the
+{cmd:rstring()} option and also to format numeric variables in ways not
+possible using Stata formats alone, such as adding parentheses to confidence
+limits.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:ingap} is typically used to convert a Stata dataset to a form with 1
+observation per table row (including gap rows), or 1 observation per graph
+axis label (including gap axis labels).  The user can then list the dataset
+as a TeX, LaTeX, HTML, or Microsoft Word table using the {help listtex}
+package (downloadable from {help ssc:SSC}).  Alternatively, for immediate
+impact, the user can use the {help sencode} package (downloadable from 
+{help ssc:SSC}) to encode the row labels to a numeric variable and then plot
+this numeric variable against other variables using 
+{help graph:Stata graphics programs}.  For instance, a user of Stata 8 or
+above might use {help eclplot} (downloadable from SSC) to produce horizontal
+confidence interval plots, with the row labels on the vertical axis.  It is
+often advisable for the user to type {help preserve} before a sequence of
+commands including {cmd:ingap} and to type {help restore} after a sequence of
+commands using {cmd:ingap}, because {cmd:ingap} modifies the dataset by adding
+new observations. It is often also advisable for the user to place the whole
+sequence of commands in a {help do:do-file} and execute this 
+{help do:do-file}, rather than to type the sequence of commands one by one at
+the terminal.
+
+
+{title:Examples}
+
+{p 8 16 2}{cmd:. ingap, g(toprow)}{p_end}
+
+{p 8 16 2}{cmd:. ingap 1 53, g(toprow) row(make) grow("US cars" "Non-US cars")}{p_end}
+
+{p 8 16 2}{cmd:. by foreign: ingap, g(gind) row(make) grow("Car model")}{p_end}
+
+{p 8 16 2}{cmd:. sort foreign rep78 make}{p_end}
+{p 8 16 2}{cmd:. by foreign rep78: ingap}{p_end}
+{p 8 16 2}{cmd:. by foreign: ingap -1, after}{p_end}
+{p 8 16 2}{cmd:. by foreign: ingap, row(make) grow("Car model")}{p_end}
+{p 8 16 2}{cmd:. list}{p_end}
+
+{p 4 4 2}
+The following example works in the {cmd:auto} data if the user has installed
+the {help listtex} package, downloadable from {help ssc:SSC}. It outputs to
+the Results window a generic ampersand-delimited text table, which can be cut
+and pasted into a Microsoft Word document, and then converted to the rows of a
+table inside Microsoft Word, using the menu sequence 
+{cmd:Table->Convert->Text to Table}.  (Note that the {help listtex} command
+can alternatively create table rows suitable for input into a TeX, LaTeX, or
+HTML file.)
+
+{p 8 16 2}{cmd:. preserve}{p_end}
+{p 8 16 2}{cmd:. by foreign: ingap, row(make) grexp(cond(foreign,"Non-US cars","US cars"))}{p_end}
+{p 8 16 2}{cmd:. listtex make mpg weight, type}{p_end}
+{p 8 16 2}{cmd:. restore}{p_end}
+
+{p 4 4 2}
+The following example works in the {cmd:auto} data if the user has installed
+the {help listtex} package, and also the {help sdecode} package, both of which
+can be downloaded from {help ssc:SSC}.) It outputs to the Results window a
+generic ampersand-delimited text table, which can be cut and pasted into a
+Microsoft Word document (as in the previous example), and then converted into
+two tables, one for American cars and one for non-American cars, each with a
+title line containing the variable labels in the {cmd:auto} data. Note that, to
+do this, the user must convert the numeric variables to string variables, and
+this is done using {help sdecode}.
+
+{p 8 16 2}{cmd:. preserve}{p_end}
+{p 8 16 2}{cmd:. sdecode mpg, replace}{p_end}
+{p 8 16 2}{cmd:. sdecode weight, replace}{p_end}
+{p 8 16 2}{cmd:. sdecode price, replace}{p_end}
+{p 8 16 2}{cmd:. by foreign: ingap, rstring(labname)}{p_end}
+{p 8 16 2}{cmd:. listtex make mpg weight price, type}{p_end}
+{p 8 16 2}{cmd:. restore}{p_end}
+
+{p 4 4 2}
+The following example works in the {cmd:auto} data if the user has installed
+the {help sdecode} and {help sencode} packages, downloadable from 
+{help ssc:SSC}.  It produces a graph of mileage by car type (US or non-US) and
+repair record.
+
+{p 8 16 2}{cmd:. preserve}{p_end}
+{p 8 16 2}{cmd:. sdecode rep78, gene(row) miss}{p_end}
+{p 8 16 2}{cmd:. by foreign: ingap, row(row) grexp(cond(foreign,"Others:","US cars:")) gap(gapind)}{p_end}
+{p 8 16 2}{cmd:. sencode row, replace many gs(foreign -gapind rep78)}{p_end}
+{p 8 16 2}{cmd:. lab var row "Repair record"}{p_end}
+{p 8 16 2}{cmd:. version 7: graph row mpg, yreverse ylab(1(1)12) yscale(0 13) xlab(0(10)50)}{p_end}
+{p 8 16 2}{cmd:. restore}{p_end}
+
+{p 4 4 2}
+Other examples of the use of {cmd:ingap}, together with other packages, can be found in Newson (2003).
+
+
+{title:Author}
+
+{p 4 4 2}
+Roger Newson, King's College, London, UK.{break}
+Email: {browse "mailto:roger.newson@kcl.ac.uk":roger.newson@kcl.ac.uk}
+
+
+{title:References}
+
+{p 4 8 2}
+Newson, R. 2003. Confidence intervals and {it:p}-values for delivery to the
+end user.  {it:The Stata Journal} 3(3): 245-269. Also downloadable from {net "from http://www.kcl-phs.org.uk/rogernewson/papers":Roger Newson's web site at http://www.kcl-phs.org.uk/rogernewson}.
+
+
+{title:Acknowledgment}
+
+{p 4 4 2}
+I would like to thank Nicholas J. Cox, of the University of Durham, U.K., for
+writing the {help hplot} package, downloadable from {help ssc:SSC}. This
+package gave me a lot of the ideas used in {cmd:ingap}, and was also my
+preferred package for producing confidence interval plots under Stata Versions
+6 and 7, before I had access to the improved graphics of Stata Version 8.
+
+
+{title:Also see}
+
+{p 4 13 2}
+Manual:  {hi:[U] 14.1.2 by varlist:},{break}
+         {hi:[U] 14.5 by varlist: construct},{break}
+         {hi:[U] 31.2 The by construct},{break}
+	 {hi:[R] by}, {hi:[R] expand}
+
+{p 4 13 2}
+Online:  help for {help by}, {help byprog}, {help ssc}{break}
+         help for {help listtex}, {help sencode}, {help sdecode}, 
+	    {help hplot}, {help eclplot} if installed
+{p_end}

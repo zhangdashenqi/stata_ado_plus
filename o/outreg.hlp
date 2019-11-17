@@ -1,0 +1,871 @@
+.-
+help for ^outreg^  (STB-46: sg97; STB-49: sg97.1; STB-58: sg97.2; STB-59: sg97.3)
+.-
+
+Write formatted regression output to a text file
+------------------------------------------------
+
+After any estimation command:
+
+   ^outreg^ [varlist] ^using^ filename [^,^ 
+         
+         (Text-related options)
+         ^nol^abel ^ti^tle^(^textlist^)^ ^ct^itle^(^textlist^)^
+         ^nonot^es ^addn^ote^(^textlist^)^
+         
+         (Coefficient options)
+         ^bd^ec^(^numlist^)^ ^bf^mt^(^textlist^)^ ^coe^fastr 
+         
+         (Options for t statistics, standard errors, etc.)
+         {^se^ | ^p^value | ^ci^ | ^be^ta} ^l^evel^(^#^)^ ^td^ec^(^#^)^ ^nopa^ren 
+         ^br^acket {^noas^ter | ^3aster^ | ^10pct^} ^si^gsymb^(^textlist^)^
+         
+         (Statistics options)
+         ^nocon^s ^nonob^s ^noni^ ^nor^2 ^ad^jr2 ^rd^ec^(^#^)^ 
+         ^adds^tat^("^text^", ^# [^," ^text^", ^# ...]^)^ ^ade^c^(^numlist^)^
+         ^ef^orm ^m^argin[^(^{u|c|p}^)^] ^o^necol ^x^stats 
+
+         (Other options)
+         ^com^ma ^replace^ ^ap^pend]
+
+  ^outreg^ is available after any estimation command.  A textlist 
+         (my own term) is a list of text separated by commas, i.e. 
+         "text" [, "text" ...].  It is similar to a numlist or a varlist, 
+         but commas are required.  Each text element in the list does not need 
+         to be enclosed in quotation marks unless the text contains commas or 
+         parentheses.  
+
+
+Description
+-----------
+
+^outreg^ formats regression output as it is presented in most documents.  The 
+ultimate purpose of most estimation is to present the results in tables quite 
+different from those displayed within Stata.  ^outreg^ automates the process of 
+converting the regression results to most of the standard presentation formats 
+by creating a text file for inclusion in a word processing table.
+
+^outreg^ should work after any estimation command in Stata (see [R] estimation 
+commands for a complete list). Like @predict@, ^outreg^ makes use of internally 
+saved estimation results, so it should be invoked immediately after the 
+estimation. In addition to coefficient estimates, by default ^outreg^ will 
+report t statistics with asterisks for standard significance levels 
+(1% and 5%), number of observations, true R-squareds (no pseudo R-squareds), 
+and the number of groups in panel estimation.  The user can add their own 
+chosen titles (^title^ and ^ctitle^), statistics (^addstat^), and notes 
+(^addnote^) to the table, and change many aspects of the output.  The t 
+statistics under the coefficients can be replaced by standard errors, p values 
+of t statistics, confidence intervals, or normalized beta coefficients.
+
+^outreg^ creates an ASCII text file with columns separated with tab 
+characters.  The file can be converted automatically to a table in word 
+processors and spreadsheets.  For example, the process in Microsoft Word is 
+simple: Open or Insert the file created by ^outreg^.  Select the estimation 
+output text that is in columns (not the notes at the bottom of the table or 
+the title at the top, if any), and choose Table, Convert Text to Table.  With 
+some adjustment of the column widths, fonts, etc. the final table is ready.  
+In Excel, open the file created by ^outreg^ and follow the default choices in 
+the Text Import Wizard (note that when loading the output into a spreadsheet, 
+the parentheses around the t statistics may convert to negative numbers).  
+Other word processors and spreadsheet software should be similar.
+
+Successive estimation results, possibly with different variables, can be 
+combined by ^outreg^ in a single table with the variable coefficients lined up 
+properly using the ^append^ option.  Multivariate regression commands like 
+@sureg@, @mvreg@, and @reg3@ are formatted equation by equation, and can be 
+appended.  
+
+^outreg^ rewards the use of variable @label@s (and value labels for @mlogit@, 
+@svymlog@, and @net:describe dlogit2, from (http://www.stata.com/users/wsribney)!dmlogit2@). The variable labels are used in the output 
+table (unless ^nolabel^ is chosen), providing more intelligible variable 
+descriptions than 8-letter names. Note that if different variables are assigned 
+the same variable label (not usually done intentionally), and more than one 
+regression is appended together, the coefficients and t statistics will not be 
+properly ordered.  The solution is to use distinct variable labels or the 
+^nolabel^ option. 
+
+If filename is specified without an extension, ^.out^ is assumed.
+
+If a varlist is specified, only the regression coefficients corresponding to 
+the variables in varlist will be included in the table. The dependent variable 
+name should not be included in the varlist since it has no regression 
+coefficient.  With an explicit varlist the intercept coefficient will still be 
+included unless the ^nocons^ option is chosen.  An explicit varlist is useful, 
+for example, for excluding numerous dummy variable coefficients.
+
+Many Stata estimation commands make it possible to exponentiate the 
+coefficients under the procedure-specific names of odds ratios, hazard ratios, 
+relative risk ratios, etc.  Since Stata leaves behind no evidence of whether 
+the user has chosen to exponentiate the coefficients displayed by the original 
+estimation, the user must respecify this choice in ^outreg^ with the ^eform^ 
+option.  This is required even after the @stcox@ command which by default 
+reports coefficients in hazard ratio form.  
+
+A growing number of Stata commands, most of them STB additions, report the 
+marginal effects of changes in the independent variables.  For most of these 
+commands (@dprobit@, @net:describe dlogit2, from (http://www.stata.com/users/wsribney)!dlogit2@, @net:describe dlogit2, from (http://www.stata.com/users/wsribney)!dprobit2@, 
+and @net:describe dlogit2, from (http://www.stata.com/users/wsribney)!dmlogit2@) ^outreg^ will automatically report the marginal effects.  The commands 
+@search:truncreg!truncreg,marginal@ and @search:dtobit!dtobit@ report both regression coefficients and marginal effects, 
+though, so the user must specify the ^margin^ option for ^outreg^ to report 
+the marginal effects. 
+
+
+Options
+-------
+1. Text-related options
+2. Coefficient options
+3. Options for t statistics, standard errors, etc.
+4. Other statistics options
+5. Other options
+
+
+1. Text-related options
+-----------------------
+
+^nolabel^ specifies that variable names rather than variable labels be used 
+    to identify coefficients.  It also suppresses the value labels of the 
+    dependent variable in @mlogit@, @svymlog@, and @net:describe dlogit2, from (http://www.stata.com/users/wsribney)!dmlogit2@.
+    
+^title(^textlist^)^ specifies a title or titles at the top of the regression 
+    table.  The maximum title length is 80 characters.  Additional characters 
+    will be cut off.  Longer titles can be put in two or more title lines.  
+    When regression results are appended together, the table title(s) must be 
+    specified in the first ^outreg^ call; titles specified in subsequent 
+    ^outreg ... append^ calls will be ignored.  Note that when converting the 
+    ^outreg^ text output to a table in a word processor or a spreadsheet, it 
+    is easier to leave out the title row out of the text selected for 
+    conversion.
+
+^ctitle(^textlist^)^ specifies the regression title above the coefficient 
+    column.  By default if no column title is specified, the label or name of 
+    the dependent variable is displayed.  Multiple column titles are only 
+    appropriate for multi-equation regressions, using one title per equation, 
+    and then only if not ^onecol^.
+
+^nonotes^ specifies that notes explaining the t statistics (or standard errors, 
+    etc.) and asterisks not be included.
+    
+^addnote(^textlist^)^ specifies user-added notes to be
+    displayed in new lines at the bottom of the ^outreg^ table.  When 
+    regression results are appended together, ^addnote^ must be specified 
+    in the first ^outreg^ call; ^addnote^s specified in subsequent 
+    ^outreg ... append^ calls will be ignored.  ^addnote^ is consistent with 
+    ^nonotes^.  A blank line can be inserted by including "" as a note (see 
+    example below).
+
+
+Technical Note:  Text which includes quotation marks within the text (by means 
+    of double quotation as in `"This is "quoted" text"') in ^title^, ^ctitle^, 
+    and ^addnote^ displays correctly in single regression tables but does not 
+    display correctly when subsequent regressions are ^append^ed.
+
+
+2. Coefficient options
+----------------------
+
+^bdec(^numlist^)^ specifies the number of decimal places reported for 
+    coefficient estimates (the b's).  It also specifies the decimal places 
+    reported for standard errors or confidence intervals if ^se^ or ^ci^ is 
+    chosen.  The default value for ^bdec^ is 3. The minimum value is 0 and 
+    the maximum value is 11.  If one number is specified in the numlist, it 
+    will apply to all coefficients.  If multiple numbers are specified in the 
+    numlist, the first number will determine the decimals reported for the
+    first coefficient, the second number, the decimals for the second 
+    coefficient, etc.  If there are fewer numbers in the numlist than
+    coefficients, the last number in the numlist will apply to all the 
+    remaining coefficients.
+    
+^bfmt(^textlist^)^ specifies the format type for coefficient estimates (and 
+    standard errors or confidence intervals, if ^se^ or ^ci^ is chosen).  
+    Possible format types are 
+         e        - scientific notation; e.g. 1.00e+3
+         f or fc  - fixed format (with commas for thousands with fc)
+         g or gc  - general format (with commas for thousands with gc)
+    The default type for ^bfmt^ is fc.  If multiple format types are 
+    specified, they are applied to the coefficients the way that multiple 
+    ^bdec^ parameters are applied.  This option is mainly to allow scientific 
+    notation (e).  For an explanation of Stata numeric formats, see [U] 15.5.1 
+    Numeric formats. 
+    
+^nocons^ specifies that the intercept (constant) coefficient estimate not be 
+    reported.  This is not needed when the preceding estimation has no 
+    intercept coefficient.
+
+^coefastr^ specifies that asterisks for significance levels are appended to 
+    regression coefficients rather than to t statistics or standard errors.
+    
+^eform^ specifies that the exponentiated form of the coefficients be reported.
+    This corresponds to the ^or^ option for @logit@, @clogit@, and @glogit@ 
+    estimation, ^irr^ for @poisson@ estimation, ^rrr^ for @mlogit@, ^hr^ for 
+    @cox@ and @stcox@ hazard models, and ^eform^ for @xtgee@, but it can be 
+    used to exponentiate the coefficients after any estimation.  Exponentiation
+    of coefficients is explained in ^[R] maximize - methods and formulas^.
+    
+    Note that the default form of @stcox@ output displayed by Stata is the 
+    hazard rate form, so to save the same numbers in outreg use the 
+    ^eform^ option.  
+
+^margin[(u|c|p)]^ specifies that the marginal effects rather than the coefficient 
+    estimates are reported.  It can be used after @search:truncreg!truncreg,marginal@ 
+    from STB 52 or @search:dtobit!dtobit@ from STB 56.  One of the parameters u, c, or p 
+    is required after @search:dtobit!dtobit@, corresponding to the unconditional, 
+    conditional, and probability marginal effects, respectively.  It is not 
+    necessary to specify ^margin^ after @dprobit@, @net:describe dlogit2, from (http://www.stata.com/users/wsribney)!dlogit2@, @net:describe dlogit2, from (http://www.stata.com/users/wsribney)!dprobit2@, 
+    and @net:describe dlogit2, from (http://www.stata.com/users/wsribney)!dmlogit2@.
+
+
+3. Options for t statistics, standard errors, etc.
+--------------------------------------------------
+
+^se^ specifies that standard errors rather than t statistics are reported. The 
+    decimal places displayed are those set by ^bdec^.
+
+^pvalue^ specifies that p values (of t statistics) rather than t statistics
+    are reported.  The decimal places displayed are set by ^tdec^.
+
+^ci^ specifies that confidence intervals of coefficients rather than 
+    t statistics are reported.  The decimal places displayed are those set by 
+    ^bdec^.
+    
+^level(^#^)^ specifies the confidence level, in percent, for confidence 
+    intervals.  The default is level(95) or as set by @set level@; see ^[U] 23.5 
+    Specifying the width of confidence intervals^. ^level^ does not affect the 
+    confidence levels of asterisks.
+
+^beta^ asks that normalized beta coefficients be reported rather than 
+    t statistics (see the beta option of @regress@).  The decimal places 
+    displayed are those set by ^bdec^.
+    
+^tdec(^#^)^ specifies the number of decimal places reported for t statistics 
+    or for p values if ^pvalue^ is specified. It also specifies the decimal 
+    places reported for R-squared or adjusted R-squared if they are not 
+    specified in ^rdec^.  The default value for ^tdec^ is usually 2, but 3 
+    if ^pvalue^ is specified. The minimum value is 0 and the maximum value 
+    is 11.
+    
+^noparen^ specifies that no parentheses be placed around t statistics,
+    standard errors, etc.
+    
+^bracket^ specifies that square brackets [] be used rather than parentheses ()
+    around t statistics, standard errors, etc.    
+    
+^noaster^ specifies that no asterisks denoting 1% and 5% significance levels
+    be reported.
+    
+^3aster^ specifies 3 asterisks for 1%, 2 asterisks for 5%, and 1 asterisk for 
+    10% significance levels.
+
+^10pct^ specifies a "+" for 10 significance levels in addition to the default
+    2 asterisks for 1%, 1 asterisk for 5% significance levels (unless sigsymb
+    is specified - see below).
+
+^sigsymb(^textlist^)^ specifies symbols for 1% and 5% significance levels 
+    (and 10% significance level if ^10pct^ is also chosen).  The specified 
+    symbols replace the asterisks ** and *. Quotation marks around the new 
+    symbols are optional if the characters "," and ")" are avoided.  Here are 
+    two examples:
+      . outreg using table1, sigsymb(++,+)
+      . outreg using table1, sigsymb(" (1%)", " (5%)", " (10%)") 10pct
+    Omitting symbols will prevent the significance level from being labeled 
+    (see also ^noaster^).  The following example will display only 1% 
+    significance levels:
+      . outreg using table1, sigsymb(*)
+
+
+4. Statistics options
+---------------------
+
+^nonobs^ specifies that the number of observations in the estimation not be 
+    reported.
+ 
+^noni^ specifies that the number of groups in a panel data regression not be 
+    reported (e.g. the number of groups specified by the i() variable in 
+    @xtreg@).  This option has an effect only after @xt@ regression commands.
+ 
+^nor2^ specifies that no R-squared (or adjusted R-squared) be reported.  This 
+    option has an effect only if Stata calculates a true R-squared.
+
+^adjr2^ specifies that the adjusted R-squared be reported rather than the 
+    regular R-squared (in regressions where the adjusted R-squared is 
+    defined).
+
+^rdec(^#^)^ specifies the number of decimal places reported for the R-squared
+    or adjusted R-squared.  The default value for ^rdec^ is the value for 
+    ^tdec^. The minimum value is 0 and the maximum value is 11.
+    
+^addstat("^text^" , ^# [^, "^text^", ^# ...] ^)^ specifies user-added 
+    statistics to be displayed in new lines below the R-squared (if shown).  
+    The user must specify both a name and a value for the statistic.  Users 
+    can report significance levels of test statistics as a second statistic 
+    to be shown on the line below the first statistic (see example below).
+    
+^adec(^numlist^)^ specifies the number of decimal places reported for 
+    user-added statistics (in ^addstat^).  The default value for ^rdec^ is 
+    the value for ^tdec^. The minimum value is 0 and the maximum value is 11.
+    If one number is specified in the numlist, it will apply to all 
+    statistics.  If multiple numbers are specified in the numlist,
+    they are applied to the user-added statistics as in ^bdec^.
+
+^onecol^ specifies that multiequation models (e.g. @mlogit@, @reg3@, @heckman@) be 
+    formatted in one column rather than the default of multiple columns, 
+    one column per equation.  Extra statistics included in the e(b) vector are 
+    also reported.
+ 
+^xstats^ specifies that the extra statistics included in the e(b) matrix be
+    reported.  Extra statistics for multi-equation models (i.e. @heckman@, 
+    @heckprob@, and @biprobit@) are not reported - use ^addstat^ or ^onecol^.
+    If there are no extra statistics in the e(b) matrix, ^xstats^ is ignored.
+    This option is largely superseded by ^addstat^.
+
+    
+5. Other options
+----------------
+
+^comma^ specifies that the ASCII file output be separated by commas rather than 
+    by tabs.  This can cause problems if any of the user-defined text has 
+    commas in it (such as variable labels, ^title^, ^ctitle^, ^addstat^, 
+    or ^addnote^).  If that is the case, consider using ^quote^ as well.
+    
+^replace^ specifies that it is okay to replace filename if it already exists.
+
+^append^ specifies that new estimation output be appended to an existing 
+    output file.  In general, the same ^outreg^ options should be used in the 
+    original regression output and each appended regression.  The notes at the 
+    bottom of the table explaining the t statistics or standard errors and 
+    asterisks are correct for the first estimation in the output file.  If 
+    subsequently appended estimation results use different options (such as a 
+    switch to ^noaster^, or change the estimation's ^robust^ option), the 
+    notes will not be appropriate for all the columns.  This problem can be 
+    addressed with a combination of ^nonotes^ and ^addnote^.
+    
+
+Examples
+.-
+
+^outreg^ defaults
+-----------------
+
+^outreg^ is used after an estimation command (similar to @predict@).  Take a 
+simple regression using Stata's auto.dta dataset.
+
+    . ^use c:\stata\auto, clear^
+    (1978 Automobile Data)
+
+    . ^regress mpg foreign weight^
+
+      Source |       SS       df       MS                  Number of obs =      74
+    ---------+------------------------------               F(  2,    71) =   69.75
+       Model |   1619.2877     2  809.643849               Prob > F      =  0.0000
+    Residual |  824.171761    71   11.608053               R-squared     =  0.6627
+    ---------+------------------------------               Adj R-squared =  0.6532
+       Total |  2443.45946    73  33.4720474               Root MSE      =  3.4071
+
+    ------------------------------------------------------------------------------
+         mpg |      Coef.   Std. Err.       t     P>|t|       [95% Conf. Interval]
+    ---------+--------------------------------------------------------------------
+     foreign |  -1.650029   1.075994     -1.533   0.130        -3.7955    .4954421
+      weight |  -.0065879   .0006371    -10.340   0.000      -.0078583   -.0053175
+       _cons |    41.6797   2.165547     19.247   0.000       37.36172    45.99768
+    ------------------------------------------------------------------------------
+
+The simplest form of ^outreg^ just requires an output file name, in this case 
+"auto1".  
+
+    . ^outreg using auto1^
+
+Usually one would load the output file auto1.out into a word processor 
+as a table.  We can see the results of ^outreg^ within Stata using the @type@ 
+command.  ^outreg^ output files ordinarily look jumbled when displayed using
+@type@ so to improve the readability of these examples we have added spaces to 
+make the columns line up properly.
+
+    .^ type auto1.out^
+                      Mileage (mpg)
+    Car type            -1.650
+                        (1.53)
+    Weight (lbs.)       -0.007
+                       (10.34)**
+    Constant            41.680
+                       (19.25)**
+    Observations          74
+    R-squared            0.66
+    Absolute value of t statistics in parentheses
+    * significant at 5%; ** significant at 1%
+
+Note that ^outreg^ uses the variable labels in place of variable names so that 
+the independent variable mpg listed above the column of regression coefficients 
+uses the label "Mileage (mpg)", the variable foreign uses its label "Car type", 
+etc.  The user can change the variable labels before invoking ^outreg^ to 
+provide the desired captions for the ^outreg^ results table.
+
+
+Decimal places of coefficients; column titles
+------------------------------------------------
+
+By default the regression coefficients are shown with three decimal places, but 
+this isn't very satisfactory for the weight variable in the regression above.  
+The weight coefficient is statistically significant, but only one non-zero 
+digit is displayed.  We could use the option ^bdec(5)^ to display 5 decimal 
+places for all the coefficients, but we can do better.  To display five decimal 
+places of the weight coefficient only and two decimal places of the other 
+coefficients, we use ^bdec(2,5,2)^.  We also add a column title "Base case (mpg)" 
+to distinguish this regression from a second regression we will append to the 
+table in the next example below.  Quotation marks are required around the 
+column title because it contains parentheses (they are also required if the 
+text contains commas).
+
+    . ^outreg using auto2, bdec(2,5,2) ctitle("Base case (mpg)")^
+    . ^type auto2.out^
+                    Base case (mpg)
+    Car type            -1.65
+                        (1.53)
+    Weight (lbs.)       -0.00659
+                       (10.34)**
+    Constant            41.68
+                       (19.25)**
+    Observations          74
+    R-squared            0.66
+    Absolute value of t-statistics in parentheses
+    * significant at 5%; ** significant at 1%
+
+
+Appending two regression tables together; number formats for coefficients
+-------------------------------------------------------------------------
+
+Researchers presenting their results commonly combine several related 
+estimations in the same table.  ^outreg^ combines results with the ^append^ 
+option.  First we add a quadratic term for the weight variable in a new
+regression.
+
+    . ^gen weightsq = weight^^2^
+    . ^label var weightsq "Weight squared"^
+    . ^regress mpg foreign weight weightsq^
+
+      Source |       SS       df       MS                  Number of obs =      74
+    ---------+------------------------------               F(  3,    70) =   52.25
+       Model |  1689.15372     3   563.05124               Prob > F      =  0.0000
+    Residual |   754.30574    70  10.7757963               R-squared     =  0.6913
+    ---------+------------------------------               Adj R-squared =  0.6781
+       Total |  2443.45946    73  33.4720474               Root MSE      =  3.2827
+
+    ------------------------------------------------------------------------------
+         mpg |      Coef.   Std. Err.       t     P>|t|       [95% Conf. Interval]
+    ---------+--------------------------------------------------------------------
+     foreign |    -2.2035   1.059246     -2.080   0.041        -4.3161   -.0909003
+      weight |  -.0165729   .0039692     -4.175   0.000      -.0244892   -.0086567
+    weightsq |   1.59e-06   6.25e-07      2.546   0.013       3.45e-07    2.84e-06
+       _cons |   56.53884   6.197383      9.123   0.000       44.17855    68.89913
+    ------------------------------------------------------------------------------
+
+The weightsq coefficient is so small that it is difficult to display without 
+scientific notation (as displayed in the @regress@ output).  By default, 
+^outreg^ displays coefficients in fixed format.  We can change the weightsq 
+coefficient numeric format to scientific (while keeping the rest fixed) with 
+the ^bfmt(f,f,e,f)^ option.  To specify the decimal places for the 
+coefficients, we could use the option ^bdec(2,5,2,2)^, but the last 2 is 
+unnecessary because the last decimal place value applies to all the rest of the 
+coefficients.  We now ^append^ the results of the new regression to the 
+previous regression results.
+
+    . ^outreg using auto2, bdec(2,5,2) bfmt(f,f,e,f) ctitle("Quadratic (mpg)") append^
+    . ^type auto2.out^
+                         (1)               (2)
+                    Base case (mpg)   Quadratic (mpg)
+    Car type            -1.65             -2.20
+                        (1.53)            (2.08)*
+    Weight (lbs.)       -0.00659          -0.01657
+                       (10.34)**          (4.18)**
+    Weight squared                         1.59e-06
+                                          (2.55)*
+    Constant            41.68             56.54
+                       (19.25)**          (9.12)**
+    Observations          74                74
+    R-squared            0.66              0.69
+    Absolute value of t statistics in parentheses           
+    * significant at 5%; ** significant at 1%               
+
+Technical Note: Originally I created an example where the "Base case" 
+regression was ^regress mpg weight foreign^ and the "Quadratic" regression was 
+^regress mpg weight weightsq foreign^.  The ^outreg^ table ordered the 
+coefficients: 
+     weight    foreign     weightsq
+because all the regressors in the first estimation are listed before any new 
+regressors in the appended estimation.  Most people would prefer to list the 
+weightsq coefficient immediately after the weight coefficient since they are
+related.  There are three ways to get this result.  The first is shown in the
+example above: make weight the last regressor in the first estimation and
+weightsq the first new regressor in the second estimation.  The second way
+is to keep the order of the regressors unchanged in the estimation but include 
+a varlist in the first ^outreg^ to reorder the coefficients:
+    . ^outreg foreign weight using auto2, bdec(2,5,2) title("base case (mpg)")^
+The third way and the only way to obtain the coefficient ordering
+    weight     weightsq    foreign
+in the ^outreg^ table (given that weightsq is not include in the first 
+estimation) is to reorder the rows by hand after the table is created by 
+^outreg^.
+
+
+Typical format for economics journals: standard errors, brackets, and no asterisks
+----------------------------------------------------------------------------------
+
+Economics journals often prefer standard errors to t statistics 
+and don't use asterisks to denote statistical significance.  The ^se^ option 
+replaces t statistics with standard errors, the ^bracket^ option replaces 
+parentheses with brackets, and the ^noaster^ option suppresses asterisks.  The 
+^title^ option adds a title at the top of the ^outreg^ table.  Note that the
+decimal places specified by the ^bdec^ option apply to both the coefficients and
+the standard errors.
+
+    . ^regress mpg foreign weight^
+      (output omitted)
+
+    . ^outreg using auto3, se bdec(2,5,2) bracket noaster /*^
+   ^>  */ title("Please, no t statistics - we're economists")^
+
+    . ^type auto3.out^
+       Please, no t statistics - we're economists      
+                     Mileage (mpg)
+    Car type            -1.65
+                        [1.08]
+    Weight (lbs.)       -0.00659
+                        [0.00064]
+    Constant            41.68
+                        [2.17]
+    Observations          74
+    R-squared            0.66
+    Standard errors in brackets     
+
+
+Using a varlist, no constant, and adding an explanatory note
+------------------------------------------------------------
+
+Specifying a varlist in ^outreg^ can be convenient to limit the output table 
+to only the essential coefficients.  For example, we may want to control for
+the influence of dummy variables, but not report their estimated coefficients.  
+As an example, we create categorical dummy variables for the five repair scores 
+in the auto.dta dataset and add them to our simple regression above. 
+
+    . ^tab rep78, gen(repair)^
+      (output omitted)
+
+    . ^regress mpg foreign weight repair1-repair4^
+      (output omitted)
+
+If the only coefficients of interest are those of foreign and weight, they can 
+be specified in the varlist.  The constant in the regression will still be 
+reported in the ^outreg^ table unless suppressed with the ^nocons^ option.  The 
+constant coefficient is not very meaningful in this case when dummy variables 
+are included in the regression but their coefficients are not reported, so we 
+suppress it.  We also add a note to the bottom of the table explaining that 
+the dummy variable coefficients are not shown, using the ^addnote^ option.
+Note that since the text in ^addnote^ does not contain parentheses or commas
+it does not need quotation marks.  The ^outreg^ command is too long for one
+line, so it uses the Stata comment symbols (/* ... */) to comment out the end 
+of the line and continue the command syntax on the next line.
+
+    . ^outreg weight foreign using auto4, nocons /*^
+   ^>   */ addnote(Coefficients for repair dummy variables not shown)^
+
+    . ^type auto4.out^
+                     Mileage (mpg)
+    Weight (lbs.)       -0.006
+                        (9.16)**
+    Car type            -2.923
+                        (2.18)*
+    Observations          69
+    R-squared            0.69
+    Absolute value of t statistics in parentheses   
+    * significant at 5%; ** significant at 1%       
+    Coefficients for repair dummy variables not shown       
+
+
+Added statistics and notes
+--------------------------
+
+^outreg^ allows for a number of statistics besides coefficients to be included 
+in output tables (number of observations, R-squared, etc.).  Users may 
+nevertheless want to add a range of additional statistics to their estimation 
+tables at different times, so the ^addstat^ option allows the inclusion of 
+arbitrary user-specified statistics below the estimated coefficients (and below 
+number of observations and R-squared, if reported).  Say we wanted to test the
+equality of two of the estimated coefficients and report the results in the table.
+After a simple regression, the @test@ command will report an F statistic and 
+the associated p value in the macros r(F) and r(p).
+
+    . regress mpg foreign weight length
+     (output omitted)
+
+    . test foreign length
+     (output omitted)
+
+^addstat^ can report include multiple statistics, each one of which is 
+displayed on a separate line.  The arguments for each statistic are a text 
+string (the name of the statistic) and number (the statistic value).  To 
+report just the F statistic the ^addstat^ option might be 
+^addstat(F test: Car type=Length=0, r(F))^.  Below we include the p value of 
+the F statistic as a second statistic.  The ^adec^ option specifies the 
+reported decimal places for each statistic.  
+
+The ^outreg^ command below also includes another example of the ^addnote^ 
+option, first inserting a blank line after the rest of the table output with
+an empty string (""), followed by the time the program was run (from the 
+built-in Stata functions $S_TIME and $S_DATE), and the dataset used by the 
+estimation (from the Stata function $S_FN).
+
+    . ^outreg using auto5, /*^
+   ^>   */ addstat(F test: Car type=Length=0, r(F), Prob > F, r(p)) adec(2,3) /*^
+   ^>   */ addnote("", "Run at $S_TIME, $S_DATE", Using data from $S_FN)^
+
+    . ^type auto5.out^
+                           Mileage (mpg)
+    Car type                  -1.708
+                              (1.60)
+    Weight (lbs.)             -0.004
+                              (2.73)**
+    Length (in.)              -0.083
+                              (1.51)
+    Constant                  50.537
+                              (8.09)**
+    Observations                74
+    R-squared                  0.67
+    F test: Car type=Length=0  2.34
+    Prob > F                   0.104
+    Absolute value of t statistics in parentheses   
+    * significant at 5%; ** significant at 1%       
+        
+    Run at 23:23:08, 17 Nov 2000    
+    Using data from c:\stata\auto.dta      
+
+
+Stata return value macros r(), e(), or s() can be included directly in the 
+^addstat^ option in place of statistic values as shown above.  Another example
+would be to report a pseudo R-squared after a logit estimation, which ^outreg^ 
+does not otherwise report.  The addstat option could be 
+^addstat(Pseudo R-squared, e(r2_p))^.  To see all the statistics available in 
+memory after an estimation command, type @estimates list@ or ^est li^, and after 
+an r-class command (notably most tests and @summarize@), type @return list@ or 
+^ret li^.  
+
+In some cases it is better to save the value of a previously calculated 
+statistic in a local macro and then put the macro value into ^addstat^.  This
+would be the case, for example, if after a regression two test commands were 
+run which return r() values, both of which are to be reported with the
+regression results in ^outreg^.  The second test command would wipe out the 
+r() values from the first test command.  Say both test commands (called
+test1 and test2) created F statistics, then the user could save the first F 
+statistic in a local macro:
+
+    . ^regress y x1 x2^
+    . ^test1 x1^
+    . ^local F1 = r(F)^
+    . ^test2 x2^
+    . ^outreg using 2test, addstat(Test1 F, `F1', Test2 F, r(F))^
+
+
+Multiequation models and column titles
+--------------------------------------
+
+The creation of output tables for multiequation models is straightforward with 
+^outreg^.  Each equation has its own column in the table.  To label the 
+equation column headings with something other than the dependent variable 
+labels, the user chooses the ^ctitle^ option with multiple text strings, as 
+many strings as equations.  The example below uses the @reg3@ three-stage 
+least squares estimation of the Klein macro model (see [R] reg3).
+
+    . ^reg3 (c p p1 w) (i p p1 k1) (wp y y1 yr), endog(w p y) exog(t wg g)^
+    (output omitted - see [R] reg3, p. 148 for output)
+
+    . ^outreg using multieq, ctitle(Consumption Equation, Investment Equation, Wage^
+    > ^Equation)^ 
+
+    . ^type multieq.out^
+                     (1)                       (2)               (3)
+               Consumption Equation   Investment Equation   Wage Equation
+    profits          0.125                    -0.013  
+                    (1.16)                    (0.08)  
+    profits1         0.163                     0.756   
+                    (1.62)                    (4.94)**        
+    wagetot          0.790           
+                   (20.83)**               
+    capital1                                  -0.195  
+                                              (5.99)**        
+    totinc                                                       0.400
+                                                               (12.59)**
+    totinc1                                                      0.181
+                                                                (5.31)**
+    year                                                         0.150
+                                                                (5.36)**
+    Constant        16.441                    28.178          -287.223
+                   (12.60)**                  (4.15)**          (5.37)**
+    Observations      21                        21                21
+                   Absolute value of z statistics in parentheses                   
+                     * significant at 5%; ** significant at 1%
+                     
+If the user prefers an ^outreg^ table with all the equations' coefficients in 
+a single column after a multiequation estimation, the ^onecol^ option provides 
+this.
+
+
+Exponential transformations of coefficients
+-------------------------------------------
+
+As noted above, there is no way of knowing after an estimation command if the 
+user chose to report the exponentiated form of coefficients.  The user must 
+choose the ^eform^ option in ^outreg^ to get the same form of the coefficients.
+
+For duration models, the exponential form is known as the hazard ratio.  For 
+other models it is known as odds ratio, relative risk ratio, or incidence rate 
+ratio. 
+
+The example here uses the panel Cox regression shown in [R] @stcox@.  
+
+    . ^stcox load bearings, nolog^
+
+             failure _d:  1 (meaning all fail)
+       analysis time _t:  failtime
+
+    Cox regression -- Breslow method for ties
+
+    No. of subjects =           12                     Number of obs   =        12
+    No. of failures =           12
+    Time at risk    =          896
+                                                       LR chi2(2)      =     23.39
+    Log likelihood  =    -8.577853                     Prob > chi2     =    0.0000
+    
+    ------------------------------------------------------------------------------
+          _t |
+          _d | Haz. Ratio   Std. Err.       z     P>|z|       [95% Conf. Interval]
+    ---------+--------------------------------------------------------------------
+        load |    1.52647   .2188172      2.951   0.003       1.152576    2.021653
+    bearings |   .0636433   .0746609     -2.348   0.019       .0063855    .6343223
+    ------------------------------------------------------------------------------
+
+By default, @stcox@ reports coefficients in hazard ratio form.  However, ^outreg^
+without the ^eform^ option will report the coefficients in unexponentiated form,
+not in hazard ratios.
+
+    . ^outreg using bearing^
+    . ^type bearing.out^
+                     _t
+    load            0.423
+                   (2.95)**
+    bearings       -2.754
+                   (2.35)*
+    Observations     12
+    Absolute value of z statistics in parentheses   
+    * significant at 5%; ** significant at 1%       
+
+^outreg^ can create an output file with coefficients in hazard ratio form with 
+the addition of the ^eform^ option.  Since @stcox@ does not tell us the name of 
+the duration variable, we also add a column title ^ctitle(failtime)^.
+
+    . ^outreg using bearing, eform ctitle(failtime) replace^
+    . ^type bearing.out^
+                  failtime
+    load            1.526
+                   (2.95)**
+    bearings        0.064
+                   (2.35)*
+    Observations     12
+    Absolute value of z statistics in parentheses   
+    * significant at 5%; ** significant at 1%       
+
+
+Marginal Effects
+----------------
+
+A number of Stata commands (mostly STB additions) report the estimated marginal 
+effects of coefficients.  Most of the commands only report marginal effects, 
+and the user need not do anything special when invoking ^outreg^.  Two recent 
+STB commands, @search:truncreg!truncreg,marginal@ and @search:dtobit!dtobit@, though, report 
+both the coefficients and the marginal effects, so the user must tell ^outreg^ 
+whether to report the marginal effects with the ^margin^ option.  After 
+@search:truncreg!truncreg,marginal@, the user specifies the ^margin^ option without
+arguments in outreg.  @search:dtobit!dtobit@, on the other hand, calculates three 
+different marginal effects.  The user must specify which marginal effect ^outreg^ 
+will report using the ^margin^ option with the argument u, c, or p for the 
+unconditional, conditional, or the probability uncensored, respectively.
+
+We use Stata's auto dataset again to estimate a @tobit@ model and calculate the 
+marginal effects with @search:dtobit!dtobit@.
+
+
+    . ^use c:\stata\auto, clear^
+    (1978 Automobile Data)
+
+    . ^tobit mpg trunk weight, ll(17)^
+    (output omitted)
+
+    . ^dtobit^
+
+    Marginal Effects: Latent Variable
+    ------------------------------------------------------------------------------
+    variable |      dF/dx   Std. Err.      z    P>|z|     X_at   [    95% C.I.   ]
+    ---------+--------------------------------------------------------------------
+       trunk |  -.1487203   .1477163    -1.01   0.314   13.7568  -.438239  .140798
+      weight |  -.0063328   .0008709    -7.27   0.000   3019.46   -.00804 -.004626
+       _cons |   41.90603   2.094632    20.01   0.000   1.00000   37.8006  46.0114
+    ------------------------------------------------------------------------------
+
+    Marginal Effects: Unconditional Expected Value
+    ------------------------------------------------------------------------------
+    variable |      dF/dx   Std. Err.      z    P>|z|     X_at   [    95% C.I.   ]
+    ---------+--------------------------------------------------------------------
+       trunk |  -.1243259   .1234866    -1.01   0.314   13.7568  -.366355  .117703
+      weight |   -.005294   .0007281    -7.27   0.000   3019.46  -.006721 -.003867
+       _cons |   35.03223   1.751052    20.01   0.000   1.00000   31.6002  38.4642
+    ------------------------------------------------------------------------------
+
+    Marginal Effects: Conditional on being Uncensored
+    ------------------------------------------------------------------------------
+    variable |      dF/dx   Std. Err.      z    P>|z|     X_at   [    95% C.I.   ]
+    ---------+--------------------------------------------------------------------
+       trunk |  -.0926812   .0920555    -1.01   0.314   13.7568  -.273107  .087744
+      weight |  -.0039465   .0005428    -7.27   0.000   3019.46   -.00501 -.002883
+       _cons |   26.11546   1.305356    20.01   0.000   1.00000    23.557  28.6739
+    ------------------------------------------------------------------------------
+
+    Marginal Effects: Probability Uncensored
+    ------------------------------------------------------------------------------
+    variable |      dF/dx   Std. Err.      z    P>|z|     X_at   [    95% C.I.   ]
+    ---------+--------------------------------------------------------------------
+       trunk |   -.009621   .0095561    -1.01   0.314   13.7568  -.028351  .009109
+      weight |  -.0004097   .0000563    -7.27   0.000   3019.46   -.00052 -.000299
+       _cons |   2.710991   .1355063    20.01   0.000   1.00000    2.4454  2.97658
+    ------------------------------------------------------------------------------
+
+The following ^outreg^ command will report the unconditional marginal effects.
+    
+    . ^outreg using auto6, margin(u)^
+    . ^type auto6.out^
+                           Mileage (mpg)
+    Trunk space (cu. ft.)     -0.124
+                              (1.01)
+    Weight (lbs.)             -0.005
+                              (7.27)**
+    Constant                  35.032
+                             (20.01)**
+    Observations                74
+    Absolute value of z statistics in parentheses   
+    * significant at 5%; ** significant at 1%       
+
+ Although the user can only choose a single kind of marginal effect to include
+ in each ^outreg^ command after the @search:dtobit!dtobit@ command, the user could 
+ use ^outreg^ several times with different marginal effects and append the 
+ results together into a single table.
+
+
+Author
+------
+          John Luke Gallup
+          developIT.org
+          john_gallup@@alum.swarthmore.edu
+
+Also see
+--------
+    STB:  sg97 (STB-46, STB-49, STB-58)
+ Manual:  ^[U] 23 Estimation and post-estimation commands^
+          ^[U] 29 Overview of model estimation^
+          ^[R] estimation commands^
+On-line:  help for @est@, @postfile@, @outfile@, @outsheet@, @save@, @search:modltbl!modltbl@;
+

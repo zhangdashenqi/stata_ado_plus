@@ -1,0 +1,91 @@
+{smcl}
+{* *! version 1.0.0  20oct2007}{...}
+{cmd:help stthregm}
+{hline}
+
+{title:Title}
+
+{p2colset 5 16 21 2}{...}
+{p2col :{hi: stthregm} {hline 2}}Fit threshold regression mixture model{p_end}
+{p2colreset}{...}
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:stthregm} {ifin}{cmd:,} {cmd:lny0}({varlist}) {cmd:mu}({varlist}) {cmd:lgtp}({varlist}) [{cmd:}{it:other options}] 
+
+{synoptset 21 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Model}
+{synopt :{opth lny0(varlist)}}list covariates in the linear regression link function for lny0{p_end}
+{synopt :{opth m:u(varlist)}}list covariates in the linear regression link function for mu{p_end}
+{synopt :{opth lgtp(varlist)}}list covariates in the linear regression link function for lgtp{p_end}
+{synopt :{opt nocons:tant}}specifies that no intercepts are included in the linear regression link functions for lny0, mu and lgtp{p_end}
+
+
+{syntab:Reporting}
+{synopt :{opt l:evel(#)}}set confidence level; default is {cmd:level(95)}{p_end}
+
+
+{syntab:Max options}
+{synopt :{opt init(string)}}specify initialization values of the regression coefficients in {break} Maximum Likelihood iterations{p_end}
+{synopt :{opt nolog}}specifies that the iteration log of the log likelihood is not displayed{p_end}
+{synopt :{it:{help stcox##maximize_options:maximize_options}}}control the maximization process; seldom used{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+
+
+{title:Description}
+
+{pstd}
+{cmd:stthregm} fits, via maximum likelihood, threshold regression mixture model on survival data. 
+
+
+{title:Options for stthregm}
+
+{dlgtab:Model}
+
+{phang}
+{opth lny0(varlist)} list covariates in the linear combination of covariates for lny0.
+
+{phang}
+{opth mu(varlist)} list covariates in the linear combination of covariates for mu.
+
+{phang}
+{opth lgtp(varlist)} list covariates in the linear combination of covariates for lgtp.
+
+{phang}
+{opt noconstant} specifies that no intercepts are included in the linear regression link functions for lny0, mu and lgtp.
+
+
+{dlgtab: Reporting}
+
+{phang}
+{opt level(#)}; see {helpb st estimation options##level():[ST] estimation options}.
+
+
+
+{dlgtab: Max options}
+{phang}
+{opt init(string)} specify initialization values of the regression coefficients in {break}
+Maximum Likelihood iterations. The syntax is the same as "ml init", which is the {break}
+command to set initial values in the maximum likelihood estimation routine of STATA.
+
+{phang}
+{opt nolog} specifies that the iteration log of the log likelihood is not displayed.
+ 
+{title:Example of fitting threshold regression mixture model using stthregm}
+ 
+{pstd}Setup{p_end}
+{phang2}{cmd:. use kidney, clear}{p_end}
+
+{pstd}Stset the data{p_end}
+{phang2}{cmd:. stset time, failure(infection)}{p_end}
+
+{pstd}Fit threshold regression mixture model{p_end}
+{phang2}{cmd:. xi: stthregm, lny0(i.group) mu(i.group) lgtp(i.group)}{p_end}
+
+
+

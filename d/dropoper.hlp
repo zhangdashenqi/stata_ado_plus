@@ -1,0 +1,35 @@
+Drop operator variables                                           (STB-7: sts2)
+-----------------------
+
+	^dropoper^
+
+
+Description
+-----------
+
+^dropoper^ drops all operator variables from the current data set.  An operator
+variable is formally defined as any variable containing a period (_), such as 
+^L_gnp^ and ^L2_gnp^ created by ^lag^, ^F_gnp^ and ^F2_gnp^ created by ^lead^, ^D_gnp^ and
+^D2_gnp^ created by ^dif^, and ^G_gnp^ created by ^growth^.  It also includes compound
+operator variables such as ^LD_gnp^, created by applying ^lag^ to the result of
+^dif^.
+
+
+Example
+-------
+
+ . ^dropoper^
+
+
+
+Author
+------
+ 
+Sean Becketti, Federal Reserve Bank of Kansas City.
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7)
+On-line:  ^help^ for ^lag^, ^growth^

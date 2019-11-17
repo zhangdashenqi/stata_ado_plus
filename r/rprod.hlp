@@ -1,0 +1,73 @@
+.-
+help for ^rprod^                                                   (STB-60: dm87)
+.-
+
+Calculating the row product of observations
+-------------------------------------------
+
+  ^egen^ newvar ^=^ ^rprod(^varlist^)^ [^if^ exp] [^in^ range]
+                     [^, pm^iss^(ignore^|^missing^|^1)^]
+
+
+Description
+-----------
+
+^rprod^ provides a multiplicative row function for ^egen^ analogous to the
+additive ^rsum^ function.  The product of observations of varlist
+meeting optional ^in^ and ^if^ conditions is returned in newvar. ^rprod^
+insists that newvar is calculated in double precision.
+
+
+Option
+------
+
+^pmiss(ignore^|^missing^|^1)^ specifies what is to be the product of 
+    observations at least one of which is missing.  This syntax maintains 
+    consistency with that of another ^egen^ function, ^prod^.
+
+   ^pmiss(ignore)^, the default, ignores missing values and returns the
+        product of all non-missing values. If all values are missing, then
+        missing is returned.
+
+   ^pmiss(missing)^ returns missing for the product of observations if
+        any observation is missing.  This holds even if one or more of the
+        nonmissing observations is zero.
+
+   ^pmiss(1)^ returns 1 for the product of observations if all observations
+        are missing. Otherwise, it returns the product of all nonmissing 
+        values. This choice would rarely be made (see Appendix in STB-51 
+        insert for dm71: ^_gprod^; STB Reprints Vol 9, pages 45--48).
+
+
+Examples
+--------
+
+    . ^egen k = rprod(a b c)^
+
+    . ^egen m = rprod(a b c), pmiss(missing)^
+
+
+Acknowledgements
+----------------
+
+This program was written in response to a thread on the Statalist Server
+started by Brian Jacob (ba-jacob@@mail.consortium-chicago.org ). Nick Cox
+(n.j.cox@@durham.ac.uk) provided helpful comments.
+
+
+Author
+------
+
+      Philip Ryan
+      Department of Public Health
+      University of Adelaide
+      South Australia
+      philip.ryan@@adelaide.edu.au
+
+
+Also see
+--------
+
+    Manual:  [R] ^egen^
+       STB:  STB-51 dm71 
+   On-line:  help for ^egen^, ^prod^

@@ -1,0 +1,29 @@
+Test for a unit root                                             (STB-17: sts7)
+--------------------
+
+
+	^unitroot^ varname ^, ^[^lags(^#^)^] [^trend^]
+
+
+tests the null hypothesis that "varname" has a unit root.  Three test
+statistics are reported: the augmented Dickey-Fuller statistic, and the
+Z(alpha) and Z(t) statistics developed by Phillips and Perron.  A drift
+term is included in the test regressions.  A trend term is optional.
+All three statistics have the same non-standard distribution.  The true
+distribution under the null has been calculated and is tabulated in
+Fuller (1976, p. 373) where the original Dickey-Fuller test is
+explained in detail.
+
+
+References:
+-----------
+
+Fuller, Wayne A.  (1976)  "Introduction to Statistical Time Series,"
+John Wiley & Sons.
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7)
+On-line:  ^help^ for ^dickey^, ^ppunit^

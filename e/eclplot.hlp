@@ -1,0 +1,193 @@
+{smcl}
+{* 28feb2003}{...}
+{hline}
+help for {hi:eclplot}{right:(SJ3-3: st0043; SJ4-3: st0043_1)}
+{right:dialog:  {dialog eclplot}}
+{hline}
+
+{title:Plot estimates with confidence limits}
+
+{p 8 21 2}{cmd:eclplot} {it:estimate_varname clmin_varname clmax_varname parmid_varname} [{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:,}
+{cmdab:hor:izontal} {cmdab:rplot:type}{cmd:(}{it:rplot_type}{cmd:)}
+{cmd:estopts(}{it:scatter_options}{cmd:)} {cmd:ciopts(}{it:rplot_options}{cmd:)}
+{cmd:plot(}{it:plot}{cmd:)}
+{it:twoway_options} ]
+
+{p 4 4 2}
+where {it:estimate_varname}, {it:clmin_varname}, and {it:clmax_varname} are
+numeric variables containing parameter estimates, lower confidence limits,
+upper confidence limits, respectively, to be plotted on one axis, and
+{it:parmid_varname} is a parameter identity variable to determine the position
+of each confidence interval on the other axis.  The {it:twoway_options} are as
+specified for {help twoway}; see help for {it:{help twoway_options}}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:eclplot} creates a plot of estimates with lower and upper confidence
+limits on one axis against another variable on the other axis. The estimates
+and lower and upper confidence limits are stored in three variables, with one
+observation per confidence interval plotted. Datasets with such variables may
+be created by the {help parmest} package (downloadable from {help ssc:SSC}),
+or by {help statsby} or {help postfile} in official Stata. You have a
+choice of plotting the confidence intervals horizontally or vertically and a
+choice of range plot styles for the confidence intervals and may also overlay
+the confidence interval plot with other plots using the 
+{help plot_option:plot option}. In default, {cmd:eclplot} does not print a
+legend (see help for {it:{help legend_option}}) and has "sensible" settings
+for axis titles and labels (see help for {it:{help title_option}} and
+{it:{help axis_options}}), but these defaults may be overridden by the
+{it:{help twoway_options}}.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:horizontal} specifies that the confidence intervals must be plotted
+horizontally, with the estimates and confidence limits on the horizontal axis
+and the other variable on the vertical axis. By default, if {cmd:horizontal}
+is not specified, the confidence intervals are plotted vertically, with the
+estimates and confidence limits on the vertical axis and the other variable on
+the horizontal axis.
+
+{p 4 8 2}
+{cmd:rplottype(}{it:rplot_type}{cmd:)} specifies the range plot type used to
+plot the confidence intervals. The value of this option may be any one of the
+range plot types allowed by {help twoway}, namely {help twoway_rarea:rarea},
+{help twoway_rbar:rbar}, {help twoway_rspike:rspike}, {help twoway_rcap:rcap},
+{help twoway_rcapsym:rcapsym}, {help twoway_rscatter:rscatter}, 
+{help twoway_rline:rline}, and {help twoway_rconnected:rconnected}.  If the
+{cmd:rplottype()} option is not specified, then it is set to 
+{help twoway_rcap:rcap}, and the confidence limits are drawn with capped spikes.
+
+{p 4 8 2}
+{cmd:estopts(}{it:scatter_options}{cmd:)} specifies any plot options for the
+plotting of the estimates. These options may be any of the options allowed by
+{help scatter:twoway scatter}.  Typically, they specify attributes of the
+markers used for the position of the estimate in each confidence interval.
+(See help {it:{help marker_options:marker options}}).
+
+{p 4 8 2}
+{cmd:ciopts(}{it:rplot_options}{cmd:)} specifies any plot options for drawing
+the confidence limits.  These options may be any of the options allowed for
+the range plot type specified by the {cmd:rplottype()} option, which may be any
+of the range plot options allowed by {help twoway}, and defaults to 
+{help twoway_rcap:rcap}. For instance, the user may specify the width of the
+caps on each confidence limit. To find more about the options allowed by each
+range plot type, see help {help twoway} and
+{help twoway_scatter:scatter}; for the individual range plot types, see
+{help twoway_rarea:rarea}, {help twoway_rbar:rbar}, 
+{help twoway_rspike:rspike}, {help twoway_rcap:rcap}, 
+{help twoway_rcapsym:rcapsym}, {help twoway_rscatter:rscatter}, 
+{help twoway_rline:rline}, and {help twoway_rconnected:rconnected}.
+
+{p 4 8 2}
+{cmd:plot(}{it:plot}{cmd:)} provides a way to add other plots to the generated
+graph; see help {it:{help plot_option}}.
+
+{p 4 8 2}
+{it:twoway_options} are any of the options documented in help for
+{it:{help twoway_options}}.  These include options for titling the graph
+(see help for {it:{help title_options}}), saving the graph to disk
+(see help for {it:{help saving_option}}), and the {cmd:by()} option
+(see help for {it:{help by_option}}).
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:eclplot} plots confidence intervals against another variable. The
+datasets used are commonly created by the {help parmest} package, downloadable
+from {help ssc:SSC}. The {help parmest} package stores results from an 
+{help estimates:estimation command} as a dataset.  (See also help 
+{help _estimates} or {help ereturn}.) It creates a dataset with one
+observation per model parameter or one observation per parameter per
+by-group and data on parameter names, estimates, confidence limits, and other
+parameter attributes.  The other variable, against which the confidence
+intervals are plotted, may be any numeric variable but is often a categorical
+factor included as a predictor in the model fitted by the estimation command
+using the {help xi} utility. To reconstruct such a categorical factor in a
+{help parmest} output dataset, the user may use the {help factext} and 
+{help descsave} packages, also downloadable from SSC. Alternatively, the user 
+may use the {help parmest} package, possibly with the {help label} option and
+then use the {help sencode} package (also downloadable from SSC) to encode the
+{hi:parm} or {hi:label} string variable in the output dataset to a numeric
+variable, which may be plotted by {cmd:eclplot} against the estimates and
+confidence limits.
+
+{p 4 4 2}
+Under Stata 7, the present author usually plotted confidence intervals using
+either the {help graph7:Stata 7 {cmd:graph} command} (with the {cmd:connect}
+option) or Nicholas J. Cox's {help hplot} package, downloadable from 
+{help ssc:SSC}.  The {help hplot} package is a very comprehensive package for
+general horizontal plots.  The {cmd:eclplot} package, on its own, cannot
+entirely supersede {help hplot}, but the two packages perform overlapping sets
+of functions and may possibly be viewed as being complementary.
+
+
+{title:Examples}
+
+{p 4 4 2}
+The following examples use the {cmd:auto} data, shipped with official Stata
+(see help for {help sysuse}). A regression model is fitted for the
+{it:y}-variable {cmd:mpg} (miles per gallon), predicted by the categorical
+variables {cmd:rep78} (repair record), and {cmd:foreign}.  The {help parmby}
+command of the {help parmest} package is used to create an output dataset
+with one observation per parameter and data on estimates and confidence
+limits.  The {help sencode} package is used to create a numeric variable (with
+value labels) encoding the model parameter corresponding to each observation.
+Finally, {cmd:eclplot} is used to display the confidence intervals.  The first
+example uses parameter names to label a vertical confidence interval plot.
+The second example uses parameter labels to label a horizontal confidence
+interval plot.
+
+{p 4 8 2}{cmd:. sysuse auto,clear}{p_end}
+{p 4 8 2}{cmd:. parmby "xi:regress mpg i.foreign i.rep78",label norestore}{p_end}
+{p 4 8 2}{cmd:. sencode parm,gene(parmid)}{p_end}
+{p 4 8 2}{cmd:. eclplot estimate min95 max95 parmid}{p_end}
+
+{p 4 8 2}{cmd:. sysuse auto,clear}{p_end}
+{p 4 8 2}{cmd:. parmby "xi:regress mpg i.foreign i.rep78",label norestore}{p_end}
+{p 4 8 2}{cmd:. sencode label,gene(parmlab)}{p_end}
+{p 4 8 2}{cmd:. eclplot estimate min95 max95 parmlab,hori}{p_end}
+
+{p 4 4 2}
+The following advanced example fits the same model to the same data with a
+different parameterization and uses the {help descsave} and {help factext}
+packages as well as {help parmby}.  It creates two confidence interval plots.
+The first plot displays two confidence intervals for the mean mileage levels
+expected for cars from the USA and from elsewhere with {hi:rep78==0}.  The
+second plot displays confidence intervals for the difference in mileage
+expected for each nonzero level of {hi:rep78}, with a dotted reference line
+on the horizontal axis, indicating the difference of zero expected if
+{hi:rep78} has no independent effect on {hi:mpg}. The plots demonstrate the
+use of the options {cmd:estopts()} and {cmd:ciopts()} and the use of the 
+{it:{help twoway_options}}.
+
+{p 4 8 2}{cmd:. sysuse auto,clear}{p_end}
+{p 4 8 2}{cmd:. tab foreign,gene(orig_) nolabel}{p_end}
+{p 4 8 2}{cmd:. tempfile tf0}{p_end}
+{p 4 8 2}{cmd:. descsave foreign rep78,do(`tf0')}{p_end}
+{p 4 8 2}{cmd:. parmby "xi:regress mpg orig_* i.rep78,noconst",label norestore}{p_end}
+{p 4 8 2}{cmd:. factext,do(`tf0')}{p_end}
+{p 4 8 2}{cmd:. eclplot estimate min95 max95 foreign,hori estopts(msize(vlarge)) ciopts(msize(vlarge)) yscale(range(-1 2)) ylab(0 1) xtitle("Mean mileage per gallon")}{p_end}
+{p 4 8 2}{cmd:. eclplot estimate min95 max95 rep78,hori estopts(msize(vlarge)) ciopts(msize(vlarge)) yscale(range(1 6)) xline(0,lpattern(dot)) xtitle("Mean difference (miles per gallon)")}{p_end}
+
+
+{title:Author}
+
+{p 4 4 2}
+Roger Newson, King's College, London, UK.{break}
+Email: {browse "mailto:roger.newson@kcl.ac.uk":roger.newson@kcl.ac.uk}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Manual:  {hi:[G] graph intro}, {hi:[G] graph twoway}
+
+{p 4 13 2}
+Online:  help for {help twoway}, {help graph}, {help graph_intro}, {help graph7}{break}
+help for {help parmest}, {help sencode}, {help factext}, {help descsave}, {help hplot} if installed
+{p_end}

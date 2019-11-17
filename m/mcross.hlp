@@ -1,0 +1,110 @@
+{smcl}
+{* 13oct2004}{...}
+{hline}
+help for {hi:mcross}{right:(SJ4-4: sqv10_1; STB-23: sqv10)}
+{hline}
+
+{title:Expanded multinomial comparisons}
+
+{p 8 17 2}
+{cmd:mcross}
+[{cmd:,}
+    {cmdab:l:evel(#)}
+    {cmdab:r:rr}
+]
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:mcross} follows an {cmd:mlogit} or {cmd:svymlogit} command and displays
+the contrasts of coefficients for every possible pair of outcomes, except for
+the pairs that have already been displayed by {cmd:mlogit} or {cmd:svymlogit}.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmdab:l:evel(#)} specifies the level of the confidence intervals.
+
+{p 4 8 2}
+{cmdab:r:rr} displays relative risk ratios instead of coefficients.
+
+
+{title:Remarks} 
+
+{p 4 4 2}
+Multinomial regression results are normalized so one category{c -}one level or
+outcome of the response or dependent variable{c -}is the base category: that
+is, one category is compared with all the other categories.  You can specify
+the base category with the {cmd:basecategory()} option of {help mlogit} or
+{help svymlogit}, or you can let the program pick a default, which is the
+category with the largest sample.
+
+{p 4 4 2}
+As an example, consider using the {cmd:mlogit} command to estimate the
+relationship between {cmd:headroom} and repair record {cmd:rep78} in the auto
+data set supplied with Stata.  The category {cmd:rep78 == 3} is chosen as the
+base category.  The contrasts of non-base categories can be calculated from
+these results, but the process is tedious.  To test the contrast for the effect
+of {cmd:headroom} between categories 5 and 2, we could resort to the
+specialized syntax Stata uses for multi-equation models:
+
+{p 4 8 2}{cmd:. display [5]hdroom - [2]hdroom}{p_end}
+{p 4 8 2}{cmd:. test [5]hdroom = [2]hdroom} 
+
+{p 4 4 2}
+and so forth, or we could rerun {cmd:mlogit} and explicitly specify a
+different base category.  Depending on the size of the dataset, the number of
+explanatory variables, and the number of categories, this process can quickly
+become unwieldy.
+
+{p 4 4 2} 
+{cmd:mcross} simplifies this process by calculating and displaying the
+contrasts for each pair of categories.  Note that {cmd:mcross} works just as
+easily when there are multiple predictors.
+
+{p 4 4 2} 
+Consider two categories with coefficient vectors beta_1 and beta_2
+and estimates b_1 and b_2, normalized against a third category.
+The contrast of b_1 and b_2 has variance
+
+	var(b_1 - b_2) = var(b_1) + var(b_2) 
+	        - E[(b_1 - beta_1)(b_2 - beta_2)' - (b_2 - beta_2)(b_1 - beta_1)']
+
+{p 4 8 2} 
+Note that the covariance matrix is not symmetric; thus, its transpose
+must also be considered.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. mlogit insure age male nonwhite site2 site3}{p_end}
+{p 4 8 2}{cmd:. mcross}
+
+{p 4 8 2}{cmd:. svymlogit insure age male nonwhite site2 site3}{p_end}
+{p 4 8 2}{cmd:. mcross}
+
+
+{title:Author}
+
+{p 4 4 2}Dan Blanchette, Carolina Population Center UNC-CH{break} 
+	 dan_blanchette@unc.edu
+
+
+{title:Acknowledgements} 
+
+{p 4 4 2}This program is an update of a previous version by
+William H. Rogers, who at the time of writing was employed
+by Stata Corporation. The present version modernises the 
+program to Stata 8 and thus extends the program to apply also to 
+{cmd:svymlogit}. Thanks to Nicholas J. Cox, University of Durham, 
+for help. 
+
+
+{title:Also see}
+
+{p 4 13 2}manual:  [R] mlogit; [SVY] svy estimators{p_end}
+{p 4 13 2}STB:  sqv10 (STB-23){p_end}
+{p 4 13 2}Online:  help for {help mlogit}, {help svymlogit}, {help logit}
+

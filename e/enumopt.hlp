@@ -1,0 +1,62 @@
+.-
+help for ^enumopt^                                                 [STB-53: dm75]
+.-
+
+Programming utility to parse options of type "enumerate"
+--------------------------------------------------------
+
+	^enumopt^ "input" "enum-list" optname
+
+
+Description
+-----------
+
+^enumopt^ returns in ^r(option)^ the expanded lowercase name of the option,
+matched against the words in enum-list, where string matching uses the
+minimal abbreviation convention of Stata as indicated by capitalization of
+the words in enum-list.
+
+If ^input^ is empty, ^enumopt^ returns the (uncapitalized) first word in
+enum-list ("the default" value), unless this first word is a period ^.^ in
+which case the default is the empty string.
+
+If input does not match enum-list, an error message in terms of ^optname^
+is displayed.
+
+
+Examples
+--------
+
+You want to write a command with the option ^missing^ that should accept
+the values ^None^, ^Value^, and ^Unmatch^. You want ^none^ to be the
+default; this is specified by putting ^none^ first in the list of permitted
+values. The following code fragment demonstrates how ^enumopt^ can be used
+to write the command.
+
+	^program define cmd^
+		^version 6^
+		^syntax .... ,  MISSing(str)^
+
+		^enumopt `"`missing'"' "None Value Unmatch" "missing"^
+		^local missing `r(option)'^
+
+		...
+	^end^
+
+
+Author
+------
+
+	Jeroen Weesie
+	Dept of Sociology
+	Utrecht University
+	J.Weesie @@ fss.uu.nl
+
+
+Also See
+--------
+
+ Manual:  ^[R] syntax^
+On-line:  help fot @syntax@
+
+

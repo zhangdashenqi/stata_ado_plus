@@ -1,0 +1,57 @@
+Cross correlations with p-values                                (STB-13: sts3)
+--------------------------------
+
+	^xcorr^ var1 var2 [^if in^ , ^l^ags(#) {^k^endall | ^p^earson | ^s^pearman} ]
+
+
+calculates cross correlations--that is, correlations at various lags--of 
+var1 and var2.  By default, Pearson correlations are calculated.  p-values 
+are displayed along with the correlation coefficients.
+
+
+Options
+------- 
+^l^ags(#) specifies the number of lagged cross-correlations to display.
+
+^k^endall | ^p^earson | ^s^pearman indicates which correlation coefficient
+    to calculate.  The default is ^p^earson.
+
+
+
+
+
+Saved results
+-------------
+
+^xcorr^ saves its results in the system macros S_1, ... :
+
+         ^S_1^          Correlation between var1 and var2
+         ^S_2^          p-value of correlation between var1 and var2
+         ^S_3^          Correlation between L.var1 and var2
+         ^S_4^          p-value of correlation between L.var1 and var2
+         ^S_5^          Correlation between var1 and L.var2
+         ^S_6^          p-value of correlation between var1 and L.var2
+           .
+           .
+           .
+
+
+Note
+----
+
+^xcorr^ calls the programs ^lag^, ^period^, and ^_ts_peri^ supplied in 
+sts2 (STB-7) and the programs ^pearson^ and ^spear^ supplied in 
+sg5.1 (STB-13).  These programs must be in the ado path specified by 
+S_ADO for ^xcorr^ to execute.
+
+
+Author
+------
+
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts3 (STB-13)

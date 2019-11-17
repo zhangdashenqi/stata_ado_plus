@@ -1,0 +1,151 @@
+{smcl}
+{* 25aug2008}{...}
+{cmd:help mata mz_trimrows()}
+{hline}
+
+{title:Title}
+
+{p 4 14 2}
+{bf:mz_trimrows() -- Trims rows from the top and/or bottom of a matrix}
+
+
+{title:Syntax}
+
+{p 4 23 2}
+{it:transmorphic matrix}
+{cmd:mz_trimrows(}{it:x}{cmd:,} {it:p}{cmd:,} {it:d}{cmd:)}
+
+
+{pstd}
+where
+
+{p 12 16 2}
+{it:x}:  {it:transmorphic matrix} from which rows are to be trimmed
+
+{p 12 16 2}
+{it:p}:  {it:real scalar} containing the number of rows which must be removed from the top of matrix {it:x}
+
+{p 12 16 2}
+{it:d}:  {it:real scalar} containing the number of rows which must be removed from the bottom of matrix {it:x}
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:mz_trimrows()} returns a matrix which is the matrix {it:x} with its
+top  and/or bottom rows removed. If {it:p} = {it:d} = {it:0}, then no rows
+will be removed from the matrix.
+
+
+{title:Remarks}
+
+{pstd} Examples:
+
+        {com}: x
+        {res}       {txt}1   2   3   4
+            {c TLC}{hline 17}{c TRC}
+          1 {c |}  {res}1   3   5   6{txt}  {c |}
+          2 {c |}  {res}4   3   2   1{txt}  {c |}
+          3 {c |}  {res}7   5   3   2{txt}  {c |}
+          4 {c |}  {res}8   9   0   1{txt}  {c |}
+          5 {c |}  {res}4   6   8   9{txt}  {c |}
+          6 {c |}  {res}3   2   6   7{txt}  {c |}
+          7 {c |}  {res}1   4   5   7{txt}  {c |}
+          8 {c |}  {res}7   2   4   6{txt}  {c |}
+          9 {c |}  {res}1   4   0   3{txt}  {c |}
+          10{c |}  {res}1   4   6   7{txt}  {c |}
+            {c BLC}{hline 17}{c BRC}
+
+        {com}: mz_trimrows(x, 2, 3)
+        {res}       {txt}1   2   3   4
+            {c TLC}{hline 17}{c TRC}
+          1 {c |}  {res}7   5   3   2{txt}  {c |}
+          2 {c |}  {res}8   9   0   1{txt}  {c |}
+          3 {c |}  {res}4   6   8   9{txt}  {c |}
+          4 {c |}  {res}3   2   6   7{txt}  {c |}
+          5 {c |}  {res}1   4   5   7{txt}  {c |}
+            {c BLC}{hline 17}{c BRC}
+
+        {txt}  To remove only the first two rows of {it:x}, we set
+
+        {com}: mz_trimrows(x, 2, 0)
+        {res}       {txt}1   2   3   4
+            {c TLC}{hline 17}{c TRC}
+          1 {c |}  {res}7   5   3   2{txt}  {c |}
+          2 {c |}  {res}8   9   0   1{txt}  {c |}
+          3 {c |}  {res}4   6   8   9{txt}  {c |}
+          4 {c |}  {res}3   2   6   7{txt}  {c |}
+          5 {c |}  {res}1   4   5   7{txt}  {c |}
+          6 {c |}  {res}7   2   4   6{txt}  {c |}
+          7 {c |}  {res}1   4   0   3{txt}  {c |}
+          8 {c |}  {res}1   4   6   7{txt}  {c |}
+            {c BLC}{hline 17}{c BRC}
+
+        {txt}  To remove only the last three rows of {it:x}, we set
+
+        {com}: mz_trimrows(x, 0, 3)
+        {res}       {txt}1   2   3   4
+            {c TLC}{hline 17}{c TRC}
+          1 {c |}  {res}1   3   5   6{txt}  {c |}
+          2 {c |}  {res}4   3   2   1{txt}  {c |}
+          3 {c |}  {res}7   5   3   2{txt}  {c |}
+          4 {c |}  {res}8   9   0   1{txt}  {c |}
+          5 {c |}  {res}4   6   8   9{txt}  {c |}
+          6 {c |}  {res}3   2   6   7{txt}  {c |}
+          7 {c |}  {res}1   4   5   7{txt}  {c |}
+            {c BLC}{hline 17}{c BRC}
+
+        {txt}  If we have a string matrix
+
+        {com}: A
+        {res}         {txt}1     2     3     4
+            {c TLC}{hline 25}{c TRC}
+          1 {c |}  {res}a11   a12   a13   a14{txt}  {c |}
+          2 {c |}  {res}a21   a22   a23   a24{txt}  {c |}
+          3 {c |}  {res}a31   a32   a33   a34{txt}  {c |}
+          4 {c |}  {res}a41   a42   a43   a44{txt}  {c |}
+          5 {c |}  {res}a51   a52   a53   a54{txt}  {c |}
+            {c BLC}{hline 25}{c BRC}
+
+        {txt}  we get
+
+        {com}: mz_trimrows(A, 1, 2)
+        {res}         {txt}1     2     3     4
+            {c TLC}{hline 25}{c TRC}
+          1 {c |}  {res}a21   a22   a23   a24{txt}  {c |}
+          2 {c |}  {res}a31   a32   a33   a34{txt}  {c |}
+            {c BLC}{hline 25}{c BRC}
+
+
+{title:Conformability}
+
+    {cmd:mz_trimrows(}{it:x}{cmd:,} {it:p}{cmd:,} {it:d}{cmd:)}
+         {it:x}:  {it:n x c}
+         {it:p}:  {it:1 x 1}
+         {it:d}:  {it:1 x 1}
+    {it:result}:  {it:q x c}, {it:q <= n}
+
+
+{title:Diagnostics}
+
+{p 4 4 2}
+{cmd:mz_trimrows()} aborts with error if {it:p} or {it:d} is negative. Likewise
+if {it:p} or {it:d} is equal to the number of rows of {it:x}.
+
+
+{title:Source code}
+
+{p 4 4 2}
+{help ltimbimata_source##mz_trimrows:mz_trimrows.mata}
+
+
+{title:Author}
+
+{p 4 4 2} Diallo Ibrahima Amadou, {browse "mailto:zavren@gmail.com":zavren@gmail.com}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {bf:{help mf_select:[M-5] select()}}, {bf:{help ltimbimata}}
+{p_end}

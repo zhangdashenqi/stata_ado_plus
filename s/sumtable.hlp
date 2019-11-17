@@ -1,0 +1,335 @@
+{smcl}
+{* 04apr2015}{...}
+{cmd:help sumtable}{right: ({browse "http://www.stata-journal.com/article.html?article=up0051":SJ16-2: st0403_1})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col:{cmd:sumtable} {hline 2}}Creates tables of summary statistics{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 16 2}
+{cmd:sumtable} {it:sumvar} {it:groupvar}{cmd:,} {opt vartype(vartype_options)} 
+[{it:options}]
+
+{phang}
+{it:sumvar} is the variable to be summarized, and {it:groupvar} is a group
+variable by which the {it:sumvar} data is summarized.  {it:groupvar} must be
+numeric.
+
+{synoptset 25 tabbed}{...}
+{synopthdr}
+{synoptline}
+{p2coldent :* {cmd:vartype(}{help sumtable##vartype_options:{it:vartype_options}}{cmd:)}}specify type of variable to be summarized{p_end}
+{synopt :{opt vartext(text)}}specify text to be displayed in summary table{p_end}
+{synopt :{opt dp1(#)}}specify number of decimal places displayed for first statistic{p_end}
+{synopt :{opt dp2(#)}}specify number of decimal places displayed for second statistic{p_end}
+{synopt :{cmd:first(1)}}identify first summary row{p_end}
+{synopt :{cmd:last(1)}}identify last summary row{p_end}
+{synopt :{opt exportname(text)}}name Excel summary dataset when saving{p_end}
+{synoptline}
+{p 4 6 2}
+* {opt vartype(vartype_options)} is required.
+
+{marker vartype_options}{...}
+{synoptset 25}{...}
+{synopthdr:vartype_options}
+{synoptline}
+{synopt :{cmd:binary}}{it:n}/{it:N} binary variables and percentages{p_end}
+{synopt :{cmd:binary2}}{it:n} binary variables and percentages{p_end}
+{synopt :{cmd:categorical}}{it:n}/{it:N} multicategory variables and percentages{p_end}
+{synopt :{cmd:categorical2}}{it:n} multicategory variables and percentages{p_end}
+{synopt :{cmd:contmean}}mean and SDs of normally distributed continuous variables{p_end}
+{synopt :{cmd:contmed}}median and IQRs of nonnormally distributed continuous variables{p_end}
+{synopt :{cmd:contrange}}median and range of nonnormally distributed continuous variables{p_end}
+{synopt :{cmd:events}}{it:n} events/{it:n} subjects and percentages{p_end}
+{synopt :{cmd:headerrow}}descriptive header row{p_end}
+{synoptline}
+
+
+{title:Description}
+
+{pstd}
+{cmd:sumtable} creates summary tables by group; this may be treatment groups
+in a clinical trial or cohort groups in an observational study.  The type of
+summary required for each variable will depend on the data type.  Three
+columns of summary data are produced for each group: for binary and
+multicategory data, the first two columns contain counts and percentages, and
+for continuous data, the first two columns contain either means and standard
+deviations (SDs) or medians and interquartile ranges (IQRs).  For all summary
+types, the third column for each group contains a count of the number of
+missing values for each summarized variable.
+
+{pstd}
+Within one table, there may be a requirement to present a combination of
+different summary types.  For example, in a clinical trial, a table of
+baseline characteristics may consist of variables such as age (continuous;
+means and SDs), gender (binary; counts and percentages), height (continuous;
+means and SDs), and smoking status (multicategory; counts and percentages).
+The {cmd:sumtable} command enables the user to create such a table containing
+all of these variables.
+        
+
+{title:Options}
+
+{phang}
+{opt vartype(vartype_options)} identifies the summary type.
+{it:vartype_options} may be {cmd:binary}, {cmd:binary2},
+{cmd:categorical}, {cmd:categorical2}, {cmd:contmean}, {cmd:contmed},
+{cmd:contrange}, {cmd:events}, or {cmd:headerrow}.  {cmd:vartype()} is
+required; one of the summary types (or {cmd:headerrow}) must be
+specified.  See {help sumtable##vartype_options_sec:below} for details.
+
+{phang}
+{opt vartext(text)} specifies the label to describe the variable that is being
+summarized.  By default, the label in the summary table will be the variable
+label assigned to the variable in the dataset.  If the variable has no
+variable label, the label in the summary table will be the variable name.  For
+example, there may be a variable called {cmd:smoke} that the user wishes to
+label as {cmd:Smoking status} in the summary table.  The {cmd:vartext()}
+option can be used to do this. In this example, if the {cmd:smoke} variable
+had no variable label assigned, the text in the summary table would simply be
+{cmd:smoke}, unless {cmd:vartext("Smoking status")}, for example, is
+specified.
+
+{phang}
+{opt dp1(#)} specifies the number of decimal places displayed for the first
+statistic in each group.  For {cmd:binary} and {cmd:categorical} summaries,
+the first statistic is a count (so no decimal places are necessary).  For
+{cmd:contmean} and {cmd:contmed} summaries, the first statistics are the mean
+and the median, respectively.  The default is {cmd:dp1(0)}.
+
+{phang}
+{opt dp2(#)} specifies the number of decimal places displayed for the second
+statistic in each group.  For {cmd:binary} and {cmd:categorical} summaries,
+the second statistic is a percentage.  For {cmd:contmean} and {cmd:contmed}
+summaries, the second statistics are the SD and IQR, respectively.  The
+default is {cmd:dp2(1)}.
+
+{phang}
+{cmd:first(1)} sets up the temporary dataset that all subsequent summaries are
+appended to.  This option should be specified for the first row of a table
+(that is, the first time any {cmd:sumtable} code is run for this summary
+table).  Each time this option is specified, the temporary dataset is
+replaced.
+
+{phang}
+{cmd:last(1)} deletes temporary datasets and produces an Excel document of the
+final summary table.  This option should be specified for the last row of a
+table (that is, the last time any {cmd:sumtable} code is run for this summary
+table).
+
+{phang}
+{opt exportname(text)} specifies the name or path name assigned to the Excel
+summary dataset that is produced from this command.  This option should be
+used for only the last row of a table alongside the {cmd:last(1)} option.  If
+this is not specified but {cmd:last(1)} is, the resultant summary table will
+be named {cmd:summarydatasetexcel.xls} and be saved in the user's current
+directory.
+
+{marker vartype_options_sec}
+{title:vartype_options}
+
+{phang}
+{cmd:binary} produces two main columns for each group: a count of the number
+of entries coded as 1s with the totals in each group (n/N) and the
+corresponding percentages calculated from the total number of entries
+excluding missing data.  A third additional column is also created for each
+group containing missing counts.  This {cmd:vartype()} option should be
+specified for numeric binary variables coded 0 and 1, where only the number of
+1s is of interest.  For example, for the variable {cmd:has the participant}
+{cmd:ever had a stroke}, a {cmd:1} could indicate a response of yes, and a
+{cmd:0} could indicate a response of no.  Therefore, this {cmd:vartype()}
+option would summarize (by group) the number, total, and percentage of
+participants who previously had a stroke and the number of participants for
+whom this data item is missing.
+
+{phang}
+{cmd:binary2} should be specified for numeric binary variables coded 0 and 1
+where only the number of 1s is of interest and where the totals in each group
+are not required to be displayed. All other elements are the same as
+{cmd:vartype(binary)}. 
+
+{phang}
+{cmd:categorical} produces counts, totals, and corresponding percentages for
+each category of the specified variable of interest as well as a missing count
+for each group.  This {cmd:vartype()} option should be specified for
+multicategory variables, binary variables that are not coded 0 and 1, or
+binary variables where reporting both categories is of interest.  If, for
+example, {cmd:New York Heart} {cmd:Association class} is coded 1, 2, 3, or 4
+for the four classes, this {cmd:vartype()} option would produce counts,
+totals, percentages, and missing counts (by group) of each of the four New
+York Heart Association classes.  This {cmd:vartype()} option can be used to
+summarize categorical variables that are coded as strings or as numeric
+variables.  {cmd:vartype(categorical)} will create multiple summary rows per
+variable (one for each category), while all other {cmd:vartype()} options
+create just one summary row per variable.  If any of the variables summarized
+in the table are categorical, a column labeled {cmd:levellab} will be included
+in the resultant Excel summary table and will be blank for all variables other
+than those that are summarized using {cmd:vartype(categorical)}.  If the
+categorical variable to be summarized is a string variable, the categories
+will be listed in alphabetical order.  If the categorical variable is numeric
+and labeled in the Stata dataset, the categories will be labeled and listed in
+number order.  If the categorical variable is numeric and not labeled in the
+Stata dataset, the categories will be labeled as their numeric value.
+
+{phang}
+{cmd:categorical2} should be specified for the same types of variables as
+"categorical" but where totals in each group are not required to be
+displayed.  All other elements are the same as {cmd:vartype(categorical)}.
+
+{phang}
+{cmd:contmean} specifies that continuous variables be summarized by means and
+SDs (usually normally distributed variables).  For example, the variable
+{cmd:height} is usually normally distributed, so this {cmd:vartype()} option
+could be used to calculate the mean and SD (by group) of the height of the
+study population.  As with other {cmd:vartype()} options, missing counts are
+also calculated for each group.
+
+{phang}
+{cmd:contmed} specifies that continuous variables be summarized by medians and
+IQRs (usually nonnormally distributed or discrete variables).  For example, in
+surgical trials, the variable {cmd:operation} {cmd:length} is usually skewed,
+so {cmd:vartype(contmed)} could be specified to display the median and
+IQR (by group) of operation length in the study population.  As with other
+{cmd:vartype()} options, missing counts are also calculated for each group.
+
+{phang}
+{cmd:contrange} should be specified for continuous variables to be summarized
+by medians and ranges. For example, the median, minimum, and maximum operation
+length (by group) in the study population may be of interest. As with other
+{it:vartype_options}, missing counts are also calculated for each group.
+
+{phang}
+{cmd:events} should be specified for count variables where the total number of
+events and the number of subjects who experienced the event are of interest.
+For example, in a surgical trial, how many units of blood were transfused (by
+group) and in how many patients may be tabulated (because some patients will
+not require a transfusion at all).
+
+{phang}
+{cmd:headerrow} breaks up a summary table.  This {cmd:vartype()} option is not
+necessary, but it may be useful to split the final summary table into
+sections.  For example, in a demography table in a cardiac clinical trial, it
+may be useful to divide the table into sections such as {cmd:baseline}
+{cmd:characteristics}, {cmd:cardiac} {cmd:history}, and {cmd:drugs}
+{cmd:on admission}.  For {cmd:vartype(headerrow)}, there is no variable to be
+summarized, so only the group variable should be specified.  Section titles
+can be entered using the {cmd:vartext()} option.  {cmd:dp1()} and {cmd:dp2()}
+do not apply if this {cmd:vartype()} option is specified.  An example of the
+code used to specify the top row of the example demography table is
+{cmd:sumtable groupvar,} {cmd:vartype(headerrow)} {cmd:vartext("Baseline}
+{cmd:characteristics")} {cmd:first(1)}.
+
+
+{title:Example}
+
+{pstd}
+Set current directory as place to save resultant Excel export
+
+{pstd}
+Setup{p_end}
+{phang2}
+{cmd:. sysuse auto}
+        
+{pstd}
+Summarize by car type (that is, use the group variable {cmd:foreign}.  {cmd:0}
+= Domestic, {cmd:1} = Foreign){p_end}
+{phang2}
+{cmd:. sumtable foreign, vartype(headerrow) vartext("CAR DETAILS") first(1)}{p_end}
+{phang2}
+{cmd:. sumtable price foreign, vartype(contmed) dp1(0) dp2(0)}{p_end}
+{phang2}
+{cmd:. sumtable mpg foreign, vartype(contrange) dp1(0) dp2(0)}{p_end}
+{phang2}
+{cmd:. sumtable weight foreign, vartype(contmean) dp1(0) dp2(0)}{p_end}
+{phang2}
+{cmd:. sumtable length foreign, vartype(contmean) dp1(1) dp2(1)}{p_end}
+{phang2}
+{cmd:. sumtable rep78 foreign, vartype(categorical) dp1(0) dp2(1)}{p_end}
+{phang2}
+{cmd:. sumtable rep78 foreign, vartype(categorical2) vartext("Repairs since 1978") dp1(0) dp2(1) last(1) exportname("Details by car groups")}{p_end}
+
+{pstd}
+Totals and percentages are calculated using those with data.  Therefore, in
+this example, the five automobiles with missing repairs since 1978 details are
+excluded from the summaries but included in the missing counts.
+
+{pstd}
+All variables in the auto dataset have value labels assigned.  However, the
+user may choose to use different labels, as has been done for the {cmd:rep78}
+variable here.
+
+{pstd}
+This dataset is saved in the user's current directory with the name
+{cmd:Details by car groups.xls}, as specified in the last line of code.
+Variables are ordered in the Excel summary table in the same order as they are
+coded.
+
+
+{title:Remarks}
+
+{pstd}
+For all {it:vartype_options} except {cmd:headerrow}, two variables must be
+specified: first, the variable ({it:sumvar}) to be summarized, and second, the
+group variable ({it:groupvar}) in which the summary is to be split by (that
+is, in a clinical trial, this would be the treatment group).  For
+{cmd:headerrow}, only the group variable should be specified.
+
+{pstd}
+Within one table, there may be a combination of different summary types.  For
+example, in a clinical trial, you may want to produce a summary table of age
+(continuous; means and SDs), gender (binary; counts and percentages), height
+(continuous; means and SDs), or smoking status (multicategory; counts and
+percentages).
+
+{pstd}
+The missing-count columns in the resultant summary table are designed to
+assist in writing missing counts at the bottom of a summary table.  It is not
+expected that they will be presented as part of a summary table.
+In addition to the missing-data columns, a missing-data summary is produced
+that can be used as a footnote to the resultant summary table.  This summary
+is numbered to identify which row in the table each part of the footnote
+belongs to, so it only needs to be updated with symbols that match the relevant
+row in the table to the missing-data text.  This missing-data summary does not
+include missing binary or categorical data because this can be established
+from the totals in the table itself.
+
+{pstd}
+There are currently no error codes written into this command.  Therefore, if
+something is incorrectly specified, the error raised is unlikely to highlight
+what is actually wrong.  In this case, compare your code with the example code
+and look for possible errors.
+
+{pstd}
+A dummy dataset called {cmd:dummy1234.dta} is created and saved in your
+current directory during use of this command.  This dataset is deleted once
+the last variable has been summarized and the {cmd:last(1)} option has been
+specified.  If you wish to edit the final summary dataset in Stata before
+exporting it, simply exclude the {cmd:last(1)} option from your code, and then
+read in {cmd:dummy1234.dta} and edit.
+
+
+{title:Authors}
+
+{pstd}Lauren J. Scott{break}
+Clinical Trials and Evaluation Unit{break}
+University of Bristol{break}
+Bristol, UK{break}
+Lauren.Scott@bristol.ac.uk{break}
+
+{pstd}Chris A. Rogers{break}
+Clinical Trials and Evaluation Unit{break}
+University of Bristol{break}
+Bristol, UK{break}
+Chris.Rogers@bristol.ac.uk
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 16, number 2: {browse "http://www.stata-journal.com/article.html?article=up0051":st0403_1},{break}
+                    {it:Stata Journal}, volume 15, number 3: {browse "http://www.stata-journal.com/article.html?article=st0403":st0403}{p_end}

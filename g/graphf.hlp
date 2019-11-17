@@ -1,0 +1,102 @@
+{smcl}
+{* 08jan2001}{...}
+{hline}
+help for {hi:graphf}{right:(STB-60: gr46)}
+{hline}
+
+{title:Plot the "total" effect of a variable}
+
+{p 8 16}
+{cmd:graphf} {it:varname} [{it:varlist}]
+[{cmd:,}
+  {cmd:eq(}{it:str}{cmd:)}
+  {cmd:cb(}{cmdab:n:one}|{cmdab:e:nvelope}|{cmdab:v:alue}|{cmd:bs} [{it:#}]{cmd:)}
+  {cmdab:l:evel}{cmd:(}{it:#}{cmd:)}
+]
+
+
+{title:Description}
+
+{p}{cmd:graphf} is a post-estimation command that produces a graph of the
+fitted values and a confidence band of the effect of {it:varname}, modeled
+via a linear predictor in (usually nonlinear) transformations of
+{it:varname}. For instance, if the effect of working experience ({hi:exp}) is
+modeled via a linear term {hi:exp} and a quadratic term {hi:exp2} =
+{hi:exp^2}, then {it:varname} = {hi:exp} and {it:varlist} = {hi:exp exp2}.
+Variables in {it:varlist} that do not occur in the model are skipped with a
+warning.
+
+{p}If {it:varlist} is not specified, {cmd:graphf} will determine itself the
+{it:varlist} as the variables in the (selected equation of) the model that
+are a function of {it:varname}, i.e., do not vary within levels of
+{it:varname}.
+
+
+{title:Options}
+
+{p 0 4}
+{cmd:eq(}{it:str}{cmd:)} specifies the name of the equation in which the
+variables occur.  If {cmd:eq()} is not specified, {cmd:graphf} uses the first
+equation of the model.
+
+{p 0 4}
+{cmd:cb(}{it:value}{cmd:)} specifies the type of confidence band to be
+  displayed.  Valid values are
+
+{p 6 16}
+{cmd:none}{space 5}
+  no band is displayed (the default)
+
+{p 6 16}
+{cmd:value}{space 4}
+  Specifies a value-wise confidence band that consists of the spline-connected
+  lower and upper limits of the value-wise confidence intervals.
+
+{p 6 16}
+{cmd:envelope}{space 2}
+  Ripley's envelope confidence band is displayed.  This band is obtained as the
+  value-wise minimum and maximum of the fitted values from 19 draws from the
+  estimated multivariate distribution of the estimators for the coefficients
+  in the model estimated last.
+
+{p 6 16}
+{cmd:bs} [{it:#}]{space 3}
+  A parametric bootstrap confidence band, assuming multivariate normality of
+  the parameter estimates. The value-wise confidence interval is estimated
+  by the bias-corrected method. The number of Monte Carlo simulations {it:#}
+  defaults to 1000.
+
+{p 0 4}
+{cmd:level(}{it:#}{cmd:)} specifies the confidence level, in percent, for the
+value-wise confidence intervals.  The default is {cmd:level(95)} or as set by
+{help set level}.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. gen exp2 = exp^2}{p_end}
+{p 8 12}{inp:. regress inc edu exp exp2}{p_end}
+{p 8 12}{inp:. graphf exp  exp exp2}{p_end}
+
+{p 8 30}{inp:. graphf exp}{space 9}
+{hi:graphf} determines that {hi:exp} and {hi:exp2} are vars included
+in {cmd:regress} that are functions of {hi:exp}
+{p_end}
+
+{p 8 12}{inp:. mkspline e_1 1 e_2 5 e_3 10 e_4 = exp}{p_end}
+{p 8 12}{inp:. regress inc edu e_1 e_2 e_3 e_4}{p_end}
+{p 8 12}{inp:. graphf exp e_*, ci(v)}{p_end}
+{p 8 12}{inp:. graphf exp, ci(bs 400)}{p_end}
+
+
+{title:Author}
+
+{tab}Jeroen Weesie
+{tab}Dept of Sociology/ICS
+{tab}Utrecht University
+{tab}J.Weesie@fss.uu.nl
+
+
+{title:Also see}
+
+{p 0 21}On-line:  help for {help predict}, {help wherext}{p_end}

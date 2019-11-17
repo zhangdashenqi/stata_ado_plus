@@ -1,0 +1,386 @@
+/*
+  nba2stata
+
+*!  VERSION 1.0.0 27july2018
+
+*/
+
+VERSION 15.0
+
+INCLUDE _std_mlarge
+DEFINE _dlght 430
+INCLUDE header
+
+HELP hlp1, view("help nba2stata")
+RESET res1
+
+LIST seasontype_list_values
+BEGIN
+	""
+	"reg"
+	"playoffs"
+END
+
+LIST seasontype_list_contents
+BEGIN
+	"All"
+	"Regular season"
+	"Playoffs"
+END
+
+LIST match_list_values
+BEGIN
+	""
+	"matchall"
+END
+
+LIST match_list_contents
+BEGIN
+	"Match any"
+	"Match all"
+END
+
+
+DIALOG main, label("nba2stata - import NBA data sets") tabtitle("Main")
+BEGIN
+	GROUPBOX	gb_data		_lft	_top	_iwd	_ht15,	///
+			label("Type of data")
+	RADIO		rb_playerstats	_ilft	_ss	_cwd2	.,	///
+			label("Player stats") first			///
+			onclickon(program setPlayerStatsOn)
+	RADIO		rb_playerprof	@	_ss	@	.,	///
+			label("Player profiles") 			///
+			onclickon(script setPlayerProfilesOn)
+	RADIO		rb_teamstats	@	_ss	@	.,	///
+			label("Team stats") onclickon(program setTeamStatsOn)
+	RADIO		rb_teamroster	@	_ss	@	.,	///
+			label("Team roster")				///
+			onclickon(script setTeamRosterOn) last
+	TEXT		tx_player	@	_ls	@	.,	///
+			label("Player:")
+DEFINE holdy @y
+	EDIT		ed_player	@	_ss	_ilw100	.,	///
+			label("Player") option(player)
+	COMBOBOX	cb_match	_irj100	@	100	.,	///
+			values(match_list_values)			///
+			contents(match_list_contents) dropdownlist
+	TEXT		tx_player_help	_ilft	_ss	_ibwd	.,	///
+			label(`"Example: "James Harden" "LeBron James""')
+	TEXT		tx_team		@	holdy	@	.,	///
+			label("Team:")
+	EDIT		ed_team		@	_ss	@	.,	///
+			label("Team") option(team)
+	TEXT		tx_team_help	@	_ss	@	.,	///
+			label(`"Example: "hou" "okc" "gsw""')
+	GROUPBOX	gb_options	_lft	_xls	_iwd	_ht13,	///
+			label("Options")
+	RADIO		rb_playercareer	_ilft	_ss	_ibwd	.,	///
+			label("By career") option(stat(career)) first	///
+			onclickon(program setPlayerByCareerOn)
+DEFINE holdy @y
+	RADIO		rb_playerseason	@	_ss	@	.,	///
+			label("By season")				///
+			onclickon(program setPlayerBySeasonOn)		///
+			option(stat(season))
+	RADIO		rb_playerbygame	@	_ss	@	.,	///
+			label("By game") last				///
+			onclickon(program setPlayerByGameOn)		///
+			option(stat(game))
+	TEXT		tx_playerseason	@	_ls	@	.,	///
+			label("Seasons: (accepts Stata numlist)")
+	EDIT		ed_playerseason	@	_ss	@	.,	///
+			label("Seasons") option(season)
+	TEXT		tx_playerstype	@	_ls	@	.,	///
+			label("Season type:")
+	COMBOBOX	cb_playerstype	@	_ss	@	.,	///
+			values(seasontype_list_values)			///
+			contents(seasontype_list_contents) dropdownlist	///
+			option(seasontype)
+	RADIO		rb_teamseason	@	holdy	@	.,	///
+			label("By season") first			///
+			onclickon(program setTeamBySeasonOn)		///
+			option(stat(season))
+	RADIO		rb_teambygame	@	_ss	@	.,	///
+			label("By game") last				///
+			onclickon(program setTeamByGameOn) option(stat(game))
+	TEXT		tx_teamseason	@	_ls	@	.,	///
+			label("Seasons: (accepts Stata numlist)")
+	EDIT		ed_teamseason	@	_ss	@	.,	///
+			label("Seasons") option(season)
+	TEXT		tx_teamstype	@	_ls	@	.,	///
+			label("Season type:")
+	COMBOBOX	cb_teamstype	@	_ss	@	.,	///
+			values(seasontype_list_values)			///
+			contents(seasontype_list_contents) dropdownlist	///
+			option(seasontype)
+	TEXT		tx_rosterseason	@	holdy	@	.,	///
+			label("Seasons: (accepts Stata numlist)")
+	EDIT		ed_rosterseason	@	_ss	@	.,	///
+			label("Seasons") option(season)	
+	CHECKBOX	ch_clear	@	_ls	@	.,	///
+			label("Clear data in memory") option(clear)
+
+END
+
+SCRIPT hideMain
+BEGIN
+	main.tx_player.hide
+	main.ed_player.hide
+	main.tx_player_help.hide
+	main.cb_match.hide
+	main.tx_team.hide
+	main.ed_team.hide
+	main.tx_team_help.hide
+END
+
+SCRIPT hideOptions
+BEGIN
+	main.rb_playercareer.hide
+	main.rb_playerseason.hide
+	main.rb_playerbygame.hide
+	main.tx_playerseason.hide
+	main.ed_playerseason.hide
+	main.tx_playerstype.hide
+	main.cb_playerstype.hide
+	main.rb_teamseason.hide
+	main.rb_teambygame.hide
+	main.tx_teamseason.hide
+	main.ed_teamseason.hide
+	main.tx_teamstype.hide
+	main.cb_teamstype.hide
+	main.tx_rosterseason.hide
+	main.ed_rosterseason.hide
+	main.ch_clear.hide
+END
+
+PROGRAM setPlayerStatsOn
+BEGIN
+	call script hideMain
+	call main.tx_player.show
+	call main.ed_player.show
+	call main.tx_player_help.show
+	call main.cb_match.show
+	call main.gb_options.show
+	call main.rb_playercareer.show
+	call main.rb_playerseason.show
+	call main.rb_playerbygame.show
+	if main.rb_playercareer {
+		call program setPlayerByCareerOn
+	}
+	if main.rb_playerseason {
+		call program setPlayerBySeasonOn
+	}
+	if main.rb_playerbygame {
+		call program setPlayerByGameOn
+	}
+END
+
+SCRIPT setPlayerProfilesOn
+BEGIN
+	script hideMain
+	script hideOptions
+	main.tx_player.show
+	main.ed_player.show
+	main.tx_player_help.show
+	main.cb_match.show
+	main.gb_options.setposition . . . 50
+	main.ch_clear.setposition . 220 . .
+	main.ch_clear.show
+END
+
+PROGRAM setTeamStatsOn
+BEGIN
+	call script hideMain
+	call main.tx_team.show
+	call main.ed_team.show
+	call main.tx_team_help.show
+	call main.gb_options.show
+	call main.rb_teamseason.show
+	call main.rb_teambygame.show
+	if main.rb_teamseason {
+		call program setTeamBySeasonOn
+	}
+	if main.rb_teambygame {
+		call program setTeamByGameOn
+	}
+END
+
+SCRIPT setTeamRosterOn
+BEGIN
+	script hideMain
+	script hideOptions
+	main.tx_team.show
+	main.ed_team.show
+	main.tx_team_help.show
+	main.tx_rosterseason.show
+	main.ed_rosterseason.show
+	main.gb_options.show
+	main.gb_options.setposition . . . 100
+	main.ch_clear.show
+	main.ch_clear.setposition . 270 . .
+END
+
+PROGRAM setPlayerByCareerOn
+BEGIN
+	if main.rb_playerstats {
+		call script hideOptions
+		call main.rb_playercareer.show
+		call main.rb_playerseason.show
+		call main.rb_playerbygame.show
+		call main.ch_clear.show
+		call main.ch_clear.setposition . 290 . .
+		call main.gb_options.setposition . . . 120
+	}
+END
+
+PROGRAM setPlayerBySeasonOn
+BEGIN
+	if main.rb_playerstats {
+		call script hideOptions
+		call main.rb_playercareer.show
+		call main.rb_playerseason.show
+		call main.rb_playerbygame.show
+		call main.ch_clear.show
+		call main.ch_clear.setposition . 290 . .
+		call main.gb_options.setposition . . . 120
+	}
+END
+
+PROGRAM setPlayerByGameOn
+BEGIN
+	if main.rb_playerstats {
+		call script hideOptions
+		call main.rb_playercareer.show
+		call main.rb_playerseason.show
+		call main.rb_playerbygame.show
+		call main.gb_options.setposition . . . 220
+		call main.tx_playerseason.show
+		call main.ed_playerseason.show
+		call main.tx_playerstype.show
+		call main.cb_playerstype.show
+		call main.ch_clear.show
+		call main.ch_clear.setposition . 390 . .
+	}
+END
+
+PROGRAM setTeamBySeasonOn
+BEGIN
+	if main.rb_teamstats {
+		call script hideOptions
+		call main.rb_teamseason.show
+		call main.rb_teambygame.show
+		call main.gb_options.setposition . . . 100
+		call main.ch_clear.show
+		call main.ch_clear.setposition . 270 . .
+	}
+END
+
+PROGRAM setTeamByGameOn
+BEGIN
+	if main.rb_teamstats {
+		call script hideOptions
+		call main.rb_teamseason.show
+		call main.rb_teambygame.show
+		call main.gb_options.setposition . . . 200
+		call main.tx_teamseason.show
+		call main.ed_teamseason.show
+		call main.tx_teamstype.show
+		call main.cb_teamstype.show
+		call main.ch_clear.show
+		call main.ch_clear.setposition . 370 . .
+	}
+END
+
+PROGRAM getsubcommand
+BEGIN
+	if main.rb_playerstats {
+		put "playerstats"
+	}
+	if main.rb_playerprof {
+		put "playerprofile"
+	}
+	if main.rb_teamstats {
+		put "teamstats"
+	}
+	if main.rb_teamroster {
+		put "teamroster"
+	}
+END
+
+PROGRAM getstattype
+BEGIN
+	if main.rb_playerstats {
+		if main.rb_playercareer {
+			put " " "stat(career)"
+		}
+		if main.rb_playerseason {
+			put " " "stat(season)"
+		}
+		if main.rb_playerbygame {
+			put " " "stat(game)"
+		}
+	}
+	if main.rb_teamstats {
+		if main.rb_teamseason {
+			put " " "stat(season)"
+		}
+		if main.rb_teambygame {
+			put " " "stat(game)"
+		}
+	}
+END
+
+PROGRAM getoptions
+BEGIN
+	if main.rb_playerstats {
+		put " " main.cb_match
+		option radio(main rb_playercareer rb_playerseason ///
+				rb_playerbygame)
+		option main.ch_clear
+		if main.rb_playerbygame {
+			optionarg main.ed_playerseason
+			if main.cb_playerstype {
+				optionarg main.cb_playerstype
+			}
+		}
+	}
+	if main.rb_playerprof {
+		put " " main.cb_match
+		option main.ch_clear
+	}
+	if main.rb_teamstats {
+		if main.rb_teamseason {
+			option main.rb_teamseason
+			option main.ch_clear
+		}
+		if main.rb_teambygame {
+			option main.rb_teambygame
+			optionarg main.ed_teamseason
+			if main.cb_teamstype {
+				optionarg main.cb_teamstype
+			}
+			option main.ch_clear
+		}
+	}
+	if main.rb_teamroster {
+		optionarg main.ed_rosterseason
+		option main.ch_clear
+
+	}
+	
+END
+
+PROGRAM command
+BEGIN
+	put "nba2stata"
+	put " " /program getsubcommand
+	if main.rb_playerstats | main.rb_playerprof {
+		put " " main.ed_player
+	}
+	if main.rb_teamstats | main.rb_teamroster {
+		put " " main.ed_team
+	}
+	beginoptions
+		put " " /program getoptions
+	endoptions
+END

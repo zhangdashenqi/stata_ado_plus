@@ -1,0 +1,42 @@
+Calculate Quandt's breakpoint statistic (lambda)                 (STB-17: sts7)
+------------------------------------------------
+
+	^quandt^ varlist ^if^ ^in^ [ ^, g^enerate(varname) ]
+
+calculates Quandt's breakpoint statistic, called lambda.  The observation 
+at which lambda is at a minimum is considered a likely breakpoint.  ^quandt^ 
+returns the observation number of the minimum value of lambda in S_1 and 
+the value of lambda at that observation in S_2.
+
+
+Options
+-------
+
+^g^enerate(varname) specifies a new variable in which to store the series
+  of lambdas.
+
+
+Author
+------
+
+	Sean Becketti, Stata Technical Bulletin
+	FAX 913-888-6708
+
+References
+----------
+
+Quandt, Richard E. (1958).  "The estimation of the parameters of a linear 
+  regression system obeying two separate regimes," ^Journal of the American^
+  ^Statistical Association^.  Volume 53, pp. 873-880.
+
+Quandt, Richard E. (1960).  "Tests of the hypothesis that a linear regression
+  system obeys two separate regimes," ^Journal of the American Statistical^
+  ^Association^.  Volume 55, pp. 324-330.
+
+
+Also see
+--------
+
+    STB:  sts7 (STB-17)
+On-line:  ^help^ for ^ts^
+

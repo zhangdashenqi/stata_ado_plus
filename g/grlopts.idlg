@@ -1,0 +1,20 @@
+/*
+  grlopts -- graph options for a reference line
+
+*!  VERSION 1.0.1  10may2004
+
+  This idlg requires the use of _graph.idlg and _std_graph.idlg for lengths,
+  widths, heights.
+  This idlg requires the use of _glist_def.idlg and _glist_sc.idlg 
+  at the beginning of your dialog file for initiating lists.
+
+*/
+
+DIALOG rlopts, tabtitle("Reference line")
+BEGIN
+	INCLUDE grlopts_common
+END
+
+INCLUDE grlopts_common_sc
+
+/* END */

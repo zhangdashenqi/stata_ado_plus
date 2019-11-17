@@ -1,0 +1,33 @@
+{smcl}
+{cmd:help stockquote}
+{hline}
+
+{title:Title}
+
+    {hi: Get Time Series Stock Quotes from the net}
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:stockquote}
+<ticker symbol>, fm(first month) fd(first day) fy(first year) lm(last month) ld(last day) ly(last year) frequency(d|w|m)
+
+{title:Description}
+{pstd}
+{cmd:stockquote} currently queries Yahoo's Finance API for ticker symbol historical values.  {cmd: fm, fd, fy} stand for {cmd: first month, first day, first year} respectively,  are numeric and tell {cmd:stockquote} the start date of the time series you want. Similarly {cmd:lm, ld, ly} are numeric and stand for {cmd:last month, last day, last year} respectively and tell {cmd:stockquote} the end date of the time series. {cmd:frequency} may be one of: {cmd:d, w, m} meaning: {cmd:daily, weekly, monthly}. 
+
+
+
+{title:Examples}
+The command below
+{phang}
+{cmd:. stockquote ^GDAXI, fm(1) fd(2) fy(2000) lm(03) ld(4) ly(2008) frequency(d)}{p_end}
+will "use" the DAX index historical values from January 2 2000 to March 4 2008 on a daily basis, whereas
+{phang}
+{cmd:. stockquote AAPL, fm(1) fd(2) fy(2000) lm(03) ld(4) ly(2008) frequency(w)}{p_end}
+will do the same for Apple on a weekly basis.
+
+{title: Author}
+Nikos Askitas, IZA, Bonn, Germany.
+Email: nikos@@iza.org
+

@@ -1,0 +1,59 @@
+*! Default DOC template for publish.ado
+*! Version 17 August 2010
+*! Author: Tamas Bartus, Corvinus University Budapest 
+*
+* Important notes and warnings: 
+*  - Do NOT replace comment characters * with //
+*  - Feel free to edit this file, but replace the word default with another name in the file name
+*  - please consult the help file publish.sthlp
+*
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1250">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 10">
+<meta name=Originator content="Microsoft Word 10">
+<title>Untitled document created by -publish-</title>
+<style>
+	table.st_table {
+		mso-style-name:"st_table";
+		mso-tstyle-rowband-size:0;
+		mso-tstyle-colband-size:0;
+		border-top:solid windowtext 1.0pt;
+		border-left:none;
+		border-bottom:solid windowtext 1.0pt;
+		border-right:none;
+		mso-border-top-alt:solid windowtext .5pt;
+		mso-border-bottom-alt:solid windowtext .5pt;
+		mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+		mso-para-margin:0cm;
+		mso-para-margin-bottom:.0001pt;
+		mso-pagination:widow-orphan;
+		font-size:8pt;
+		font-family:"Times New Roman";
+	}
+	p.publish {
+		margin: 0px 0px 0px 0px;
+		font-family:"Times New Roman";
+		font-size: 8pt;
+		text-align: left;
+	}
+	div.st_section {
+		size:595.3pt 841.9pt;				// A4 size
+		margin:70.85pt 70.85pt 70.85pt 70.85pt;		// margin = 2,5 cm everywhere 
+		mso-header-margin:35.45pt;
+		mso-footer-margin:35.45pt;
+		mso-paper-source:0;
+	}
+
+</style>
+</head>
+
+<body>
+
+
+</body>
+</html>

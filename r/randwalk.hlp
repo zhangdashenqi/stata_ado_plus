@@ -1,0 +1,50 @@
+.-
+help for ^randwalk^ tutorial                     (STB-41: tt7)
+
+
+Random walk tutorial
+--------------------
+
+
+The tutorial ^randwalk^ displays some interesting random walks in 1 and 2 
+dimensions. In particular, the tutorial demonstrates that while Gaussian 
+(normal) and Cauchy distributions are in many respects quite similar 
+(e.g., both distribution are symmetric and bell-shaped; many observations
+are required to distinguish them), there is a distinct qualitative
+difference between Gaussian and Cauchy random walks. 
+
+
+To run the tutorial, you have to move (or copy) the file randwalk.tut 
+into your Stata directory, where the other tutorial files (files with 
+extension *.tut) are also placed. Note that is probably not the same 
+directory where your .ado files are located. You can then issue the command
+
+. ^tutorial randwalk^
+
+and read the explanations on the screen.
+
+A first draft of the random walk tutorial was written in Stata version 1 
+by Albert Verbeek, professor of mathematical sociology at Utrecht 
+University, shortly before he died. According to Verbeek's documentation, 
+the tutorial was based on Huber's ISP random walk demo. I recently relocated 
+this tutorial file, and made the modifications to the coding to make it fit 
+into Stata's tutorial system.
+
+
+Authors
+-------
+
+       Albert Verbeek
+       Utrecht University
+       Netherlands
+
+       Jeroen Weesie
+       Utrecht University
+       Netherlands
+       weesie@@weesie.fsw.ruu.nl
+
+Also see
+--------
+
+    STB:  STB-41 tt7
+

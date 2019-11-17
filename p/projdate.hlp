@@ -1,0 +1,35 @@
+.-
+help for ^projdate^                                           [sts7.6: STB-24]
+.-
+
+Set the first projection date
+-----------------------------
+
+        ^projdate^ #1 [ #2 [ #3 ] ]
+
+sets the first projection date for scenario generation.  The date is
+specified according to the current ^period^ and ^datevars^ settings.
+For instance,
+
+        ^projdate 1995 7^
+
+would set the first projection date to July 1995.
+
+
+
+
+
+
+Author
+------
+
+        Sean Becketti, Stata Technical Bulletin
+        EMAIL   stb@stata.com
+
+
+Also see
+--------
+
+ Manual:  [4] dates
+    STB:  sts7.6 (STB-24)
+On-line:  ^help^ for ^datevars^, ^period^, and ^ts^

@@ -1,0 +1,98 @@
+{smcl}
+{* 10may1999}{...}
+{hline}
+help for {hi:varwiker}{right:(SJ3-2: st0036)}
+{hline}
+
+{title:Variable bandwidth Gaussian kernel density estimation}
+
+{p 12 19 2}
+{cmd:varwiker} {it:varname} [{cmd:if} {it:exp}] [{cmd:in} {it:range}]{cmd:,}
+                 {cmdab:b:width(}{it:#}{cmd:)} [{cmdab:g:en(}{it:denvar}{cmd:)} 
+                 {cmdab:nog:raph} {it:graph_options}]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:varwiker} estimates the density of {it:varname} using the
+variable bandwidth Gaussian kernel described in Fox (1990) modified from
+Silverman (1986) and draws the result.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:bwidth(}{it:#}{cmd:)} permit to specify the width of the window
+around each data point.  {cmd:bwidth()} is not optional. If the user does not
+provide it, the program halts and displays an error message on screen.
+
+{p 4 8 2}{cmd:gen(}{it:denvar}{cmd:)} permits to generate the variable
+{it:denvar} with the density values 
+
+{p 4 8 2}{cmd:nograph} suppresses the graph drawing.
+
+{p 4 8 2}{it:graph_options} are any of the options allowed with {cmd:graph,}
+{cmd:twoway}.
+
+
+{title:Remarks}
+
+{p 4 4 2}{cmd:varwiker} estimates densities using a Gaussian kernel with fixed
+window, then uses these estimates to determine local weights inversely
+proportional to the preliminary density estimate.  These local weights are
+used to adjust the window width so that it is narrower at high densities
+(retaining detail) and wider where density is low (eliminating noise).
+
+{p 4 4 2}As with the fixed window kernels the "smoothness" of the result can
+be regulated by changing the width of the interval (i.e., varying 'h'). Wide
+intervals produce smooth results; narrow intervals will result in noisier
+density values.
+
+{p 4 4 2}WARNING: Because this implementation requires the calculation of
+local weights for each individual observation based on a preliminary density
+estimation, the time required is proportional to _N.  Please be patient. 
+
+
+{title:Example}
+
+{p 4 8 2}{cmd:. varwiker infmorat,  b(20) gen(vdensity)}
+
+{p 4 4 2}After some time (depending on the number of observations) the results
+are plotted and placed in the new variable {cmd:adensity}.
+
+{p 4 4 2}The density values can be used to repeat the graph by typing:
+
+{p 4 8 2}{cmd:. graph vdensity infmorat, c(s) s(.)}
+ 
+{p 4 4 2}The graphic with the density estimates for each original value
+("smoothed" histogram) will appear on screen. You can combine this with the
+oneway and box options.
+
+
+{title:References}
+
+{p 4 8 2}Chambers, J. M., W. S. Cleveland, B. Kleiner, and P. A. Tukey. 1983.
+	{it:Graphical Methods for Data Analysis}. Belmont, CA: Wadsworth &
+	Brooks/Cole.
+
+{p 4 8 2}Silverman, B. W. 1986. {it:Density Estimation for Statistics and Data 
+	Analysis}. London: Chapman & Hall.
+
+{p 4 8 2}Fox, J. 1990. Describing univariate distributions. In 
+       {it:Modern Methods of Data Analysis}, eds. J. Fox and J. S. Long, 
+       58--125. Newbury Park, CA: Sage Publications.
+
+
+{title:Author}
+
+        Isaias H. Salgado-Ugarte,
+        Facultad de Estudios Superiores Zaragoza, U.N.A.M.
+        Biologia (Fax 52-5 773-1183)
+        {browse "mailto:isalgado@servidor.unam.mx":isalgado@servidor.unam.mx}
+
+
+{title:Also see}
+
+    {p 5 19 2}STB: snp6 (STB-16){p_end}
+{p 5 19 2}Online: help for {help boxdetra}, {help boxdetr2}, {help cosdetra}, 
+{help kernsim}, {help kernepa}, {help kerngaus}, {help adgaker2}, 
+{help boxdent}, {help dentrace}, {help kerneldm}, {help warpdenm}

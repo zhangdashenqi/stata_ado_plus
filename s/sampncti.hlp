@@ -1,0 +1,108 @@
+{smcl}
+{* 17dec2003}{...}
+{hline}
+help for {hi:sampncti}{right:(SJ4-2: st0062)}
+{hline}
+
+{title:Sample size and power determintion using the noncentral t-distribution}
+
+{p 8 15 2}{cmd:sampncti} {it:#1} [{it:#2}] {cmd:,} {cmdab:sd:1(}{it:#}{cmd:)}
+[{cmd:sd2(}{it:#}{cmd:)} {cmdab:a:lpha(}{it:#}{cmd:)} {cmdab:p:ower(}{it:#}{cmd:)}
+{cmdab:n:1(}{it:#}{cmd:)} {cmd:n2(}{it:#}{cmd:)} {cmdab:r:atio(}{it:#}{cmd:)}
+{cmdab:onesam:ple} {cmdab:onesid:ed} {cmdab:w:elch} ]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:sampncti} estimates required sample size or power of test for
+studies comparing means using the noncentral {it:t}-distribution rather than the
+normal approximation assumed by {help sampsi}.  This approach is preferable
+when the sample sizes are small.  If {cmd:n1()} and {cmd:n2()} is
+specified, {cmd:sampncti} computes power; otherwise, it computes sample size.
+{cmd:sampncti} is an immediate command; all of its arguments are numbers (see
+help {help immed}).
+
+{p 4 4 2}{cmd:sampncti} computes sample size or power for two types of tests:
+
+{p 4 8 2}1.  Two-sample comparison of means.{p_end}
+{p 8 8 2}Either the postulated values of the means are {it:#1} and {it:#2},
+	 or the postulated difference in means is {it:#1} (and {it:#2} is not
+	 specified).  The postulated standard deviations are
+	 {cmd:sd1()} and {cmd:sd2()}.{p_end}
+
+{p 4 8 2}2.  One-sample comparison of mean to hypothesized value.{p_end}
+{p 8 8 2}Option {cmd:onesample} must be specified.
+	 Either the hypothesized value (null hypothesis) is {it:#1} and the
+	 postulated mean (alternative hypothesis) is {it:#2}, or the
+	 postulated deviation of the mean from the hypothesized value is
+	 {it:#1} ({it:#2} not specified).  The postulated standard deviation
+	 is {cmd:sd1()}.{p_end}
+
+
+{title:Notes}
+
+{p 4 4 2}This program requires the package {cmd:nct} (see help {help nct} if
+installed or {net describe nct:net describe nct, from(http://fmwww.bc.edu/RePEc/bocode/n)} to install).
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:sd1(}{it:#}{cmd:)} and {cmd:sd2(}{it:#}{cmd:)} are the standard
+deviations.  In two-sample cases, if only {cmd:sd1()} is specified,
+{cmd:sd2()} is assumed to equal {cmd:sd1()}.
+
+{p 4 8 2}{cmd:alpha(}{it:#}{cmd:)} specifies the significance level of the
+test. The default is obtained from {cmd:set level} (see help {help level}),
+usually {cmd:alpha(.05)}.
+
+{p 4 8 2}{cmd:power(}{it:#}{cmd:)} is power of the test.  Default is
+{cmd:power(.90)}.
+
+{p 4 8 2}{cmd:n1(}{it:#}{cmd:)} specifies the size of the first (or only)
+sample and {cmd:n2(}{it:#}{cmd:)} specifies the size of the second sample.  If
+{cmd:n1()} and {cmd:n2()} are specified, {cmd:sampncti} reports the power
+calculation, but if they are not specified, {cmd:sampncti} computes sample
+size.
+
+{p 4 8 2}{cmd:ratio(}{it:#}{cmd:)} is an alternative way to specify {cmd:n2()}
+in two-sample tests.  In a two-sample test, if {cmd:n2()} is not specified,
+{cmd:n2()} is assumed to be {cmd:n1()}*{cmd:ratio()}.  That is, {cmd:ratio()}
+= {cmd:n2()}/{cmd:n1()}.  The default is {cmd:ratio(1)}.
+
+{p 4 8 2}{cmd:onesample} indicates a one-sample test.  The default is a
+two-sample test.
+
+{p 4 8 2}{cmd:onesided} indicates a one-sided test.  The default is a
+two-sided test.
+
+{p 4 8 2}{cmd:welch} indicates that the degrees of freedom for the 
+{it:t}-distribution with unequal variances should be obtained from Welch's
+approximation formula rather than Satterthwaite's approximation formula.
+
+
+{title:Examples}
+
+{p 4 8 2}1.  Two-sample comparison of mean1 to mean2.  Compute sample
+sizes with n2/n1 = 2:
+
+{p 8 12 2}{cmd:. sampncti 132.86 127.44, sd1(15.34) sd2(18.23) p(0.8) r(2)}
+
+{p 8 12 2}Compute power with n1 = n2, sd1 = sd2, and alpha = 0.01 one-sided:
+
+{p 8 12 2}{cmd:. sampncti 5.6 6.1, n1(100) sd1(1.5) a(0.01) onesided}
+
+{p 4 8 2}2.  One-sample comparison of mean to hypothesized value = 180.
+Compute sample size:
+
+{p 8 12 2}{cmd:. sampncti 180 211, sd(46) onesam}
+
+{p 8 12 2}One-sample comparison of mean to hypothesized value with postulated
+deviation = 2.5.  Compute power:
+
+{p 8 12 2}{cmd:. sampncti 2.5, sd(4) n(25) onesam}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {help sampsi}, {help nct} (if installed), {help immed}

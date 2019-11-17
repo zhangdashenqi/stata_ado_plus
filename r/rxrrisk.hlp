@@ -1,0 +1,77 @@
+.-
+help for ^rxrrisk^     					  STB-28: sg45
+.-
+
+Generalized ridge regression: true risk
+---------------------------------------
+
+	^matrix^ ^rxsigma^ ^=^ ^(^#^)^
+
+	^matrix^ ^rxgamma^ ^=^ ^(^#,...,#^)^
+
+	^rxrrisk^ depvar varlist [^if^ exp] [^in^ range] 
+                [^,^ ^m^steps^(^#^)^ ^omd^min^(^#^)^ ^q^shape^(^#^)^ ^r^escale^(^#^)^ ^t^ol^(^#^)^ ]
+
+To reset problem-size limits, see ^help matsize^.
+
+
+Description
+-----------
+
+^rxrrisk^ calculates the true risks associated with generalized ridge 
+regression shrinkage when the true sigma (standard deviation of errors) and
+the true gammas (uncorrelated components) are assumed to have known values.
+
+
+Options
+-------
+
+^msteps(^#^)^ specifies the number of steps per unit increase in ^MCAL^, the multi-
+    collinearity allowance parameter; the default value is 4.  The total number
+    of steps along the generalized shrinkage path from the least squares solu-
+    tion (^MCAL^=0) to all zero coefficients (^MCAL^=p) will thus be 1+(msteps*p).
+
+^omdmin(^#^)^ is the strictly positive minimum value to be used for calculation
+    of (1-delta) shrinkage factors.  The default is 10e-13.
+
+^qshape(^#^)^ controls the shape (or curvature) of the generalized shrinkage
+    path through likelihood space; the default value is 0, which yields Hoerl-
+    Kennard "ordinary" ridge regression.  ^qshape^=1 yields uniform shrinkage,
+    and all ^qshape^ values between -5 and 5 are allowed.
+
+^rescale(^#^)^ controls the scaling of the response variable and all p
+    predictor variables in the ^varlist^.  The default value is ^rescale^=1 to
+    scale all centered variables to have sample variance 1.  ^rescale^=0 should
+    be specified to retain the original scalings.
+
+^tol(^#^)^ specifies search convergence criterion and defaults to 0.01.
+
+
+Examples
+--------
+
+ . ^matrix rxsigma = (.5)^               ...Specify true std.dev. of error terms
+ . ^matrix rxgamma = (-.5,.1,-.1,-.4)^
+                             ...Specify true values of uncorrelated components
+ . ^rxrrisk mpg cylnds cubins hpower weight, q(-1)^
+                   ...Calculate the true risks associated with ridge shrinkage
+
+ . ^matrix rxsigma = (2.5)^
+ . ^matrix rxgamma = (-.02,-.02,-.02,-1)^
+ . ^rxrrisk mpg cylnds cubins hpower weight, r(0)^
+           ...Choice of sigma and gammas will depend upon scaling of variables
+
+
+Author
+------
+
+        Robert L. Obenchain
+        Eli Lilly and Company
+
+
+Also see
+--------
+
+    STB:  STB-28 sg45
+On-line:  ^help^ for @rxrsimu@ and @rxridge@
+

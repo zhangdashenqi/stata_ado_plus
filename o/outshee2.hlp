@@ -1,0 +1,31 @@
+.-
+help for ^outshee2^ (STB-52: dm73; STB-54: dm73.1; STB-59: dm73.2; STB-61: dm73.3)
+.-
+
+Enhanced version of outsheet
+-----------------------------
+
+^outshee2^ is an enhanced version of @outsheet@. If the filename specified
+with ^using^ already exists and the ^replace^ option is in effect, ^outshee2^
+reports this and appends a number to the filename. (Only the first 6 letters
+of the filename are used under Windows 3.1). If a valid filename has not been
+found after appending the numbers 1 to 20, ^outshee2^ stops. Other than this,
+^outshee2^ passes all arguments and options unaltered to @outsheet@.
+
+Syntax
+------
+
+See @outsheet@
+
+
+Author
+------
+
+John Hendrickx <J.Hendrickx@@mailbox.kun.nl>
+Nijmegen Business School
+University of Nijmegen
+P.O. Box 9108
+6500 HK Nijmegen
+The Netherlands 
+
+

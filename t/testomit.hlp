@@ -1,0 +1,265 @@
+.-
+help for ^testomit^                                           [jw] April 10, 2000
+.-
+
+Score tests for omitted variables
+---------------------------------
+
+  single equation models (or first equation of multiple equation models)
+
+      ^testomit^ [exp-list] ^, sc^ore^(^varlist^)^ [ov_spec ^nou^nivariate ^adj^ust^(^value^)^]
+
+  multiple equation models
+
+      ^testomit (^eq^:^ exp-list [^,^ov_spec]^)^ [^(^eq^:^ exp-list [^,^ov_spec]^)^ ...]
+                          ^, sc^ore^(^varlist^)^ [ov_spec ^nou^nivariate ^adj^ust^(^value^)^]
+
+  where
+
+      ov_spec := ^sq^rhs ^i^rhs ^f^actor^(^varlist^)^
+
+      value   := ^b^onferroni ^si^dak ^h^olm
+
+
+Description
+-----------
+
+^testomit^ performs univariate and multivariate efficient score tests (Rao 1973;
+also known as the Lagrange Multiplier test, see Silvey 19xx) for omitted 
+variables, i.e., it tests whether adding variables to (one or more equations of) 
+the last model makes a "significant improvement".
+
+^testomit^ allows specifications of "omitted variables" as variables, as
+expressions (e.g., log(age)), via options that specify the squares and
+interactions of variables already in the model, and as factorial versions of 
+variabels already in the model as variates.
+
+^testomit^ supports omitted variable tests for "equations" for which the esti-
+mation command does not allow to set predictor variables (e.g., residual vari-
+ance in ^regress^; ^sigma^ in ^weibull^ (^streg, dist(weibull)^), rho in ^heckman^; 
+cutpoints in ^ologit^/^oprobit^).
+
+^testomit^ supports weights and a cluster modification of score tests that is 
+not discussed in the literature (see Remarks below).
+
+
+Options
+-------
+
+^score(^varlist^)^ is required. It specifies the score variables as obtained from
+   the last estimation command. Thus, ^testomit^ can only be used for estimation
+   commands that support a ^score()^ option, and the user specified the ^score()^
+   option for *all* parameters.
+
+   The exception is ^regress^. Here the option ^score()^ is not permitted; ^regress^ 
+   is not capable to compute scores anyway, so ^testomit^ steps in. See further 
+   comments on ^regress^ below.
+
+
+Options to specify omitted variables
+------------------------------------
+
+^factor(^varlist^)^ specifies a list of variables to be treated as factorial
+   (categorical) variables. Squares of categorical variables are ignored.
+   Interactions of a factor and a variate and between factors are generated
+   as by @xi@.
+
+^sqrhs^ specifies that the squares of the non-factorial centered "right-hand
+   side" variables are treated as omitted variables. Factors are ignored. 
+
+^irhs^ specifies that interaction effects of the rhs variables are included.
+     variate x variate  product of centered variables
+     variate x factor   separate slopes of variate for each level of factor
+     factor  x factor   dummies for all combinations of (factor,factor)
+
+If ^factor^, ^sqrhs^, and ^irhs^ are specified as options to ^testomit^, it
+involves the equations of the model that are specified in ^testomit^, if any
+such equations are specified, and to all equations of the model otherwise.
+
+If one of these options is specified with an equation it involves the variables
+in that equation only.
+
+^testomit^ computes squares and interactions in terms of centered variates. 
+Centering improves the accuracy of the numerical determination of the degrees
+of freedom of the test, and does not affect the test provided that the equation
+contains an intercept ^_cons^.
+
+
+Options for simultaneous testing
+--------------------------------
+
+^nounivariate^ suppresses that univariate score tests ("modification indices")
+   are displayed.
+
+^adjust^(^str)^specifies that the p-values of univariate tests are adjusted for
+   simultaneous testing. Supported adjustments are
+
+      ^b^onferroni : Bonferroni multiple-comparison tests (^[R] ...^).
+      ^h^olm       : Holm multiple-comparison tests (Holm 1979).
+      ^s^idak      : Sidak multiple-comparison tests (^[R] ...^).
+
+
+Remarks on specific estimation commands
+---------------------------------------
+
+^regress^
+   Stata has always treated ^regress^ differently from other estimation commands
+   in that the variance of the residual is not treated as an ordinary parameter
+   and so not included in ^e(b)^ and ^e(V)^. Moreover, ^regress^ does have a
+   option ^score()^ to generate the scores for the mean and (log-)variance.
+   ^testomit^ modifies the regress results by assigning equation name ^mean^ to
+   the "ordinary" variables, and it assumes a loglinear model for the residual
+   variance using equation name ^lnvar^.
+
+   Currently, the score test for omitted variables in the mean are evaluated
+   with the chi-square rather than the F-distribution. This may be modified in
+   a future update of ^testomit^.
+
+^ologit^, ^oprobit^
+   In Stata 6, the commands for ordinal response models (^ologit^ and ^oprobit^)
+   store results in a non-standard way. ^testomit^ deals with these commands by
+   providing equation names. The first equation that models the "mean" response
+   is called ^lp^. The equations associated with the cutpoints should be
+   referred to as ^cut1^, ^cut2^, etc.
+
+^cox^ and ^clogit^
+   Currently not supported.
+
+
+Examples
+--------
+
+   . ^testomit x , score(s)^
+         adds ^x^ to the first equation
+
+   . ^testomit (mean: x x^^2), score(s1 s2)^
+         adds ^x^ and ^x^^2^ to equation ^mean^.
+
+   . ^testomit (alpha:, sq irhs), score() adj(sidak)^
+         adds squares and interactions of variables in equation ^alpha^;
+         displays univariate score tests with sidak-adjusted p-values.
+
+   . ^testomit, score() sq i^
+         adds squares and interactions of all variables within all equations.
+
+Examples with ^regress^ (note: no ^score()^ option in ^testomit^)
+
+   . ^regress mpg price weight foreign^
+         fit a regress model
+
+   . ^testomit, sq i adj(h)^
+         tests whether quadratic and interactions of the rhs variables are
+         significant in the model for mean = E((price).
+
+   . ^testomit (lnvar:length weight), adj(h)^
+         tests multiplicative heteroscedasticity in length and weight, 
+         reporting Holm-adjusted p-values.
+
+
+Remarks on score tests
+----------------------
+
+Let u_i be the score (gradient of the log-likelihood) of the i-th observations
+evaluated under Ho. Let U = u_+. Under regularity conditions, E u_i(b) = 0 for
+each i for the true b. The variance V(U) can be estimated conistency under Ho
+by the outer product of the gradients,
+
+   V = Var U(B) = sum_i u_i u_i'
+
+In econometrics textbooks this estimator is often the BBBH or OPG estimator. A
+score test for Ho can be defined as
+
+   U' * inv(V) * U
+
+which under H0 is approximately chi-square distributed with rank(V) degrees of
+freedom (See, for instance, Greene, 19xx, p xxx). (Of course, there are
+regularity conditions here.)
+
+If the observations are clustered, one can easily modify the above derivation,
+by aggregating (summing the scores) over the clusters c=1..C,
+
+   U_c = sum u_i    where summation is over the observations in cluster c
+
+   V = var U(B) = var( sum_c U_c ) = sum_c U_c U_c '
+
+If weights were applied, U and V have to be defined accordingly.
+
+
+Performing score tests for omitted variables in single equation or multiple
+equations models is straightforward; for convenience we restrict to a single
+equation model. We estimated a model with k predictor variables x(1)...x(k)
+(including the constant if appropriate). We consider an "unrestricted" model
+with additional predictor variables x(k+1)...x(m). We want to test
+
+   Ho: b(z(k+1)) = .. = b(z(m)) = 0
+
+against the general alternative. We need to evaluate the scores of the unres-
+tricted model under Ho. The scores s(1)..s(m) of the variables x(1)...x(m) in
+satisfy
+
+   s(j) = s * x(j)
+
+           d
+where s = ---- log L, where the linear predictor lp is evalued under Ho,
+          d lp
+
+   lp  = b(1)x(1) + ... + b(k)x(k)
+
+Thus to evaluate the scores for an unrestricted model under Ho we only the
+variable s. This variable is conveniently obtained from most Stata's estimation
+command with the option ^score()^.
+
+See the notes section of ^testomit.ado^ for additional algorithmic details.
+
+
+Saved results
+-------------
+
+   ^testomit^ saved in ^r()^
+
+      ^chi2^    multivariate score test statistic
+      ^df^      degrees of freedom in the test
+      ^p^       p-value from chi-square distribution
+
+   If univariate tests are also computed,
+
+      ^utest^   a k x 3 matrix, k is number of univariate tests, and
+              ^utest[.,1]^   test statistic
+              ^utest[.,2]^   degrees of freedom
+              ^utest[.,3]^   (adjusted) p-value
+
+
+References
+----------
+
+   Davidson 
+
+   Holm, Sture (1979) A Simple Sequentially Rejective Multiple Test
+         Procedure. Scand. J. of Statistics 6: 65-70.
+
+   Rao, C.R. (1973) Linear Statistical Ineference and Its Applications.
+         2nd ed. New York: Wiley.
+
+
+Author
+------
+
+   Jeroen Weesie
+   Dept of Sociology/ICS
+   Utrecht University
+   J.Weesie @@ fss.uu.nl
+
+   This is work in progress. Comments and suggestions are welcome.
+
+
+Also See
+--------
+
+ Manual: ^[R] post-estimation commands^
+
+On-line: @hausman@     Hausman specification test
+         @lrtest@      Likelihood-ratio tests and model selection indices
+         @suest@       Testing cross-model hypotheses
+         @test@        Wald test of ^linear^ hypotheses
+         @nltest@      Wald test of ^non-linear^ hypotheses
+

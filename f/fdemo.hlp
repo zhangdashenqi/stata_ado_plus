@@ -1,0 +1,43 @@
+
+.-
+help for ^fdemo^
+.-
+
+F distribution demonstration
+-----------------------------
+
+ ^fdemoa^ [ ^df1 df2 alpha^ ] 
+
+ 
+Description
+-----------
+
+^fdemo^ displays an F-distribution for degrees 
+        of freedom equal to ^df1^ and ^df2^.
+        ^df1^ is best between 1 and 60 and ^df2^ 
+        is best between 1 and 100.
+
+Options
+-------
+
+ ^df1^   set the numerator degrees of freedom.  The default is 1.
+ 
+ ^df2^   set the denominator degrees of freedom.  The default is 1.
+ 
+ ^alpha^ sets the alpha level. The default is .05
+
+Examples
+---------
+
+ . ^fdemo 3 10^
+ . ^fdemo 3 10 .01^
+
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+

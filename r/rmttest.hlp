@@ -1,0 +1,81 @@
+.-
+help for ^rmttest^                                              (STB-30: sg49)
+.-
+
+paired (repeated measures) t-test with scatterplot
+--------------------------------------------------
+
+   ^rmttest^ depvar [^if^ exp] [^in^ range] [^,^ ^by(^byvar [val1 val2]^)^
+                   ^ci^ ^gr^aph ^id(^idvar^)^ ^l^evel^(^cilevel^)^ graph_options] 
+
+
+Description
+-----------
+
+^rmttest^ performs a paired t-test for two samples contained among the values of
+depvar.  The sample pairings are defined by the variable idvar. The samples are
+selected by two values of the variable byvar.  An observation will be ignored
+if it has missing values for any of the byvar, idvar, or depvar variables. Sub-
+sets of observations can be selected with ^if^ and ^in^ clauses, as well as with
+two values provided in the ^by^ option. In any case, the selection must result in
+observations where the byvar variable assumes exactly two values.
+
+
+Options
+-------
+
+^by(byvar)^ specifies a variable that defines the two samples to be compared. Not
+    optional.  What is optional is two byvar values (val1 val2), which request
+    a t-test that compares cases with byvar==val1 vs. those with byvar==val2.
+
+^ci^ displays confidence intervals for the two population means being compared,
+    as well as for their difference.  The confidence level is set by ^level^.
+
+^graph^ draws a scatterplot of the paired values of depvar, including a reference
+    line corresponding to ordinate==abscissa.  If ^ci^ is also given, the means
+    and confidence limits from each sample are indicated by tick marks on the
+    top and right axes.
+
+^id(idvar)^ specifies a variable that defines the pairing of the two samples to
+    be compared. Not optional.
+
+^level(cilevel)^ sets the confidence level for the confidence intervals requested
+    by ^ci^.  The default cilevel is 95%; values for cilevel may be specified as
+    fractions, level(.975), or as percentages, level(97.5).
+
+graph_options are any of the options allowed with ^graph, twoway^, except for
+    connect and, if ^ci^ is given, ttick and rtick.
+
+
+Examples
+--------
+
+ . ^rmttest systolic if group==3 & (week==6|week==12), by(week) id(patient)^
+   (paired t-test comparing systolic at week==6 for patients in group==3, with
+   the same patients' systolic at week==12)
+
+ . ^rmttest systolic if group==3, by(week 6 12) id(patient)^
+   (exactly the same as the previous example)
+
+ . ^rmttest hrate if !trt, by(day 0 7) id(subject) gr ci l(.99) sym([subject])^
+   (paired t-test comparing hrate at day==0 and day==7 for all subjects in the
+   condition where trt==0, along with 99% confidence intervals. Plot the day==7
+   hrate vs. day==0 hrate using the values of the subject variable as the plot
+   symbol, with means and confidence limits shown as ticks on the top (day==0)
+   and right (day==7) axes, and with a reference line drawn at the position 
+   hrate(day==7) == hrate(day==0).
+
+
+Author
+------
+	John R. Gleason
+        Syracuse University
+	73241.717@@compuserve.com
+
+
+Also see
+-------- 
+
+    STB:  STB-30 sg49
+ Manual:  [3] into, [3] twoway, [5s] ttest
+On-line:  help for @graph@, @twoway@, @ttest@

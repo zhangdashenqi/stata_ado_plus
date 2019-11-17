@@ -1,0 +1,40 @@
+.-
+help for ^iptab^                                            (STB-25: sg39)
+.-
+
+Independent percentages in tables
+---------------------------------
+
+        ^iptab^ rowvar colvar depvar ^if^ target_exp [ ^,^ ^nof^req ^w^rap ]
+
+
+Description
+-----------
+
+^iptab^ displays percentages of the sort produced by ^tabulate^, but ^iptab^
+eliminates redundant information.  The ^if^ clause is required.  It specifies
+an expression in the ^depvar^ that defines the number of cases in the 
+numerator of each percentage.  The denominator of each percentage is the 
+number of cases with non-missing values of the ^rowvar^, ^colvar^, and ^depvar^.
+
+
+Options
+-------
+
+^iptab^ uses ^tabulate, summarize^ to carry out the final calculations and to
+    display the results.  The ^nofreq^ and ^wrap^ options are passed to this 
+    command and have their usual meaning.
+
+
+Author
+------
+
+    Benjamin Miller
+    Simmons College
+    email: bmiller@@vmsvax.simmons.edu
+
+
+Also see
+--------
+
+    STB:  STB-25  sg39

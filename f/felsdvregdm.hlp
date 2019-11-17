@@ -1,0 +1,382 @@
+{smcl}
+{* June 2009 version 1.1}{...}
+{cmd:help felsdvregdm}{right: ({browse "http://www.stata-journal.com/article.html?article=st0185":SJ10-1: st0185})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 20 20 2}{...}
+{p2col :{hi:felsdvregdm }{hline 2}}One- or two-dimensional fixed-effects model estimation with the primary 
+fixed effect parameterized to sum-to-zero constraints{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 19 2}{cmd:felsdvregdm}
+{varlist}
+{ifin}{cmd:,}
+{opt i:var(varname)}
+{opt j:var(varname)}
+{opt r:eff(varname)}
+{opt p:eff(name)}
+{opt f:eff(name)}  
+{opt xb(name)}
+{opt res(name)}
+{opt m:over(name)}
+{opt mnum(name)}
+{opt pobs(name)}
+{opt g:roup(name)}
+[{opt grouponly}
+{opt onelevel}
+{opt noi:sily}
+{opt chol:solve}
+{opt nocomp:ress}
+{opt feffse(name)}]
+
+
+{title:Description}
+
+{pstd}{cmd:felsdvregdm} computes a linear regression model with one- or
+two-dimensional fixed effects, where the "primary" effect (e.g., the firm
+effect) is included as dummy variables and is parameterized using sum-to-zero
+constraints. This estimation tool is intended for cases where the estimates
+and standard errors of the primary fixed effects are of interest.  When
+specified, the second fixed effect (e.g., the person effect) is eliminated by
+subtracting group means (within transformation). {cmd:felsdvregdm } is a
+modification of the {helpb felsdvreg} command, written by Thomas Cornelissen
+and described in Cornelissen (2008).
+
+{pstd}Software for modeling with fixed effects (e.g., {helpb areg}, 
+{helpb xtreg}, or {helpb felsdvreg}) all solve the problem of
+overparameterization by deleting the indicator variables for one or more units
+until the remaining variables are linearly independent. Although this
+parameterization suffices in allowing for estimation of the remaining model
+parameters, it changes the definition of the fixed-effects parameters to be
+contrasts between the units that were not deleted and the arbitrary holdout
+unit. The sum-to-zero parameterization implemented in {cmd:felsdvregdm}
+instead results in effects for individual units that are defined as deviations
+from the average units within a specified reference collection. The reference
+collections are specified by the user and represent groups of units that are
+to be compared with one another.
+
+{pstd}Similarly to {helpb felsdvreg}, {cmd:felsdvregdm} skips the step of
+creating the dummy variables to directly create the cross-product matrices
+needed for the least-squares normal equations. This procedure is memory saving
+because the cross-product matrices are of a much lower dimension than the
+design matrix.
+
+{pstd}{cmd:felsdvregdm} incorporates the grouping algorithm proposed by Abowd,
+Creecy, and Kramarz (2002) and programmed by Robert Creecy (original author),
+Lars Vilhuber (current author), and Amine Ouazad (author of the Stata 
+{net "from http://fmwww.bc.edu/RePEc/bocode/a":{bf:a2reg}} command).  The
+grouping algorithm allows the user to identify subgroups of firms and persons
+who are disconnected from other subgroups. In models with two-dimensional
+fixed effects, disconnected groups result in lost degrees of freedom and may
+affect the definition of the reference collections.  Because the goal of
+{cmd:felsdvregdm} is to maintain strict control over the interpretation of the
+firm fixed effects, reference collections must not attempt to compare firms in
+disconnected strata.  It is recommended that the {cmd:grouponly} option (see
+description below) is called prior to estimation of two-dimensional
+fixed-effects models so that the group structure of the data can be used to
+define appropriate reference collections.
+
+{pstd}See Mihaly et al. (2010) for a more detailed description and an example
+of {cmd:felsdvregdm}.
+
+
+{title:Memory requirements}
+
+{pstd}The moment matrices and the estimation are created in the Mata
+environment.  Mata can only use memory that is not allocated to Stata by the
+{helpb set memory} command.  Therefore, you should not allocate too much
+memory to Stata because any memory that is allocated in excess to Stata is
+lost for Mata.  If you get the error message "unable to allocate real", then
+Mata is running out of memory; in this case, try to reduce the memory you
+allocated to Stata by using {cmd:set memory}.  If you get the error message
+"no room to add more observations/variables", then Stata is running out of
+memory; in this case, you need to increase the memory allocated to Stata by
+using {cmd:set memory}.
+
+{pstd} If you do not have enough memory available to run {cmd:felsdvregdm} on
+the complete sample, you may wish to run it on a subsample.  To have as many
+identified firm effects as possible in this subsample, you may wish to choose
+the subsample such that the mobility groups remain intact.  In this case, you
+can use the {cmd:grouponly} option to choose your sample for the fixed-effects
+estimation.
+
+
+{title:Options} 
+
+{phang}
+{opt ivar(varname)} specifies the identification variable for the person-level
+effect, such as the person or student ID. {opt ivar()} is required.
+
+{phang} 
+{opt jvar(varname)} specifies the identification variable for the unit-level
+effect, such as the firm or teacher ID. {opt jvar()} is required.
+
+{phang}
+{opt reff(varname)} specifies the identification variable for the reference
+collection.  Reference collections specify collections of units to be compared
+with the unit mean for the collection. For two-level fixed-effects
+applications, reference collections must be nested within groupings or strata
+of connected units.  {opt reff()} is required.
+
+{phang}
+{opt peff(name)} specifies the name of the new variable in which to store the
+person-level effect.  {opt peff()} is required.
+
+{phang}
+{opt feff(name)} specifies the name of the new variable in which to store the
+unit effect.  {opt feff()} is required.
+
+{phang}
+{opt xb(name)} specifies the name of the new variable in which to store the
+linear prediction {bf:X'b}.  {opt xb()} is required.
+
+{phang}
+{opt res(name)} specifies the name of the new variable in which to store the
+residual.  {opt res()} is required.
+
+{phang}
+{opt mover(name)} specifies the name of the new variable in which to store an
+indicator variable for whether the person is observed with multiple firms or
+teachers.  {opt mover()} is required.
+
+{phang}
+{opt mnum(name)} specifies the name of the new variable in which to store the
+number of movers per unit.  In the two-level model, units for which
+{cmd:mnum()} is zero do not have identified effects.  {opt mnum()} is
+required.
+
+{phang}
+{opt pobs(name)} specifies the name of the new variable in which to store the
+number of observations per person.  Persons for whom only one observation is
+available will have person effects computed with a residual of zero for the
+two-level model.  {opt pobs()} is required.
+
+{phang}
+{opt group(name)} specifies the name of the variable in which to store the
+group (strata) identifier calculated during the routine.  If the variable does
+not already exist in the data, it will be created; if there is an existing
+variable {it:name}, it will be overwritten.  {opt group()} is required.
+
+{phang}
+{opt grouponly} causes {cmd:felsdvregdm} to run only the grouping algorithm
+and produce group indicator variables.  No estimates are computed in this
+case.
+
+{phang}
+{opt onelevel} omits the person fixed effects, resulting in the one-level
+fixed-effects model being estimated.
+
+{phang}
+{opt noisily} provides more detailed outputs with tables and summary
+statistics on the number of movers, units, and persons, and the mobility
+variable.
+
+{phang}
+{opt cholsolve} directs Stata to use the {helpb cholsolve} function to invert
+the moment matrix instead of using the default {helpb invsym()} function. This
+may result in greater internal precision.
+
+{phang}
+{opt nocompress} specifies not to compress the dataset; by default, the 
+{helpb compress} command is implemented to save memory.
+
+{phang}
+{opt feffse(varname)} specifies the name of the new variable in which to store
+the standard errors of the estimated unit fixed effects.
+
+
+{title:Remarks}
+
+{pstd}Because {cmd:felsdvregdm} extends the functionality of {helpb felsdvreg}
+and uses the {cmd:felsdvreg} syntax and estimation methods as its base, the
+procedures are very similar. In particular, {cmd:felsdvregdm} requires the
+same specification of person-related variables as {cmd:felsdvreg}.  This is
+true for both one- and two-level applications, even though in principle,
+several variables might only apply to models with two levels of fixed effects
+(e.g., {opt ivar()}, {opt peff()}, {opt mover()}, and {opt pobs()}). All
+variables are required regardless of whether one or two levels are specified
+because the computational methods developed in {cmd:felsdvreg} and used by
+{cmd:felsdvregdm} rely on both the first and the second levels of indicators
+to save time and memory during estimation. Also consistent with
+{cmd:felsdvreg}, when specifying the {opt grouponly} option, all the variable
+names need to be defined, even though only the group variable will be modified
+and saved.
+
+{pstd}Although the syntaxes of {cmd:felsdvregdm} and {helpb felsdvreg} are
+very similar, there are several important differences to note between the
+procedures:
+
+{phang}(1) The {opt reff()} option, which is not part of {helpb felsdvreg} is
+required by {cmd:felsdvregdm}.  This variable specifies the reference
+collections inside which the user wishes to impose sum-to-zero constraints
+among the unit effects. For example, in the education setting, if the analyst
+is interested in comparing groups of teachers who teach the same grade, this
+variable would be a grade-level indicator. To make comparisons among all the
+teachers in the dataset, the reference-collection variable would have to be a
+constant for all the observations.
+
+{phang}(2) Maintaining correspondence between the models in the original
+parameterization and our sum-to-zero constrained parameterization requires
+that indicators for the reference collections be included in the model.  Users
+are encouraged to create indicator variables corresponding to the levels of
+the {opt reff()} variable and to include these as regressors in the model. For
+example, in the setting where teachers of the same grade are being compared in
+the reference collections, the explanatory variables should contain dummy
+variables for each of the grades. In the case of one reference collection,
+where all the units are being compared with one another, the regression should
+include a constant term.  If the user-specified explanatory variables do not
+contain all these indicators, {cmd:felsdvregdm} will add these variables to
+the explanatory variable list and to the dataset after estimation.  These
+variables are labeled as {cmd:D}{it:varname}{cmd:_1}, ...,
+{cmd:D}{it:varname}{cmd:_}{it:G}, where {it:varname} is the name of the
+{cmd:reff()} variable.
+
+{phang}(3) Similarly to {helpb felsdvreg}, {cmd:felsdvregdm} checks for
+collinearity among the columns of the matrix of explanatory variables
+(augmented by the reference collection indicators, if necessary) and drops
+redundant variables if any exist. {cmd:felsdvregdm} further checks that the
+matrix of explanatory variables and the unit-effect dummy variables are all
+linearly independent and aborts estimation with an error message if they are
+not because any collinearity among the columns would prevent the unambiguous
+interpretation of the fixed-effects estimates, defeating the purpose of the
+reparameterization.
+
+{phang}(4) Like {helpb felsdvreg}, {cmd:felsdvregdm} fits a two-level model,
+but unlike {helpb felsdvreg}, it also provides the option of estimating a
+one-level fixed-effects model with the sum-to-zero constraint using the 
+{opt onelevel} option.
+
+{phang}(5) For the two-level model, {cmd:felsdvregdm} runs a grouping
+algorithm prior to estimation to determine groups, stores the results in the
+{cmd:group()} variable, and checks that no reference collection is ever
+associated with more than one group.  If this test fails, the program aborts
+and returns an error message, because in this case, the sum-to-zero
+constraints within reference collection are insufficient to identify all the
+model parameters.  In practice, we suggest that prior to attempting to
+estimate a two-level model, users call {cmd:felsdvregdm} with the 
+{opt grouponly} option. In additon, users should use the group information
+stored in the {cmd:group()} variable to check that reference collections do
+not contain multiple groups and as necessary redefine reference collections to
+be within group boundaries and remain substantively meaningful.
+
+{phang}(6) Many options that were available in {helpb felsdvreg} can no longer
+be implemented.  Because automatic selection of parameterizations might not
+coincide with the substantive interests of users, the {opt takegroup} option
+of {helpb felsdvreg} has been eliminated.  Similarly, because the matrix of
+explanatory variables is augmented by the reference collection indicators, the
+{opt cons} option is no longer possible.
+
+{phang}(7) The F tests conducted by {cmd:felsdvregdm} are different from those
+conducted by {helpb felsdvreg}. In particular, in {cmd:felsdvregdm}, the unit
+effects are tested only within reference collections rather than testing the
+unit effects along with the reference collection means.  This choice was
+consistent with the notion that a user may choose a particular set of
+reference collections because between-collections variability may not be
+attributable to units.  For example, it is common to compare teachers within
+grades, because test scores may vary across grades due to scaling of tests,
+which users generally would not want to include as part of the teacher
+effects. For the one-level model, {cmd:felsdvregdm} tests the joint
+significance of the within-collection unit effects relative to a model with no
+unit effects (but with reference collection means). For the two-level model,
+it reports three tests:  the joint significance of the person and unit effects
+relative to the reduced model, the significance of the unit effects
+conditional on the person effects, and the significance of the person effects
+conditional on the unit effects and X, where X includes the reference
+collection means.
+
+{phang}(8) The {opt normalize} option in {helpb felsdvreg} normalizes the
+group means of the unit effects to zero.  This normalization is equivalent to
+the case in {cmd:felsdvregdm} if all the observations are specified to be in a
+single reference collection.  However, in many situations, the user may wish
+to compare smaller collections of units, in which case {cmd:felsdvregdm} is
+more desirable.  In addition, the {opt normalize} option does not adjust the
+standard errors for the normalization and continues to report standard errors
+that are relative to an arbitrary holdout teacher.
+
+{phang}(9) Forthcoming in later versions of {cmd:felsdvregdm} are the 
+{opt robust} and {opt cluster(varname)} options, which compute robust and
+clustered standard errors; the {opt noadji} and {opt noadjj} options, which
+adjust the degrees of freedom for the clustered standard errors; and the 
+{opt hat(varlist)} and {opt orig(varlist)} options, which allow for two-stage
+least-squares estimation.
+
+
+{title:Saved results}
+
+{pstd}
+{cmd:felsdvregdm} saves the following in {cmd:e()}:
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Scalars}{p_end}
+{synopt:{cmd:e(rss_rest)}}residual sum of squares from no fixed-effects model{p_end}
+{synopt:{cmd:e(dof_rest)}}model degrees of freedom from no fixed-effects model{p_end}
+{synopt:{cmd:e(rss_restp)}}residual sum of squares from model with only firm
+effects (only two-level model){p_end}
+{synopt:{cmd:e(dof_restp)}}model degrees of freedom from model with only firm
+effects (only two-level model){p_end}
+{synopt:{cmd:e(rss_restf)}}residual sum of squares from model with only person
+effects (only two-level model){p_end}
+{synopt:{cmd:e(dof_restf)}}model degrees of freedom from model with only
+person effects (only two-level model){p_end}
+{synopt:{cmd:e(F_f)}}F test that all fixed effects are zero{p_end}
+{synopt:{cmd:e(F_fp)}}F test that person fixed effects are zero{p_end}
+{synopt:{cmd:e(F_ff)}}F test that firm fixed effects are zero{p_end}
+{synopt:{cmd:e(N)}}number of observations{p_end}
+{synopt:{cmd:e(tss)}}total sum of squares{p_end}
+{synopt:{cmd:e(rss)}}residual sum of squares{p_end}
+{synopt:{cmd:e(r2)}}R-squared{p_end}
+{synopt:{cmd:e(df_r)}}residual degrees of freedom{p_end}
+{synopt:{cmd:e(df_m)}}model degrees of freedom{p_end}
+{synopt:{cmd:e(numb_covar)}}number of covariates in final model{p_end}
+{synopt:{cmd:e(rmse)}}root mean squared error{p_end}
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Macros}{p_end}
+{synopt:{cmd:e(cmd)}}{cmd:felsdvregdm}{p_end}
+{synopt:{cmd:e(properties)}}{cmd:b V}{p_end}
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Matrices}{p_end}
+{synopt:{cmd:e(b)}}coefficient vector{p_end}
+{synopt:{cmd:e(V)}}variance-covariance matrix of the estimators{p_end}
+
+
+{title:Example}
+
+{phang}
+{cmd:. felsdvregdm y x w, ivar(i) jvar(j) reff(reff) feff(feff) peff(peff) mover(mover)}
+         {cmd:group(group) xb(xb) res(res) mnum(mnum)}
+
+
+{title:References}
+
+{phang}Abowd, J. M., R. H. Creecy, and F. Kramarz. 2002. Computing person and
+firm effects using linked longitudinal employer-employee data. Technical Paper
+No.  TP-2002-06, Center for Economic Studies, U.S. Census Bureau.  
+{browse "http://lehd.did.census.gov/led/library/techpapers/tp-2002-06.pdf"}.
+
+{phang}Cornelissen, T. 2008. {browse "http://www.stata-journal.com/article.html?article=st0143":The Stata command felsdvreg to fit a linear model with two high-dimensional fixed effects}. {it:Stata Journal} 8: 170-189.
+
+{phang}Mihaly, K., D. F. McCaffrey, J. R. Lockwood, and T. R. Sass. 2010.
+{browse "http://www.stata-journal.com/article.html?article=st0185":Centering and reference groups for estimates of fixed effects: Modifications to felsdvreg}.
+{it:Stata Journal} 10: 82-103.
+
+
+{title:Corresponding author}
+
+        Kata Mihaly
+	The RAND Corporation
+        kmihaly@rand.org
+
+
+{title:Also see}
+
+{psee}Article:  {it:Stata Journal}, volume 10, number 1: {browse "http://www.stata-journal.com/article.html?article=st0185":st0185}
+
+{psee}
+{space 3}Help:  {helpb felsdvreg}, {manhelp areg R}, {manhelp xtreg XT}{p_end}

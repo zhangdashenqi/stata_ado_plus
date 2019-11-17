@@ -1,0 +1,54 @@
+.-
+help for ^_peife^ - 1.6.0 - 2/7/1999
+.-
+
+Utility to decide if estimation sample is used
+----------------------------------------------
+
+    ^_peife^ [^if^ exp] [, ^a^ll]
+
+Description
+-----------
+
+^_peife^ modifies the given ^if^ expression to add restrictions to the last
+    estimation sample ^e(sample)^. Whem the option ^all^ is specified, the
+    ^if^ statement is not modified to add ^e(sample)^.
+
+
+Output
+------
+
+You can retrieve a string with the resulting ^if^ statement by using ^r(if)^.
+    For example: local if "`r(if)'"  Note that the resulting string includes
+    the work ^if^.
+
+Options
+-------
+
+^all^ By default, the ^if^ statement passed to ^_peife^ is modified to add
+    ^& e(sample)^. With option ^all^ the ^if^ condition is not changed.
+    Consequently, all that is done is the word "if" is placed in front of the
+    current ^if^ condition before the string is returned.
+
+Examples within a program
+-------------------------
+    ...
+    * `if' is the curret if condition
+    _peife `if',`all'
+    * the new condition includes & e(sample)
+    local if "`r(if)'"
+    * note that `if' has the word if in it
+    sum `varlist' `if'
+    ...
+
+Note
+----
+
+_pesum, _pedum, _pecats do not call _peife. You need to pass the correct if
+condition to them.
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+         

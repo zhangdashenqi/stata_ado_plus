@@ -1,0 +1,86 @@
+.-
+help for ^countfit^ - 03Nov2005
+.-
+
+Compare fit of alternive count models
+-------------------------------------
+
+    ^countfit^ varlist [if] [in]^,^ [^inf^late^(^varlist2^)^ ^noc^onstant ^p^rm ^n^breg
+        ^zip^ ^zin^b ^g^enerate^(^prefix^)^ ^replace^ ^note(^string^)^
+        ^graph^export^(^filename[^, replace^]^)^ ^nog^raph ^nod^ifferences ^noprt^able
+        ^noe^stimates ^nof^it ^nodash^ ^max^count(#) ^noi^sily]
+
+Description
+-----------
+
+^countfit^ compares the fit of the Poissin, negative binomial, zero-inflated
+Poisson and zero-inflated negative binomial models, generateing a table of
+estimates, a table of differences between observed and average estimated
+probabilities for each count, a graph of these differences, and various tests
+and measures used to compare the fit of count models.
+
+Specifying the model
+--------------------
+Immediately afer the command name ^countfit^ you specify the dependent and
+independent variables as you would with ^poisson^ or the other models. For
+zero-inflated models, the ^inflate^ option is used in the same was as in the
+^zip^ and ^zinb^ commands. ^noconstant^ can be used to exclude the constant
+term.
+
+Options to select the models to fit
+-----------------------------------
+By default, ^poisson^, ^nbreg^, ^zip^ and ^zinb^ are estimated. If you
+only want some of these models, specify the modesl you want with:
+
+    ^prm^ - include ^poisson^
+    ^nbreg^ - include ^nbreg^
+    ^zip^ - include ^poisson^
+    ^zinb^ - include ^poisson^
+
+Options to label results
+------------------------
+^generate()^ is up to five letters to name the variables that are created
+     and to label the models in the output. This name is placed in front
+     of the type of model (e.g., namePRM). This is optional but will help
+     keep track of results from multiple specifications of models.
+
+^replace^ will replace variables created with the ^generate^ option if they
+    already exist.
+
+^note()^ is a label added to the graph that is saved.
+
+^graphexport()^ contains options to be sent to the ^graph export^ command to
+    export the graph that is create. For example, ^graph(mdl.emf, replace)^
+    would save the file mdl.emf and replace it if it exists. If this option
+    is not included, the graph is not saved.
+
+Options controlling what is printed
+-----------------------------------
+^noisily^ shows the output from the estimation commands called by ^countfit^.
+^nograph^ suppress graph of differences from observed counts.
+^nodifferences^ suppress table of differences from observed counts.
+^noprtable^ suppresses table of predictions for each model.
+^noestimates^ suppress table of estimated coefficients.
+^nofit^ suppress table of fit statistics and test of fit
+^nodash^ suppress dashed lines between measures of fit
+^maxcount()^ number of counts to evaluate.
+^noisily^ includes output from Stata estimation commands; without this option
+    the results are only shown in the ^estimates table^ output.
+
+Notes
+-----
+
+^countfit^ is based on the results from the Stata models described above,
+the predictions computed by ^prcounts^, and the fit measures computed by
+^fitstat^.
+
+Examples
+--------
+
+    ^. use couart2^
+    ^. countfit art fem mar kid5 phd ment, inf(ment fem) nbreg zinb nograph^
+
+.-
+Author: J. Scott Long and Jeremy Freese
+        www.indiana.edu/~jslsoc/spost.htm
+        spostsup@@indiana.edu

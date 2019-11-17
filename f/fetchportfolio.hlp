@@ -1,0 +1,58 @@
+{smcl}
+{* 7dec2011}{...}
+{cmd:help fetchportfolio}{right: ({browse "http://www.stata-journal.com/article.html?article=dm0070":SJ13-3: dm0070})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 23 25 2}{...}
+{p2col:{hi: fetchportfolio} {hline 2}}Estimate and calculate financial statistics
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 18 2}
+{cmd:fetchportfolio} {it:namelist}{cmd:,} {opth year(numlist)}
+
+{pstd}
+{it:namelist} is a list of ticker symbols for which the
+statistics are calculated and a capital asset pricing model is
+fit.  Symbols are separated by spaces.
+
+
+{title:Description}
+
+{pstd}
+{cmd:fetchportfolio} estimates and calculates financial statistics
+to compare financial securities for portfolio selection.
+{cmd:fetchyahooquotes} is needed for {cmd:fetchportfolio} to run.
+
+
+{title:Option}
+
+{phang}
+{opth year(numlist)} is a list of years for which the statistics
+are calculated and a capital asset pricing model is fit.  Years are
+separated by spaces.
+
+
+{title:Example}
+
+{phang}
+{cmd:. fetchportfolio IBM GOOG SPY BND, year(2010 2011)}
+
+
+{title:Author}
+
+{pstd}Mehmet F. Dicle{p_end}
+{pstd}Loyola University New Orleans{p_end}
+{pstd}New Orleans, LA{p_end}
+{pstd}mfdicle@loyno.edu
+
+
+{title:Also see}
+
+{p 4 14 2}
+Article:  {it:Stata Journal}, volume 13, number 3: {browse "http://www.stata-journal.com/article.html?article=dm0070":dm0070}
+{p_end}

@@ -1,0 +1,80 @@
+{smcl}
+{* 13dec2017}{...}
+{cmd:help palettes}{right: ({browse "http://www.stata-journal.com/article.html?article=gr0075":SJ18-4: gr0075})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col:{cmd:palettes} {hline 2}}Color palettes, symbol palettes, and line-pattern palettes{p_end}
+{p2colreset}{...}
+
+
+{marker syntax}{...}
+{title:Syntax}
+
+{pstd}
+Color palettes
+
+{p 8 15 2}
+{helpb colorpalette} ...
+
+{pstd}
+Symbol palettes
+
+{p 8 15 2}
+{helpb symbolpalette} ...
+
+{pstd}
+Line pattern palettes
+
+{p 8 15 2}
+{helpb linepalette} ...
+
+
+{marker description}{...}
+{title:Description}
+
+{pstd}
+{cmd:colorpalette} is a utility command to retrieve or display color palettes.
+
+{pstd}
+{cmd:symbolpalette} is a utility command to retrieve or display symbol
+palettes.
+
+{pstd}
+{cmd:linepalette} is a utility command to retrieve or display line-pattern
+palettes.
+
+
+{marker citation}{...}
+{title:Citation}
+
+{pstd}
+Thanks for citing this software as follows:
+
+{pmore}
+Jann, B. 2018.
+{browse "http://www.stata-journal.com/article.html?article=gr0075":Color palettes for Stata graphics}.
+{it:Stata Journal} 18: 765-785.
+
+
+{marker author}{...}
+{title:Author}
+
+{pstd}
+Ben Jann{break}
+University of Bern{break}
+Bern, Switzerland{break}
+ben.jann@soz.unibe.ch
+
+
+{marker alsosee}{...}
+{title:Also see}
+
+{p 4 14 2}
+Article:  {it:Stata Journal}, volume 18, number 4: {browse "http://www.stata-journal.com/article.html?article=gr0075":gr0075}{p_end}
+
+{p 7 14 2}
+Help:  {helpb colorpalette}, {helpb symbolpalette}, {helpb linepalette}, {helpb grstyle set} (if installed), 
+{manhelp graph G-2}, {manhelpi colorstyle G-4}, {manhelpi symbolstyle G-4}, {manhelpi linepatternstyle G-4}{p_end}

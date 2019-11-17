@@ -1,0 +1,77 @@
+{smcl}
+{* 17Jan2008}{...}
+{* 05Oct2003}{...}
+{hline}
+help for {hi:etime} {right:manual:  {hi:[R] none}}
+{right:dialog:  {hi: none}    }
+{hline}
+
+
+{title:Time how long a program runs; or, simply, keep track of the elapsed time from point A to point B in a program}
+
+{p 8 12}{cmd:etime}
+{bind:[ {cmd:,} {cmdab:s:tart}}
+]
+
+        
+{title:Description}
+
+{p}{cmd:Etime} is designed for programmers who want to keep track of how long
+a program takes to run.  Using Stata's creturn variables: {cmd:c(current_date)} and
+{cmd:c(current_time)}, {cmd:etime} clocks the difference in time between calls.  
+Like a stopwatch, {cmd:etime} needs to be started and stopped.  The second and following
+times {cmd:etime} is submitted it displays a message that says how long it has been since 
+the first time {cmd:etime} was submitted (in the current Stata session).  
+
+{title:Options}
+
+{p 0 4}{cmd:start} specifies to set or reset {cmd:etime}.  Not specifying {cmd:start}
+is equivalent to ending or simply checking the elapsed time.
+
+{title:Examples}
+
+{p 4}{inp:.  etime, start}
+
+{p 4}{inp:.  etime}
+
+{p 4}Displays:
+
+{p 4}Elapsed time is 2 hours 27 minutes 3 seconds 
+
+
+{title:Saved Results}
+
+{p}The {cmd:etime} command saves in s():
+ 
+{p}s(etime) {space 2} days:hours:mins:secs elapsed since first call to {cmd:etime}
+
+{p}s(esecs) {space 2} total number of seconds elapsed since first call to {cmd:etime}
+
+{p}s(stardate) days since Jan. 1, 1960 that {cmd:etime} started
+
+{p}s(startime) number of seconds into the day that {cmd:etime} started
+
+{p}s(endate) {space 1} days since Jan. 1, 1960 that {cmd:etime} ended 
+
+{p}s(endtime) {space 1}number of seconds into the day that {cmd:etime} ended plus 86,400 seconds
+for each day since etime started.
+
+
+{title:Author}
+
+{p 4 4 2}
+Dan Blanchette {break}
+Research Computing {break}
+University of North Carolina - Chapel Hill, USA {break}
+dan_blanchette@unc.edu
+
+
+{title:Also see}
+
+{p 0 10}On-line: {help log} {help datefun} {help creturn},
+{help usagelog} (if installed)
+{help savasas} (if installed)
+{help usesas} (if installed)
+
+
+

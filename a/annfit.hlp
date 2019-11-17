@@ -1,0 +1,12 @@
+.-
+help for annfit                                                (Stas Kolenikov)
+.-
+
+
+ Approximation by neural networks
+ --------------------------------
+
+ ^annfit^ depvar [^if^ exp] [^in^ range] , ^n^eural(varlist) [^l^inear(varlist)
+                ^u^nits(#) ^r^epeat(#) ^noc^ons ^deb^ug ^del^ete ^seed^(#) ]
+                
+ 

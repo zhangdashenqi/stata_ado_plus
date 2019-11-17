@@ -1,0 +1,26 @@
+
+
+* A scheme to repeatedly cycle through 15 pstyles
+
+#include s2color
+
+seriesstyle p16 p1
+seriesstyle p17 p2
+seriesstyle p18 p3
+seriesstyle p19 p4
+seriesstyle p20 p5
+seriesstyle p21 p6
+seriesstyle p22 p7
+seriesstyle p23 p8
+seriesstyle p24 p9
+seriesstyle p25 p10
+seriesstyle p26 p11
+seriesstyle p27 p12
+seriesstyle p28 p13
+seriesstyle p29 p14
+seriesstyle p30 p15
+
+seriesstyle p31 p1
+seriesstyle p32 p2
+seriesstyle p33 p3
+seriesstyle p34 p4

@@ -1,0 +1,154 @@
+{smcl}
+{cmd: help dr} {right: ({browse "http://www.stata-journal.com/article.html?article=st0149":SJ8-3: st0149})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 11 13 2}{...}
+{p2col :{hi:dr} {hline 2}}Doubly robust estimation{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 10 2}
+{cmd:dr}
+{it: outcome}
+{it: exposure}
+[{it:indepvars}]
+{ifin}
+[{cmd:, ovars(}{it:varlist}{cmd:)}
+{cmd:pvars(}{it:varlist}{cmd:)} 
+{cmdab:f:amily(}{it:familyname}{cmd:)} 
+{cmdab:l:ink(}{it:linkname}{cmd:)}{break} 
+{cmd:vce(}{it:vce_type}[{cmd:,} {it:vce_options}]{cmd:)} 
+{cmd:genvars}
+{cmd:suffix(}{it:string}{cmd:)}]
+
+{pstd}where {it:outcome} is binary and coded 0 for the control group and 1
+for the treatment group. If necessary, use {cmd:xi} to generate {it:outcome}.
+
+
+{title:Description}
+
+{pstd}
+{cmd:dr} computes a double-robust effect estimate for the effect
+of a treatment on an outcome given a set of confounders. The
+confounding effect is adjusted for in two ways: by modeling the
+effect of both treatment and confounders on the outcome (outcome
+model), and by weighting observations according to the inverse of
+their probability of receiving the treatment they actually received
+(propensity model). If either the outcome model or the propensity
+model is correct, the doubly robust estimate is unbiased. 
+
+
+{title:Options}
+
+{phang} {opt ovars(varlist)} determines which variables are used in the
+outcome-model part of the double-robust estimator.  If it is not set, all the
+variables in {it:indepvars} are used.
+
+{phang} {opt pvars(varlist)} determines which variables are used in the
+propensity-model part of the double-robust estimator.  If it is not set, all
+the variables in {it:indepvars} are used.
+
+{phang} {opt family(familyname)} uses the probability distribution of the
+generalized linear outcome model.  See {help glm##familyname:familyname} for a
+list of alternatives.
+
+{phang} {opt link(linkname)} is the link function of the generalized linear
+outcome model (see {help glm##linkname:linkname} for the options available).
+This affects only the outcome model: the double-robust estimator measures the
+difference between the mean outcome in the treated and the mean outcome in the
+untreated.  So, if you have a dichotomous outcome, you may wish to specify
+{opt logit} for the link, but the double-robust estimate given will still be a
+risk difference, not an odds ratio.
+
+{phang} {opt vce(vce_type[, vce_options])} calculates the standard error of
+the estimator.  {it:vce_type} can be either {cmd:robust} or {cmd:bootstrap},
+with the default being {cmd:vce(robust)}. The {cmd:vce(bootstrap)} option has
+a number of suboptions to control how the bootstrapping is performed; see
+{manhelp bootstrap R} for details.  The options {cmd:oim} and
+{cmd:opg}, described in {manhelpi vce_option R}, are not implemented.  To
+reproduce a bootstrap analysis, set the {cmd:seed(}{it:#}{cmd:)} as outlined
+within {it:vce_options}.  If this option is given, the random-number seed is
+set to the given value.
+
+{phang} {opt genvars} adds the following variables to the dataset:  {p_end}
+
+{p2colset 8 18 18 4}{...}
+{p2col :{cmd:ptreat}}Probability of receiving treatment, given {it:indepvars} or {cmd:pvars()} (if specified){p_end}
+{p2col :{cmd:iptwt}}Inverse probability of treatment weight{p_end}
+{p2col :{cmd:mu0}}Predicted value of outcome in the untreated, given {it:indepvars} or {cmd:ovars()} (if specified){p_end}
+{p2col :{cmd:mu1}}Predicted value of outcome in the treated, given {it:indepvars} or {cmd:ovars()} (if specified){p_end}
+{p2col :{cmd:mudiff}}Difference between {cmd:mu1} and {cmd:mu0} in this observation{p_end}
+{p2colreset}{...}
+
+{phang} {opt suffix(string)} adds the suffix {it:string} to the variables
+produced by {cmd:genvars} to avoid potential name clashes.
+
+
+{title:Remarks}
+
+{pstd}Double-robust estimation methods were introduced by Robins, Rotnitzky,
+and Zhao (1995) and compared with other methods for observational studies by
+Lunceford and Davidian (2004).
+
+
+{title:Saved Results}
+
+{pstd}
+{cmd:dr} saves the following in {cmd:e()}:
+
+{synoptset 16 tabbed}{...}
+{p2col 5 16 20 2: Scalars}{p_end}
+{synopt:{cmd:e(dr_est)}}double-robust estimate{p_end}
+{synopt:{cmd:e(dr_var)}}variance of double-robust estimate{p_end}
+{synopt:{cmd:e(dr0)}}expected average outcome if no subjects treated{p_end}
+{synopt:{cmd:e(dr1)}}expected average outcome if all subjects treated{p_end}
+
+{p2col 5 16 20 2: Macros}{p_end}
+{synopt:{cmd:e(properties)}}{cmd:"b V"}{p_end}
+
+{p2col 5 16 20 2: Matrices}{p_end}
+{synopt:{cmd:e(b)}}coefficient vector {p_end}
+{synopt:{cmd:e(V)}}variance-covariance matrix of the estimators{p_end}
+
+{p2col 5 16 20 2: Functions}{p_end}
+{synopt:{cmd:e(sample)}}marks estimation sample{p_end}
+{p2colreset}{...}
+
+
+{title:References}
+
+{phang}Lunceford, J. K., and M. Davidian. 2004. Stratification and
+weighting via the propensity score in estimation of causal treatment
+effects: A comparative study. {it:Statistics in Medicine} 23: 2937-2960.
+
+{phang}Robins, J. M., A. Rotnitzky, and L. P. Zhao. 1995. Analysis of
+semiparametric regression models for repeated outcomes in the presence
+of missing data. {it:Journal of the American Statistical Association}
+90: 106-121. 
+
+
+{title:Authors}
+
+{phang}Mark Lunt, Arthritis Research Campaign, Epidemiology Unit{p_end}
+{phang}The University of Manchester, UK{p_end}
+{pstd}Email: {browse "mailto:mark.lunt@manchester.ac.uk":mark.lunt@manchester.ac.uk}{p_end}
+
+{phang}Richard Emsley, Biostatistics, Health Methodology Research Group{p_end}
+{phang}The University of Manchester, UK{p_end}
+
+{phang}Andrew Pickles, Biostatistics, Health Methodology Research Group{p_end}
+{phang}The University of Manchester, UK{p_end}
+
+{phang}Graham Dunn, Biostatistics, Health Methodology Research Group{p_end}
+{phang}The University of Manchester, UK{p_end}
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 8, number 3: {browse "http://www.stata-journal.com/article.html?article=st0149":st0149}
+

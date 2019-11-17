@@ -1,0 +1,213 @@
+/*
+Indirect comparison of meta-analysis
+--------------------------------------
+*/
+
+VERSION 9.0
+
+INCLUDE _std_medium
+INCLUDE _ht300
+DEFINE _dlgwd 450
+INCLUDE header
+
+RESET res1, label("Reset")
+
+DIALOG main, label("indirect 1.00 - Indirect Meta-analysis") tabtitle("Main")
+BEGIN
+  GROUPBOX gb_data      10    5  310  35,            ///
+     label("Type of Data:")
+  RADIO    r_effect_ci  40  20   75      .,            ///
+     label("Effect/CI")        first                   ///
+     onclickon(script main_effect_ci_on)                ///
+     onclickoff(script main_effect_ci.off)
+  RADIO    r_effect_se  150  20   75      .,            ///
+     label("Effect/SE")          last                   ///
+     onclickon(script main_effect_se_on)                ///
+     onclickoff(script main_effect_se_off)
+
+/*  end GROUPBOX gb_data  */
+
+  TEXT     tx_effect_ci  10   45  310      .,            ///
+     label("Vars for Effects: theta, lowerCI, upperCI, in that order")
+  VARLIST  vl_effect_ci  @   _ss   @      .,            ///
+     label("Effect Sizes: theta, lowerCI, upperCI")
+
+  TEXT     tx_effect_se  @   45  310      .,            ///
+     label("Vars for Effects: theta, se(theta), in that order")
+  VARLIST  vl_effect_se  @   _ss   @      .,            ///
+     label("Effect Sizes: theta, se(theta)")
+
+/*  end vars  */
+
+  GROUPBOX gb_labels     10  90  310  90,           ///
+     label("Labels for Data:")
+  TEXT     trialNames  20   110  50 .,            	///
+     label("Trials Var:")
+  VARNAME  vn_name      70  110 235 .,                 ///
+     label("Name Variable")
+
+  CHECKBOX cb_trtname       20  130  70 .,                 ///
+     label("Treatments:")                                     ///
+     onclickon(script cb_trtname_on)                     ///
+     onclickoff(script cb_trtname_off)                     ///
+
+  VARNAME  vn_trtnameA      20  150 135 .,                 ///
+     label("Treatment A Name Var")
+  TEXT     tx_effect_vs   160   150  20 .,            	///
+     label("vs")
+  VARNAME  vn_trtnameB      180  150 135 .,                 ///
+     label("Treatment B Name Var")
+
+/*  end GROUPBOX gb_labels  */
+
+  GROUPBOX gb_pool    330  5   115  60,         ///
+     label("Pooling Model")
+  RADIO    r_fixed   340  20   100        .,           ///
+     label("Fixed")  first            ///
+     option("fixed")
+  RADIO    r_random   @  _ss      @        .,           ///
+     label("Random") last           ///
+     option("random")
+  
+  CHECKBOX cb_table 335  70  115  .,                ///
+     label("Table")                                   ///
+     option("Table")
+
+  CHECKBOX cb_eform @  _ss  115  .,                ///
+     label("eForm")                                   ///
+     option("eForm")
+
+
+
+  GROUPBOX gb_effect    330  _ss   115  60,         ///
+     label("Statistic")
+
+  CHECKBOX cb_effect   335  _ss   115  .,                ///
+     label("Effect Label:")                             ///
+     onclickon(main.ed_effect.enable)                ///
+     onclickoff(main.ed_effect.disable) 
+  EDIT     ed_effect  @    _ss   105  .,                ///
+     label("effect label")                              ///
+     option("effect")
+
+GROUPBOX gb_track 10 180 430 100, 	///
+     label("Order for comparisons")
+
+TEXT     tx_track_1   20   190  410 .,            	///
+     label("The variable which tracks the order in which the comparisons will be done. The result")
+
+TEXT     tx_track_2   @  205  410 .,            	///
+     label("of meta-analysis of all the trials where VAR = 0 will be compared with the result of meta-")
+TEXT     tx_track_3   @ 220  410 .,            	///
+     label("analysis of all the trials where VAR = 1. The result of this comparison will be compared")
+
+TEXT     tx_track_4   @ 235  410 .,            	///
+     label("with the result of meta-analysis of all the trials where the selected VAR = 2,...")
+
+TEXT     tx_track_5  @   _ss  50 .,            	///
+     label("Order Var:")
+  VARNAME  vn_order      70  @ 235 .,                 ///
+     label("Order Variable")
+
+
+END
+
+SCRIPT main_effect_ci_on
+BEGIN
+  main.tx_effect_ci.show
+  main.vl_effect_ci.show
+  main.tx_effect_ci.enable
+  main.vl_effect_ci.enable
+
+  main.tx_effect_se.disable
+  main.vl_effect_se.disable
+  main.tx_effect_se.hide
+  main.vl_effect_se.hide
+
+END
+
+SCRIPT main_effect_ci_off
+BEGIN
+  main.tx_effect_ci.disable
+  main.vl_effect_ci.disable
+  main.tx_effect_ci.hide
+  main.vl_effect_ci.hide
+END
+
+SCRIPT main_effect_se_on
+BEGIN
+  main.tx_effect_se.show
+  main.vl_effect_se.show
+  main.tx_effect_se.enable
+  main.vl_effect_se.enable
+
+  main.tx_effect_ci.disable
+  main.vl_effect_ci.disable
+  main.tx_effect_ci.hide
+  main.vl_effect_ci.hide
+END
+
+SCRIPT main_effect_se_off
+BEGIN
+  main.tx_effect_se.disable
+  main.vl_effect_se.disable
+  main.tx_effect_se.hide
+  main.vl_effect_se.hide
+END
+
+SCRIPT cb_trtname_on
+BEGIN
+main.vn_trtnameA.enable               
+main.vn_trtnameB.enable                    
+END
+
+SCRIPT cb_trtname_off
+BEGIN
+main.vn_trtnameA.disable		
+main.vn_trtnameB.disable			
+END
+
+
+
+PROGRAM command
+BEGIN
+  put "indirect "
+  if main.r_effect_ci {
+    /*  put " CI " */
+    varlist main.vl_effect_ci main.vn_name main.vn_order
+  }
+  if main.r_effect_se {
+    /* put " SE " */
+    varlist main.vl_effect_se main.vn_name main.vn_order
+  }
+
+   put ", "
+   if main.r_fixed {
+	put "fixed"
+		   }
+   if main.r_random {
+	put "random"
+		}
+   
+   put " eff("
+   put main.ed_effect
+   put ") "
+
+   if main.cb_eform {
+	put " eform"
+		}
+
+   if main.cb_table {
+	put " tabl"
+		}
+
+   put " trta("
+   put main.vn_trtnameA
+   put ") "
+   
+   put " trtb("
+   put main.vn_trtnameB
+   put ") "
+   
+   
+END

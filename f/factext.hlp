@@ -1,0 +1,193 @@
+{smcl}
+{hline}
+help for {cmd:factext} {right:(SJ3-3: st0043; SJ4-3: st0043_1)}
+{hline}
+
+{title:Extract factor values from a label variable created by {help parmest} or {help parmby}}
+
+{p 8 15 2}{cmd:factext} [{it:newvarlist}] [{it:if}] [{it:in}] [ {cmd:,}
+ {cmdab:fr:om}{cmd:(}{it:varlist}{cmd:)} {cmdab:st:ring}
+ {cmdab:do:file}{cmd:(}{it:dofilename}{cmd:)}
+ {cmdab:pa:rse}{cmd:(}{it:parse_string}{cmd:)} {cmdab:fm:issing}{cmd:(}{it:newvarname}{cmd:)} ]
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:factext} is intended for use after the programs {help parmest} or 
+{help parmby}, which form the {help parmest} package and create datasets with
+one observation per parameter of the most recently fitted model.  It is used
+when the fitted model contains factors (categorical variables), in which case
+some of the parameters correspond to dummy variables in the original dataset,
+indicating individual values of these factors. These dummy variables are
+usually created by {help xi}, {help tabulate}, or John Hendrickx's 
+{help desmat} package.  {cmd:factext} is used to create new factors with the
+same names in the new dataset created by {help parmest}.  These new factors
+can be used to make confidence interval plots or tables. Each new factor
+is assigned the appropriate value in observations belonging to parameters
+belonging to the factor and missing values in other observations. The values
+of these factors are usually extracted from the {cmd:label} variable in the
+dataset created by {help parmby} or {help parmest}. If the model contains
+categorical factors, the {cmd:label} variable will have values of the form
+
+          {cmd:"}{it:factor_name}{cmd:==}{it:value}{cmd:"}
+
+{p 4 4 2}
+in observations belonging to parameters belonging to these factors. The names
+of the factors to be recreated are specified in the {it:newvarlist} if it is
+present and otherwise are specified by the {it:factor_name}s. The factor
+values are specified in the {it:value}s.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:from(}{it:varlist}{cmd:)} specifies a list of input string
+variables, from which the factors and their values are extracted. If this
+option is absent, {cmd:factext} attempts to extract the factors from a
+single string variable named {cmd:label}. The {cmd:from()} option is used when
+the fitted model contains interactions, in which case, the user must create a
+list of new string variables from {cmd:label} and specify these as the
+{cmd:from()} option (see Remarks). Factor values found in later variables in
+the {cmd:from()} list overwrite values for the same factors found in earlier
+variables in the {cmd:from()} list.
+
+{p 4 8 2}{cmd:string} specifies that the factors generated will be string
+variables. Otherwise, they will be numeric variables.
+
+{p 4 8 2}{cmd:dofile(}{it:dofilename}{cmd:)} specifies a Stata do-file to be
+called by {cmd:factext} after the new factors have been created. This do-file
+is usually created by {help descsave} and contains commands to reconstruct
+the new factors with the storage types, display formats, value labels,
+variable labels, and selected characteristics of the old factors with the same
+names in the original dataset.
+
+{p 4 8 2}{cmd:parse(}{it:parse_string}{cmd:)} specifies the string used to
+parse the input string variables specified in the {cmd:from()} option. This
+{it:parse_string} separates the {it:factor_name}s from the {it:value}s. If
+absent, it defaults to {cmd:"=="}.
+
+{p 4 8 2}{cmd:fmissing(}{it:newvarname}{cmd:)} specifies the name of a new
+binary variable to be generated, containing missing values for observations
+excluded by the {help if} and {help in} qualifiers, 1 for other observations
+in which all the generated factors are missing, and 0 for other observations
+in which at least one of the generated factors is nonmissing.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:factext} is typically used with the {help parmest} and {help descsave}
+packages to create a new dataset with one observation per parameter of the
+most recently fitted model, and data on the estimates, confidence intervals,
+{it:p}-values, and other attributes of these parameters. These data are used to
+create plots or tables.  More information about the use of {cmd:factext}
+in combination with {help parmest} and {help descsave} can be found in Newson
+(2003).  In its default setting, with no {cmd:from()} option, {cmd:factext}
+can only handle labels for dummy variables corresponding to single factors
+and cannot extract higher-order interactions. If there are higher-order
+interactions in the fitted model, some of the values of {cmd:label} may be
+of a form such as
+
+{p 8 16 2}{cmd:"}{it:factor_name1}{cmd:==}{it:value1}{cmd: & }{it:factor_name2}{cmd:==}{it:value2}{cmd:"}
+
+{p 4 4 2}
+or
+
+{p 8 16 2}{cmd:"(}{it:factor_name}{cmd:==}{it:value}{cmd:)*}{it:varname}{cmd:"}
+
+{p 4 4 2}
+(as created by {help xi}). In this case, the user may use the {help split}
+package to split the variable {cmd:label} into two or more string variables,
+each possibly containing values of the form
+
+{p 8 16 2}{cmd:"}{it:factor_name}{cmd:==}{it:value}{cmd:"}
+
+{p 4 4 2}
+These new string variables may then be input as the {cmd:from()} option of
+{cmd:factext} to extract the {it:value}s. (See Examples below.)
+
+{p 4 4 2}
+To add extra observations to the dataset containing reference levels for the
+factors created by {cmd:factext}, use the {help factref} package.  To merge
+multiple factors and generate string variables containing the factor values,
+names, and labels, use the {help factmerg} package.
+
+{p 4 4 2}
+{cmd:factext} saves the returned result {cmd:r(faclist)}, containing the list of factors created.
+
+
+{title:Examples}
+
+{p 4 4 2}
+The following examples will work with the {cmd:auto} data if {help parmest} is
+installed. They will create confidence interval plots of the parameters
+corresponding to values of the factor {cmd:rep78}.
+
+{p 8 16 2}{cmd:. tab rep78,gene(rep_)}{p_end}
+{p 8 16 2}{cmd:. parmby "regress mpg rep_*,noconst",label norestore}{p_end}
+{p 8 16 2}{cmd:. factext rep78}{p_end}
+{p 8 16 2}{cmd:. grap estimate min95 max95 rep78,s(O..) c(.II) xlabel}{p_end}
+
+{p 8 16 2}{cmd:. xi:regress mpg i.rep78}{p_end}
+{p 8 16 2}{cmd:. parmest,label norestore}{p_end}
+{p 8 16 2}{cmd:. factext}{p_end}
+{p 8 16 2}{cmd:. grap estimate min95 max95 rep78,s(O..) c(.II) xlabel ylabel yline(0)}{p_end}
+
+{p 4 4 2}
+The following example will work with the {cmd:auto} data if {help descsave} is
+installed in addition to {help parmest}. The reconstructed categorical
+variables {cmd:rep78} and {cmd:foreign} will have the variable and value labels
+belonging to the variables of the same names in the original dataset.
+
+{p 8 16 2}{cmd:. tab foreign,gene(orig_) nolab}{p_end}
+{p 8 16 2}{cmd:. tempfile tf1}{p_end}
+{p 8 16 2}{cmd:. descsave,do(`tf1',replace)}{p_end}
+{p 8 16 2}{cmd:. parmby "xi:regress mpg orig_* i.rep78,noconst",label norestore}{p_end}
+{p 8 16 2}{cmd:. factext,do(`tf1')}{p_end}
+{p 8 16 2}{cmd:. describe}{p_end}
+{p 8 16 2}{cmd:. grap estimate min95 max95 rep78,s(O..) c(.II) xlab ylab yline(0)}{p_end}
+{p 8 16 2}{cmd:. grap estimate min95 max95 foreign,s(O..) c(.II) xlab(0 1) ylab}{p_end}
+{p 8 16 2}{cmd:. list foreign rep78 estimate min95 max95 p}{p_end}
+
+{p 4 4 2}
+The following example demonstrates higher order interactions. It will work
+with the {cmd:auto} data if {help descsave} and {help split} are both installed
+in addition to {help parmest}.
+
+{p 8 16 2}{cmd:. tempfile tf1}{p_end}
+{p 8 16 2}{cmd:. descsave,do(`tf1',replace)}{p_end}
+{p 8 16 2}{cmd:. parmby "xi:regress mpg i.foreign*i.rep78",label norestore}{p_end}
+{p 8 16 2}{cmd:. split label,parse(" & ") gene(s_)}{p_end}
+{p 8 16 2}{cmd:. factext,from(s_*) do(`tf1')}{p_end}
+{p 8 16 2}{cmd:. list foreign rep78 parm estimate min95 max95 p,nodisp}{p_end}
+
+{p 4 4 2}
+The {help parmest} and {help descsave} packages, and the Stata 7 {help split}
+package written by Nick Cox, can be installed from {help ssc:SSC}. The Stata 8
+{help split} package is distributed as part of official Stata.
+
+
+{title:Author}
+
+{p 4 4 2}
+Roger Newson, King's College, London, UK.{break}
+Email: {browse "mailto:roger.newson@kcl.ac.uk":roger.newson@kcl.ac.uk}
+
+
+{title:References}
+
+{p 4 8 2}Newson, R. 2003. Confidence intervals and {it:p}-values for delivery
+to the end user.  {it:The Stata Journal} 3(3): 245-269.  Also downloadable from
+{net "from http://www.kcl-phs.org.uk/rogernewson/papers":Roger Newson's web site at http://www.kcl-phs.org.uk/rogernewson}.
+
+
+{title:Also see}
+
+{p 4 13 2}
+Manual:   {hi:[R] describe}, {hi:[R] label}, {hi:[R] tabulate}, {hi:[R] xi},
+ {hi:[G] connect}, {hi:[G] symbol}
+
+{p 4 13 2}
+Online:   help for {help describe}, {help tabulate}, {help xi}, {help graph}
+ {break} help for {help parmest}, {help descsave}, {help split}, {help desmat}, {help factref}, {help factmerg} if installed
+{p_end}

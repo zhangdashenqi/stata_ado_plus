@@ -1,0 +1,17 @@
+.-
+help for ^_peunvec^
+.-
+
+    ^_peunvec^
+
+^_peunvec^ takes regression estimates that are kept as a vector (like ^mlogit^
+results in Stata 6) and transforms them to a matrix (like ^mlogit^ results in
+Stata 5).  
+
+The input is taken from e(b), and the new matrix is saved as r(b).  
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+         

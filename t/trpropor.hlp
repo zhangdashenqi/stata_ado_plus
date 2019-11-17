@@ -1,0 +1,97 @@
+Transformations for proportions and percents (more advanced)
+------------------------------------------------------------
+
+Data that are proportions (between 0 and 1) or percents (between 0 and
+100) often benefit from special transformations. The most common is the
+^logit^ (or logistic) transformation, which is
+
+            logit p = log (p / (1 - p)) for proportions
+
+         OR logit p = log (p / (100 - p)) for percents
+
+where p is a proportion or percent.
+
+This transformation treats very small and very large values
+symmetrically, pulling out the tails and pulling in the middle around
+0.5 or 50%. The plot of p against logit p is thus a flattened S-shape.
+Strictly logit p cannot be determined for the extreme values of 0 and 1
+(100%): if they occur in data, there needs to be some adjustment.
+
+One justification for this logit transformation might be sketched in
+terms of a diffusion process such as the spread of literacy. The push
+from zero to a few percent might take a fair time; once literacy starts
+spreading its increase becomes more rapid and then in turn slows; and
+finally the last few percent may be very slow in converting to literacy,
+as we are left with the isolated and the awkward, who are the slowest to
+pick up any new thing. The resulting curve is thus a flattened S-shape
+against time, which in turn is made more nearly linear by taking logits
+of literacy. More formally, the same idea might be justified by
+imagining that adoption (infection, whatever) is proportional to the
+number of contacts between those who do and those who do not, which will
+rise and then fall quadratically. More generally, there are many
+relationships in which predicted values cannot logically be less than 0
+or more than 1 (100%). Using logits is one way of ensuring this:
+otherwise models may produce absurd predictions.
+
+The logit (looking only at the case of proportions)
+
+            logit p = log (p / (1 - p))
+
+can be rewritten
+
+            logit p = log p  - log (1 - p)
+
+and in this form can be seen as a member of a set of ^folded^
+^transformations^
+
+     transform of p = something done to p -
+                          something done to (1 - p).
+
+This way of writing it brings out the symmetrical way in which very high
+and very low values are treated. (If p is small, 1 - p is large, and
+vice versa.) The logit is occasionally called the ^folded log^. The
+simplest other such transformation is the ^folded root^ (that means
+square root)
+
+   folded root of p = root of p  - root of (1 - p)
+
+As with square roots and logarithms generally, the folded root has the
+advantage that it can be applied without adjustment to data values of 0
+and 1 (100%). The folded root is a weaker transformation than the logit.
+In practice it is used far less frequently.
+
+Two other transformations for proportions and percents met in the older
+literature (and still used occasionally) are the ^angular^ and the
+^probit^. The angular is
+
+            arcsin(root of p):
+
+that is, the angle whose sine is the square root of p. In practice, it
+behaves very like
+
+             0.41          0.41
+            p     - (1 - p)    ,
+
+which in turn is close to
+
+             0.5          0.5
+            p    - (1 - p)   ,
+
+which is another way of writing the folded root. The probit is a
+transformation with a mathematical connection to the normal (Gaussian)
+distribution, which is not only very similar in behaviour to the logit,
+but also more awkward to work with. As a result, it is now rarely seen
+in any but more advanced applications, where it retains some advantages.
+
+Also see:
+---------
+
+Reasons for using transformations                         help @trreason@
+
+Review of most common transformations                     help @trreview@
+
+Psychological comments -- for the puzzled                 help @trpsych@
+
+How to do transformations in Stata                        help @trstata@
+
+

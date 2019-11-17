@@ -1,0 +1,40 @@
+.-
+help for ^xtcorr2^                                          [jw]  March 16, 1999
+.-
+
+Displays within-group correlations after gee
+--------------------------------------------
+
+    ^xtcorr2^ [^, C^ompact]
+
+^xtcorr2^ is for use after ^xtgee^.
+
+
+Description
+-----------
+
+^xtcorr2^ displays the estimated matrix of within-group correlations.
+
+
+Options
+-------
+
+^compact^ specifies that only the parameters (alpha) of the estimated matrix of
+   within-group correlations is displayed. For instance, I you specify a ^xtgee^
+   model with an ^exchangeable^ correlation structure, ^compact^ specifies that
+   only a single number, namely the within-group correlation, is displayed.
+
+
+Author
+------
+
+	Jeroen Weesie
+	Dept of Sociology
+	Utrecht University
+	J.Weesie @@ fss.uu.nl
+
+
+Also See
+--------
+On line: help for @xtcorr@
+

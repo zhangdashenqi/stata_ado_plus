@@ -1,0 +1,118 @@
+.-
+help for ^implogit^                          (STB-45: sg92)
+.-
+
+Logistic Regression for data including multiple imputations
+-----------------------------------------------------------
+
+     ^implogit^ depvar varlist [weight] [^if^ exp] [^in^ range] ^,^
+             ^impvars(^# of vars^)^ ^impno(^# of imputations^)^
+	     [ ^r^obust ^cl^uster^(^varname^)^ ^l^evel^(^#^)^ ^or^ ]
+
+
+
+^depvar^ may not contain multiple imputation data.
+
+^varlist^ may contain multiple imputation data, with the following
+conditions: variables containing imputed data must be the last variables
+in varlist; and imputed variables must have variables names following
+special conventions -- they must be fewer than 5 characters, and have ^_01^ -
+^_xx^ appended to them, where xx is the number of imputations done.  Even
+though an imputed variable may have many individual variables to represent
+it, include it only once in varlist.  Example:  the variable ^incom^, was
+imputed 5 times.  It should be labled ^incom_01 incom_02 incom_03 incom_04^
+^incom_05^.  In the command call, list only 1, say, ^incom_01^.  The program
+will iterate through the numbers and take care of the rest.  If your
+variables are not named properly, the program will not work!
+
+^fweight^s and ^pweight^s are allowed.
+
+^implogit^ does not share features with all estimation commands. Because of
+the external variance adjustments implicit in the corrections to the std.
+errs and the programmer's limited skill in matrix algebra, this program
+does not post a full variance-covariance estimate.  Post estimation commands
+that rely solely on ^_b^ and ^_se^ are available.  Any commands requiring the
+off diagonal elements of the vce will either not work or will be wrong.  Try
+^matrix get(vce)^, and you will see what is missing.
+
+^implogit^, typed without argument, does not replay the previous results.
+
+
+Description
+-----------
+
+   ^implogit^ uses the Rubin (1987) corrections of coeficents and standard
+errors for logistic regressions with data that contain multiple
+imputations.  Multiple imputation variables must be ordered in a specific
+way and named in a special fashion; see ^varlist^ above.
+   ^implogit^ proceeds by performing k logistic regressions (where k
+is the number of imputations done), cycling through the different
+imputations in each regression.  Results are saved, and, when done,
+coeficents are averaged and standard errors are corrected.  Results are
+then reported.
+   In most regards, ^implogit^ behaves as the standard stata ^logit^
+command.  The procedure reports unexponentiated coeficents and their
+corrected standard errors.
+
+Options
+-------
+
+^impvars(^no. of vars^)^ indicates the number of variables included that
+  contain multiple imputations.  They must be the last variables specified in
+  varlist.  If your model contains 2 variables for which data have been
+  imputed, ^impvars(2)^ should be specfied, and they should be the last 2
+  variables in varlist.  ^impvars^ default is (1).
+
+^impno^ is the number imputations done for each imputed variable and thus
+  the number of iterations of regressions (k) that will be required.  If there
+  is more than one variable with multiple imputations, they all must have the
+  same number of imputations.
+
+^robust^ specifies the Huber/White/sandwich estimator of variance is to be
+  used in place of the traditional calculation; see ^[U] 26.10 Obtaining^
+  ^robust variance estimates^. ^robust^ combined with ^cluster()^ allows
+  observations which are not independent within cluster.
+
+^cluster(^varname^)^ specifies that the observations are independent across
+  groups (clusters) but not necessarily within groups. varname specifies to
+  which group each observation belongs; e.g., ^cluster(personid)^ in data with
+  repeated observations on individuals.  See ^[U] 26.10 Obtaining robust^
+  ^variance estimates^. ^cluster()^ can be used with ^pweight^s to produce
+  estimates for unstratified cluster-sampled data, but see help @svylogit@
+  for a command especially designed for survey data.  Specifying ^cluster()^
+  implies ^robust^.
+
+^or^ reports odds ratios (exponentiated coeficents) and their standard
+  errors, etc., rather than unexponentiated coeficents.
+
+Examples
+--------
+
+	. ^implogit comply educ incom_01, impvars(1) impno(5)^
+
+	. ^implogit comply educ incom_01 size_01, impvars(2) impno(5)^
+
+	. ^implogit comply educ size_01, impno(7) cluster(town) level(99)^
+
+
+Saved Results
+-------------
+
+All typical S_E_ global macros are available, as are _b and _se vectors.
+$S_E_ll, $S_E_l0 and $S_E_prs2 are based on the unadjusted results of the
+last of the k component logistic regressions, as the programmer is not
+aware of the consequence to log-liklihood from multiple imputation.
+
+
+Author
+------
+
+      Christopher Paul
+      RAND, Santa Monica, California
+      cpaul@@rand.org
+
+
+Also see
+--------
+
+     STB:  sg92 (STB-45)

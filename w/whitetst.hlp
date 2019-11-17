@@ -1,0 +1,71 @@
+.-
+help for ^whitetst^                                               (STB-55: sg137)
+.-
+
+Calculate the White general test for heteroskedasticity after @regress@
+-----------------------------------------------------------------------
+
+        ^whitetst^  [^if^ exp] [^in^ range]  [, ^nos^ample]
+
+^whitetst^ is for use after ^regress^; see help @regress@.
+
+
+Description
+-----------
+
+^whitetst^ computes the White (1980) general test for heteroskedasticity 
+in the error distribution by regressing the squared residuals on all
+distinct regressors, cross-products, and squares of regressors.
+The test statistic, a Lagrange multiplier measure, is distributed 
+Chi-squared(p) under the null hypothesis of homoskedasticity. 
+See Greene (2000), pp. 507-511. It is a special case of the Breusch-Pagan
+test for heteroskedasticity, which requires specification of an auxiliary
+variable list.
+
+The command displays the test statistic, degrees of freedom and P-value,
+and places values in the return array. ^return list^ for details.
+
+By default the command will use the e(sample) defined in ^regress^ to define
+the observations over which the test is to be computed. This behavior may
+be overridden with the sample option.
+
+
+Options
+-------
+
+^nosample^ indicates that the test be performed on either all observations or
+    all observations included in ^whitetst^'s ^if^ and ^in^ conditions if specified.
+    By default, ^whitetst^ includes only observations from the estimation
+    sample.
+
+
+Examples
+--------
+
+        . ^regress expen age own income inc2^
+        . ^whitetst^
+
+
+References
+----------
+
+Greene, W. Econometric Analysis. 4th ed., 2000. New York: Prentice-Hall.
+
+White, H. "A Heteroskedasticity-Consistent Covariance Matrix Estimator 
+      and a Direct Test for Heteroskedasticity." Econometrica, 48, 1980,
+      817-838.
+
+Authors
+-------
+
+        Christopher F Baum, Boston College, USA
+        baum@@bc.edu
+
+        Nicholas J. Cox, University of Durham, UK
+        N.J.Cox@@durham.ac.uk
+
+Also see
+--------
+    STB:  STB-55 sg137
+ Manual:  ^[R] regress^, ^[R] regression diagnostics^
+On-line:  help for @regdiag@, @regress@, @bpagan@ (if installed)

@@ -1,0 +1,41 @@
+{smcl}
+{* 30nov2006}{...}
+{cmd:help tablabel}
+{hline}
+
+{title:Title}
+
+    {hi:tablabel - tabulate values for each value label}
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmdab:tablabel}
+{varlist}
+{ifin}
+
+{title:Description}
+
+{p 4 4 2}Using information provided by user defined value labels, {cmd:tablabel} 
+calculates 
+frequencies for each of the variables in {varlist}.  Zero frequencies are  
+included in tabulated results. Also provides information on missing values and 
+values without value labels.
+
+{title:Examples}
+
+{cmd:. tablabel race ses}
+{cmd:. tablabel race ses if female}
+
+{title:Author} 
+
+{p 4 4 2}Philip B. Ender{break}
+Statistical Consulting Group{break}
+UCLA Academic Technology Services{break} 
+ender@ucla.edu
+
+
+{title:Acknowledgements} 
+
+{p 4 4 2}Similar to {cmd:tabcount}, by Nicholas J. Cox (n.j.cox@durham.ac.uk),
+which requires user to enter the range for each variable.{p_end}

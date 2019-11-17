@@ -1,0 +1,44 @@
+
+.-
+help for ^tdemo^
+.-
+
+Compare t-distribution to normal distribution
+---------------------------------------------
+
+ ^tdemo^ [ ^df tails alpha^ ]
+ 
+
+Description
+-----------
+
+^tdemo^ displays a t-distribution distribution and standard 
+        normal for degrees of freedom ^df^.  
+
+Options
+-------
+
+ ^df^     sets the degrees of freedom.  The default is 1.
+ 
+ ^tails^  sets the number of tails for the rejection region. The default is 2.
+ 
+ ^alpha^  seta the alpha level. The default is .05.
+
+Examples
+--------
+
+ . ^tdemo^
+ . ^tdemo 20^
+ . ^tdemo 20 1^
+ . ^tdemo 20 1 .01^
+
+
+
+
+Author
+------
+
+      Philip B. Ender (ender@@ucla.edu)
+      UCLA Department of Education
+      UCLA Academic Technology Services
+       

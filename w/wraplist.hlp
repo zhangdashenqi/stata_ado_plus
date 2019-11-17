@@ -1,0 +1,60 @@
+.-
+help for ^wraplist^
+.-
+
+Display string word-wrapped between margins (programming utility)
+-------------------------------------------
+
+	^wraplist^ [^`^]"list"[^'^] [, ^lc^olor^(^color^) ti^tle^(^str^) tc^olor^(^color^)^
+		^le^ft^(^#^) ri^ght^(^#^) cu^rsor^(^#^) be^fore^(^str^) af^ter^(^str^)^ ]
+
+where 
+
+	color := ^g^reen ^y^ellow ^b^lue ^w^hite ^r^ed 
+
+
+Description
+-----------
+
+^wraplist^ displays a list, with an optional hanging title, wrapping text on 
+   word boundaries between margins.
+
+Options
+-------
+
+^lcolor(^color^)^ specifies the color in which the list is displayed.
+    Defaults to yellow. 
+
+^title(^str^)^ specifies the title to be displayed.
+
+^tcolor(^color^)^ specifies the color in which the title is displayed.
+    Defaults to green.
+
+^left(^#^)^ specifies the left margin, defaults to 1.
+
+^right(^#^)^ specifies the right margin, defaults to ^display linesize^.
+
+^cursor(^#^)^ specifies the column position of the display cursor, defaults 
+    to 1. If you invoked ^display^ with the ^_c^ options, you have to set the 
+    ^cursor^ option to properly continue displaying.,
+
+^before(^str^)^ 
+^after(^str^)^ insert a string in the display command before (after) the part 
+    of the list. This is useful in a column setup. 
+
+
+Examples
+--------
+	 
+	 
+Author
+------
+
+        Jeroen Weesie
+		  Dept of Sociology/ICS
+		  Utrecht University
+		  J.Weesie @ fss.uu.nl
+		  
+Also See
+--------
+

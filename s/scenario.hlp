@@ -1,0 +1,76 @@
+.-
+help for ^scenario^                                           [sts7.6: STB-24]
+.-
+
+Generate a scenario
+-------------------
+
+        ^scenario^ varname^,^ [ ^b^egin^(^date^)^ ] ^ac^tion^(^action_1[^,^action_2[^,^...]]^)^ 
+
+                	^am^ount^(^amount_1[^,^amount_2[^,^...]]^)^
+
+			^le^ngth^(^length_1[^,^length_2[^,^...]]^)^
+
+generates a scenario for an existing variable over a projection period.  In
+other words, ^scenario^ creates an arbitrary sequence of values for an
+explanatory variable according to a user-specifed program.
+
+
+
+
+
+
+Options
+-------
+
+^ac^tion^()^ specifies the sequence of actions to apply to the variable.  The
+        choices are:
+
+        ^flat^:	   hold the variable at its current value;
+        ^grow^:	   increase in equal increments over the specified length for a
+                 cumulative change equal to the specified amount;
+        ^incr^:	   increment the variable by a fixed amount each period;
+        ^jump^:	   increment the variable immediately by a fixed amount, then
+                 hold it constant;
+        ^pchange^: grow or decline at a constant;
+        ^pgrow^:   grow by a fixed amount over the specified length, but at a
+                 constant percentage rate of change;
+        ^set^:	   set the variable to an explicit value and hold it constant.
+
+^am^ount^()^ specifies the amount of each action.
+
+^b^egin^(^date^)^ overrides the current projection date, i.e., the first date for
+        which values need to be supplied.  The date is specified according to
+        the current ^period^ and ^datevars^ settings.
+
+^le^ngth^()^ specifies the length of each action.
+
+
+
+Example
+-------
+
+Beginning in the previously-specified initial projection date, set the value
+of ^x^ to 7.2 for 11 observations, then increase ^x^ by 1.2 units each
+observation for 7 observations, then decrease ^x^ by 4 units and hold it
+constant until the end of the projection period.
+
+        . ^scenario x, action(set,incr,jump) amount(7.2,1.2,-4) length(11,7,.)^
+
+
+
+Author
+------
+
+        Sean Becketti, Stata Technical Bulletin
+        EMAIL   stb@stata.com
+
+
+
+
+Also see
+--------
+
+ Manual:  [4] dates
+    STB:  sts7.6 (STB-24)
+On-line:  ^help^ for ^datevars^, ^period^, ^projdate^, and ^ts^

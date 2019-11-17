@@ -1,0 +1,123 @@
+.-
+help for ^clad^                                                   (STB-58: sg153)
+.-
+
+CLAD estimation with bootstrap standard errors
+----------------------------------------------
+
+       ^clad^ varlist [^if^ exp] [^in^ range] [^, r^eps^(^#^)^ ^psu(^varname^)^ ^ll^[^(^#^)^] ^ul^[^(^#^)^]
+                    ^d^ots ^sa^ving^(^filename^)^ ^replace l^evel^(^#^)^
+                    ^qu^antile^(^#^) it^erate^(^#^) wlsi^ter^(^#^)^]
+
+
+Description
+-----------
+
+^clad^ calculates Powell's (1984) censored least absolute deviations
+estimator (CLAD) and bootstrap estimates of its sampling variance.
+The CLAD estimator is a generalization of the least absolute
+deviations (LAD) estimator, which is implemented in Stata by @qreg@.
+Unlike the standard estimators of the censored regression model such
+as tobit or other maximum likelihood approaches, the CLAD estimator
+is robust to heteroscedasticity and is consistent and asymptotically
+normal for a wide class of error distributions. (See Arabmazar and
+Schmidt, 1981, and Vijverberg, 1987, for empirical examples of the
+magnitude of the bias resulting from the tobit in the presence of
+non-normal error distributions.)
+
+This program sidesteps the issue of programming analytical standard errors
+and provides instead bootstrapped estimates of the sampling variance.
+Rogers (1993) shows that the standard errors reported by Stata for @qreg@
+are not robust to violations of homoscedasticity or independence of the
+residuals and proposes a bootstrap alternative. We follow Rogers for the
+CLAD estimator and propose two bootstrap estimates of the standard errors.
+The first is the standard bootstrap which assumes that the sample was
+selected using a simple random design. The second is a bootstrap estimate
+which assumes that the sample was selected in two-stages and which replicates
+the design by bootstrapping in two stages.
+
+An advantage of the two-stage bootstrap estimates available in ^clad^ is that
+if the sample was collected using a two-stage process, then the estimated
+standard errors will be robust to this design effect. Kish (1995) and Cochran
+(1997) show the importance of correcting mean values for design effects.
+Scott and Holt (1982) show that the magnitude of the bias for the estimated
+variance-covariance matrix for ordinary least squares estimates can be quite
+large when it is erroneously assumed that the data were collected using a
+simple random sample, if in fact a two-stage design had been used.
+
+
+Options
+-------
+
+^reps(^#^)^ specifies the number of bootstrap replications to be performed. The
+    default value is 100.
+
+^psu(^varname^)^ specifies the variable identifying the primary sampling unit. If
+    no variable is specified, then the bootstrap replication is a single-stage,
+    simple random draw on the sample. If specified, the bootstrap replication
+    is two-stage simple random draw on the sample.
+
+^ll(^#^)^ and ^ul(^#^)^ are as in Stata's @tobit@ command and indicate the
+    censoring point.  ^ll()^ indicates left censoring and ^ul()^ indicates
+    right-censoring. If ^ll^ or ^ul^ is specified without a
+    specific censoring value, then ^clad^ assumes that the lower limit is
+    the minimum observed in the data (if ^ll^ is specified) and the upper
+    limit is the maximum (if ^ul^ is specified). If nothing is specified
+    for a lower or upper bound, ^clad^ assumes that the lower limit is zero.
+    ^clad^ only functions with lower or upper censoring; you cannot specify
+    censoring at both the lower and upper bound.
+
+^dots^ prints a dot to the screen for each bootstrap replication,
+    thereby allowing the user to estimate, after a few replications,
+    the time to completion.
+
+^saving(^filename^)^ creates a Stata data file (^.dta^ file) containing the
+    bootstrap distribution for each statistic. Then, ^bstat^ can be run on the
+    data in filename to view the bootstrap estimates again.
+
+^replace^ overwrites the Stata data file specified in ^saving()^,
+    if it already exists.
+
+All other options are as specified in Stata's @qreg@ command.
+
+
+Remarks
+-------
+
+The program does not use in calculations observations with missing values of
+dependent variable or psu-variable. However, the user might want to take care
+of missing values in exogenous variables to increase effectiveness of the
+bootstrap procedure.
+
+
+Examples
+--------
+
+	. ^clad lwage exp school^
+
+	. ^clad lwage exp school, reps(500) psu(cluster)^
+
+	. ^clad lwage exp school if rural==1, reps(500) psu(cluster) ll(1)^
+          ^level(90) dots saving(c:\stata\data\boot1)^
+
+
+Authors
+-------
+
+          Dean Jolliffe
+          Economic Research Service, U.S. Department of Agriculture
+          jolliffe@@ers.usda.gov
+
+          Bohdan Krushelnytskyy 
+          Czech Republic
+
+          Anastassia Semykina 
+          Czech Republic
+
+
+Also see
+--------
+
+ Manual:  ^[R] qreg^, ^bstat^
+    STB:  STB-58: sg153
+On-line:  help for @qreg@, @bstat@

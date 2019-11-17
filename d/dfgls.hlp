@@ -1,0 +1,93 @@
+.-
+help for ^dfgls^                                 (STB-57: sts15; STB-58: sts15.1)
+.-
+
+Dickey-Fuller/Generalized Least Squares unit root test
+------------------------------------------------------
+
+    ^dfgls^ varname  [^if^ exp] [^in^ range] [^,^ ^m^axlag^(^#^)^ ^not^rend ^ERS^]
+
+
+^dfgls^ is for use with time-series data.  You must ^tsset^ your data before
+using ^dfgls^; see help @tsset@.
+
+varname may contain time-series operators; see help @varlist@.
+
+
+Description
+-----------
+
+^dfgls^ performs the Elliott-Rothenberg-Stock (ERS, 1996) efficient test for an
+autoregressive unit root. This test is similar to an (augmented) Dickey-Fuller
+"t" test, as performed by ^dfuller^ but has the best overall performance in
+terms of small-sample size and power, dominating the ordinary Dickey-Fuller 
+test. The ^dfgls^ test "has substantially improved power when an unknown mean 
+or trend is present" (ERS, p.813). 
+
+The test applies a GLS detrending (demeaning) step to the varname; 
+the detrended (demeaned) series is then tested via the Dickey-Fuller 
+regression. Demeaning is only performed if the ^notrend^ option is specified.
+The maximum lag order for the test is by default calculated from the sample
+size, using a rule provided by Schwert (1989) using c=12 and d=4 in his
+terminology. The maximum lag order may also be provided with the ^maxlag^
+option and may be zero. If the maximum lag order exceeds one, the test 
+is performed for each lag, with the sample size held constant over lags 
+at the maximum available sample. 
+
+Approximate 5% and 10% critical values, by default, are calculated from the
+response surface estimates of Table 1, Cheung and Lai (1995), which take both 
+the sample size and the lag specification into account. Approximate 1% critical
+values for the GLS detrended test are interpolated from ERS, Table 1 (p.825). 
+Approximate 1% critical values for the GLS demeaned test are identical to 
+those applicable to the no-constant, no-trend Dickey-Fuller test 
+and are computed using the ^dfuller^ code. The ^ERS^ option specifies that
+the ERS (and Dickey-Fuller) values are to be used for all levels of 
+significance (eschewing the response surface estimates).
+
+If the maximum lag order exceeds one, the optimal lag order is calculated
+by the Ng-Perron (1995) sequential t test on the highest order lag coefficient,
+stopping when that coefficient's p-value is less than 0.10. The lag minimizing 
+the SC (BIC) criterion is printed with its minimized value. The lag minimizing
+the Ng-Perron (2000) modified AIC, or MAIC, is also printed with its minimized
+value. Ng and Perron have established that the MAIC may provide "huge size 
+improvements" in the DFGLS context. The DF-GLS test statistic, seq-t optimal 
+lag order, RMSE (calculated from sample size T) and values of the MAIC and SC 
+for each lag are placed in the return array.
+
+
+Options
+-------
+
+^maxlag(^#^)^ specifies the maximum lag order to be used in augmenting the 
+Dickey-Fuller regression. If omitted, the maximum lag order is calculated
+as described above.
+
+^notrend^ indicates that GLS demeaning, rather than GLS detrending, is to
+be performed.
+
+
+Examples
+--------
+
+	. ^dfgls gnp^
+
+	. ^dfgls gnp, maxlag(12) notrend^
+	
+	. ^dfgls gnp if tin(1973q1,1995q4)^
+
+
+Authors
+-------
+
+Christopher F Baum, Boston College, USA
+baum@@bc.edu
+
+Richard Sperling, The Ohio State University, USA
+rsperling@@boo.net
+
+Also see
+--------
+
+    STB:  STB-57: sts15; STB-58: sts15.1
+ Manual:  ^[R] dfuller^
+On-line:  help for @dfuller@, @time@, @tsset@

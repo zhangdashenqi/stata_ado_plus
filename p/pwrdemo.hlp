@@ -1,0 +1,46 @@
+
+.-
+help for ^pwrdemo^
+.-
+
+Demonstration illustrating power
+--------------------------------
+
+ ^pwrdemo^ mean_H1
+ 
+ Suggested values for ^mean_H1^ range from -1 to +5.
+ 
+
+Description
+-----------
+
+^pwrdemo^ displays two normal distributions with sd
+          equal to 1.  The distribution for H0 has 
+          a mean of 0. The distribution for H1 gets 
+          it mean from the arguement mean_H1.
+          
+          The vertical line is placed so that the
+          area in the upper tail of the H0 
+          distribution is .05.
+          
+          Power is illustrated by the area of the
+          H1 distribution to the right of the 
+          vertical line.
+
+
+Examples
+--------
+
+ . ^pwrdemo 1.5^
+ . ^pwrdemo 2.8^
+
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA, Office of Academic Computing
+      ender@@ucla.edu 
+

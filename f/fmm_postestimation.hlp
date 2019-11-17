@@ -1,0 +1,117 @@
+{smcl}
+{* documented: June 12, 2007}{...}
+{* revised: }{...}
+{cmd:help fmm postestimation}{right:dialog:  {bf:{dialog fmm_p:predict}}}
+{right:also see:  {helpb fmm} }
+{hline}
+
+{title:Title}
+
+{p2colset 5 34 36 2}{...}
+{p2col :{hi:fmm postestimation} {hline 2}}Postestimation tools for fmm{p_end}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd}
+The following postestimation commands are available for {opt fmm}:
+
+{synoptset 11}{...}
+{p2coldent :command}description{p_end}
+{synoptline}
+INCLUDE help post_estat
+INCLUDE help post_estimates
+INCLUDE help post_hausman
+INCLUDE help post_lincom
+INCLUDE help post_lrtest
+INCLUDE help post_mfx
+INCLUDE help post_nlcom
+{synopt :{helpb fmm postestimation##predict:predict}}predictions, residuals,
+influence statistics, and other diagnostic measures{p_end}
+INCLUDE help post_predictnl
+INCLUDE help post_suest
+INCLUDE help post_test
+INCLUDE help post_testnl
+{synoptline}
+{p2colreset}{...}
+
+
+{marker predict}{...}
+{title:Syntax for predict}
+
+{p 8 16 2}
+{cmd:predict} {dtype} {newvar} {ifin} [{cmd:,} {it:statistic}
+{opt eq:uation(component#)}]
+
+{synoptset 11 tabbed}{...}
+{synopthdr :statistic}
+{synoptline}
+{syntab :Main}
+{synopt :{opt me:an}}predicted mean; the default{p_end}
+{synopt :{opt pri:or}}prior component probability{p_end}
+{synopt :{opt pos:terior}}posterior component probability{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+Option {opt eq:uation(component#)} is required for {opt pri:or} and {opt pos:terior}.  
+It is also required for {opt me:an} if predicted within-class means are desired.
+{p_end}
+
+INCLUDE help esample
+
+
+{title:Options for predict}
+
+{phang}
+{opt me:an}, the default, calculates the predicted mean.
+
+{pmore}
+To obtain within class means, specify the {opt eq:uation(component#)} option.
+
+{phang}
+{opt pri:or} calculates the prior component probabilities.  With {opt prior}, 
+{opt eq:uation(component#)} must also be specified.
+
+{phang}
+{opt pos:terior} calculates the posterior component probabilities.  With 
+{opt posterior}, {opt eq:uation(component#)} must also be specified.
+
+
+{title:Marginal effects}
+
+{pstd}
+Marginal effects can be calculated separately for the overall conditional mean 
+as well as for within-class means, prior and posterior probabilities.  To calculate 
+marginal effects for within-class means, prior and posterior probabilities, run 
+{cmd:mfx} separately for each class, as shown in the examples below.
+
+
+{title:Examples}
+
+{phang}{cmd:. fmm mdvis age female logc}{p_end}
+{phang}{cmd:. predict yhat if e(sample)}{p_end}
+{phang}{cmd:. predict yhat1 if e(sample), equation(class1)}{p_end}
+{phang}{cmd:. predict prior1 if e(sample), pri equation(class1)}{p_end}
+{phang}{cmd:. predict post1 if e(sample), pos equation(class1)}{p_end}
+
+{phang}{cmd:. mfx}{p_end}
+{phang}{cmd:. mfx, predict(equation(class1))}{p_end}
+{phang}{cmd:. mfx, predict(pri equation(class2))}{p_end}
+
+
+{title:Also see}
+
+{psee}
+{helpb fmm};
+{helpb estimates},
+{helpb hausman},
+{helpb lincom},
+{helpb lrtest},
+{helpb mfx},
+{helpb nlcom},
+{helpb predictnl},
+{helpb suest},
+{helpb test},
+{helpb testnl}
+{p_end}

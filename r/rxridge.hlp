@@ -1,0 +1,64 @@
+.-
+help for ^rxridge^     					  STB-28: sg45
+.-
+
+Generalized ridge regression: trace displays
+--------------------------------------------
+
+        ^rxridge^ depvar varlist [^if^ exp] [^in^ range]
+
+                [^,^ ^m^steps^(^#^)^ ^q^shape^(^#^)^ ^r^escale^(^#^)^ ^t^ol^(^#^)^ ]
+
+
+To reset problem-size limits, see ^help matsize^.
+
+
+Description
+-----------
+
+^rxridge^ performs 2-parameter shrinkage regression of depvar on varlist
+displaying traces of (1) fitted coefficients, (2) scaled mean squared errors,
+(3) excess MSE eigenvalues, (4) inferior direction cosines, and (5) principal
+axis shrinkage (delta) factors.
+
+
+Options
+-------
+
+^msteps(^#^)^ specifies the number of steps per unit increase in ^MCAL^, the multi-
+    collinearity allowance parameter; the default value is 4.  The total number
+    of steps along the generalized shrinkage path from the least squares solu-
+    tion (^MCAL^=0) to all zero coefficients (^MCAL^=p) will thus be 1+(msteps*p).
+
+^qshape(^#^)^ controls the shape (or curvature) of the generalized shrinkage
+    path through likelihood space; the default value is 0, which yields Hoerl-
+    Kennard "ordinary" ridge regression.  ^qshape^=1 yields uniform shrinkage,
+    and all ^qshape^ values between -5 and 5 are allowed.
+
+^rescale(^#^)^ controls the scaling of the response variable and all p
+    predictor variables in the ^varlist^.  The default value is ^rescale^=1 to
+    scale all centered variables to have sample variance 1.  ^rescale^=0 should
+    be specified to retain the original scalings.
+
+^tol(^#^)^ specifies search convergence criterion and defaults to 0.01.
+
+
+Example
+-------
+
+ . ^rxridge mpg cylnds cubins hpower weight, q(-1)^
+
+
+Author
+------
+
+        Robert L. Obenchain
+        Eli Lilly and Company
+
+
+Also see
+--------
+
+    STB:  STB-28 sg45
+On-line:  ^help^ for @rxrcrlq@ and @rxrmaxl@
+

@@ -1,0 +1,287 @@
+/*
+  locpoly
+
+*! VERSION 1.0.1  20apr2005
+Jean Marie Linhart wrote the dialog
+*/
+
+VERSION 8.0
+
+INCLUDE graph_header
+
+INCLUDE header
+HELP hlp1, view("help locpoly")
+RESET res1
+
+DIALOG main, label("locpoly - Kernel-weighted local polynomial regression")/*
+		*/ tabtitle("Main")
+BEGIN
+  INCLUDE _glist_def	/* graph list definitions */
+  /*--+----1----+----2----+----3----+----4----+----5----+----6----+----7----+*/ 
+  TEXT     tx_yvar    _lft      _top      _cwd4_1     .,		/*
+		*/ label("Y variable:")					/*
+		*/
+  TEXT     tx_xvar    _lft4_2    _top      _cwd4_1     .,		/*
+		*/ label("X variable:")					/*
+		*/
+  DEFINE y @y
+  VARNAME  vn_yvar    _lft      _ss       _vnwd     .,			/*
+  		*/ label("Y variable")					/*
+		*/
+  VARNAME  vn_xvar    _lft4_2   @         _vnwd     .,			/*
+  		*/ label("X variable")					/*
+		*/
+
+  TEXT     tx_kernel _lft2     y         _cwd1     .,			/*
+		*/ label("Kernel function:")				/*
+		*/
+  COMBOBOX cb_kernel @         _ss       @         .,			/*
+		*/ label("Kernel function")				/*
+		*/ dropdownlist						/*
+		*/ contents("kerncon")					/*
+		*/ value("kernvalue")					/*
+		*/ 
+
+  CHECKBOX ck_nogr   _lft      _xls      _cwd4_1   .,			/*
+		*/ label("Suppress graph")				/*
+		*/ option("nograph") 					/*
+		*/ clickon("script graph_off")				/*
+		*/ clickoff("script graph_on")				/*
+		*/
+  CHECKBOX ck_nosc   _lft4_2   @         _cwd4_1   .,			/*
+		*/ label("Suppress scatter")				/*
+		*/ option("noscatter") 					/*
+		*/
+  SPINNER  sp_deg    _lft4_3   @         _spwd     .,			/*
+  		*/ label("Degree of polynomial")			/*
+  		*/ min(0) max(100) default(0) option(degree)
+  TEXT     tx_deg    _spsep    @         _spr2     .,			/*
+  		*/ label("Degree of polynomial")
+
+  CHECKBOX ck_gen    _lft      _xls      _iwd      _ht3,		/*
+		*/ label("Generate new variables")			/*
+		*/ groupbox						/*
+		*/ clickon("script gen_on")				/*
+		*/ clickoff("script gen_off")			/*
+		*/
+  EDIT     ed_newy   _indent   _ms       _vnwd     .,			/*
+		*/ label("Estimated smooth values")			/*
+		*/ max(32)						/*
+		*/
+  TEXT     tx_newy   _vnsep    @         _vnr2b    .,			/*
+		*/ label("Estimated smooth values")			/*
+		*/
+  EDIT     ed_newx   _lft2     @         _vnwd     .,			/*
+		*/ label("Smoothing grid")				/*
+		*/ max(32)						/*
+		*/
+  TEXT     tx_newx   _vnsep    @         _vnr2b    .,			/*
+		*/ label("Smoothing grid")				/*
+		*/
+
+  CHECKBOX ck_n      _lft      _xxls     _cwd1     _ht5h,		/*
+		*/ label("Override default evaluation points")		/*
+		*/ clickon("program n_on")				/*
+		*/ clickoff("script n_off")				/*
+		*/ groupbox						/*
+		*/
+  DEFINE y @y
+  RADIO    rb_n      _indent   _ms       _rbwd     .,			/*
+  		*/ onclickon(program main_rb_n) first
+  DEFINE holdx @x
+  SPINNER  sp_n      _rbsep    @         _spwd     .,			/*
+		*/ label("Number of points in smoothing grid")	/*
+		*/ min(1)						/*
+		*/ max(10000000)					/*
+		*/ default(50)						/*
+		*/ option("n")						/*
+		*/
+  TEXT     tx_n      _spsep    @         _rbspr2b    .,			/*
+		*/ label("Number of points in smoothign grid")	/*
+		*/
+  RADIO    rb_at     holdx     _ms       _rbwd     .,			/*
+  		*/ last onclickon(program main_rb_at)
+  EDIT     ed_at     _rbsep    @         _vnwd     .,			/*
+  		*/label("Values at which to estimate smooth")		/*
+  		*/ option(at)
+  TEXT     tx_at     _vnsep    @         _rbvnr2b    .,			/*
+  		*/label("Values at which to est. smooth")
+  CHECKBOX ck_width  _lft2     y         _cwd1     _ht3,		/*
+		*/ label(`"Override default bandwidth"')		/*
+		*/ clickon("script width_on")				/*
+		*/ clickoff("script width_off")				/*
+		*/ groupbox						/*
+		*/ option("width")					/*
+		*/
+  EDIT     en_width  _indent   _ms       _en7wd    .,			/*
+		*/ label("Halfwidth of kernel")				/*
+		*/ numonly						/*
+		*/ option("width")					/*
+		*/
+  TEXT     tx_width  _en7sep   @         _en7r2b   .,			/*
+		*/ label("Halfwidth of kernel")				/*
+		*/
+
+END
+
+INCLUDE _glist_sc	/* graph list scripts */
+
+LIST kerncon
+BEGIN
+  Epanechnikov
+  Gaussian
+  Parzen
+  biweight
+  cosine
+  rectangle
+  triangle
+END
+
+LIST kernvalue
+BEGIN
+  epanechnikov
+  gaussian
+  parzen
+  biweight
+  cosine
+  rectangle
+  triangle
+END
+
+PROGRAM main_rb_n
+BEGIN
+	if main.ck_n {
+		call gaction main.sp_n.enable
+		call gaction main.tx_n.enable
+		call gaction main.ed_at.disable
+		call gaction main.tx_at.disable
+	}
+END
+
+PROGRAM main_rb_at
+BEGIN
+	if main.ck_n {
+		call gaction main.sp_n.disable
+		call gaction main.tx_n.disable
+		call gaction main.ed_at.enable
+		call gaction main.tx_at.enable
+	}
+END
+
+SCRIPT graph_on
+BEGIN
+	script gyxview_enable
+	script gstopts_enable
+	script gnormopts_enable
+	script gr_twoway_enable
+END
+
+SCRIPT graph_off
+BEGIN
+	script gyxview_disable
+	script gstopts_disable
+	script gnormopts_disable
+	script gr_twoway_disable
+END
+
+SCRIPT gen_on
+BEGIN
+  main.ed_newx.enable
+  main.tx_newx.enable
+  main.ed_newy.enable
+  main.tx_newy.enable
+END
+
+SCRIPT gen_off
+BEGIN
+  main.ed_newx.disable
+  main.tx_newx.disable
+  main.ed_newy.disable
+  main.tx_newy.disable
+END
+
+PROGRAM n_on
+BEGIN
+  call gaction main.rb_n.enable
+  call gaction main.rb_at.enable
+  if main.rb_n {
+  	call program main_rb_n
+  }
+  if main.rb_at {
+  	call program main_rb_at
+  }
+END
+
+SCRIPT n_off
+BEGIN
+  main.rb_n.disable
+  main.rb_at.disable
+  main.ed_at.disable
+  main.tx_at.disable
+  main.sp_n.disable
+  main.tx_n.disable
+END
+
+SCRIPT width_on
+BEGIN
+  main.en_width.enable
+  main.tx_width.enable
+END
+
+SCRIPT width_off
+BEGIN
+  main.en_width.disable
+  main.tx_width.disable
+END
+
+SCRIPT stud_on
+BEGIN
+  main.sp_stud.enable
+  main.tx_stud.enable
+END
+
+SCRIPT stud_off
+BEGIN
+  main.sp_stud.disable
+  main.tx_stud.disable
+END
+
+INCLUDE ifin
+
+INCLUDE grlopts
+INCLUDE gyxview
+INCLUDE gscatter_chlist
+INCLUDE gr_twoway 
+
+PROGRAM command
+BEGIN
+	put "locpoly "
+	varlist main.vn_yvar
+	varlist main.vn_xvar
+	INCLUDE _ifin_pr
+	beginoptions
+		put main.cb_kernel " "
+		option main.ck_nogr
+		option main.ck_nosc
+		optionarg /hidedefault main.sp_deg
+		if main.ck_gen {
+			require main.ed_newy 
+			put "generate("
+			put main.ed_newx
+			put " "
+			put main.ed_newy
+			put ")"
+		}
+		optionarg main.sp_n
+		optionarg main.ed_at
+		if main.ck_width {
+			optionarg main.en_width
+		}
+
+		put " " /program grlopts_output
+		put " " /program gyxview_output
+		put " " /program gr_twoway_output
+
+	endoptions
+END
+

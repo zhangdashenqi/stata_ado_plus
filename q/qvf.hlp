@@ -1,0 +1,272 @@
+{smcl}
+{* 03apr2003}{...}
+{hline}
+help for {hi:qvf}{right:(SJ3-4: st0049, st0050, st0051)}
+{hline}
+
+{title:Generalized Linear Models with Instrumental Variables and Fast Bootstrap}
+
+{p 8 12 2}{cmd:qvf} {it:depvar} [{it:indepvars}] [({it:varlist_iv})] [{it:weight}] [{cmd:if}
+{it:exp}] [{cmd:in} {it:range}] [{cmd:,} {cmd:bstrap} {cmd:brep}{cmd:(}{it:#}{cmd:)} 
+{cmd:noconstant} {cmd:eform} {cmd:ltolerance}{cmd:(}{it:#}{cmd:)} 
+{cmd:iterate}{cmd:(}{it:#}{cmd:)} {cmd:family}{cmd:(}{it:familyname}{cmd:)} 
+{cmd:level}{cmd:(}{it:#}{cmd:)} {cmd:link}{cmd:(}{it:linkname}{cmd:)} 
+{cmd:nolog} {cmd:message}{cmd:(}{it:#}{cmd:)} {cmd:MTopel} 
+[{cmd:ln}]{cmd:offset}{cmd:(}{it:varname}{cmd:)} {cmd:oim} {cmd:robust} 
+{cmd:btrim}{cmd:(}{it:#}{cmd:)} {cmd:cluster}{cmd:(}{it:varname}{cmd:)} 
+{cmd:saving}{cmd:(}{it:filename}{cmd:)} {cmd:replace} 
+{cmd:scale}{cmd:(}{cmd:x2}|{cmd:dev}|{it:#}{cmd:)} cmd:seed}{cmd:(}{it:#}{cmd:)} 
+{cmd:vfactor}{cmd:(}{it:#}{cmd:)}]
+
+{p 4 4 2}where {it:familyname} is one of
+
+{p 8 8 2}{cmdab:gau:ssian} | {cmdab:ig:aussian} |
+{bind:{cmdab:b:inomial} [{it:varnameN}|{it:#N}]} | {cmdab:p:oisson} |
+{bind:{cmdab:nb:inomial} [{it:#k}]} | {cmdab:gam:ma}
+
+{p 4 4 2}and {it:linkname} is one of
+
+{p 8 8 2}{cmdab:i:dentity} | {cmd:log} | {cmdab:l:ogit} | {cmdab:p:robit} |
+{cmdab:c:loglog} | {cmdab:opo:wer} {it:#} | {cmdab:pow:er} {it:#} |
+{cmdab:nb:inomial} | {cmdab:logl:og} | {cmd:logc}
+
+{p 4 4 2}
+{cmd:by} {it:...} {cmd::} may be used with {cmd:qvf}; see help {help by}.
+
+{p 4 4 2}
+{cmd:fweight}s, {cmd:aweight}s, {cmd:iweight}s, and {cmd:pweight}s are
+allowed; see help {help weights}.
+
+{p 4 4 2}
+{cmd:qvf} shares the features of all estimation commands; see help
+{help estcom}.
+
+{p 4 4 2}
+No {cmd:predict} is implemented in {cmd:qvf}.
+
+
+{title:Description}
+
+{p 4 4 2} 
+{cmd:qvf} fits generalized linear models using IRLS (maximum
+quasi-likelihood) and is similar in syntax to {cmd:glm}. Results of
+{cmd:qvf} and {cmd:glm} (using IRLS) should be very similar.
+{cmd:qvf} is implemented by Stata's plug-in mechanism. {cmd:qvf} has
+support for instrumental variables and implements a very fast builtin
+bootstrap (different from the regular Stata boostrap command).
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:bstrap} specifies that the bootstrap estimate of variance be used.
+
+{p 4 8 2}
+{cmd:brep}{cmd:(}{it:#}{cmd:)} specifies the number of bootstrap
+samples to consider in forming the bootstrap estimate of variance.  The
+default is {cmd:brep(199)}.
+
+{p 4 8 2}
+{cmd:noconstant} specifies that the linear predictor has no intercept
+term, thus forcing it through the origin on the scale defined by the link
+function.
+
+{p 4 8 2}
+{cmd:eform} displays the exponentiated coefficients and corresponding
+standard errors and confidence intervals.  For binomial models with the logit
+link, exponentiation results in odds ratios; for Poisson models with the log
+link, exponentiated coefficients are rate ratios.
+
+{p 4 8 2}
+{cmd:ltolerance}{cmd:(}{it:#}{cmd:)} specifies the convergence
+criterion for the change in deviance between iterations;
+{cmd:ltolerance(1e-6)} is the default.
+
+{p 4 8 2}
+{cmd:iterate}{cmd:(}{it:#}{cmd:)} specifies the maximum number of
+iterations allowed in fitting the model; {cmd:iterate(100)} is the
+default.  You should seldom need to specify {cmd:iterate()}.
+
+{p 4 8 2}
+{cmd:family}{cmd:(}{it:familyname}{cmd:)} specifies the distribution of
+{it:depvar}; {cmd:family(gaussian)} is the default.
+
+{p 4 8 2}
+{cmd:level}{cmd:(}{it:#}{cmd:)} specifies the confidence level, in
+percent, for confidence intervals of the coefficients; see help {help level}.
+
+{p 4 8 2}
+{cmd:link}{cmd:(}{it:linkname}{cmd:)} specifies the link function; the
+default is the canonical link for the {cmd:family()} specified.
+
+{p 4 8 2}
+{cmd:nolog} suppresses the iteration log.
+
+{p 4 8 2}
+{cmd:message}{cmd:(}{it:#}{cmd:)} The message or debug level 
+from the plug-in module. The default is {cmd:message(2))}.
+
+{p 4 8 2}
+{cmd:MTopel} Use the Murphy-Toepel estimator of variance. This is only 
+valid with instrumental variables.
+
+{p 4 8 2}
+[{cmd:ln}]{cmd:offset}{cmd:(}{it:varname}{cmd:)} specifies an offset to
+be added to the linear predictor.  {cmd:offset()} specifies the values
+directly:  g(E(y)) = xB + {it:varname}.  {cmd:lnoffset()} specifies
+exponentiated values:  g(E(y)) = xB + ln({it:varname}).
+
+{p 4 8 2}
+{cmd:oim} specifies that the variance matrix should be calculated using
+the observed information matrix (OIM) rather than the usual expected
+information matrix (EIM).  
+
+{p 4 8 2}
+{cmd:robust} specifies that the Huber/White/sandwich estimator of
+variance is to be used in place of the traditional calculation.  {cmd:robust}
+combined with {cmd:cluster}{cmd:(}{cmd:)} allows observations which are not
+independent within cluster (although they must be independent between
+clusters).
+
+{p 4 8 2}
+{cmd:btrim}{cmd:(}{it:#}{cmd:)} Precent boostrap trimming. The default
+is {cmd:btrim(.02)}.
+
+{p 4 8 2}
+{cmd:cluster}{cmd:(}{it:varname}{cmd:)} specifies that the observations
+are independent across groups (clusters), but not necessarily within groups.
+{it:varname} specifies to which group each observation belongs; e.g.,
+{cmd:cluster}{cmd:(}{cmd:personid}{cmd:)} in data with repeated observations
+on individuals.  {cmd:cluster}{cmd:(}{cmd:)} affects the estimated standard
+errors and variance-covariance matrix of the estimators (VCE), but not the
+estimated coefficients.  Specifying {cmd:cluster}{cmd:(}{cmd:)} implies
+{cmd:robust} if no other variance estimate is specified.
+
+{p 4 8 2}
+{cmd:saving}{cmd:(}{it:filename}{cmd:)} Save the booststrap results to the
+specified file.
+
+
+{p 4 8 2}
+{cmd:replace} Replace the existing 'bootstrap results' file if it exists.
+
+
+{p 4 8 2}
+{cmd:scale}{cmd:(}{cmd:x2}|{cmd:dev}|{it:#}{cmd:)} overrides the
+default scale parameter.  By default, {cmd:scale(1)} is assumed for
+discrete distributions (binomial, Poisson, negative binomial)
+and {cmd:scale(x2)} for continuous distributions
+(Gaussian, gamma, inverse Gaussian).
+
+{p 8 8 2}
+{cmd:scale(x2)} specifies the scale parameter be set to the Pearson
+chi-squared (or generalized chi-squared) statistic divided by the residual
+degrees of freedom.
+
+{p 8 8 2}
+{cmd:scale(dev)} sets the scale parameter to the deviance divided by the
+residual degrees of freedom.  This provides an alternative to {cmd:scale(x2)}
+for continuous distributions and over- or under-dispersed discrete
+distributions.
+
+{p 8 8 2}
+{cmd:scale}{cmd:(}{it:#}{cmd:)} sets the scale parameter to {it:#}.
+
+{p 4 8 2}
+{cmd:seed}{cmd:(}{it:#}{cmd:)} specify the seed for the random number
+generator used by the boostrap. This enables for identical boostrap
+runs. This option is generally not specified.
+
+{p 4 8 2}
+{cmd:vfactor}{cmd:(}{it:#}{cmd:)} specifies a scalar by which to
+multiply the resulting variance matrix.  This option allows users to match
+output with other packages which may apply degrees of freedom or other small
+sample corrections to estimates of variance.
+
+{title:Remarks}
+
+{p 4 4 2}
+The allowed link functions are
+
+{center:Link function            {cmd:glm} option     }
+{center:{hline 40}}
+{center:identity                 {cmd:link(identity)} }
+{center:log                      {cmd:link(log)}      }
+{center:logit                    {cmd:link(logit)}    }
+{center:probit                   {cmd:link(probit)}   }
+{center:complementary log-log    {cmd:link(cloglog)}  }
+{center:odds power               {cmd:link(opower} {it:#}{cmd:)} }
+{center:power                    {cmd:link(power} {it:#}{cmd:)}  }
+{center:negative binomial        {cmd:link(nbinomial)}}
+{center:log-log                  {cmd:link(loglog)}   }
+{center:log-compliment           {cmd:link(logc)}     }
+
+{p 4 4 2}
+The allowed distribution families are
+
+{center:Family                 {cmd:glm} option       }
+{center:{hline 40}}
+{center:Gaussian(normal)       {cmd:family(gaussian)} }
+{center:Inverse Gaussian       {cmd:family(igaussian)}}
+{center:Bernoulli/binomial     {cmd:family(binomial)} }
+{center:Poisson                {cmd:family(poisson)}  }
+{center:Negative binomial      {cmd:family(nbinomial)}}
+{center:Gamma                  {cmd:family(gamma)}    }
+
+{p 4 4 2}
+Reasonable combinations of {cmd:family()} and {cmd:link()} are
+
+	  {c |} id  log  logit  probit  clog  pow  opower  nbinomial  loglog  logc
+{hline 10}{c +}{hline 67}
+Gaussian  {c |}  x   x                         x
+inv. Gau. {c |}  x   x                         x
+binomial  {c |}  x   x     x      x       x    x     x                  x      x
+Poisson   {c |}  x   x                         x
+neg. bin. {c |}  x   x                         x              x
+gamma     {c |}  x   x                         x
+
+{p 4 11 2}
+Note:  Nonstandard combinations other than those marked out above
+are allowed, but the user is responsible for seeing that the data fit
+the combination and for the interpretation of the results.
+
+{p 4 4 2}
+If you specify {cmd:family()} but not {cmd:link()}, you obtain the canonical
+link for the family:
+
+{center:{cmd:family()}                default {cmd:link()}}
+{center:{hline 38}}
+{center:{cmd:family(gaussian)}        {cmd:link(identity)}}
+{center:{cmd:family(igaussian)}       {cmd:link(power -2)}}
+{center:{cmd:family(binomial)}        {cmd:link(logit)}   }
+{center:{cmd:family(poisson)}         {cmd:link(log)}     }
+{center:{cmd:family(nbinomial)}       {cmd:link(log)}     }
+{center:{cmd:family(gamma)}           {cmd:link(power -1)}}
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. * generate some data}{p_end}
+{p 4 8 2}{cmd:. set obs 1000}{p_end}
+{p 4 8 2}{cmd:. gen x1 = uniform()}{p_end}
+{p 4 8 2}{cmd:. gen x2 = uniform()}{p_end}
+{p 4 8 2}{cmd:. gen x3 = uniform()}{p_end}
+{p 4 8 2}{cmd:. gen err = invnorm(uniform())}{p_end}
+{p 4 8 2}{cmd:. gen y = 1+2*x1+3*x2+4*x3+err}{p_end}
+
+{p 4 8 2}{cmd:. * glm and then a glm with a bootstrap}{p_end}
+{p 4 8 2}{cmd:. qvf y x1 x2 x3}{p_end}
+{p 4 8 2}{cmd:. qvf y x1 x2 x3, boot brep(999)}{p_end}
+
+{p 4 8 2}{cmd:. * generate instrumental variable t3 where corr(x3,t3)=.8}{p_end}
+{p 4 8 2}{cmd:. gen t3 = .8*x3 + .6*invnorm(uniform())}{p_end}
+
+{p 4 8 2}{cmd:. * do instrumental estimation}{p_end}
+{p 4 8 2}{cmd:. qvf y x1 x2 x3 (x1 x2 t3), mtopel}{p_end}
+{p 4 8 2}{cmd:. qvf y x1 x2 x3 (x1 x2 t3), bstrap}{p_end}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {help rcal}, {help simex}

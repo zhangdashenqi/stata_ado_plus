@@ -1,0 +1,287 @@
+{smcl}
+{* 26 January 2009 version 1.2.2}{...}
+{cmd:help comproc}{right: ({browse "http://www.stata-journal.com/article.html?article=st0154":SJ9-1: st0154})}
+{hline}
+
+{title:Title}
+
+
+{p2col 5 16 18 2:{hi:comproc} {hline 2}}Comparison of receiver operating
+characteristic (ROC) summary statistics based on percentile value (PV)
+calculations{p_end} {p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 16 2}
+{cmd:comproc}
+{it:{help varname:disease_var}}
+{it:{help varname:test_var1}}
+[{it:{help varname:test_var2}}]
+{ifin} [{cmd:,} {it:options}]
+
+{synoptset 18 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Summary statistics}
+{synopt :{opt auc}}area under ROC curve (AUC){p_end}
+{synopt :{opt pauc:(f)}}partial AUC (pAUC) for false positive rate range {bind:FPR < {it:f}}{p_end}
+{synopt :{opt roc:(f)}}ROC at specified {bind:FPR = {it:f}}{p_end}
+{synopt :{opt rocinv:(t)}}ROC^(-1)(t) at specified true positive rate {bind:TPR = {it:t}}{p_end}
+
+{syntab:Standardization method}
+{synopt :{opt pvcm:eth(method)}}specify PV calculation method; {cmd:empirical} (default) or {cmd:normal}{p_end}
+{synopt :{opt tiec:orr}}correction for ties{p_end}
+
+{syntab:Covariate adjustment}
+{synopt :{opt adjc:ov(varlist)}}specify covariates to adjust for{p_end}
+{synopt :{opt adjm:odel(model)}}specify model adjustment; {cmd:stratified} (default) or {cmd:linear}{p_end}
+
+{syntab:Sampling variability}
+{synopt :{opt ns:amp(#)}}specify number of bootstrap samples; default is {cmd:nsamp(1000)}{p_end}
+{synopt :{opt nobs:trap}}omit bootstrap sampling{p_end}
+{synopt :{opt noccs:amp}}specify cohort rather than case-control bootstrap sampling{p_end}
+{synopt :{opt nosts:amp}}draw samples without respect to covariate strata{p_end}
+{synopt :{opt cl:uster(varlist)}}specify variables identifying bootstrap resampling clusters{p_end}
+{synopt :{opt res:file(filename)}}save bootstrap results in {it:filename}{p_end}
+{synopt :{opt replace}}overwrite specified bootstrap results file if it already exists{p_end}
+{synopt :{opt l:evel(#)}}specify confidence level; default is
+{cmd:level(95)}{p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd} {cmd:comproc} compares two continuous marker or test variables,
+{it:test_var1} and {it:test_var2}, with respect to one or more ROC statistics:
+the AUC, the pAUC for FPR < {it:f}, the ROC at FPR = {it:f}, and the
+inverse ROC at TPR = {it:t}
+({help comproc##refrlink:Pepe 2003, sec. 4.3; Dodd and Pepe 2003}).
+{it:disease_var} is the 0/1 disease indicator
+variable.
+
+{pstd} Alternatively, a single marker variable can be specified, in which case
+the requested ROC statistics are returned without comparison statistics.
+
+{pstd}
+All ROC statistics are calculated by using PVs of the disease case
+measures relative to the corresponding marker distribution among controls
+({help comproc##refrlink:Pepe and Longton 2005; Huang and Pepe Forthcoming}).
+{p_end}
+
+{pstd} Optional covariate adjustment can be achieved either by stratification
+or with a linear regression approach
+({help comproc##refrlink:Janes and Pepe 2008; Janes and Pepe Forthcoming}).
+
+{pstd}
+Bootstrap standard errors and confidence intervals (CIs) for the requested
+statistics and marker differences are calculated.  Percentile, normal-based,
+and bias-corrected CIs are displayed (see {help estat bootstrap} and
+{manhelp bootstrap R}).
+
+{pstd}
+Wald test results for marker comparisons are based on the bootstrap standard
+errors for the difference between markers.
+
+{pstd}
+Many of the standard {help return:e-class} bootstrap results left
+behind by {helpb bstat} are available
+after running {cmd:comproc}, in addition to the r-class results listed
+{help comproc##savedresults:below}.{p_end}
+
+
+{title:Options}
+{marker summarystats}
+{dlgtab:Summary statistics}
+
+{phang} {opt auc} compares markers with respect to the AUC.  This is the default if no summary
+statistics are specified.
+
+{phang} {opt pauc(f)} includes a comparison with respect to the pAUC
+for FPR < specified {it:f}.  The argument must be between 0 and 1.  A tie
+correction is included in the PV calculation if this option is included among
+the specified summary statistics and the empirical PV calculation method is used.
+
+{phang}
+{opt roc(f)} compares markers with respect to the ROC at the specified
+{bind:FPR = {it:f}}.  The argument must be between 0 and 1.
+
+{phang} {opt rocinv(t)} compares markers with respect to the inverse ROC,
+ROC^(-1)(t), at the specified {bind:TPR = {it:t}}.
+The argument must be between 0 and 1.
+
+{dlgtab:Standardization method}
+
+{phang} {opt pvcmeth(method)} specifies how the PVs are to be calculated.
+{it:method} can be one of the following:
+
+{phang2} {opt empirical}, the default, uses the empirical distribution of the
+test measure among controls (D=0) as the reference distribution for the
+calculation of case PVs.  The PV for the case measure y_i is the proportion of
+control measures Y_Db < y_i.
+
+{phang2}
+{opt normal} models the test measure among controls with a normal
+distribution.  The PV for the case measure y_i is the standard normal
+cumulative distribution function of {bind:(y_i - mean)/sd}, where the mean and
+the standard deviation are calculated by using the control sample.
+
+{phang} {opt tiecorr} indicates that a correction for ties between case and
+control values is included in the empirical PV calculation.  The correction is
+important only in calculating summary indices such as the AUC.  The
+tie-corrected PV for a case with the marker value y_i is the proportion of
+control values {bind:Y_Db < y_i} plus one half the proportion of control values
+{bind:Y_Db = y_i}, where Y_Db denotes controls. By default, the PV calculation
+includes only the first term, i.e., the proportion of control values
+{bind:Y_Db < y_i}. This option applies only to the empirical PV calculation
+method.
+
+{dlgtab:Covariate adjustment}
+
+{phang}
+{opth adjcov(varlist)} specifies the variables to be included in the adjustment.
+
+{phang}
+{opt adjmodel(model)} specifies how the covariate adjustment is to be done.
+{it:model} can be one of the following:
+
+{phang2}
+{opt stra:tified} PVs are calculated separately for each
+stratum defined by {it:{help varlist}} in {opt adjcov()}.  This
+is the default if {opt adjmodel()} is not specified and {opt adjcov()}
+is.  Each case-containing stratum must include at least two controls.
+Strata that do not include cases are excluded from calculations.
+
+{phang2}
+{opt line:ar} fits a linear regression of the marker distribution on the
+adjustment covariates among controls. Standardized residuals based on this
+fitted linear model are used in place of the marker values for cases and
+controls.
+
+{dlgtab:Sampling variability}
+
+{phang} {opt nsamp(#)} specifies the number of bootstrap samples
+to be drawn for estimation of standard errors and
+CIs.  The default is {cmd:nsamp(1000)}.
+
+{phang} {opt nobstrap} omits bootstrap sampling and estimation of standard
+errors and CIs.  If {cmd:nsamp()} is specified, {cmd:nobstrap} will override
+it.
+
+{phang}
+{opt noccsamp} specifies that bootstrap samples be drawn from the combined
+sample rather than sampling separately from cases and controls; case-control
+sampling is the default.
+
+{phang} {opt nostsamp} draws bootstrap samples without respect to covariate
+strata. By default, samples are drawn from within covariate strata when
+stratified covariate adjustment is requested via the {opt adjcov()} and {opt adjmodel()} options.
+
+{phang} {opth cluster(varlist)} specifies variables identifying bootstrap
+resampling clusters.  See the {cmd:cluster()} option in {manhelp bootstrap R}.
+
+{phang} {opt resfile(filename)} creates a Stata file (a {cmd:.dta} file) with the
+bootstrap results for the included statistics.  {helpb bstat} can be run on
+this file to view the bootstrap results again.
+
+{phang} {opt replace} specifies that if the specified file already exists,
+then the existing file should be overwritten.
+
+{phang} {opt level(#)} specifies the confidence level for CIs as a percentage.
+The default is {cmd:level(95)} or as set by {helpb set level}.
+
+
+{marker savedresults}
+{title:Saved results}
+
+{pstd}
+{cmd:comproc} saves the following in {cmd:r()}, where {it:stat}
+is one or more of {cmd:auc}, {cmd:pauc}, {cmd:roc}, or
+{cmd:rocinv}, corresponding to the requested
+{help comproc##summarystats:summary statistics}:
+
+{synoptset 19 tabbed}{...}
+{p2col 5 15 19 2: Scalars}{p_end}
+{synopt:{cmd:r({green:{it:stat}}1)}}statistic estimate for first marker{p_end}
+{synopt:{cmd:r({green:{it:stat}}2)}}statistic estimate for second marker{p_end}
+{synopt:{cmd:r({green:{it:stat}}delta)}}estimate difference,
+{it:stat}{cmd:2} - {it:stat}{cmd:1}{p_end}
+{synopt:{cmd:r(se_{green:{it:stat}}1)}}bootstrap standard-error estimate
+for first marker statistic{p_end}
+{synopt:{cmd:r(se_{green:{it:stat}}2)}}bootstrap standard-error estimate
+for second marker statistic{p_end}
+{synopt:{cmd:r(se_{green:{it:stat}}delta)}}bootstrap standard-error estimate
+for the difference, {it:stat}{cmd:2} - {it:stat}{cmd:1}{p_end}
+
+
+{title:Examples}
+
+{phang} {cmd:. comproc d y1 y2}{p_end}
+
+{phang} {cmd:. comproc d y1 y2, pauc(.10)}{p_end}
+
+{phang} {cmd:. comproc d y1 y2, auc pauc(.10) level(90)}{p_end}
+
+{phang} {cmd:. comproc d y1 y2, auc pauc(.20) roc(.20) nsamp(5000)}{p_end}
+
+{phang} {cmd:. comproc d y1 y2, pauc(.20) pvcmeth(normal) resfile(rfile1) replace}{p_end}
+
+{phang} {cmd:. comproc d y1 y2, pvcmeth(normal) noccsamp cluster(z1)}{p_end}
+
+{phang} {cmd:. comproc d y1 y2, adjcov(agegroup gender)}{p_end}
+
+{phang} {cmd:. comproc d y1 y2, adjcov(age gender) adjmodel(linear)}{p_end}
+
+{phang} {cmd:. comproc d y1 y2, adjcov(age) adjmodel(linear) pvcmeth(normal)}{p_end}
+
+
+{marker refrlink}{title:References}
+
+{phang}Dodd, L. E., and M. S. Pepe. 2003.  Partial AUC estimation and
+regression.  {it:Biometrics} 59: 614-623.
+
+{phang}Huang, Y., and M. S. Pepe.  Forthcoming.  Biomarker evaluation and comparison using the controls as a reference population.  {it:Biostatistics}.
+
+{phang}Janes, H., and M. S. Pepe. 2008.
+{browse "http://aje.oxfordjournals.org/cgi/reprint/168/1/89.pdf":Adjusting for covariates in studies of diagnostic, screening, or prognostic markers: An old concept in a new setting.}
+{it:American Journal of Epidemiology} 168: 89-97.
+
+{phang}------.  Forthcoming.
+{browse "http://www.bepress.com/uwbiostat/paper283":Adjusting for covariate effects on classification accuracy using the covariate-adjusted ROC curve.}
+{it:Biometrika}.
+
+{phang}Pepe, M. S.  2003.  {browse "http://www.stata.com/bookstore/pepe.html":{it:The Statistical Evaluation of Medical Tests for Classification and Prediction.}}
+Oxford University Press.
+
+{phang}Pepe, M. S., and G. Longton. 2005.  Standardizing diagnostic markers to
+evaluate and compare their performances. {it:Epidemiology} 16: 598-603.
+
+
+{title:Authors}
+
+{phang}Gary Longton{p_end}
+{phang}Fred Hutchinson Cancer Research Center{p_end}
+{phang}Seattle, WA{p_end}
+{phang}glongton@fhcrc.org{p_end}
+
+{phang}Margaret Pepe{p_end}
+{phang}Fred Hutchinson Cancer Research Center and University of
+Washington{p_end}
+{phang}Seattle, WA{p_end}
+{phang}mspepe@u.washington.edu{p_end}
+
+{phang}Holly Janes{p_end}
+{phang}Fred Hutchinson Cancer Research Center{p_end}
+{phang}Seattle, WA{p_end}
+{phang}hjanes@fhcrc.org{p_end}
+
+
+{title:Also See}
+
+{psee}
+Article: {it:Stata Journal}, volume 9, number 1: {browse "http://www.stata-journal.com/article.html?article=st0154":st0154}, {browse "http://www.stata-journal.com/article.html?article=st0155":st0155}
+
+{psee}
+Online:  {helpb roccurve} (if installed)
+{p_end}

@@ -1,0 +1,89 @@
+{smcl}
+{hline}
+help for {hi:gmatch}
+{hline}
+
+{title:Greedy propensity-score matching}
+
+{p 4 8 2}
+{cmdab:gmatch}
+{it:treatvar}
+{it:matchvar}
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+[{cmd:,}
+{cmdab:s:et}{cmd:(}{it:newvar}{cmd:)}
+{cmdab:d:iff}{cmd:(}{it:newvar}{cmd:)}
+{cmdab:c:aliper}{cmd:(}{it:value}{cmd:)}
+{cmd:lp}
+]    
+
+{title:Description}
+
+{pstd}
+The command {cmd:gmatch} was designed for greedy matching of treated 
+and untreated subjects based on their propensity scores. The variable 
+{cmd:treatvar} contains 1 for treated subjects, 0 for untreated. The 
+variable {cmd:matchvar} contains the variable on which subjects are to 
+be matched (i.e. the propensity score for propensity analysis, but 
+{cmd:gmatch} can of course be used in other contexts as well). 
+
+
+{title:Options}
+
+{p 0 4}
+{cmdab:s:et}{cmd:(}{it:newvar}{cmd:)} creates a variable called {it:newvar} containing a unique identifier for each case-control pair. By default, a variable called {cmd:set} is created.
+
+{p 0 4}
+{cmdab:d:iff}{cmd:(}{it:newvar}{cmd:)} creates a variable called {it:newvar} containing the difference in propensity score within each case-control pair. By default, a variable called {cmd:diff} is created.
+
+{p 0 4}
+{cmdab:c:aliper}{cmd:(}{it:value}{cmd:)} provides a limit on the quality of the matches: if no controls are available with a propensity score within {it:value} of a case, that case is not matched.
+
+{p 0 4}
+{cmd:lp} tells {cmd:gmatch} to use the linear predictor from the logistic regression model used to define the propensity score, rather than the propensity score itself. 
+
+{p 4 8 2}
+
+{title:Remarks}
+
+{pstd}
+The command {cmd:gmatch} uses a greedy algorithm to select matches:
+that is, it selects the closest matching first, then the closest
+remaining matching, until there are no further matches considered
+acceptable. It can only cope with a single matching variable: if you
+wish to match on more than one variable, you can use the command
+{cmd:gmatchp}. However, {cmd:gmatchp} requires a plugin, so it cannot
+be used on every platform. You can use the {cmd:by:} prefix to match
+within groups, so for example the command 
+
+{pstd}
+by centre gender: gmatch treated prop, cal(0.05)
+
+{pstd}
+will only match subjects who are from the same centre, of the same
+gender and within 0.05 of each other in propensity score.
+
+{pstd}
+For matched untreated subjects, the variable {it:diff} contains the
+difference in propensity score (or log odds of propensity score)
+between that subject and the treated subject to whom they were
+matched. For unmatched untreated subjects, it is missing. It is also
+missing for treated subjects, since a treated subject may be matched
+to more than one control, and hence {it:diff} is not well defined.
+
+{title:References}
+
+{p 4 8 2}
+
+{title:Author}
+
+{p 4 4 2}
+Mark Lunt, Arthritis Research UK Epidemiology Unit
+
+{p 4 4 2}
+The University of Manchester
+
+{p 4 4 2}
+Please email {browse "mailto:mark.lunt@manchester.ac.uk":mark.lunt@manchester.ac.uk} if you encounter problems with this program
+

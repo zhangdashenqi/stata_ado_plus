@@ -1,0 +1,63 @@
+{smcl}
+{.-}
+help for {cmd:dotex} {right:(Roger Newson)}
+{.-}
+
+
+{title:Execute commands from a file, creating a log file in SJ LaTeX}
+
+{p 8 27}
+{cmd:dotex} {it:filename} [ {it:arguments} ]
+
+
+{title:Description}
+
+{p}
+{cmd:dotex} causes Stata to execute the commands stored in {it:filename}
+as if they were entered from the keyboard, and echos the commands as it
+executes them, creating a log file {it:filename}.tex in Stata Journal (SJ) LaTeX.
+The LaTeX log file (or parts of it) can then be included in a SJ LaTeX file (eg a SJ
+submission), using the SJ LaTeX {cmd:stlog} environment.
+If {it:filename} is specified without an extension, {it:filename}.do is assumed.
+If {it:filename} is specified with an extension, then the log file will have .log
+as an additional extension (so {cmd:dotex} will not overwrite the original do-file).
+Arguments are allowed (as with {help do}), but the {cmd:nostop} option is not available.
+
+
+{title:Remarks}
+
+{p 0 0}
+{cmd:dotex} is adapted from  {help dolog}, which creates a generic text log file
+instead of a SJ LaTeX file. {cmd:dotex} is similar in function to the {cmd:logopen} and {cmd:logclose}
+programs, which can also be used to create SJ LaTeX log files. However, {cmd:dotex} has the advantage that one do-file can be run
+with either {cmd:dotex}, {help dolog} or {help do}, creating, respectively,
+a SJ LaTeX log, a generic text log or no log. Further information on SJ LaTeX can be found at the
+{browse "http://www.stata-journal.com/":SJ website}.
+
+
+{title:Examples}
+
+{p 8 16}{inp:. dotex example1}{p_end}
+
+{p 8 16}{inp:. dotex example1 argone argtwo}{p_end}
+
+
+{title:Author}
+
+{p}
+Roger Newson, National Heart and Lung Institute, Imperial College London, UK.{break}
+Email: {browse "mailto:r.newson@imperial.ac.uk":r.newson@imperial.ac.uk}
+
+
+{title:Also see}
+
+{p 0 21}
+{bind: }Manual:  {hi:[GSM] 14 Using the do-file editor}, {hi:[GSW] 14 Using the do-file editor},
+{hi:[U] 18 Printing and preserving output}, {hi:[U] 19 Do-files}, {hi:[R] do}.
+{p_end}
+{p 0 21}
+On-line:  help for {help log}, {help do}, {help run} and {help doedit}
+{p_end}
+{p 10 21}
+help for {help dolog} if installed
+{p_end}

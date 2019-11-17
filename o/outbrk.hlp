@@ -1,0 +1,58 @@
+.-
+help for ^outbrk^                                                 (STB-54: sbe32)
+.-
+
+Automated outbreak detection from public health surveillance data
+-----------------------------------------------------------------
+
+    ^outbrk^ #week #year
+
+where
+
+     #week is the number of the current week
+
+     #year is the number of the current year
+
+
+Description
+-----------
+
+^outbrk^ calculates threshold values for outbreak detection of infectious
+diseases. The data are weekly reports of positive microbiological diagnostics
+from a passive surveillance system based on laboratory reporting.
+
+The procedure is based on a log-linear regression model, adjusted for
+overdispersion, seasonality, secular trends and past outbreaks. This model is
+used to calculate an expected value for the current week based on historical
+data, together with a warning threshold value above which an observed count is
+declared to be unusual.
+
+When no cases are reported in a week, we asume that no outbreak occurred and
+thus no model is fitted. As a consecuence, no threshold value is calculated.
+
+The output is a table displaying the list of microorganisms with the observed
+number of cases and the threshold value for the current week. In addition, a
+warning message is displayed when the actual report exceed the threshold.
+
+^outbrk^ works after setting the variables with the ^varset^ ado 
+
+
+Example
+-------
+
+        . ^outbrk  3 1998^
+
+
+Authors
+------
+
+        Esther Lopez, Isolina Santiago, Luisa Abraira.
+        Direccion Xeral de Saude Publica, Xunta de Galicia.
+        dxsp3@@jet.es
+
+
+Also see
+--------
+
+On-line:  help for @varset@
+

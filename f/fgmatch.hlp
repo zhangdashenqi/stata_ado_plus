@@ -1,0 +1,109 @@
+{smcl}
+{hline}
+help for {hi:fgmatch}
+{hline}
+
+{title:Fast greedy matching}
+
+{p 4 8 2}
+{cmdab:fgmatch}
+{it:treatvar}
+{it:matchvar}
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+[{cmd:,}
+  {opt s:et(newvar)}
+  {opt d:iff(newvar)}
+  {opt start(#)}
+  {opt stop(#)}
+  {opt step(#)}
+  {opt lp}
+  {opt maxc}
+  {opt seed}
+]       
+
+{title:Description}
+
+{pstd}
+The command {cmd:fgmatch} performs greedy matching using a very similar
+algorithm to the SAS macro GREEDMTCH.  The variable {cmd:treatvar}
+contains 1 for treated subjects, 0 for untreated. The
+variable {cmd:matchvar} contains the variable on which subjects are
+to be matched (i.e. the propensity score for propensity analysis,
+but {cmd:fgmatch} can of course be used in other contexts as well).
+
+
+{title:Options}
+
+{phang}
+{opt s:et(newvar)} creates a variable called {it:newvar} containing a
+unique identifier for each case-control pair. By default, a variable
+called {cmd:set} is created.
+
+{phang}
+{opt d:iff(newvar)} creates a variable called {it:newvar} containing
+the difference in propensity score within each case-control pair. By
+default, a variable called {cmd:diff} is created.
+
+{phang}
+{opt start(#)} gives the number of decimal places to match to on the
+first run of matches: it defaults to 5.
+
+{phang}
+{opt stop(#)} gives the number of decimal places to match to on the
+last run of matches: it defaults to 1.
+
+{phang}
+{opt step(#)} gives the decrease in the number of decimal places to match
+to on successive runs of matches. It defaults to 1, but can be set to
+non-integral values, in which case matchvar is rounded off to the
+nearest 10^(start - (number of passes)*step). Values less than 1 will
+provide closer matches, but take longer to find them. The total number
+of matches found will not be altered by changing {opt step}, only by
+changing {opt stop}.
+
+{phang}
+{opt lp} tells {cmd:gmatch} to use the linear predictor from the
+logistic regression model used to define the propensity score, rather
+than the propensity score itself. It therefore matches on
+log(matchvar/(1-matchvar)).
+
+{phang}
+{opt maxc(#)} gives the maximum number of controls to be matched to each
+case: it defaults to 1. If {opt maxc} is greater than 1, the number of
+controls matched to each case may vary, but will always be less than
+or equal to {opt maxc}.
+
+{phang}
+{opt seed(#)} can be used to set the seed of the random number
+generator to any positive integer. Since matches are selected randomly
+from those within an acceptable distance, consecutive runs of
+{cmd:fgmatch} may produce different matches. If you want your results
+to be reproducible, you need to use the {opt seed} option, so that the
+same matches will be made each time the program is run. The default is
+0, meaning the seed is not set by the program.
+
+{title:Remarks}
+
+Greedy matching 
+{p 4 8 2}
+
+{title:References}
+
+{p 4 8 2}
+
+{title:Author}
+
+{p 4 4 2}
+Mark Lunt, Arthritis Research UK Epidemiology Unit
+
+{p 4 4 2}
+The University of Manchester
+
+{p 4 4 2}
+Please email
+{browse "mailto:mark.lunt@manchester.ac.uk":mark.lunt@manchester.ac.uk}
+if you encounter problems with this program
+
+
+

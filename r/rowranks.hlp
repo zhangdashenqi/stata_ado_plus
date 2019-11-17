@@ -1,0 +1,138 @@
+{smcl}
+{* 28jan2009}{...}
+{cmd:help rowranks}{right: ({browse "http://www.stata-journal.com/article.html?article=pr0046":SJ9-1: pr0046})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col :{hi:rowranks} {hline 2}}Row ranks of a set of variables{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:rowranks}
+{varlist}
+{ifin}{cmd:,}
+{opth g:enerate(newvarlist)}
+[{cmdab:d:escending}
+{cmdab:high:missing} 
+{cmdab:miss:ing} 
+{cmdab:meth:od(}{it:method}{cmd:)}]
+
+
+{title:Description}
+
+{p 4 4 2} 
+{cmd:rowranks} creates new variables giving the row ranks of
+values in each observation of {it:varlist}. {it:varlist} should contain
+either only numeric variables or only string variables. 
+
+{p 4 4 2} 
+By default, lowest values rank lowest and the ranks created are
+distinct, with ties being broken by the order of occurrence within
+{it:varlist}.  For example, given values on five variables,
+
+	2  3  5  7  9 
+	2  3  3  3  9 
+	
+{p 4 4 2}   
+the ranks created are (for both observations)  
+
+	1  2  3  4  5 
+	1  2  3  4  5 
+
+{p 4 4 2}
+The {cmd:descending} option may be used to reverse order.  With
+strings, uppercase letters sort before lowercase. 
+
+
+{title:Options}
+
+{p 4 8 2}
+{opt generate(newvarlist)} specifies new variable names for the variables to be
+generated, one for each variable in {it:varlist}.  {it:newvarlist} may be
+specified in hyphenated form, as in {cmd:r1-r5}.  This option is required. 
+
+{p 4 8 2}
+{cmd:descending} specifies that ranking should be from highest
+downward. 
+
+{p 4 8 2}
+{cmd:highmissing} specifies that missing values should be treated as
+higher than nonmissing values. This option bites for numeric values
+only when {cmd:descending} is also specified and does not bite for
+string values if {cmd:descending} is also specified. 
+
+{p 4 8 2} 
+{cmd:missing} specifies that missing values be included in the ranking.
+By default, missing values are mapped to missing ranks. 
+
+{p 4 8 2} 
+{opt method(method)} specifies an alternative to the default. Alternatives are
+{cmd:low}, {cmd:high}, or {cmd:mean}. Any abbreviation is allowed.
+{cmd:low} specifies the use of low ranks, 1 + ({it:#} < this value).
+{cmd:high} specifies the use of high ranks, ({it:#} <= this value),
+a.k.a., cumulative frequencies.  {cmd:mean} specifies the use of mean
+ranks so that the sum of ranks is preserved under ties. 
+
+
+{title:Remarks} 
+
+{p 4 4 2}
+Mata is used to sort observations. Thus Stata 9 or higher is required. 
+
+{p 4 4 2}
+By default, ranking is from lowest values upward. Numeric missing
+values are treated as higher than any other value.  String missing
+values are treated as lower than any other value. If you want string
+missing values to be treated as higher than any other value, specify the
+{cmd:highmissing} option. 
+
+{p 4 4 2}
+If you want descending sorts, specify the {cmd:descending} option so
+that ranking is from highest values downward, but numeric missing
+values are treated as lower than any other value.  
+
+{p 4 4 2} 
+Thus given {cmd:1 . 3 . 5 . 7}, {cmd:rowranks} by default ranks these as
+{cmd:1 . 2 . 3 . 4}.  But with the {cmd:descending} option,
+{cmd:rowranks} ranks these as {cmd:7 . 6  . 5 . 4}. You may prefer to
+insist, using the {cmd:highmissing} option, that missings be treated as
+higher, which would yield ranks of {cmd:4 . 3 . 2 . 1}.
+Alternatively, see {manhelp mvencode D}. 
+
+{p 4 4 2}
+Thus, by default, numeric missing values are mapped to missing ranks. If
+you want to rank missing values as well, specify the {cmd:missing}
+option. 
+
+
+{title:Examples} 
+
+{p 4 8 2}{cmd:. rowranks x1-x5, generate(r1-r5)}{p_end}
+{p 4 8 2}{cmd:. rowranks x1-x5, generate(d1-d5) descending}
+
+
+{title:Author}
+
+{p 4 4 2}Nicholas J. Cox, Durham University{break}
+         n.j.cox@durham.ac.uk
+
+
+{title:Acknowledgment}
+
+{p 4 4 2}The program {cmd:sortrows}, posted by Jeffrey Arnold on the SSC
+archive, was a stimulus to this version and in particular suggested what is
+here the {cmd:highmissing} option. 
+
+
+{title:Also see}
+
+{psee}Article: {it:Stata Journal}, volume 9, number 1: {browse "http://www.stata-journal.com/article.html?article=pr0046":pr0046}
+
+{psee}Online:  {manhelp sort D}, {manhelp mvencode D}, 
+{helpb rowsort} (if installed) 
+{p_end}

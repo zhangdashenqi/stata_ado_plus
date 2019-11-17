@@ -1,0 +1,45 @@
+.-
+help for ^gqptl^                                                  (STB-55: sg140)
+.-
+
+Gumbel quantile plot and a test statistic for choice of extreme models
+----------------------------------------------------------------------
+
+   ^gqpt^  varname [^if^ exp] [^in^ range] 
+
+
+Description
+-----------
+
+^gqpt^ provides the ^Gumbel quantile plot^ (GQP) and a ^statistical test^
+to deal with the statistical choice of extreme models.
+The Output provides the GQP, estimates of the location (^lambda^)
+and scale (^delta^) parameters of the Gumbel distribution and the
+values of statistics ^Q^ and ^W^.
+
+Example
+--------
+
+        . ^gqpt varname^
+
+
+Author
+------
+
+       Manuel G. Scotto
+       University of London
+       email: arima@@mail.telepac.pt
+ 
+Reference
+---------
+
+Tiago de Oliveira, J. and Gomes,. M. I. (1984).
+Two test statistics for choice of univariate extreme models.
+Statistical extremes and applications, J. Tiago de Oliveira ed.,
+D. Reidel, Dordrecht.
+
+
+Also see
+--------
+
+    STB: STB-55 sg140

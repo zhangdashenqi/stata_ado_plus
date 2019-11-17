@@ -1,0 +1,176 @@
+{smcl}
+{* 16jul2007}{...}
+{hline}
+help for {hi:tobcm}{right: {hi:tobcm} }
+{hline}
+
+{title:Testing for normality after tobit estimation}
+
+{p 8 16}{cmd:tobcm} [ {cmd:,} {cmdab:p:bs} {cmd:bsfile({it: filename})} 
+{cmd:reps({it:#})}]
+
+{title:Description}
+
+{p} {cmd:tobcm} implements a conditional moment test for testing the null 
+hypothesis that the disturbances in a tobit model have a normal distribution.
+This test was derived by Skeels and Vella (1999), who built on work by Newey
+(1985) and Tauchen (1985).  {cmd:tobcm} also implements the bootstrap method
+described by Drukker (2002).
+
+{title:Options}
+
+{p 0 4}{cmdab:p:bs} specifies that the critical values should be obtained
+from a parametric bootstrap as described by Drukker (2002).
+
+{p 0 4}{cmd:bsfile({it:filename})} specifies the name of the file in which
+the conditional moment statistics from the boostrap samples should be saved.
+
+{p 0 4}{cmd:reps({it:#})} specifies the number of number of repetitions for
+the bootstrap.
+
+{cmd:Remarks}
+
+{p} {cmd:tobcm} implements a conditional moment test for testing the null
+hypothesis that the disturbances in a tobit model have a normal
+distribution.  This test was derived by Skeels and Vella (1999), who built on
+work by Newey (1985) and Tauchen (1985).  Along with several other studies,
+Skeels and Vella (1999) found that using the asymptotic distribution of this
+test produces severe size distortions, even in moderately large samples.
+Drukker (2002) suggested using a parametric bootstrap to correct the size
+distorion and showed that even with the bootstrap critical values, the test
+still has reasonable power for samples greater than 500.  {cmd:tobcm} 
+implements the bootstrap method described by Drukker (2002).
+
+
+{p} {cmd:tobcm} can only be used after {helpb tobit}.  Furthermore, {cmd:tobcm}
+can only be used be used for left-censored tobit models in which zero is the
+censoring point.
+
+{p} The output below gives an example of how to use {cmd:tobcm}, both with and
+without the {cmd:pbs} option. 
+
+
+{txt}
+{com}. use moffit
+{txt}
+{com}. tobit hours  nwi ms age race clt6 educ, ll(0)
+
+{txt}Tobit estimates                                   Number of obs   = {res}       610
+                                                  {txt}LR chi2({res}6{txt})      = {res}     24.18
+                                                  {txt}Prob > chi2     = {res}    0.0005
+{txt}Log likelihood = {res}-1694.4825                       {txt}Pseudo R2       = {res}    0.0071
+
+{txt}{hline 13}{c TT}{hline 64}
+       hours {c |}      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+{hline 13}{c +}{hline 64}
+         nwi {c |}  {res}-.0108405   .1754488    -0.06   0.951    -.3554044    .3337234
+          {txt}ms {c |}  {res}-9.308479   3.902876    -2.39   0.017    -16.97333   -1.643622
+         {txt}age {c |}  {res}-1.114833   .4674299    -2.39   0.017    -2.032818   -.1968478
+        {txt}race {c |}  {res} 1.778366   3.726882     0.48   0.633    -5.540855    9.097587
+        {txt}clt6 {c |}  {res}-6.346814   4.266223    -1.49   0.137    -14.72525    2.031617
+        {txt}educ {c |}  {res} 2.017293   .5898988     3.42   0.001     .8587914    3.175795
+       {txt}_cons {c |}  {res} 39.92167   22.07323     1.81   0.071    -3.427918    83.27127
+{txt}{hline 13}{c +}{hline 64}
+         _se {c |}  {res} 34.09747   1.611069           {txt}(Ancillary parameter)
+{hline 13}{c BT}{hline 64}
+
+  Obs. summary:  {res}      313{txt}  left-censored observations at hours<={res}0
+                       297{txt}     uncensored observations
+
+{com}. tobcm 
+
+{txt}Conditional moment test against the null of normal errors
+
+{col 5}CM{col 13}Prob > chi2
+{res} 498.4408{col 15}0.00000
+{txt}
+{com}. tobcm, pbs reps(500)
+
+{txt}Conditional moment test against the null of normal errors
+
+{col 20}critical values
+{col 5}CM{col 15}%10{col 25}%5{col 35}%1
+{res} 498.4408{col 13}9.28122{col 22}12.901708{col 32}29.455544
+{txt}
+
+The next example illustrates that {cmd:tobcm} will not work after a tobit 
+model that is left and right censored.
+
+{com}. 
+. tobit hours  nwi ms age race clt6 educ, ll(0) ul(50)
+
+{txt}Tobit estimates                                   Number of obs   = {res}       610
+                                                  {txt}LR chi2({res}6{txt})      = {res}     24.10
+                                                  {txt}Prob > chi2     = {res}    0.0005
+{txt}Log likelihood = {res}-1654.0428                       {txt}Pseudo R2       = {res}    0.0072
+
+{txt}{hline 13}{c TT}{hline 64}
+       hours {c |}      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+{hline 13}{c +}{hline 64}
+         nwi {c |}  {res}-.0107371    .182306    -0.06   0.953    -.3687677    .3472934
+          {txt}ms {c |}  {res}-9.837942   4.063255    -2.42   0.016    -17.81777   -1.858119
+         {txt}age {c |}  {res}-1.093097   .4857082    -2.25   0.025    -2.046979   -.1392152
+        {txt}race {c |}  {res} 1.931658   3.871081     0.50   0.618    -5.670755    9.534072
+        {txt}clt6 {c |}  {res}-6.392259   4.428288    -1.44   0.149    -15.08897    2.304454
+        {txt}educ {c |}  {res} 2.137241   .6149421     3.48   0.001     .9295563    3.344925
+       {txt}_cons {c |}  {res} 37.84291   22.95145     1.65   0.100    -7.231417    82.91724
+{txt}{hline 13}{c +}{hline 64}
+         _se {c |}  {res} 35.33536   1.722316           {txt}(Ancillary parameter)
+{hline 13}{c BT}{hline 64}
+
+  Obs. summary:  {res}      313{txt}  left-censored observations at hours<={res}0
+                       284{txt}     uncensored observations
+                 {res}       13{txt} right-censored observations at hours>={res}50
+{txt}
+{com}. capture noi tobcm
+{err}tobcm only works with lower limit of zero and no upper limit is specified
+{txt}
+
+The next example illustrates that {cmd:tobcm} will not work other commmands.
+
+{com}. probit hours  nwi ms age race clt6 educ
+
+{txt}Iteration 0:   log likelihood = {res}-422.60992
+{txt}Iteration 1:   log likelihood = {res}-412.92441
+{txt}Iteration 2:   log likelihood = {res}-412.91602
+
+{txt}Probit estimates                                  Number of obs   = {res}       610
+                                                  {txt}LR chi2({res}6{txt})      = {res}     19.39
+                                                  {txt}Prob > chi2     = {res}    0.0036
+{txt}Log likelihood = {res}-412.91602                       {txt}Pseudo R2       = {res}    0.0229
+
+{txt}{hline 13}{c TT}{hline 64}
+       hours {c |}      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+{hline 13}{c +}{hline 64}
+         nwi {c |}  {res} .0030467   .0059293     0.51   0.607    -.0085745    .0146679
+          {txt}ms {c |}  {res}-.2683211   .1341827    -2.00   0.046    -.5313143    -.005328
+         {txt}age {c |}  {res}-.0328129   .0157792    -2.08   0.038    -.0637396   -.0018862
+        {txt}race {c |}  {res} .1298931   .1260984     1.03   0.303    -.1172551    .3770414
+        {txt}clt6 {c |}  {res}-.1508677   .1376471    -1.10   0.273    -.4206509    .1189156
+        {txt}educ {c |}  {res} .0613806   .0197651     3.11   0.002     .0226417    .1001195
+       {txt}_cons {c |}  {res} .9490395   .7468011     1.27   0.204    -.5146636    2.412743
+{txt}{hline 13}{c BT}{hline 64}
+
+{com}. capture noi tobcm
+{err}tobcm only works after tobit
+{txt}
+{com}. capture log close
+{smcl}
+{com}{sf}{ul off}
+
+{cmd:References}
+
+{p 0 4}Drukker, D. M.  2002. Bootstrapping a conditional moments test for
+normality after tobit estimation. The Stata Journal 2, Number 2: 125-139.
+
+{p 0 4}Newey, W. 1985.  Maximum likelihood specification testing and
+conditioanl moment tests. Econometrica 53: 1047-1073.
+
+{p 0 4}Skeels, C. L., and F. Vella. 1999. A Monte Carlo investigation of the
+sampling behavior of conditional moment tests in tobit and probit models.
+Journal of Econometrics 92: 275-294.
+
+{p 0 4}Tauchen, G. 1985. Diagnositic testing and evaluation of maximum
+likelihood models. Journal of Econometrics 30: 415-443.
+
+

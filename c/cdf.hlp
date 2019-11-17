@@ -1,0 +1,68 @@
+.-
+help for ^cdf^                        (STB-49: gr37)
+.-
+
+Cumulative distribution function
+--------------------------------
+
+^cdf^ varname [weight] [^in^ range] [^if^ exp], [^by(^varname^)^] [^norm^al] [^same^sd]
+
+
+Description
+-----------
+
+^cdf^ plots the sample cumulative distribution function. Distributions can
+be compared within subgroups defined by a second variable. The best fitting 
+normal (Gaussian) model may be superimposed over the sample c.d.f.
+
+
+Options
+-------
+
+^by(^varname^)^ causes a separate c.d.f. to be calculated for each value 
+of varname. These are plotted on the same graph for easier comparison.
+
+^norm^al causes a normal probability curve with the same mean and standard 
+deviation to be superimposed over the c.d.f.
+
+^same^sd is relevant only when ^by^ and ^normal^ options are used together.
+It causes normal curves with different means but the same standard deviations
+to be fitted. This demonstrates the fit of the conventional Gaussian location
+shift model.
+ 
+^graph_options^ are allowed. Default labelling is supplied when graph_options
+are absent, but the x-axis label may be supplied in the ^b2^ graphics 
+option and the y-axis may be labelled using the ^l1^ option. If the 
+^xlog^ option is used, the ^normal^ option causes log-normal distributions
+to be fitted.
+
+
+Examples
+--------
+
+Using the variable ^length^ from the ^auto^ data:
+
+^cdf length, normal^
+^cdf length, by(foreign)^
+^cdf length, by(foreign) norm b2("Length of auto") saving(mygraph)^
+
+
+Authors
+-------
+
+      David Clayton
+      MRC Biostatistical Research Unit, Cambridge
+      david.clayton@@mrc-bsu.cam.ac.uk
+
+      Michael Hills (retired)
+      mhills@@regress.demon.co.uk
+
+
+Also see
+--------
+
+     STB: STB-49 gr37
+
+
+
+

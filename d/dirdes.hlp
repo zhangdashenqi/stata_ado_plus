@@ -1,0 +1,39 @@
+{smcl}
+{* 14des2006}{...}
+{hline}
+help for {hi:dirdes}
+{hline}
+
+{title:Display number of observations and number of variables of Stata files in the current directory}
+
+{p 8 14}{cmd:dirdes} [{cmd:wildcard}] [, {cmd:n(}{it:value}{cmd:)} 
+  {cmd:saving(}{it:string}{cmd:)} {cmd:replace} ]
+
+
+{title:Description}
+
+{p}{cmd:dirdes} displays the list of Stata file names together with the number of observations 
+and the number of variables in the data file in the current directory. If a wildcard is used, it will
+display the list of only those Stata files specified by the wildcard.
+
+{title:dirdes Options}
+
+{p 0 4}{cmdab:n:} is used to specify the number of files to display.
+
+{p 0 4}{cmdab:saving:} creates a Stata data file containing three columns: file name, #obs and #vars. 
+
+{title:Examples}
+
+{p 1 5}{inp:. dirdes}{p_end}
+{p 1 5}{inp:. dirdes all*}{p_end}
+{p 1 5}{inp:. dirdes, disn(10)}{p_end}
+{p 1 5}{inp:. dirdes *all*, saving(allfiles) replace}{p_end}
+
+{title:Author}
+
+{p 5 5}
+Xiao Chen{break}
+Statistical Consulting Group{break}
+UCLA Academic Technology Services{break}
+xiao.chen@ucla.edu 
+{p_end}

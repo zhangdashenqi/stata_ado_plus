@@ -1,0 +1,63 @@
+.-
+help for ^swaic^                                                  (STB-54: sg134)
+.-
+
+Stepwise model selection using AIC
+--------------------------------------------------------
+
+	^swaic^ [^,^ ^fp(^format^)^ ^fc^hi^(^format^)^ ^m^odel ^b^ack ]
+
+Description
+-----------
+
+ ^swaic^ performs automatic model selection using Akaike information 
+ criterion (AIC). AIC=-2*log-likelihood + 2 * (number of parameters)
+
+
+Options
+-------
+^fp(^format^)^ specifies the output format for p values, default is %9.4f. 
+
+^fc(^format^)^ specifies the output format for chi2 values, default is %9.2f. 
+
+^model^ reports the model which reachs the minimum AIC with either forward
+    or backward method.
+
+^back^ specifies a backward method, the default is a forward method.
+
+
+Examples
+--------
+
+   . xi: logit outcome age sex i.expose hibp bmi
+   . swaic, m
+
+   . swaic, b m
+
+   . stset time outcome
+   . xi: stcox age sex bmi hibp i.expose, nolog
+   . swaic, b m
+
+   . xi:streg age sex bmi hibp i.expose, dist(weibull)
+   . swaic, b m
+
+   . xi: poisson outcome age sex bmi hibp i.expose, e(time) nolog
+   . swaic, m
+
+
+Author
+------
+
+    Zhiqiang Wang
+    Menzies School of Health Research
+    Darwin, Australia
+    wang@@menzies.edu.au
+
+
+Also see
+--------
+
+ Manual:  ^[U] 23 Estimation and post-estimation commands^
+	  ^[R] lrtest^
+     
+On-line:  help for @linktest@, @test@, @testnl@, @lrtest2@ (if installed) @streg@

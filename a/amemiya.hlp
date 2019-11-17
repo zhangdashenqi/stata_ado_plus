@@ -1,0 +1,106 @@
+Some model selection statistics                                  (STB-6: srd12)
+-------------------------------
+
+
+	^amemiya^
+
+
+
+Description
+-----------
+
+
+To obtain a set of model selection statistics, type the one word, ^amemiya^,
+directly after estimating a regression.  Note that neither ^if^ nor ^in^ are
+allowed -- if you estimate a regression using either of these options, you
+should temporarily drop the affected cases!
+
+
+
+
+
+
+Remarks
+-------
+
+How does one compare, in an overall way, non-nested models?  Part of the
+answer comes from the literature on choosing subsets of right-hand-side
+variables (nested models).  This ado file (amemiya.ado) produces several
+"model selection criteria" to help (1) choose between models, regardless of
+whether they are nested, and, (2) to help decide whether a model is guilty of
+"overfit" (too many right-hand-side variables).
+
+These statistics are not perfect answers to either goal.  In particular, if
+you really are choosing only from among nested models, two statistics not
+produced here would be of help: (1) Mallow's Cp (C. L. Mallows (1973), "Some
+Comments on Cp", ^Technometrics^ 15: 661-75; and, (2) Mean Squared Error of
+Prediction (MSEP); a good discussion of both can be found in A. J. Miller
+(1990), ^Subset Selection in Regression^, London: Chapman and Hall.
+
+For this ado file I am more concerned with non-nested models where the
+response variable (dependent variable, left-hand-side variable) is the same in
+each model to be compared.  Many now use R-squared, adjusted R-squared, RMSE,
+etc.  These are produced already by STATA.  However, several other statistics
+have been suggested and these are not produced by Stata but are in this ado
+file.  These statistics include:
+
+
+Remarks, continued
+------------------
+
+    The adjusted R-squared based on Amemiya's Prediction Criterion--this
+    statistic penalizes R-squared more heavily than does adjusted R-squared
+    for each addition degree of freedom used on the right-hand-side of the
+    equation.  The higher the better for this criterion.
+
+    Hocking's Sp criterion (closely related to both Cp and MSEP); this is an
+    adjustment of the residual Sum of Squares.  Minimize this criterion.
+
+    Akaike's Information Criterion, presented in both its logged and unlogged
+    forms (certain texts, packages, etc., use logged while others use the
+    unlogged form--it is unlogged simply by exponentiating).  Minimize
+    this criterion.
+
+    Schwarz' Bayesian Criterion, presented in both its logged and unlogged
+    forms (same reason as AIC).  Minimize this criterion.
+
+    The prediction sum of squares (PRESS) is presented.  Minimize this
+    criterion also.
+
+
+Remarks, continued
+------------------
+
+These statistics imply the following F-ratios for retaining variables in a
+regression (this table is taken from p. 431 of G. S. Maddala (1988),
+^Introduction to Econometrics^, New York: Macmillan Publishing Co.
+
+    Criterion                          F-value implications
+    -------------------------------------------------------
+    Adjusted R-squared                 F<1
+
+                                          2n
+    Amemiya's PC adjusted R-squared    F<----, where p is # variables kept
+                                          n+p
+
+                                            k+1
+    Hocking's Sp                       F<2+------, where k is the number of
+                                           n-pp-1  variables deleted & pp is
+                                                   sum of variables kept and
+                                                   deleted
+
+                                         n-pp
+    Akaikes AIC                        F<----
+                                         n-p
+
+    Mallow's Cp                        F<2 (this is the usual, unadjusted
+                                            version of Cp;
+                                            remember ^this is not here^)
+
+
+
+Author
+------
+
+Richard Goldstein, Qualitas, Brighton, MA.
+Email goldst@@harvard.bitnet

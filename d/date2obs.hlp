@@ -1,0 +1,36 @@
+.-
+help for ^date2obs^                                           [sts7.6: STB-24]
+.-
+
+Find observation number corresponding to a date
+-----------------------------------------------
+
+        ^date2obs^ #1 [ #2 [ #3 ] ]
+
+returns in S_1 the observation corresponding to the specified date, where the
+date is specified according to the current ^period^ and ^datevars^ settings.
+For instance,
+
+        ^datevars 1995 7^
+
+would store in S_1 the number of the observation corresponding to July 1995
+in monthly data.
+
+
+
+
+
+
+Author
+------
+
+        Sean Becketti, Stata Technical Bulletin
+        EMAIL   stb@stata.com
+
+
+Also see
+--------
+
+ Manual:  [4] dates
+    STB:  sts7.6 (STB-24)
+On-line:  ^help^ for ^datevars^, ^period^, and ^ts^

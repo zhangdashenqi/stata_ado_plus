@@ -1,0 +1,26 @@
+{smcl}
+{* 13.06.2005}{...}
+help for {hi:Labels_v2()}
+{hline}
+
+{title:title}
+
+{p 8 12 2}Labels_v2() --- Creates value labels from two strings using # as the parsing character
+
+{title:syntax}
+
+{p 8 12 2}{cmd:Labelvar}(string scalar n, string scalar d)
+
+{title:Conformability}
+
+{p 4 4 2}
+{cmd:Labelvar}(n,d):{p_end} 
+{p 6 4 2}input:{p_end}
+{p 8 4 2} n: 1 x 1{p_end}
+{p 8 4 2} d: 1 x 1{p_end}
+
+{title:Author}
+
+{p 4 13 2}
+Alfonso Miranda (A.Miranda@ioe.ac.uk) 
+

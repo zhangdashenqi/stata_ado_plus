@@ -1,0 +1,189 @@
+{smcl}
+{* 07aug2008}{...}
+{hline}
+help for {hi:reldist}
+{hline}
+
+{title:Title}
+
+{p 4 4 2}{hi:reldist} {hline 2} Relative distribution methods
+
+
+{title:Syntax}
+
+{p 4 4 2}Syntax 1:
+
+{p 8 17 2}
+{cmd:reldist} {varname} {ifin} {weight}{cmd:,}  {cmd:by(}{it:groupvar}{cmd:)} [
+{help reldist##opts:{it:options}} ]
+
+{p 4 4 2}Syntax 2:
+
+{p 8 17 2}
+{cmd:reldist} {varname} {it:refvar} {ifin} {weight} [{cmd:,}
+{help reldist##opts:{it:options}} ]
+
+{p 4 4 2}Syntax 3:
+
+{p 8 17 2}
+{cmd:reldist} {varname} {ifin} {weight}{cmd:,} { {cmdab:norm:al} |
+{cmdab:chi:2}[{cmd:(}{it:df}{cmd:)} | {cmdab:dist:ribution(}{it:exp}{cmd:)} }
+[ {help reldist##opts:{it:options}} ]
+
+
+{synoptset 28 tabbed}{...}
+{marker opts}{synopthdr:options}
+{synoptline}
+{syntab :Main}
+{p2coldent:* {opt by(groupvar)}}variable defining reference group and comparing group
+  {p_end}
+{synopt :{opt swap}}reverse order of groups
+  {p_end}
+{synopt :{opt g:enerate(newvar)}}store the relative data in {it:newvar}
+  {p_end}
+{synopt :{opt r:eplace}}replace existing variables
+  {p_end}
+
+{syntab :Summary measures}
+{synopt :{opt pol:arization}}median relative polarization
+  {p_end}
+
+{syntab :Decomposition}
+{synopt :{opt l:ocation}}
+  {p_end}
+{synopt :{opt s:hape}}
+  {p_end}
+{synopt :{opt mean}}
+  {p_end}
+{synopt :{opt mult:iplicative}}
+  {p_end}
+{synopt :{opt reverse}}
+  {p_end}
+
+{syntab :CDF}
+{synopt :{opt cdf}[{cmd:(}{it:cdf} {it:grid}{cmd:)}]}plot the
+    cumulative relative distribution and, optionally, store the
+    estimates and grid points in {it:cdf} and {it:grid}
+  {p_end}
+
+{syntab :Histogram}
+{synopt :{cmdab:hist:ogram}[{cmd:(}{it:#} [{cmd:,} {it:subopts}]{cmd:)}]}plot
+    the relative histogram; {it:#} is the number of bins
+    (default is 10); {it:subopts} are {cmd:save(}{it:h} {it:midpoints}{cmd:)}
+    and {it:{help barlook_options}}
+  {p_end}
+
+{syntab :PDF}
+{synopt :{opt pdf}[{cmd:(}{it:pdf} {it:grid}{cmd:)}]}plot the relative
+    density and, optionally, store the estimates and grid points in
+    {it:pdf} and {it:grid}
+  {p_end}
+{synopt :{opt bw(#|type)}}set bandwidth to {it:#}, {it:#} > 0, or
+  specify automatic bandwidth selector
+  where {it:type} is {cmdab:s:ilverman} (the default),
+  {cmdab:n:ormalscale}, {cmdab:o:versmoothed}, {opt sj:pi}, or
+  {cmdab:d:pi}[{cmd:(}{it:#}{cmd:)}]
+  {p_end}
+{synopt :{opt adj:ust(#)}}scale bandwidth by {it:#}, {it:#} > 0
+  {p_end}
+{synopt :{cmdab:a:daptive}[{cmd:(}{it:#}{cmd:)}]}use the adaptive
+   kernel density estimator
+   {p_end}
+{synopt :{opt refl:ection} | {opt lc}}use the reflection method or the
+    linear combination method for boundary correction; only one of {opt reflection}
+    and {opt lc} is allowed; the default method is renormalization{p_end}
+{synopt :{opt n(#)}}estimate density using {it:#} points; default
+  is {cmd:n(400)}
+  {p_end}
+{synopt :{opt k:ernel(kernel)}}type of kernel function, where {it:kernel} is
+  {opt e:panechnikov},
+  {opt epan2} (the default),
+  {opt b:iweight},
+  {opt triw:eight},
+  {opt c:osine},
+  {opt g:aussian},
+  {opt p:arzen},
+  {opt r:ectangle}
+  or {opt t:riangle}.
+  {p_end}
+{synopt :{opt exact}}use the exact estimator
+ {p_end}
+{synopt :{opt ci}[{cmd:(}{it:subopts}{cmd:)}]}plot confidence intervals;
+    {it:subopts} are {cmd:save(}{it:lb ub}{cmd:)} and
+    {it:{help connect_options}}
+  {p_end}
+{synopt :{opt level(#)}}
+  {p_end}
+
+{syntab :Original scale}
+{synopt :{cmdab:olab:el:(}{it:numlist} [{cmd:,} {it:subopts}]{cmd:)}}add original scale labels
+    on second axis; {it:subopts} are the {it:suboptions} described in help
+    {it:{help axis_label_options}}
+  {p_end}
+{synopt :{cmdab:otic:k:(}{it:numlist} [{cmd:,} {it:subopts}]{cmd:)}}add original scale
+    ticks; {it:subopts} are the {it:suboptions} described in help
+    {it:{help axis_label_options}}
+  {p_end}
+{synopt :{opt oti:tle(string)}}add original scale title
+  {p_end}
+
+{syntab :Further graph options}
+{synopt :{opt noref:line}}suppress the parity reference line
+  {p_end}
+{synopt :{cmdab:ref:line(}{it:{help added_line_options:suboptions}}{cmd:)}}affect rendition
+    of reference line; {it:suboptions} are as described in help
+    {it:{help added_line_options}}
+  {p_end}
+{synopt :{cmd:addplot(}{it:{help addplot_option:plot}}{cmd:)}}add other plots to the generated graph
+  {p_end}
+{synopt :{it:{help cline_options}}}affect rendition of the CDF or PDF line
+  {p_end}
+{synopt :{it:{help twoway_options}}}any options other than {cmd:by()} documented in help
+    {it:{help twoway_options}}
+  {p_end}
+{synopt :{opt nogr:aph}}suppress graph
+  {p_end}
+
+{syntab :VCE}
+{synopt :{cmd:vce(}{it:vcetype} [{cmd:,} {it:vceopts}]{cmd:)}}variance estimation;
+ {it:vcetype} may
+ be {opt boot:strap} or {opt jack:knife}; see
+ {helpb reldist##vce:vce()} below for {it:vceopts}{p_end}
+{synoptline}
+{p 4 6 2}* {opt by(groupvar)} is not allowed with Syntax 2 or 3 and is required with Syntax 1.
+{p_end}
+{pstd}
+{cmd:fweight}s, {cmd:aweight}s, and {cmd:pweight}s are allowed; see {help weight}.
+
+
+{title:Description}
+
+
+{title:Options}
+
+
+{title:Examples}
+
+
+{title:References}
+
+{p 4 8 2} Handcock, Mark S., Martina Morris (1998). Relative Distribution Methods.
+Sociological Methodology 28: 53-97.{p_end}
+{p 4 8 2} Handcock, Mark S., Martina Morris (1999). Relative Distribution Methods
+in the Social Sciences. New York: Springer.{p_end}
+{p 4 8 2} Juhn, Chinhui, Kevin M. Murphy, Brooks Pierce (1991). Accounting for the
+Slowdown in Black-White Wage Convergence. Pp. 107-143 in: Workers and Their
+Wages, ed. by Marvin Kosters, Washington, DC: AEI Press.{p_end}
+
+
+{title:Author}
+
+{p 4 4 2}
+Ben Jann, ETH Zurich, jannb@ethz.ch
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {help cumul}, {help ppplot} (if installed),  {help invcdf}
+(if installed)

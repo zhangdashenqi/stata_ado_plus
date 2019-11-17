@@ -1,0 +1,100 @@
+{smcl}
+{* 19jan2011}{...}
+{cmd:help fetchyahookeystats}{right: ({browse "http://www.stata-journal.com/article.html?article=up0053":SJ16-4: dm0061_2})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 27 29 2}{...}
+{p2col:{hi: fetchyahookeystats} {hline 2}}Downloads key statistics for a list
+ of symbols from Yahoo! Finance using Yahoo! Finance's application programming
+ interface{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 18 2}
+{cmdab:fetchyahookeystats} {it:namelist}{cmd:,} 
+{cmd:field(}{it:string}{cmd:)} 
+[{cmd:save(}{it:filename}{cmd:)}] 
+
+{p 4 6 2}{it:namelist} is a list of ticker symbols to be downloaded from Yahoo!
+Finance's application programming interface.  Ticker symbols are separated by
+spaces.
+
+
+{title:Description}
+
+{pstd}{cmd:fetchyahookeystats} is similar to {cmd:fetchyahooquotes} except
+that it downloads only the current day's key financial statistics for multiple
+financial instruments (for example, today's opening and closing prices
+for IBM and Microsoft).
+
+
+{title:Options}
+
+{phang}{opt field(string)} is Yahoo! Finance's specific field code
+corresponding to a key statistic.  {cmd:field()} is required. These field
+codes include (but are not limited to) the following:
+
+           {cmd:a}  Ask
+           {cmd:b}  Bid
+           {cmd:b4} Book value 
+           {cmd:c}  Percent change 
+           {cmd:c1} Change 
+           {cmd:d}  Dividend per share
+           {cmd:d1} Last trade date 
+           {cmd:e}  Earning per share 
+           {cmd:f6} Float shares 
+           {cmd:g}  Day's low 
+           {cmd:h}  Day's high 
+           {cmd:j}  52-week low 
+           {cmd:j1} Market capitalization
+           {cmd:j4} Earnings before interest, taxes, depreciation, and
+                    amortization
+           {cmd:k}  52-week high 
+           {cmd:l1} Last trade price
+           {cmd:m3} 50-day moving average
+           {cmd:m4} 200-day moving average
+           {cmd:n}  Name
+           {cmd:o}  Open
+           {cmd:p}  Previous close
+           {cmd:p5} Price/sales
+           {cmd:p6} Price/book
+           {cmd:q}  Ex-dividend date
+           {cmd:r}  Price/earnings
+           {cmd:s}  Symbol
+           {cmd:s7} Short ratio
+           {cmd:v}  Volume
+           {cmd:x}  Exchange
+           {cmd:y}  Dividend yield
+
+{phang}{opt save(filename)} is the output filename.  A Stata data file is
+created in the current working directory.
+
+
+{title:Example}
+
+{phang}{cmd:. fetchyahookeystats IBM GOOG ^GSPC BMW.DE,}
+  {cmd:field(n s l1 a b d1 g h k e) save(my_portfolio)}
+
+
+{title:Authors}
+
+{pstd}Mehmet F. Dicle{p_end}
+{pstd}Loyola University New Orleans{p_end}
+{pstd}New Orleans, LA{p_end}
+{pstd}mfdicle@loyno.edu{p_end}
+
+{pstd}John Levendis{p_end}
+{pstd}Loyola University New Orleans{p_end}
+{pstd}New Orleans, LA{p_end}
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 16, number 4: {browse "http://www.stata-journal.com/article.html?article=up0053":dm0061_2},{break}
+                    {it:Stata Journal}, volume 12, number 4: {browse "http://www.stata-journal.com/article.html?article=up0038":dm0061_1},{break}
+                    {it:Stata Journal}, volume 11, number 4: {browse "http://www.stata-journal.com/article.html?article=dm0061":dm0061}
+{p_end}

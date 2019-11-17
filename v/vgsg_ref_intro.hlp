@@ -1,0 +1,29 @@
+{smcl}
+{p 0 4}
+{bf:{help vgsg:A Visual Guide to Stata Graphics}} > {bf:{help vgsg_ref:Cross reference}} > {bf:Introduction}
+{p_end}
+{hline}
+
+{title:Introduction}
+
+{phang}
+Using this book
+
+{phang}
+Types of Stata graphs{break}
+{manhelp graph G}
+
+{phang}
+Schemes{break}
+{manhelp schemes G:schemes intro}
+
+{phang}
+Options{break}
+{manhelp twoway_options G:{it:twoway_options}}
+
+{phang}
+Building graphs{break}
+{manhelp graph_intro G:graph intro}
+
+
+{hline}

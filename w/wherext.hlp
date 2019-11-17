@@ -1,0 +1,103 @@
+{smcl}
+{* 28jan2001}{...}
+{hline}
+help for {hi:wherext}{right:(STB-60: sg161)}
+{hline}
+
+{title:Computes the extreme of the effect of a linear and quadratic predictor}
+
+{p 8 44}
+{cmd:wherext} {it:linear-var} {it:quadratic-var }
+[{cmd:,}
+  {cmd:eq(}{it:str}{cmd:)}
+  {cmdab:b:ootstrap}
+  {cmdab:r:eps}{cmd:(}{it:#}{cmd:)}
+  {cmdab:k:density}[{cmd:(}{it:options}{cmd:)}]
+  {cmdab:l:evel}{cmd:(}{it:#}{cmd:)}
+]
+
+
+{title:Description}
+
+{p}{cmd:wherext} is a post-estimation command after estimating a model that
+includes both a linear effect and quadratic term in a predictor variable
+{it:v}. {cmd:wherext} displays the range of {it:v}, the value of {it:v}
+(called {it:argext}) at which the linear + quadratic terms are extreme, and
+the standard error and confidence interval of {it:argext}.
+
+{p}The quadratic term may take the general form a+b*v+c*v^2; {cmd:wherext}
+verifies that {it:quadratic-var} is indeed quadratic in {it:linear-var}.
+
+{p}The standard error and confidence interval of {it:argext} are computed via the
+"delta method", and, optionally, by a parametric bootstrap.
+
+
+{title:Options}
+
+{p 0 4}
+{cmd:eq(}{it:str}{cmd:)} specifies the name of the equation in which the
+  variables occur. If not specified, the first equation is assumed.
+
+{p 0 4}
+{cmd:bootstrap} specifies that a bootstrap estimate of the confidence interval
+  of {it:argext} is computed.  This parametric simulator assumes that the coefficients
+  of the linear and quadratic terms are distributed as bivariate normal with mean
+  and variance obtained from the estimation command.
+
+{p 0 4}
+{cmd:reps(}{it:#}{cmd:)} specifies the number of Monte Carlo simulations to be
+  performed. The default is 10000.
+
+{p 0 4}
+{cmd:kdensity}[{cmd:(}{it:options}{cmd:)}] specifies that a kernel density
+ estimate of the distribution of {it:argext} is displayed. This graph is overlaid
+ with a normal distribution based on the delta method.
+
+{p 4 4}
+  Options for the {cmd:kdensity} command can be provided as an argument to the
+  {cmd:kdensity} option of {cmd:wherext}, without the comma.  Example:
+  {cmd:kdensity(parzen)} specifies that option {cmd:parzen} is issued when
+  invoking {cmd:kdensity}.
+
+{p 0 4}
+{cmd:level(}{it:#}{cmd:)} specifies the confidence level, in percent, for
+  confidence intervals. The default is {cmd:level(95)} or as set by
+  {help set level}.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. regress income edu exp exp2}{p_end}
+{p 8 12}{inp:. wherext exp exp2}{p_end}
+{p 8 12}{inp:. wherext exp exp2, boot kdensity}{p_end}
+
+{p}A nonparametric bootstrap estimate of the confidence interval of {it:argext} can
+be obtained via {help bs}. For instance,
+
+{p 8 12}{inp:. bs "regress income edu exp exp2" "-0.5*_b[exp]/_b[exp2]", rep(1000)}{p_end}
+
+
+{title:Saved results}
+
+{cmd:wherext} saves in
+
+{p 8 20}{cmd:r(argext)}{space  5}value at which linear+quadratic takes extreme{p_end}
+{p 8 20}{cmd:r(Vargext)}{space 4}variance of argext (delta method){p_end}
+{p 8 20}{cmd:r(extreme)}{space 4}maximum or minimum{p_end}
+
+{p}In addition, if {cmd:bootstrap} was specified, the {cmd:r()} results of
+{cmd:bstat} are added.
+
+
+{title:Author}
+
+	Jeroen Weesie
+	Dept of Sociology/ICS
+	Utrecht University
+	J.Weesie@fss.uu.nl
+
+
+{title:Also See}
+
+ Manual:  {hi:[R] bstrap}
+{p 0 9}On-line:{space 2}help for {help bs}, {help graphf}{p_end}

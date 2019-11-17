@@ -1,0 +1,174 @@
+.-
+help for ^stcoxtvc^                                           [jw]  Apr 09, 2000
+.-
+
+Episode splitting at failure times
+----------------------------------
+
+    ^stcoxtvc^ [newvar] [^if^ exp] [^in^ range] [^, st^rata^(^varlist^) l^ist ^nop^reserve ]
+
+^stcoxtvc^ is for use with survival-time data; see help @st@.  You must have ^stset^
+your data with an ^id()^ variable before using this command; see help @stset@.
+
+
+Description
+-----------
+
+Episode splitting at the failure times enables Cox regression with covariates
+that vary in time "continuously" rather than in a few steps (see technical
+note below). After invoking ^stcoxtvc^, time-varying covariates may be defined
+using the name of the survival time variable (conceptual time) or the system
+variable ^_t^ (analytic time) as the dynamic time variable.
+
+
+Options
+-------
+
+^list^ specifies that the failure times are listed.
+
+^strata(^varnames^)^ specifies up to 5 strata variables. In ^stcox^, observations
+    with equal values of the variables are assumed to be in the same stratum.
+    Stratified estimates (equal coefficients across strata but baseline hazard
+    unique to each stratum) are then estimated.
+
+    Here, ^strata^ are used to restrict episode splitting to failures that occur
+    within the stratum, and so memory requirements are reduced when strata are
+    specified. Performing a stratified  analysis with ^stcox^ on ^stcoxtvc^
+    expanded-ed data that do not account for the strata waistes memory but
+    produces otherwise identical results.
+
+^nopreserve^ speeds the transformation by not saving the original data, from
+    which they can be restored should things go wrong or if you press Break.
+    ^nopreserve^ changes nothing about the transformation that is made.
+
+
+Remarks on conserving memory
+----------------------------
+
+^stcoxtvc^ may require huge amounts of memory. For instance, if you have N
+observations (episodes) to begin with, no ties in failures, and no censoring,
+then ^stcoxtvc^ will produce a dataset with N(N+1)/2 observations.
+
+The following (obvious) actions may reduce memory demands.
+
+  * Drop the variables that are not needed as covariates or as auxiliary
+    variables in the construction of time-varying covariates.
+
+  * @compress@ the data, i.e., let Stata determine datatypes that preserve
+    all information but take as little memory as possible.
+
+  * If you want to invoke ^stcox^ only on a selection of cases (with ^if^
+    or ^in^ phrases) specify these phrases already here. In contrast with
+    other st-commands the cases and all cases with ^_st==0^ are dropped!
+
+  * If you want to estimate a stratified Cox model, i.e., you plan to
+    specify an option ^strata()^ with ^stcox^, specify the same ^strata^
+    option here -- it may substantially reduce memory demands.
+
+  * Do you really need continuously varying time-varying covariates?
+    Consider an approximation by a piecewise constant covariate.
+
+If these suggestions don't work: buy more memory, cry, or choose a different
+field of research.
+
+
+Compatibility
+-------------
+
+^stcoxtvc^ for version 2 of the st-package (Stata 6) performs a slightly
+different operation than the version for st-package version 1 (Stata 5)
+that was described and distributed via STB 41.
+
+In version 5, ^stcoxtvc^ produced a collection of extremely brief episodes
+around the failure times. Thus, invoking other st commands than ^stcox^
+would produce incorrect results. The advantage of this transformation was
+that contained the minimal number of episodes needed for correctly fitting
+Cox models. For instance, episodes that started after the last known
+failure time were not included. In version 2 of ^stcoxtvc^, I decided to
+stick to the simpler scheme of episode splitting on all failure times, as
+in my own work I strated to miss the opportunity to access other st
+commands (e.g., ^sts^, ^streg^ from the expanded format.
+
+
+Example 1
+---------
+
+^stcoxtvc^ performs episode splitting at all failure times in the data. This
+data format is useful for the following reason: the maximum partial likelihood
+estimator (mple) for a Cox regression models depends only on the risk pools
+at the event times. As a consequence, changes in covariates between failure
+times (of other subjects!) do not affect estimates for a Cox regression model.
+Thus, to estimate a model with time-varying covariates, all one has to do is
+to define the values of the time-varying covariates at all event times at
+which a subject was at risk. (See e.g., Collett (1994: ch 7) for details.)
+
+Consider an example (See Collett 1994: 232) in which you want to estimate a
+Cox model in which survival time of patients with ovarian cancer is modelled
+via age, treatment (drug). To test the proportional hazard assumption, one
+wants to include an interaction affect between drug and time-at-risk. This
+interact is a continuously varying covariate. To include it, one first has
+to ^stcoxtvc^ the data. One can define tvc's by referring to the system
+variable ^_t^ (analysis time).
+
+	. ^stset studytim, fail(died) id(id)^
+	. ^stcoxtvc^
+	. ^gen tdrug = drug * _t^             <== tvc's are produced via ^_t^
+	. ^stcox age drug tdrug^
+
+
+Example 2
+---------
+
+You want to analyse how the age-of-marriage of a person depends on his/her
+occupational status (time-varyign covariate). The time-constant variables
+are sex and educ (level of education). Time variables (expressed in months
+since age 16) are marriage time (mtime), begin and end of first job (wtime1b,
+wtime1e), begin and end of second job (wtime2b, wtime2e) etc.
+
+   . ^stset mtime died, id(respnr)^
+   . ^stcoxtvc^
+   . ^gen work = 0^
+   . ^replace work = 1 if mtime > wtime1b^
+   . ^replace work = 0 if mtime > wtime1e^
+   . ^replace work = 1 if mtime > wtime2b^
+   . ^replace work = 0 if mtime > wtime2e^
+   . ... repeat for additional jobs
+   . ^stcox sex educ work^
+
+In this case, the time-varying covariate work is step-wise constant. Thus, it
+is possible to estimate the same model, at much lower memort costs, by
+repeatedly invoking @stegen@/@strepl@.
+
+If you want to perform a stratified ^stcox^-analysis, you have to issue
+the ^strata(^varlist^)^ options with both ^stcoxtvc^ and ^stcox^.
+
+
+References
+----------
+
+   Collett, D. (1994)
+      Modelling Survival Data in Medical Research. London: Chapman & Hall.
+
+   Weesie, J. (1998)
+       Survival analysis with time-varying covariates. STB 41 /
+        STB Reprints Vol 7, pages 268--292.
+
+
+Author
+------
+
+	Jeroen Weesie
+	Dept of Sociology
+	Utrecht University
+	J.Weesie @@ fss.uu.nl
+
+
+Also See
+--------
+
+ Manual: ^[R] st^
+
+On-Line: @stset@     Declare data to be survival-time data
+         @stegen@    Creation of time-varying covariates for st data
+         @stsplit@   Episode splitting
+         @stcox@     Cox regression

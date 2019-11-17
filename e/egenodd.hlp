@@ -1,0 +1,218 @@
+.-
+help for ^egenodd^                                                (STB-50: dm70)
+.-
+
+Extensions to generate (various extras)
+---------------------------------------
+
+        ^egen^ [type] newvar ^=^ fcn^(^stuff^)^ [^if^ exp] [^in^ range]
+                       [^,^ options]
+
+
+Description
+-----------
+
+(This is the general specification copied from the help for ^egen^.)
+
+^egen^ creates newvar of the optionally specified storage type equal to
+fcn(stuff).  Depending on fcn( ), stuff refers to an expression, varlist,
+or a numlist and the options are similarly function dependent.
+
+Note that ^egen^ may change the sort order of your data.
+
+
+^egen^ functions
+--------------
+
+^any(^varname^), v^alues^(^integer numlist^)^ is varname if varname is
+    equal to any of the integer values in a supplied numlist, and
+    missing otherwise. See also ^eqany( )^ and ^neqany( )^.
+
+^atan2(^sinevar cosinevar^)^ [ ^, r^adians ] supplies arctangent of
+    sinevar/cosinevar as a angle between 0 and 360 degrees, or
+    optionally between 0 and 2 pi radians.
+
+^concat(^varlist^)^ [ ^, f^ormat^(^fmt^) d^ecode ^maxl^ength^(^#^) p^unct^(^pchars^)^ ]
+    concatenates varlist to produce a string variable. Values of string
+    variables are unchanged. Values of numeric variables are converted to
+    string as is; or converted using a format under option ^format(^fmt^)^;
+    or decoded under option ^decode^, in which case ^maxlength()^ may also
+    be used to control the maximum length of label used. By default,
+    variables are added end-to-end: ^punct( )^ may be used to specify
+    punctuation, such as a space, ^punct(" ")^, or a comma, ^punct(,)^.
+
+^eqany(^varlist^), v^alues^(^integer numlist^)^ is 1 if any of the
+    variables in varlist is equal to any of the integer values in a
+    supplied numlist, and 0 otherwise. See also ^any( )^ and ^neqany( )^.
+
+^head(^strvar^)^ [ ^, p^unct^(^pchars^) t^rim ] gives the first `word' of
+    string variable strvar. Given pchars, by default a single space
+    ^" "^,  the head is whatever precedes the first occurrence of
+    pchars, or the whole of the string if it does not occur. ^head( )^
+    applied to ^"frog toad"^ is ^"frog"^ and to ^"frog"^ is ^"frog"^.
+    ^head( )^ applied to ^"frog,toad"^ is similarly ^"frog"^ with
+    ^punct(,)^.  The ^trim^ option trims any leading or trailing spaces.
+    See also ^last( )^ and ^tail( )^.
+
+^kurt(^varname^)^ [ ^, by(^byvarlist^)^ ] returns the kurtosis of
+    varname.
+
+^last(^strvar^)^ [ ^, p^unct^(^pchars^) t^rim ] gives the last `word' of
+    string variable strvar. Given pchars, by default a single space
+    ^" "^,  the last word is whatever follows the last occurrence of
+    pchars, or the whole of the string if it does not occur. ^last( )^
+    applied to ^"frog toad newt"^ is ^"newt"^ and to ^"frog"^ is ^"frog"^.
+    ^last( )^ applied to ^"frog,toad"^ is similarly ^"toad"^ with
+    ^punct(,)^.  The ^trim^ option trims any leading or trailing spaces.
+    See also ^head( )^ and ^tail( )^.
+
+^lgroup(^varname^)^ [ ^, m^issing ] returns integers from 1 up according
+    to the distinct groups of varname in sorted order. Integers will be
+    labelled with the values of varname, or its value labels if such
+    exist. This is useful as an alternative to ^group( )^ when labels
+    are needed as well as the bare integer codes. ^missing^ indicates
+    that missing values in varlist (either ^.^ or ^""^) are to be treated
+    like any other number when assigning groups instead of missing
+    values being assigned to the group missing.
+
+^mad(^exp^)^ [ ^, by(^byvarlist^)^ ] returns the median absolute
+    deviation from the median of exp.
+
+^mdev(^exp^)^ [ ^, by(^byvarlist^)^ ] returns the mean absolute
+    deviation from the mean of exp.
+
+^mode(^varname^)^ [ , ^min^mode ^uni^que ^miss^ing ^by(^byvarlist^)^ ]
+    produces the mode for varname, which may be numeric or string. The
+    mode is the value occurring most frequently. If two or more modes
+    exist, the mode produced will be the highest such value (largest
+    numerically or last alphabetically), except that ^minmode^ specifies
+    use of the lowest such value and ^unique^ specifies that only unique
+    modes may be produced. Missing values are excluded from determination
+    of the mode unless ^missing^ is specified. Observations for which
+    values of varname are missing are included in production of the mode
+    unless excluded, e.g. by ^if^ varname ^< .^ or ^if^ varname ^!= ""^.
+    ^by(^byvarlist^)^ specifies that determination is to be carried out
+    separately for distinct groups defined by byvarlist.
+
+^neqany(^varlist^), v^alues^(^integer numlist^)^ contains for each
+    observation the number of variables in varlist for which values are
+    equal to any of the integer values in a supplied numlist. See also
+    ^any( )^ and ^eqany( )^.
+
+^pc(^exp^)^ [ ^, by(^byvarlist^)^ ] returns exp scaled to be a percent
+    of total, between 0 and 100. See also ^prop( )^.
+
+^pp(^varname^)^ [ ^, by(^byvarlist^) a(^#^)^ ] sorts varname smallest to
+    largest and computes the corresponding plotting position
+    (i - a) / (n - 2a + 1) for i = 1 (smallest), ..., n (largest) and
+    constant a. The default a = 0.5 yields (i - 0.5) / n, while a = 0
+    yields i / (n + 1).
+
+^prop(^exp^)^ [ ^, by(^byvarlist^)^ ] returns exp scaled to be a
+    proportion of total, between 0 and 1. See also ^pc( )^.
+
+^rev(^varname^)^ [ ^, by(^byvarlist^)^ ] returns the reverse of varname,
+    that is varname[1] is exchanged with varname[_N], and so forth.
+
+^rindex(^strvar^) , sub^str^(^string^)^ returns the index of the last
+    (rightmost) occurrence of string in the string variable strvar.
+
+^rmed(^varlist^)^ returns the median across variables for each
+    observation. (The number of variables must not exceed the number of
+    observations.)
+
+^rotate(^varname^)^ [ ^, st^art^(^#^) m^ax^(^#^)^ ]  rotates a set of
+    integers 1, ..., max. Suppose we have months 1, ..., 12 and we wish
+    to map 7 to 1, 8 to 2, ..., 12 to 6, 1 to 7, ..., 6 to 12. This
+    would be achieved by ^start(7) max(12)^.
+
+^seq(^ ^)^ [ ^, f^rom^(^#^) t^o^(^#^) b^lock^(^#^) by(^byvarlist^)^ ]
+    returns integer sequences. Values start from ^from^ (default 1) and
+    increase to ^to^ (default the maximum number of values) in ^block^s
+    (default size 1). If ^to^ is less than the maximum number, sequences
+    restart at ^from^. Numbering may also be separate within groups
+    defined by byvarlist, or decreasing if ^to^ is less than ^from^.
+    Sequences depend on the sort order of observations, following three
+    rules: (1) observations excluded by ^if^ or ^in^ are not counted (2)
+    observations are sorted by byvarlist, if specified  (3) otherwise,
+    the order is that when called. Note that no stuff is specified. This
+    option is based on ^seq^.
+
+^skew(^varname^)^ [ ^, by(^byvarlist^)^ ] returns the skewness of
+    varname.
+
+^sub(^strvar^),  f^ind^(^findstr^)^ [ ^r^eplace^(^replacestr^) a^ll ^w^ord ]
+    replaces occurrences of findstr by replacestr in the string variable
+    strvar. By default only the first such occurrence in each string
+    value is acted upon. ^all^ specifies that all occurrences in each
+    string value are to be acted upon. If replacestr is not specified,
+    it is taken to be empty, that is, findstr is deleted. ^word^ specifies
+    that only occurrences of findstr that are complete words are to be
+    acted upon.
+
+^tag(^varlist^)^ [ , ^m^issing ] tags just one observation in each
+    distinct group defined by varlist. When all observations in a group
+    have the same value for a summary variable calculated for the group,
+    it will be sufficient to use just one such value for many purposes.
+    The result will be 1 or 0, according to whether the observation is
+    tagged, and never missing: hence if ^tag^ is the variable produced
+    by ^egen tag = tag(^varlist^)^ the idiom ^if tag^ is always safe.
+    ^missing^ specifies that missing values of varlist may be included.
+
+^tail(^strvar^)^ [ ^, p^unct^(^pchars^) t^rim ] gives the `remainder' of
+    string variable strvar. Given pchars, by default a single space
+    ^" "^,  the tail is whatever follows the first occurrence of pchars,
+    which will be the empty string ^""^ if it does not occur. ^tail( )^
+    applied to ^"frog toad"^ is ^"toad"^ and to ^"frog"^ is ^""^.
+    ^tail( )^ applied to ^"frog,toad"^ is similarly ^"toad"^ with
+    ^punct(,)^.  The ^trim^ option trims any leading or trailing spaces.
+    See also ^head( )^ and ^last( )^.
+
+
+Examples
+--------
+
+    . ^egen hirep = any(rep78), v(3/5)^
+    . ^egen ishirep = eqany(rep78), v(3/5)^
+
+    . ^egen atan = atan2(sine cosine)^
+
+    . ^egen fullname = concat(surname fname), p(,)^
+
+    . ^egen make1 = head(make)^
+    . ^egen make2 = tail(make)^
+
+    . ^egen madmpg = mad(mpg), by(rep78)^
+
+    . ^egen ppmpg = pp(mpg), by(rep78) a(0)^
+
+    . ^egen newmonth = rotate(month), st(7) max(12)^
+
+    . ^egen id = seq()^
+    . ^egen id = seq(), f(1) t(5) b(4)^
+
+    . ^egen nocomma = sub(names) , f(",") r(" ") all^
+    . ^egen nocomma = sub(names) , f(",") all^
+
+    . ^egen meanmpg = mean(mpg), by(for rep78)^
+    . ^egen sdmpg = sd(mpg), by(for rep78)^
+    . ^egen tag = tag(for rep78)^
+    . ^l for rep78 meanmpg sdmpg if tag^
+
+
+Author
+------
+
+         Nicholas J. Cox
+         University of Durham, U.K.
+         n.j.cox@@durham.ac.uk
+
+
+Also see
+--------
+
+    STB:  STB-50 dm70
+ Manual:  [R] egen
+On-line:  help for @collapse@, @decode@, @egen@, @functions@,
+          @generate@, @numlist@, @seq@ (if installed)
+

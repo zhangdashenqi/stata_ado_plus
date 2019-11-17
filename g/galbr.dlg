@@ -1,0 +1,57 @@
+/* 
+
+*! galbr dialog version 1.0.0, 13 May 2003, T. J. Steichen, steichen@triad.rr.com 
+*!    for galbr version 2.0,      Mar 2000, Aurelio Tobias, atobias@isciii.es 
+
+Galbraith Plot for Heterogeneity
+--------------------------------
+
+galbr theta setheta [if exp] [in range] [ , id(strvar) graph_options ]
+
+To install in User Statistics menu via Stata commands:
+  . window menu append item "stUserStatistics" "Galbraith Plot for Heterogeneity (&galbr)" "db galbr"
+  . window menu refresh
+To permanently install, place the commands in your -profile.do- file.
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help galbr")
+RESET res1, label("Reset")
+
+DIALOG main, label("galbr 2.0 - Galbraith Plot for Heterogeneity") tabtitle("Main")
+BEGIN
+  TEXT     tx_se        10   10   330     .,            ///
+     label("Vars for theta, se(theta), in that order")
+  VARLIST  vl_se         @   _ss    @     .,            ///
+     label("Vars for theta, se(theta)")
+
+  CHECKBOX cb_id        10   70   100     .,            ///
+     label("ID Variable:")                              ///
+     onclickon(main.vn_id.enable)                       ///
+     onclickoff(main.vn_id.disable)
+  VARNAME  vn_id       110   70   230     .,            /// 
+     label("ID Variable")                               ///
+     option("id")
+
+  GROUPBOX gb_gopts7   10 155  330   _ht1h,             ///
+     label("Allowed Graph7 Options:")
+  EDIT     ed_gopts7   15 175  320       .,             ///
+     label("Graph7 Options")
+END
+ 
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+  put "galbr "
+  varlist main.vl_se 
+  INCLUDE _ifin_pr
+  beginoptions
+    optionarg main.vn_id
+    put main.ed_gopts7 
+  endoptions
+END

@@ -1,0 +1,28 @@
+.-
+help for ^dice^
+.-
+
+dice rolling simulation
+-----------------------
+
+ . ^dice^ 
+
+Description
+-----------
+
+^dice^ simulates the rolling of dice for n trials. 
+     It displays a histogram of the frequency of the sum
+     of the dots of the dice.  You can choose the number
+     of dice, and the number of sides on the dice.
+
+
+     Note: If the number of dice * the number of sides
+     exceeds 50, the graph may not display well.
+
+Author
+------
+
+Philip B. Ender & Michael N. Mitchell
+Statistical Computing and Consulting
+UCLA, Academic Technology Services
+ender@@ucla.edu, mnm@ucla.edu

@@ -1,0 +1,85 @@
+{smcl}
+{* 27nov2007}{...}
+{cmd:help somersdtest}{right: ({browse "http://www.stata-journal.com/article.html?article=st0158":SJ9-1: st0158})}
+{hline}
+
+
+{title:Title}
+
+{p2colset 5 20 22 2}{...}
+{p2col :{hi:somersdtest} {hline 2}}Two-sample randomization test for significance of Somers' D{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 19 2}
+{cmd:somersdtest}
+ {it:varname}
+ {ifin}{cmd:, by(}{it:groupvar}{cmd:)}
+ [{cmd:reps(}{it:#}{cmd:)} {cmd:simsec(}{it:#}{cmd:)} {cmd:exact}] 
+
+  
+{title:Description}
+
+{pstd} {cmd:somersdtest} performs a nonparametric two-sample randomization
+test.  As a test statistic, it uses Somers' D.  If the test gets too
+cumbersome to compute, Monte Carlo simulations are done to approximate
+p-levels. For more details, refer to {helpb tsrtest}.
+
+
+{title:Options}
+
+{phang} {cmd:by(}{it:groupvar}{cmd:)} specifies the dichotomous grouping
+variable, which marks the two (across and within-independent) samples whose
+Somers' D should be tested.
+
+{phang} {cmd:reps(}{it:#}{cmd:)} stipulates that {it:#} random group
+assignments be performed if simulating. The default is {cmd:reps(10000)}.
+
+{phang} {cmd:simsec(}{it:#}{cmd:)} stipulates that an exact test be used if
+its estimated execution time would not exceed {it:#} seconds. If the estimated
+execution time exceeds {it:#} seconds, {cmd:somersdtest} will revert to Monte
+Carlo simulation. The default is {cmd:simsec(1000)}.
+
+{phang} {cmd:exact} forces the calculation of exact p-levels, even if the
+estimated execution time would exceed the time specified in {cmd:simsec()}.
+
+
+{title:Saved results}
+
+{pstd}{cmd:somersdtest} saves the following in {cmd:r()}:
+
+{synoptset 16 tabbed}{...}
+{p2col 5 16 20 2: Scalars}{p_end}
+{synopt:{cmd:r(somersd)}} observed Somers' D{p_end}
+{synopt:{cmd:r(twotail)}} two-tailed p-level of nondirectional test of Somers' D{p_end}
+{synopt:{cmd:r(uppertail)}} upper-tail p-level of test of Somers' D{p_end}
+{synopt:{cmd:r(lowertail)}} lower-tail p-level of test of Somers' D{p_end}
+{synopt:{cmd:r(simulated)}} {cmd:1} if results came from Monte Carlo simulation, {cmd:0} if exact p-values were obtained from full randomization solution{p_end}
+
+
+{title:Example}
+
+{psee}{cmd:. sysuse auto}{p_end}
+{psee}{cmd:. somersdtest rep78, by(foreign)}{p_end}
+
+
+{title:Authors}
+
+{phang}Johannes Kaiser{p_end}
+{phang}University of Bonn{p_end}
+{phang}Bonn, Germany{p_end}
+{phang}johannes.kaiser@uni-bonn.de{p_end}
+
+{phang}Michael G. Lacy{p_end}
+{phang}Colorado State University{p_end}
+{phang}Fort Collins, Colorado{p_end}
+{phang}michael.lacy@colostate.edu{p_end}
+
+
+{title:Also see}
+
+{psee}Article: {it:Stata Journal}, volume 9, number 1: {browse "http://www.stata-journal.com/article.html?article=st0158":st0158}
+
+{psee} Online:  {helpb permute}, {helpb tsrtest} (if installed){p_end}

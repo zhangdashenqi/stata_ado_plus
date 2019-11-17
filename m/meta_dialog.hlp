@@ -1,0 +1,118 @@
+{smcl}
+{* 12apr2004}{...}
+{hline}
+help for {cmd:meta_dialog}{...}
+{right:version 1.0.4 {space 6}}
+{hline}
+
+
+Sub-menu and Dialogs for Meta-Analysis Commands {result:(Stata Version 8 only)}
+
+
+{title:Description}
+
+{p 4 4 2}
+Package {cmd:meta_dialog} provides Stata Version 8 dialog boxes (.dlg files)
+and the commands needed to create a Meta-Analysis sub-menu that contains
+the publicly available meta-analysis commands. The 14 commands included
+in this package that may be placed on the menu are: {cmd:meta}, {cmd:metan},
+{cmd:metap}, {cmd:metareg}, {cmd:metacum}, {cmd:funnel}, {cmd:metafunnel}, 
+{cmd:labbe}, {cmd:metannt}, {cmd:metaninf}, {cmd:metaninf}, {cmd:galbr}, 
+{cmd:metabias}, and {cmd:metatrim}.
+
+{p 4 4 2}
+The menu commands (shown below) are placed in your personal Stata
+{cmd:profile.do} file.  They create the sub-menu on the
+StataCorp-defined User menu.
+
+{p 4 4 2}
+You can determine if you have defined a {cmd:profile.do} file by starting
+Stata and observing whether a line of the form:
+
+{p 8}{result:running C:\data\stata\profile.do} ...
+
+{p 4 4 2}
+appears on the screen as part of the initiation sequence. If it does,
+then add the commands below to that file and resave the file.  If the
+line does not appear then you have not defined a profile.  Create a
+plain text file containing the commands below, name it {cmd:profile.do} and
+save it somewhere in the Stata path.
+
+{p 4 4 2}
+You may choose not to create the menu and run the dialogs directly
+from the Stata8 command line via the {cmd:db {it:name}} command.  If so,
+
+{col 5}{hline 69}
+{col 5}command...{col 19}runs...{col 36}description...
+{col 5}{hline 69}
+{col 5}{dialog meta:db meta}{col 19}{help meta:meta 2.02}{col 36}Meta-analysis of Effects
+{col 5}{dialog metan:db metan}{col 19}{help metan:metan 1.74}{col 36}Meta-analysis of Binary and Continuous
+{col 5}{dialog metap:db metap}{col 19}{help metap:metap 2.0.0}{col 36}Meta-analysis of p-values
+{col 5}{dialog metareg:db metareg}{col 19}{help metareg:metareg 1.06}{col 36}Meta-analysis Regression
+{col 5}{dialog metacum:db metacum}{col 19}{help metacum:metacum 1.02}{col 36}Cumulative Meta-analysis
+{col 5}{dialog funnel:db funnel}{col 19}{help funnel:funnel 1.04}{col 36}Metan-based Funnel Graph
+{col 5}{dialog metafunnel:db metafunnel}{col 19}{help metafunnel:metafunnel 1.02}{col 36}Funnel Graph (funnel, vertical)
+{col 5}{dialog labbe:db labbe}{col 19}{help labbe:labbe 1.21}{col 36}Metan-based L'abbe Graph
+{col 5}{dialog metannt:db metannt}{col 19}{help metannt:metannt 1.0}{col 36}Metan-based NNT
+{col 5}{dialog metaninf:db metaninf}{col 19}{help metaninf:metaninf 1.0.1}{col 36}Metan-based Influence Analysis
+{col 5}{dialog metainf:db metainf}{col 19}{help metainf:metainf 3.0.0}{col 36}Meta-based Influence Analysis
+{col 5}{dialog galbr:db galbr}{col 19}{help galbr:galbr 2.0}{col 36}Galbraith Plot for Heterogeneity
+{col 5}{dialog metabias:db metabias}{col 19}{help metabias:metabias 1.2.2}{col 36}Publication Bias in Meta-analysis
+{col 5}{dialog metatrim:db metatrim}{col 19}{help metatrim:metatrim 1.0.5}{col 36}Trim and Fill Analysis
+{col 5}{hline 69}
+
+
+{title:Menu creation commands}
+
+{p 4 4 2}
+Put the following commands in your {cmd:profile.do} (the lines are long and may wrap on the screen):{input}
+
+{hline}{asis}
+
+if _caller() >= 8 {
+  window menu clear
+  window menu append submenu "stUser" "&Meta-Analysis"
+  window menu append item "Meta-Analysis" "Of Binary and Continuous (meta&n)" "db metan"
+  window menu append item "Meta-Analysis" "Of Effects (&meta)" "db meta"
+  window menu append item "Meta-Analysis" "Of p-values (meta&p)" "db metap"
+  window menu append item "Meta-Analysis" "Cumulative (meta&cum)" "db metacum"
+  window menu append item "Meta-Analysis" "Regression (meta&reg)" "db metareg"
+  window menu append item "Meta-Analysis" "Funnel Graph, metan-based (f&unnel)" "db funnel"
+  window menu append item "Meta-Analysis" "Funnel Graph, &vertical (metafunnel)" "db metafunnel"
+  window menu append item "Meta-Analysis" "L'abbe Graph, metan-based (&labbe)" "db labbe"
+  window menu append item "Meta-Analysis" "NNT, metan-based (metann&t)" "db metannt"
+  window menu append item "Meta-Analysis" "Influence Analysis, metan-based (metan&inf)" "db metaninf"
+  window menu append item "Meta-Analysis" "Influence Analysis, meta-based (metain&f)" "db metainf"
+  window menu append item "Meta-Analysis" "Galbraith Plot for Heterogeneity (&galbr)" "db galbr"
+  window menu append item "Meta-Analysis" "Publication Bias (meta&bias)" "db metabias"
+  window menu append item "Meta-Analysis" "Trim and Fill Analysis (metatrim)" "db met&atrim"
+  window menu refresh
+}
+
+
+{smcl}
+{hline}
+{sf}{txt}
+{title:Notes}
+
+{p 4 4 2}
+Dialogs are available in Stata8 only, thus the leading {cmd:if _caller() >= 8 {c -(}} and
+trailing {cmd:{c )-}} lines above are needed only if you also run Stata7, but leaving them
+in will not cause problems.
+
+{p 4 4 2}
+The easiest way to capture these commands is to open this help file in your text editor,
+copy the lines, then paste them into {cmd:profile.do}.
+
+
+{title:Author}
+
+{p 4 8 2}
+Thomas J. Steichen, steichen@triad.rr.com
+
+
+{title:Also see}
+
+    Manual:  {hi:[P] dialogs; [P] window menu; [R] db}
+
+{p 4 13 2}Online:  help for {help dialogs}; {help window}; {help db}

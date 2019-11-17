@@ -1,0 +1,179 @@
+{smcl}
+{* *! version 2.0.0  23nov2010}{...}
+{cmd:help opreg}{right: ({browse "http://www.stata-journal.com/article.html?article=up0035":SJ12-1: st0145_2})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 14 16 2}{...}
+{p2col :{hi:opreg} {hline 2}}Production function estimation using Olley and Pakes' technique{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:opreg} {depvar} {ifin}{cmd:,}
+   {opt exit(varname)}
+   {opt state(varlist)}
+   {opt proxy(varname)}
+   {opt free(varlist)}
+   [{it:options}]
+   
+
+{title:Syntax for predict after opreg}
+
+{p 8 14 2}
+{cmd:predict} {dtype} {it:{help newvar}} {ifin} [{cmd:, tfp}]
+
+
+{synoptset 35 tabbed}{...}
+{marker options}{...}
+{synopthdr}
+{synoptline}
+{p2coldent:* {opt exit(varname)}}{it:varname} indicates a firm's exit{p_end}
+{p2coldent:* {opt state(varlist)}}state variables appearing in production function{p_end}
+{p2coldent:* {opt proxy(varname)}}variable to proxy for unobserved productivity{p_end}
+{p2coldent:* {opt free(varlist)}}additional variables used in the second stage only{p_end}
+{synopt :{opt cvars(varlist)}}additional variables used in both the first and second stages{p_end}
+{synopt :{opt second}}use second-degree polynomial expansion{p_end}
+{synopt :{cmd:vce(bootstrap, }{it:{help bootstrap:bootstrap_options}}{cmd:)}}specify bootstrap options{p_end}
+{synopt :{opt l:evel(#)}}set confidence level; default is {cmd:level(95)}{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}* {opt exit(varname)}, {opt state(varlist)}, {opt proxy(varname)},
+ and {opt free(varlist)} are required.{p_end}
+{p 4 6 2}A panel variable and a time variable must be specified by 
+using {cmd:xtset}; see {manhelp xtset XT}.
+      
+
+{title:Description}
+
+{pstd}
+{cmd:opreg} estimates the production function in the presence of 
+selection bias and simultaneity by using the three-stage algorithm 
+described in Olley and Pakes (1996).
+
+
+{title:Options}
+
+{phang}
+{cmd:exit(}{it:varname}{cmd:)} specifies a variable coded 0/1, where at 
+time {it:t} for firm {it:i}, {it:varname_it} equals 1 if the firm exited
+at the beginning of that period and zero otherwise.
+
+{phang}
+{cmd:state(}{it:varlist}{cmd:)} specifies state variables.
+
+{phang}
+{cmd:proxy(}{it:varname}{cmd:)} specifies the proxy variable to be used in the
+equation determining exit.
+
+{phang}
+{cmd:free(}{it:varlist}{cmd:)} specifies variable inputs that are not to be included in the exit equation.
+
+{phang}
+{cmd:cvars(}{it:varlist}{cmd:)} specifies variable inputs that are also
+included in the exit equation.
+
+{phang}
+{cmd:second} specifies that a second-degree polynomial expansion is to be used
+in the first and second stages.  The default is to use a third-degree
+polynomial expansion.
+
+{phang}
+{cmd:vce(bootstrap, }{it:{help bootstrap:bootstrap_options}}{cmd:)} allows you
+to specify options to control the bootstrap process.  The most commonly used
+{it:bootstrap_options} is {opt reps(#)}, which control the number 
+of replications performed.  The default is {cmd:reps(50)}.
+
+{phang}
+{opt level(#)}; see {manhelp estimation_options R}.
+
+
+{title:Option for predict}
+
+{p 4 8 2}
+{opt tfp} calculates the log of total factor productivity.
+To obtain the prediction in levels, exponentiate the results.
+This is the default.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+The first and second stages use a third-degree polynomial expansion.
+For example, with one state variable, the polynomial term is
+state^2 + proxy^2 + state*proxy + 
+state^3 + proxy^3 + 
+state^2*proxy + state*proxy^2.
+With two state variables, the polynomial term is
+state1^2 + state2^2 + proxy^2 + 
+state1*proxy + state2*proxy + state1*state2,
+state1^3 + state2^3 + proxy^3 +
+state1^2*state2 + state1^2*proxy +
+state2^2*state1 + state2^2*proxy +
+proxy^2*state1 + proxy^2*state2 +
+state1*state2*proxy,
+and so on.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. opreg sales, exit(exit) state(stock) proxy(investment)}
+         {cmd:free(material employment) cvars(sizedum2 sizedum3 time)}
+
+{p 4 8 2}{cmd:. opreg sales, exit(exit) state(stock) proxy(investment)}
+         {cmd:free(material employment) cvars(sizedum2 sizedum3 time)}
+         {cmd:vce(bootstrap, reps(200))}
+
+{p 4 4 2}
+In either case, {cmd:opreg} would form the following equations:
+
+{p 8 8 2}
+exit = stock^2 + investment^2 + stock*investment + 
+stock^3 + investment^3 + stock^2*investment + stock*investment^2 +
+sizedum2 + sizedum3 + time
+
+{p 4 4 2}
+and
+
+{p 8 8 2}
+sales = stock + stock^2 + investment^2 + stock*investment + 
+stock^3 + investment^3 + stock^2*investment + stock*investment^2 +
+sizedum2 + sizedum3 + time + material + employment
+
+{p 4 4 2}
+The investment variable enters the second stage only through the polynomial
+term.
+
+
+{title:Reference}
+
+{p 4 8 2}
+Olley, G. S., and A. Pakes. 1996. The dynamics of productivity in the 
+telecommunications equipment industry. {it:Econometrica} 64: 1263-1297.
+
+
+{title:Authors}
+
+{phang}
+Mahmut Yasar, Department of Economics, University of Texas at Arlington,
+Arlington, TX. {browse "mailto:myasar@uta.edu":myasar@uta.edu}.
+
+{phang}
+Rafal Raciborski, StataCorp, College Station,
+TX. {browse "mailto:rraciborski@stata.com":rraciborski@stata.com}.
+
+{phang}
+Brian Poi, Moody's Analytics, West Chester,
+PA. {browse "mailto:brian@poiholdings.com":brian@poiholdings.com}.
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 12, number 1: {browse "http://www.stata-journal.com/article.html?article=up0035":st0145_2},{break}
+         {it:Stata Journal}, volume 10, number 4: {browse "http://www.stata-journal.com/article.html?article=up0030":st0145_1},{break}
+         {it:Stata Journal}, volume 8, number 2: {browse "http://www.stata-journal.com/article.html?article=st0145":st0145}
+{p_end}

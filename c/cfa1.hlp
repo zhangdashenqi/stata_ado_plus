@@ -1,0 +1,159 @@
+{smcl}
+{.-}
+help for {cmd:cfa1} {right:author: {browse "http://stas.kolenikov.name/":Stas Kolenikov}}
+{.-}
+
+{title:Confirmatory factor analysis with a single factor}
+
+{p 8 27}
+{cmd:cfa1}
+{it:varlist}
+[{cmd:if} {it:exp}] [{cmd:in} {it:range}]
+[{cmd:aw|pw =} {it:weight}]
+[{cmd:,}
+     {cmd:unitvar}
+     {cmd:free}
+     {cmdab:pos:var}
+     {cmdab:constr:aint(}{it:numlist}{cmd:)}
+     {cmdab:lev:el(}{it:#}{cmd:)}
+     {cmdab:rob:ust}
+     {cmd:vce(robust|oim|opg|sbentler}{cmd:)}
+     {cmd:cluster(}{it:varname}{cmd:)}
+     {cmd:svy}
+     {cmdab:sea:rch(}{it:searchspec}{cmd:)}
+     {cmd:from(}{it:initspecs}{cmd:)}
+     {it:ml options}
+]
+
+{title:Description}
+
+{p}{cmd:cfa1} estimates simple confirmatory factor
+analysis model with a single factor. In this model,
+each of the variables is assumed to be an indicator
+of an underlying unobserved factor with a linear
+dependence between them:
+
+{center:{it:y_i = m_i + l_i xi + delta_i}}
+
+{p}where {it:y_i} is the {it:i}-th variable
+in the {it:varlist}, {it:m_i} is its mean,
+{it:l_i} is the latent variable loading,
+{it:xi} is the latent variable/factor,
+and {it:delta_i} is the measurement error.
+
+{p}The model is estimated by the maximum likelihood
+procedure.
+
+{p}As with all latent variable models, a number
+of identifying assumptions need to be made about
+the latent variable {it:xi}. It is assumed
+to have mean zero, and its scale is determined
+by the first variable in the {it:varlist}
+(i.e., l_1 is set to equal 1). Alternatively,
+identification can be achieved by setting the
+variance of the latent variable to 1 (with option
+{it:unitvar}). More sophisticated identification
+conditions can be achieved by specifying option
+{it:free} and then providing the necessary
+{it:constraint}.
+
+
+{title:Options}
+
+{ul:Identification:}
+
+{p 0 4}{cmd:unitvar} specifies identification by setting
+       the variance of the latent variable to 1.
+
+{p 0 4}{cmd:free} requests to relax all identifying constraints.
+       In this case, the user is responsible for provision
+       of such constraints; otherwise, the estimation process
+       won't converge.
+
+{p 0 4}{cmdab:pos:var} specifies that if one or more of the
+       measurement error variances were estimated to be
+       negative (known as Heywood cases), the model
+       needs to be automatically re-estimated by setting
+       those variances to zero. The likelihood ratio test
+       is then reported comparing the models with and without
+       constraints. If there is only one offending estimate,
+       the proper distribution to refer this likelihood
+       ratio to is a mixture of chi-squares; see
+       {help j_chibar:chi-bar test}. A conservative
+       test is provided by a reference to the chi-square
+       distribution with the largest degrees of freedom.
+       The p-value is then overstated.
+
+{p 0 4}{cmdab:constr:aint(}{it:numlist}{cmd:)} can be used
+       to supply additional constraints. The degrees of freedom
+       of the model may be wrong, then.
+
+{p 0 4}{cmdab:lev:el(}{it:#}{cmd:)} -- see
+       {help estimation_options##level():estimation options}
+
+{ul:Standard error estimation:}
+
+{p 0 4}{cmd:vce(oim|opg|robust|sbentler}
+       specifies the way to estimate the standard errors.
+       See {help vce_option}. {cmd:vce(sbentler)} is an
+       additional Satorra-Bentler estimator popular in
+       structural equation modeling literature that relaxes
+       the assumption of multivariate normality while
+       keeping the assumption of proper structural specification.
+
+{p 0 4}{cmd:robust} is a synonum for {cmd:vce(robust)}.
+
+{p 0 4}{cmd:cluster(}{it:varname}{cmd:)}
+
+{p 0 4}{cmd:svy} instructs {cmd:cfa1} to respect the complex
+       survey design, if one is specified.
+
+{ul:Maximization options: see {help maximize}}
+
+{title:Returned values}
+
+{p}Beside the standard {help estcom:estimation results}, {cmd:cfa1}
+also performs the overall goodness of fit test with results
+saved in {cmd:e(lr_u)}, {cmd:e(df_u)} and {cmd:e(p_u)}
+for the test statistic, its goodness of fit, and the resulting
+p-value. A test vs. the model with the independent data
+is provided with the {help ereturn} results with {cmd:indep}
+suffix. Here, under the null hypothesis,
+the covariance matrix is assumed diagonal.
+
+{p}When {cmd:sbentler} is specified, Satorra-Bentler
+standard errors are computed and posted as {cmd:e(V)},
+with intermediate matrices saved in {cmd:e(SBU)},
+{cmd:e(SBV)}, {cmd:e(SBGamma)} and {cmd:e(SBDelta)}.
+Also, a number of corrected overall fit test statistics
+is reported and saved: T-scaled ({cmd:ereturn} results
+with {cmd:Tscaled} suffix) and T-adjusted
+({cmd:ereturn} resuls with {cmd:Tadj} suffix;
+also, {cmd:e(SBc)} and {cmd:e(SBd)} are the
+scaling constants, with the latter also
+being the approximate degrees of freedom
+of the chi-square test)
+from Satorra and Bentler (1994), and T-double
+bar from Yuan and Bentler (1997)
+(with {cmd:T2} suffix).
+
+
+{title:References}
+
+{p 0 4}{bind:}Satorra, A. and Bentler, P. M. (1994)
+  Corrections to test statistics and standard errors in covariance structure analysis,
+  in: {it:Latent variables analysis}, SAGE.
+
+{p 0 4}{bind:}
+    Yuan, K. H.,  and Bentler, P. M. (1997)
+    Mean and Covariance Structure Analysis: Theoretical and Practical Improvements.
+    {it:JASA}, {bf:92} (438), pp. 767--774.
+
+
+{title:Also see}
+
+{p 0 21}{bind:}Online:    help for {help factor}
+
+{title:Contact}
+
+Stas Kolenikov, kolenikovs {it:at} missouri.edu

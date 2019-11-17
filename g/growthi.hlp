@@ -1,0 +1,81 @@
+Display growth rate (immediate growth command)                 (STB-19: sts7.2)
+----------------------------------------------
+
+    ^growthi^ old_value new_value [^, noa^nnual ^la^g^(^#^) l^og ^p^ercent ^peri^od^(^#|str^)^]
+
+
+Description
+-----------
+
+^growthi^ is an immediate version of the ^growth^ command.  It displays the growth
+rate that transforms ^old_value^ to ^new_value^.  All the options, except ^lag()^,
+are taken from ^growth^.  The ^ma()^ and ^suffix()^ options from ^growth^ are not
+available since they do not make sense in an immediate command.
+
+^old_value^ and ^new_value^ can be numbers or expressions.  If they are
+expressions, you must surround them with double quotes (") if they contain
+embedded spaces or commas.
+
+
+
+
+
+Options
+-------
+
+^noannual^ specifies that the growth rate is not to be annualized.
+
+^lag(^#^)^ specifies the number of periods between the old and the new values.
+    The default lag is 1.
+
+^log^ calculates the growth rate by taking the log difference of the new and
+    old values.
+
+^percent^ calculates the growth rate as a percent rather than a fraction.
+
+^period(^#^)^ specifies the period of the data.  If this option is not specified,
+    the value previously set with the ^period^ command is used.  If no value
+    has been set, the value 1 (annual) is assumed.  ^period()^ may be specified
+    as a number (interpreted as the number of observations per "year") or as
+    a word such as "^weekly^", "^quarterly^", etc.  The period may be abbreviated
+    as "^w^", "^q^", etc.; see ^help period^.
+
+
+
+
+
+
+Examples
+--------
+
+ . ^growthi 15 17^
+
+ . ^growthi revenue[17] 350, percent
+
+ . ^growthi "27 + log(y[115])" z[_N], lag(4)
+
+
+Methods and Formulas
+--------------------
+
+Type ^help growth^.
+
+
+
+
+
+
+
+
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts7.2 (STB-19)
+On-line:  ^help^ for ^growth^,

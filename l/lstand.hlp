@@ -1,0 +1,33 @@
+.-
+help for ^lstand^                                           (J. Hilbe:11-11-96)
+.-
+
+Display a table of estimates following ^logistic^               [STB-35 sg63]
+-----------------------------------------------
+
+Command:     ^lstand^
+
+Output
+------
+^Variable names^
+^Coefficients^ (including constant)
+^Odds ratios^
+^Standardized coefficients^ (defined as (B*SD)/sqrt(pi^^2/3))
+^Partial correlation (Atkinson's R)^
+^Probabliity if z^
+
+Standardized coefficients may be used to evaluate the relative worth of a
+predictor to the model. This is helpful when the model contains many
+cases (e.g. >70,000) and many variables, all of which are significant.
+
+Also see
+--------
+
+    STB:  sg63 (STB-35)
+
+Joseph Hilbe
+Dept of Sociology, Arizona State University
+email: atjmh@@asuvm.inre.asu.edu
+
+
+

@@ -1,0 +1,51 @@
+{smcl}
+{* 26Aug2002}{...}
+{hline}
+help for {hi:xcount}{right:(author:  {hi:Tony Brady})}
+{hline}
+
+{title:Count longitudinal data}
+
+{p 8 17}{cmd:xtab} [{cmd:if} {it:exp}] [{cmd:in} {it:range}]
+	    [{cmd:,} {cmd:i(}{it:varname}{cmd:)} ]
+
+{p}{cmd:by} {it:...} {cmd::} may be used with the above command;
+see help {help by}.
+
+
+{title:Description}
+
+{p}If you have not read help for {help xt}, please do so now.
+
+{p}{cmd:xcount}, a generalization of {help count}, counts clusters
+in cross-sectional time-series (xt) data. A cluster is a number of
+records with the same value of the index variable i.
+
+
+{title:Options}
+
+{p 0 4}{cmd:i(}{it:varname}{cmd:)} specifies the variable name corresponding to
+i; see help {help xt}.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. xcount, i(idnum)}{p_end}
+{p 8 12}{inp:. xcount if age>55, i(idnum)}{p_end}
+
+{p 8 12}{inp:. iis idnum}{p_end}
+{p 8 12}{inp:. xcount}{p_end}
+
+{p 8 12}{inp:. bysort region: xcount if datefu>d(1jan2000)}{p_end}
+
+
+{title:Author}
+
+{p 8 12}Tony Brady, {browse "http://www.sealedenvelope.com/":Sealed Envelope Ltd}, U.K.{p_end}
+{p 8 12}{browse "mailto:tony@sealedenvelope.com?subject=xtab.ado":tony@sealedenvelope.com}
+
+
+{title:Also see}
+
+{p 1 14}Manual:  {hi:[R] xt}{p_end}
+{p 0 19}On-line:  help for {help xtab} (if installed), {help xt}, {help count}{p_end}

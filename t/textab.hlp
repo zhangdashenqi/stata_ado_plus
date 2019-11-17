@@ -1,0 +1,103 @@
+.-
+help for ^textab^                                               (STB-25:  dm29)
+.-
+
+Making TeX tables from data
+---------------------------
+
+    ^textab^ varlist [^if^ exp] [^in^ range] [^,^ ^vlin^es^(^string^)^ ^sep(^string^)^
+                ^tab^skip^(^#^,^#^,^...^,^#^)^ ^f^ont^(^string^)^ ^bstr^s^(^string^)^ ^estr^s^(^string^)^
+                ^miss^ing^(^string^)^ ^al^ign^(^string^)^ ^form^at^(^string^)^ no^cen^ter ]
+
+
+Description
+-----------
+
+^textab^ generates TeX code that may be incorporated into a plain TeX or LaTeX
+document.  The code generated is for making a table of the ^varlist^.  ^textab^
+will substitute value labels if there are any.  The code is color coded to
+make it easier to read on the screen.  The user must create a log-file of the
+output and incorporate it in the final TeX document.  
+
+
+Options
+-------
+
+^vlines(^string^)^ specifies the types and positions of vertical rules in the
+    table.  If the table has k columns, there can be as many as k+1 vertical
+    rules: the left hand rule, the rules between the columns, and the right
+    hand vertical rule.  The argument of the option is a comma-separated string
+    with k+1 entries.  Each entry is a single letter where ^s^ denotes a single
+    line, ^b^ denotes a bold line, ^d^ denotes a double line, and ^n^ denotes
+    no line (the default).
+
+^sep(^string^)^ specifies the types of horizontal lines in the table.  The
+    argument of the option is a comma-separated string with three entries 
+    specifying the top rule, the rule beneath the column headers, and the
+    rule below the table, respectively.  The rules are specified the same as
+    in the ^vlines()^ option.
+
+^tabskip(^#,#,...#^)^ specifies the space between each column.  There are k+1
+    tabskips in a k-column table.  The first tabskip indicates the amount of
+    space to skip before starting the table and the remaining tabskips
+    indicate the amount of space to place between each column.  The default
+    is to skip 0pt to the left of the table and 10pt between each column.
+    The arguments to this option are specified in terms of printer's points.
+
+^font(^string^)^ specifies fonts for each column.  The argument to ^font()^ is a
+    comma-separated list of TeX font commands (e.g., ^font(\rm,\bf,\it)^).
+    The default is to not specify any fonts.
+
+^bstrs(^string^)^ specifies a list of strings to precede every entry in each
+    of the columns.  The argument to ^bstrs()^ is a comma-separated list each 
+    element of which is placed in braces in the corresponding column in the 
+    halign template outside of any font specifications.  You may specify a
+    font in a ^bstrs()^ argument.  If you want to include a space before or
+    after one of these entries, enclose the entire string in braces. 
+
+^estrs(^string^)^ specifies a list of strings to precede every entry in each
+    of the columns.  This option is specified in the same way as ^bstrs()^.
+
+^missing(^string^)^ is a comma-separated list specifying a replacement string
+    for missing values.  There are k entries in this list, one for each of 
+    the k columns in the table.  The default is not to make any substitution.
+
+^align(^string^)^ is a comma-separated list of k arguments that specify the
+    horizontal alignment of each column.  Each argument is a single letter
+    where ^l^ denotes flush left alignment, ^c^ denotes centered alignment, and
+    ^r^ denotes flush right alignment.  The default is to center all columns.
+
+^format(^string^)^ is a comma-separated list of Stata format codes (e.g. %6.3f)
+    that specify the format for the values in the table.
+
+^nocenter^ specifies that the generated table should not contain TeX 
+    code to center the table horizontally.  The default is to create a
+    table that is centered.
+
+
+Remarks
+-------
+
+Stata does not handle the backslash character when the command line is
+parsed.  If you need to pass an argument that includes one or more characters
+that require the backslash (such as positioning a `$' character), then you
+will have to edit the resulting TeX code yourself as there is no way for the
+command to access that character in any kind of passed string.
+
+
+Author
+------
+
+        James W. Hardin
+        Stata Corporation
+        702 University Drive East
+        Phone: 409-696-4600
+               800-782-8272
+        Fax:   409-696-4601
+        email: stata@@stata.com
+
+
+Also see
+--------
+
+    STB:  STB-25  dm29

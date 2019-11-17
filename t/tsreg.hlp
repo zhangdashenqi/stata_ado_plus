@@ -1,0 +1,67 @@
+Time series regression                                           (STB-15: sts4)
+----------------------
+
+	^tsreg^ [varlist] [^weight^] [^if^ exp] [^in^ range] [^,^ ^current(^varlist^)^ 
+
+                ^lags(^#[,#,...]^)^ ^nosample^ ^static(^varlist^)^ other-options ]
+
+^tsreg^ estimates a time series regression and reports related statistics. 
+Lags of the "varlist" are included in the regression along with any 
+^static^ variables.  The current values of variables in the ^current^ varlist
+are also included.  A table of tests of the lag polynomials and estimates of
+long-run multipliers follows the regression output.  Finally, diagnostic
+tests of the regression are displayed.
+
+
+Primary options
+---------------
+
+^current(^varlist^)^ specifies the RHS variables whose current values are to
+  be included.  By default, no current values are included.
+
+^lags(^#[,#,...]^)^ indicates how many lags of each time series to include.  If 
+  only one number is indicated, that lag length is applied to the entire 
+  varlist.  If the ^lags^ option is omitted, ^lag(0)^ is assumed.  If several 
+  numbers separated by commas are typed, the numbers are applied to each of 
+  the variables in sequence.  For example, "lags(2,12,4)" would include two 
+  lags of the left-hand-side variable, twelve lags of the first explanatory 
+  variable, and four lags of the second explanatory variable.  If there are 
+  fewer lag lengths than variables, the last lag length listed is used for 
+  the remaining variables.  Extra lag lengths are ignored.
+
+^static(^varlist^)^ specifies the non-time series variables in the regression.
+
+
+Other options
+-------------
+
+^noco^nstant suppresses the constant.
+
+^nom^ult suppresses the table of long-run multipliers.
+
+^noo^utput suppresses all output.  The regression is run silently.
+
+^nor^egress suppresses the regression output.
+
+^replace^ replaces the original data set with the one used in the time series
+  regression.  By default, the original data set is restored at the end of
+  ^tsreg^.
+
+^nos^ample suppresses the sample coverage information.  If the ^period^ and
+  ^datevars^ have been specified previously, the sample will be displayed 
+  before the regression output.
+
+^not^est^ suppresses the diagnostic tests.
+
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts4 (STB-15)
+On-line:  ^help^ for ^datevars^, ^period^, ^regdiag^, ^tsfit, and ^tsmult^

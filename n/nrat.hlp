@@ -1,0 +1,35 @@
+.-
+help for ^nrat^                                           Version: 28/2/2002                          
+.-
+
+^Calculates the expected nr of patients enrolled and nr of events in a  trial^
+^----------------------------------------------------------------------------^
+
+  ^nrat ,at(^numlist asc >0^)^ p1(^string^)^ [^p2(^string^)^ | ^h^r^(^#^)^]
+             n1(^#^) n2(^#^) r^atio^(^#^)^ ^ap^(^#^)  [^t^u^(^string^)^]
+	     [^prev(^string^)^ [^s^trhr^(^string^) na^mes^(^string^)^] ]
+
+
+^Description^
+^-----------^
+^nrat^ is a companion program to ^sampsurv^. It can also be called from 
+sampsurv.ado by adding the option ^nrat(^timepoints^)^.
+
+Calculates the expected nr of patients enrolled and nr of events in a  trial
+at specified time points. A constant entry rate is assumed over period [0,^ap^]
+Useful for planning interim analyses. 
+
+^Options^
+
+^at()^ specifies a numlist of timepoints.
+
+Type ^help sampsurv^ for more information about the other options.
+
+^Author:^
+^-------^ 
+Wim van Putten
+Erasmus MC - Daniel den Hoed Cancer Center
+Department of Statistics
+Rotterdam
+The Netherlands
+e-mail:	w.vanputten@@erasmusmc.nl 

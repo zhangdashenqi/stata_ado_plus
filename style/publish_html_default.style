@@ -1,0 +1,47 @@
+*! Default HTML template for publish.ado
+*! Version 17 August 2010
+*! Author: Tamas Bartus, Corvinus University Budapest 
+*
+* Important notes and warnings: 
+*  - Do NOT replace comment characters * with //
+*  - Feel free to edit this file, but replace the word default with another name in the file name
+*  - please consult the help file publish.sthlp
+*
+<html>
+<head>
+  <title>Title</title> 
+  <style>
+	.st_caption {
+		margin: 0px 0px 10px 0px;
+		font-family:"Times New Roman";
+		font-size: 12pt;
+		text-align: center;
+	}
+	.st_table {
+		border-top:    solid black 1.0pt;
+		border-bottom: solid black 1.0pt;
+		align: left;
+		border-left:   none;
+		border-right:  none;
+		cellspacing: 0;
+		cellpadding: 0;
+		margin: 0px 0px 10px 0px;
+		font-family:"Times New Roman";
+		font-size: 8pt;
+	}
+	.publish {
+		margin: 0px 0px 0px 0px;
+		font-family:"Times New Roman";
+		font-size: 8pt;
+		text-align: left;
+	}
+  </style>
+</head> 
+<body> 
+
+* Tables produced by publish will be placed here...
+
+* DO NOT EDIT THE SUBSEQUENT TWO LINES!!!
+
+</body>
+</html>

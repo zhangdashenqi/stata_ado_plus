@@ -1,0 +1,149 @@
+{smcl}
+{* 10oct2006}{...}
+{cmd:help xtpmg}{right:(SJ7-2: st0125)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 14 16 2}{...}
+{p2col :{hi:xtpmg} {hline 2}}Pooled mean-group, mean-group, and
+dynamic fixed-effects models{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 16 2}{cmd:xtpmg} {depvar} [{indepvars}] {ifin} [{cmd:,} 
+{opt lr(varlist)}
+{opt ec(string)}
+{opt replace}
+{opt const:raints(string)}
+{opt nocons:tant}
+{opt l:evel(#)}
+{opt tech:nique(algorithm_spec)}
+{opt dif:ficult}
+{opt full}
+{it:model}]
+
+{p 4 6 2}
+You must {cmd:tsset} your data before using {cmd:xtpmg}; see {helpb tsset}.{p_end}
+{p 4 6 2}
+{it:varlists} may contain time-series operators; see
+{help tsvarlist}.{p_end}
+
+
+{title:Description}
+
+{pstd}
+{cmd:xtpmg} aids in the estimation of large-{it:N} and large-{it:T} panel-data
+models, where nonstationarity may be a concern. In addition to the traditional
+dynamic fixed-effects models, {cmd:xtpmg} allows for the pooled mean-group and
+mean-group estimators. Consider the model
+
+{p 4 12 2}d.y_it = {bind: phi*(y_(it-1)+beta*x_(it))} + {bind:d.y_(it-1)a_1}+... +
+{bind:y_(it-p)a_p} +
+{bind:d.x_(it)b_1}+...+{bind:d.x_(it-q)b_q} + e_(it) {space 4} i={(1,...,N}; {space 3} t={(1,...,T_i)},
+
+where
+{p 4 12 2}phi is the error correction speed of adjustment parameter to be estimated
+
+{p 4 12 2} beta is a (k x 1) vector of parameters{p_end}
+
+{p 4 12 2}a_1,...,a_p are p parameters to be estimated{p_end}
+
+{p 4 12 2}x_(it) is a (1 x k) vector of covariates{p_end}
+
+{p 4 12 2}b_1,...,b_q are q parameters to be estimated, and{p_end}
+
+{p 4 12 2}e_(it) is the error term. The assumed distribution of the error
+term depends on the model fitted.{p_end}
+
+
+{title:Options}
+
+{phang}
+{opt lr(varlist)} specifies the variables to be included when calculating the
+long-run cointegrating vector.  For identification, the first listed
+variable will have its coefficient normalized to 1.
+
+{phang}
+{opt ec(string)} is used to specify the name of the newly created
+error-correction term; default is {cmd:__ec}.
+
+{phang}
+{opt replace} overwrites the error-correction variable, if it exists.
+
+{phang}
+{opt constraints(string)} specifies the constraints to be applied to the
+model.  This option is currently used only with option {cmd:pmg}.
+
+{phang}
+{opt noconstant} suppresses the constant term.  This option cannot be used
+with option {cmd:dfe}.
+
+{phang}
+{opth cluster(varname)} specifies that the observations are independent across
+groups (clusters), but not necessarily within groups.  {it:varname} specifies
+to which group each observation belongs, e.g., {cmd:cluster(personid)} in data
+with repeated observations on individuals.  {opt cluster()} affects the
+estimated standard errors and variance{c -}covariance matrix of the estimators
+(VCE), but not the estimated coefficients; see 
+{bf:[U] 20.14 Obtaining robust variance estimates}.
+
+{phang}
+{opt level(#)} sets the confidence level; default is {cmd:level(95)}.
+
+{phang}
+{opt technique(algorithm_spec)} specifies {cmd:ml} optimization technique. 
+{it:algorithm_spec} is {it:algorithm} [{it:#} [{it:algorithm} [{it:#}]] ...],
+where {it:algorithm} is {{cmd:nr}|{cmd:bfgs}|{cmd:dfp}}. The {cmd:bhhh}
+algorithm is not compatible with {cmd:xtmpg}.
+{cmd:technique()} can be used only with option {cmd:pmg}.
+See {it:{help ml##model_options:model_options}} in {bf:[R] ml} for more
+information.
+
+{phang}
+{opt difficult} will use a different stepping algorithm in nonconcave regions
+of the likelihood.
+
+{phang}
+{opt full} specifies that all {it:N} cross-section regression results be
+listed.  Only the averaged coefficients are listed by default.
+
+{phang}
+{it:model} is the type of estimator to be fitted and is one of the following:
+
+{pmore}
+{cmd:pmg} is the default and specifies the pooled mean-group estimator.
+This model constrains the long-run coefficient vector to be equal across
+panels while allowing for group-specific short-run and adjustment
+coefficients.
+
+{pmore}
+{cmd:mg} specifies the mean-group estimator.  This model fits parameters as
+averages of the {it:N} individual group regressions.
+
+{pmore}
+{cmd:dfe} specifies the dynamic fixed-effects estimator.
+All parameters, except intercepts, are constrained to be equal across panels.
+
+
+{title:Examples}
+
+{phang}{cmd:. xtpmg d.c d.y d.pi, lr(l.c y pi) full}
+
+{phang}{cmd:. xtpmg d.c d(1/2).y d.pi if year>1962, ec(ec) lr(l.c y pi) mg replace}
+
+{phang}{cmd:. xtpmg d.c d.y d.pi, lr(l.c y pi) dfe}
+
+{phang}{cmd:. cons def 1 [ec]y=.75}{p_end}
+{phang}{cmd:. xtpmg d.c d.y d.pi, lr(l.c y pi) mg const(1) replace ec(ec)}
+
+
+{title:Also see}
+
+{psee}
+Online:  {helpb xtdata}, {helpb xtdes},
+{helpb xtreg}, {helpb xtsum},
+{helpb xttab}; {helpb tsset}
+{p_end}

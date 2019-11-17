@@ -1,0 +1,124 @@
+{smcl}
+{* 31jan2006}{...}
+{hline}
+help for {hi:redpace}{right:(SJ6-2: st0106)}
+{hline}
+
+{title:MSL estimation of RE dynamic probit models with autocorrelated errors}
+
+{p 4 12 2}
+{cmd:redpace} {it:depvar} {it:varlist} ({it:varsinit}) {ifin}
+	[{cmd:,} {cmdab:i(}{it:varname}{cmd:)} {cmdab:t(}{it:varname}{cmd:)}
+	{cmdab:r:ep(}{it:#}{cmd:)} 
+	{cmdab:seed(}{it:#}{cmd:)} {cmdab:s:eg(}{it:#}{cmd:)}
+	{cmdab:h:alton} {cmdab:p:rimes(}{it:matname}{cmd:)} 
+	{cmdab:d:rop(}{it:#}{cmd:)} {cmdab:f:rom(}{it:matname}{cmd:)}
+	{cmdab:ma:vg} {cmdab:no:auto}]
+
+
+{title:Description}
+
+{pstd}{cmd:redpace} estimates a random-effects dynamic probit model with
+autocorrelated errors by maximum simulated likelihood.
+
+
+{title:Options}
+
+{phang}{cmd:i(}{it:varname}{cmd:)} specifies the variable name that contains
+the cross-section identifier, corresponding to index {it:i}.
+
+{phang}{cmd:t(}{it:varname}{cmd:)} specifies the variable name that contains
+the time-series identifier, corresponding to index {it:t}.
+
+{phang}{cmd:rep(}{it:#}{cmd:)} specifies the number of replications or draws.
+
+{phang}{cmd:seed(}{it:#}{cmd:)} specifies the initial value of the
+pseudorandom number seed to be used by the {cmd:uniform()} function. Use the
+{cmd:seed()} option to ensure reproducibility of results. The number specified
+must be an integer. The default is {cmd:seed(81234567)}, but this option is
+ignored if {cmd:halton} is specified.
+
+{phang}{cmd:seg(}{it:#}{cmd:)} specifies symmetric systematic sampling (with
+antithetics) to be used and specifies the number of segments of the unit
+interval that are to be used.  {cmd:seg(2)} corresponds to antithetic
+sampling. The default value is {cmd:seg(1)} (i.e., standard sampling).  If
+{cmd:seg()} is specified, the number of replications must be a multiple of the
+number of segments, and the number of segments must be a multiple of 2.
+
+{phang}{cmd:halton} specifies that Halton quasirandom sequences be
+used rather than pseudorandom numbers, which is the default. This option
+requires the program {cmd:mdraws}.
+
+{phang}{cmd:primes(}{it:matname}{cmd:)} specifies a 1 x (T-1) matrix
+containing the prime numbers to be used for the Halton sequences. This option
+is ignored if {cmd:halton} not specified. The numbers specified must be
+integers. The user must ensure that they are primes. 
+
+{phang}{cmd:drop(}{it:#}{cmd:)} specifies the number of initial elements of
+the Halton sequence to be dropped for burn in. This option is ignored if
+{cmd:halton} is not specified. The default is {cmd:drop(0)}.
+
+{phang}{cmd:from(}{it:matname}{cmd:)} specifies a matrix containing starting
+values for the parameters of the model. Use this option to check that a global
+maximum has been found.  It also can be used to reduce the required number of
+iterations or to restart a previously halted run. The default uses a pooled
+probit for {it:t}>=2 and separate probit for the initial-period reduced form.
+
+{phang}{cmd:mavg} specifies that the first-order moving-average model should
+be used.  The default is the first-order autoregressive model.
+
+{phang}{cmd:noauto} specifies that the model without autocorrelated errors is
+to be estimated by MSL.  This option is useful for comparing with the
+Gaussian-Hermite quadrature estimates of the same model to see if the number
+of replications chosen is large enough in that case.
+
+
+{title:Remarks}
+
+{pstd}For full details of the estimator and an application, see Stewart
+(2005).  For more information on the {cmd:redpace} command, sample output, and
+an illustration and discussion of its usage, see Stewart (2006).
+
+{pstd}The lagged dependent variable must be constructed by the user and must
+appear as the first variable in {it:varlist}. It is the user's responsibility
+to ensure that both this variable and {it:depvar} are binary 0/1 variables.
+{it:varlist} should additionally contain the explanatory variables in the main
+equation.  {it:varsinit} should contain the variables in the initial period
+reduced form.
+
+{pstd}{cmd:redpace} requires a balanced panel; that is, the number of "time"
+observations for each cross-section unit must be the same. This balance is
+checked by the program.
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. redpace y Ly x1 x2 (x1 x2 z1 z2), i(id) t(time) rep(500) seed(945430778) }
+
+{p 8 12 2}{cmd:. matrix pp = (3, 7, 11, 13, 17) }
+
+{p 8 12 2}{cmd:. redpace y Ly x1 x2 (x1 x2 z1 z2), i(id) t(time) halton primes(pp) drop(20)}
+
+
+{title:Author}
+
+{p 4 4 2}Mark Stewart{break}
+Economics Department, University of Warwick, U.K.{break}
+<Mark.Stewart@warwick.ac.uk>
+
+
+{title:References}
+
+{p 4 8 2}Stewart, M. B. Forthcoming. The inter-related dynamics of unemployment 
+and low-wage employment. {it:Journal of Applied Econometrics}.
+
+
+{p 4 8 2}Stewart, M. B. 2006. Maximum simulated likelihood estimation of
+random-effects dynamic probit models with autocorrelated errors. 
+{it:Stata Journal} 6: 256--272.
+
+ 
+{title:Also see}
+
+{p 4 13 2}Online:  {help est}, {help ml}
+{p_end}

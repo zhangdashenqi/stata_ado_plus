@@ -1,0 +1,122 @@
+{smcl}
+{* 18oct2005}{...}
+{cmd:help jive}{right:(SJ6-3: st0108)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 13 15 2}{...}
+{p2col :{hi:jive} {hline 2}}Jackknife instrumental variables estimation 
+regression{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:jive} {depvar} [{it:{help varlist:varlist1}}]
+{cmd:(}{it:varlist2} {cmd:=} {it:varlist_iv}{cmd:)} {ifin}
+[{cmd:,} {it:options}]
+
+{synoptset 12 tabbed}{...}
+{synopthdr}
+{synoptline}
+{synopt :{opt ujive1}}use Angrist et al. unbiased JIVE1 estimator; the default{p_end}
+{synopt :{opt ujive2}}use Angrist et al. unbiased JIVE2 estimator{p_end}
+{synopt :{opt jive1}}use Blomquist and Dahlberg JIVE1 estimator{p_end}
+{synopt :{opt jive2}}use Blomquist and Dahlberg JIVE2 estimator{p_end}
+{synopt :{opt r:obust}}compute heteroskedasticity-robust standard errors{p_end}
+{synopt :{opt l:evel(#)}}set confidence level; default is {cmd:level(95)}{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+{cmd:by}, {cmd:rolling}, {cmd:statsby}, and {cmd:xi} are allowed; see
+{help prefix}.{p_end}
+
+
+{title:Description}
+
+{pstd} 
+{cmd:jive} fits a linear regression model with endogenous covariates
+using several variants of the jackknife instrumental variables
+estimator (JIVE).  These estimators are designed to eliminate the
+correlation between the first-stage fitted values and structural error
+term that causes the traditional two-stage least-squares estimator to be
+biased. 
+
+{pstd}
+The dependent variable {depvar} is modeled as a linear function of
+{it:{help varlist:varlist1}} and {it:varlist2}, using {it:varlist_iv}
+(along with {it:varlist1}) as instruments for {it:varlist2}.  See
+Angrist, Imbens, and Krueger (1999) and Blomquist and Dahlberg (1999) for more
+information.
+
+
+{title:Options}
+
+{phang}
+{opt ujive1}, the default, requests Angrist, Imbens, and Krueger's unbiased
+JIVE1 estimator, which adjusts both the Z'Z and Z'X terms of the first-stage
+regression.
+
+{phang}
+{opt ujive2} requests Angrist, Imbens, and Krueger's unbiased JIVE2 estimator,
+which adjusts only the Z'Z term of the first-stage regression.  Our Monte
+Carlo simulations suggest this estimator typically performs similarly to
+{opt ujive1}.
+
+{phang}
+{opt jive1} requests Blomquist and Dahlberg's JIVE1 estimator, which
+adjusts both the Z'Z and Z'X terms of the first-stage regression and uses
+OLS regression in the second stage.  Our Monte Carlo evidence indicates that
+{opt ujive1} and {opt ujive2} are preferable.
+
+{phang}
+{opt jive2} requests Blomquist and Dahlberg's JIVE2 estimator, which
+adjusts only the Z'Z term of the first-stage regression and uses OLS
+regression in the second stage.  Our Monte Carlo evidence indicates that {opt
+ujive1} and {opt ujive2} are preferable.
+
+{phang}
+{opt robust} requests that the Huber/White/sandwich
+heteroskedasticity-consistent covariance matrix be used in place of the
+traditional calculation.
+
+{phang}
+{opt level(#)} sets the default confidence level, as a percentage, for
+confidence intervals.  The default is {cmd:level(95)} or as set by
+{helpb set level}.
+
+
+{title:Examples}
+
+{phang}{cmd:. jive y1 (y2 = z1 z2 z3) x1 x2 x3}{p_end}
+
+{phang}{cmd:. jive y1 (y2 = z1 z2 z3) x1 x2 x3, ujive2}
+
+{phang}{cmd:. jive y1 x1 x2 (y2 y3 = z1 z2 z3), jive1}
+
+{phang}{cmd:. jive y1 x1 x2 (y2 = z1 z2 z3) x3, jive2}
+
+
+{title:References}
+
+{phang}
+Angrist, J. D., G. W. Imbens, and A. B. Krueger. 1999. Jackknife 
+instrumental variables estimation. 
+{it:Journal of Applied Econometrics} 14: 57-67.
+
+{phang}
+Blomquist, S. and M. Dahlberg. 1999. Small sample properties of LIML and 
+jackknife IV estimators: Experiments with weak instruments.
+{it:Journal of Applied Econometrics} 14: 69-88.
+
+
+{title:Also see}
+
+{psee}
+Manual:  {bf:[R] ivreg}
+
+{psee}
+Online:  {helpb ivreg}
+{p_end}

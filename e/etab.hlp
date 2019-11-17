@@ -1,0 +1,50 @@
+Extended tabulate utility                                        (STB-10: sg12)
+-------------------------
+
+     ^etab^ depvar varlist [weight] [^if^ exp] [^in^ range]^,^ tabulate_options
+
+
+Description
+-----------
+
+^etab^ tabulates the first variable in its variable list, here designated
+depvar, against all the other variables in varlist, applying the desired
+tabulate_options to each cross-tabulation.
+
+
+Example
+-------
+
+^etab^ is useful when you have a categorical result (or dependent) variable,
+against which you wish to compare a variety of categorical predictor (or
+independent) variables.
+
+Suppose you have a set of categorical variables from a survey:  vote (G.O.P. or
+democrat), race (white or nonwhite), sex (male or female), marstat (marital
+status: single, married, divorced, separated, or widowed) and housing (urban or
+rural).  You wish to compare all of the variables with vote.  Using ^etab^,
+one way to perform this is:
+
+                ^etab vote race sex marstat housing, col chi2^
+
+This command would cross-tabulate vote by race, showing column percent and
+chi-square test of independence, then vote by sex, showing the same options,
+then vote by marstat, showing the same options, then vote by housing, showing
+the same options.
+
+You would use this command in a situation where you need to quickly assess
+the bivariate relationship between one dependent variable and a wide variety
+of potential independent variables.
+
+All of the options available for two-way tabulations are available with
+this command.
+
+Also see
+--------
+Manual: [5s] tabulate
+On-line: ^help^ for ^tab^, ^xtab^
+
+Author
+------
+Dean H. Judson, 1013 James St., Newberg, OR 97132  503-537-0660
+ 

@@ -1,0 +1,138 @@
+{smcl}
+{* version 1.0.2 10mar2012}{...}
+{cmd:help des2}
+{hline}
+
+{title:Title}
+
+{p 5}
+{cmd:des2} {hline 2} {help describe:Describe} current dataset 
+(clickable output)
+
+
+{title:Syntax}
+
+{p 8}
+{cmd:des2} [{varlist}] 
+[{cmd:,} {cmd:cmd(}{it:{help des2##cmd:cmd}}{cmd:)}
+{opt varw:idth(#)} {opt valw:idth(#)} ] [{cmd::} {it:command}]
+
+
+{title:Description}
+
+{pstd}
+{cmd:des2} describes the data in memory. The program is very similar 
+to {help describe}, but with clickable output. A click on {it:varname} 
+{help tabulate oneway:tabulate}s {it:varname}, a click on the value 
+label evokes {help label:label list}.
+
+{pstd}
+If {cmd:des2} is used as a prefix, any variables {it:command} returns 
+in {cmd:r(varlist)} are added to {it:varlist}.
+
+
+{title:Options}
+
+{phang}
+{opt cmd(cmd)} in its simplest form executes {it:cmd varname}, when a 
+variable name is clicked. Default {it:cmd} is 
+{help tabulate oneway:tabulate}. Also see {help des2##cmd:Remarks}.
+
+{phang}
+{opt varwidth(#)} specifies the width for variable names. Default is to 
+{help abbrev():abbreviate} variable names to 15 characters. Note that 
+{it:#} must be between 14 and 32.
+
+{phang}
+{opt valwidth(#)} specifies the width for value label names. Default is 
+to {help abbrev():abbreviate} value label names to 12 characters. Note 
+that {it:#} must be between 11 and 32.
+
+{marker cmd}
+{title:Remarks}
+
+{pstd}
+Say you would like to see summary statistics for a variable when 
+clicking it, rather than tabulating the variable. You would then 
+type
+
+{phang2}{cmd:des2} [{it:varname}] {cmd:,} 
+{cmd:cmd(}{bf:{help summarize}}{cmd:)}{p_end}
+
+{pstd}
+Or, suppose you do not want to see summary statistics, but a two-way 
+tabulation of {it:varname} and another variable, say foreign, in the 
+auto dataset, you type
+
+{phang2}{cmd:des2} [{it:varname}] {cmd:,} 
+{cmd:cmd(}{bf:{help tabulate twoway:tabulate} @ foreign}{cmd:)}{p_end}
+
+{pstd}
+If you wanted to also see missing values you would add option 
+{opt missing}, so the line reads
+
+{phang2}{cmd:des2} [{it:varname}] {cmd:,} 
+{cmd:cmd(}{bf:{help tabulate twoway:tabulate} @ foreign , missing}{cmd:)}
+{p_end}
+
+{pstd}
+In both cases {hi:@} will be replaced with the clicked {it:varname}. 
+The placeholder is added to the end of {it:cmd} if you do not specify 
+it. Specifying 
+
+{phang2}{cmd:des2} [{it:varname}] {cmd:,} 
+{cmd:cmd(}{bf:{help summarize}}{cmd:)}{p_end}
+
+{pstd}
+is equal to
+
+{phang2}{cmd:des2} [{it:varname}] {cmd:,} 
+{cmd:cmd(}{bf:{help summarize} @}{cmd:)}{p_end}
+
+{pstd}
+and, in fact, equal to 
+
+{phang2}{cmd:des2} [{it:varname}] {cmd:,} {bf:{help summarize}}
+{p_end}
+
+{pstd}
+Whenever you want to specify options with {it:cmd}, you must specify 
+{opt cmd(cmd)}. If no options are needed you may omit {opt cmd()} in 
+most cases. In case a prefix (e.g. {help by}) is used with {it:cmd}, 
+double quotes are required. Specify 
+{cmd:cmd("}{it:prefix} {cmd::} {it:cmd}{cmd:")}.
+
+{pstd}
+Note that {it:cmd} is not checked beforehand, meaning {cmd:des2} 
+executes {it:cmd} as typed.
+
+
+{title:Examples}
+
+{phang2}{cmd:. sysuse auto}{p_end}
+{phang2}{cmd:. des2}{p_end}
+
+{phang2}{cmd:. des2 : lookfor hour}{p_end}
+
+
+{title:Acknowledgments}
+
+{pstd}
+Suggestions from Andreas Franken led to the possibility to use  
+{cmd:des2} as a prefix.
+
+
+{title:Author}
+
+{pstd}Daniel Klein, University of Bamberg, klein.daniel.81@gmail.com
+
+
+{title:Also see}
+
+{psee}
+Online: {help describe}, {help lookfor}, {help ds}
+{p_end}
+
+{psee}
+if installed: {help findname}
+{p_end}

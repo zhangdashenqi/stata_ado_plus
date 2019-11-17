@@ -1,0 +1,39 @@
+.-
+help for ^tabl^                                                    [STB-53: dm75]
+.-
+
+One-way tabulate with numeric and value labels
+----------------------------------------------
+
+    ^tabl^ varlist [^if^ exp] [^in^ range] [^ W^idth^(^#^)^ ]
+
+
+Description
+-----------
+
+^tabl^ produces a one-way tabulate with both value labels as well as numeric
+codes for each of the variables in varlist. String variables and numeric
+variables without value labels are tabulated using ^tab^.
+
+
+Options
+-------
+
+^width(^#^)^ specifies the maximal width (number of chars) used to display
+    the labels. Labels too wide to fit within this margin are wrapped.
+    ^width^ defaults to 40.
+
+
+Examples
+--------
+
+    . ^tabl sex educat^
+
+
+Also See:
+---------
+
+ Manual: ^[R] tabulate^
+
+On-line: help for @tabulate@      (One- and two-way tables of frequencies)
+                  @table@         (Tables of summary statistics)

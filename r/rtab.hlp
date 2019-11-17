@@ -1,0 +1,37 @@
+.-
+help for ^rtab^
+.-
+Reverse tabulate
+----------------
+
+ ^rtab^  varname [if] [in] [, SEParator(int 0) *]
+
+Description
+-----------
+
+^rtab^ tabulates values from highest to lowest while the
+     cumulative percent begins with the lowest value.  Thus
+     the cumulative percents can be interpreted as 
+     percentiles.
+
+Example
+-------
+
+ . ^rtab write^
+ . ^rtab write, sep(10) nolabel^
+ 
+ Acknowledgements
+ ----------------
+ 
+ Thanks to Nick Cox for helpful suggestions to improve the
+      program.
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA, Office of Academic Computing
+      ender@@ucla.edu 
+

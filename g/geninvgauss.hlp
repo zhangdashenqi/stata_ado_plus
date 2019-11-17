@@ -1,0 +1,33 @@
+{smcl}
+{* 23 aug 2002}{...}
+{hline}
+help for {hi:geninvgauss}
+{hline}
+
+{title:Generate random deviates from an inverse Gaussian distribution}
+
+{p 8 14}{cmd:geninvgauss} {it:newvar} 
+	[{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:,}
+	{cmd:mu(}{it:#}|{it:varname}{cmd:)}
+	{cmd:lambda(}{it:#}|{it:varname}{cmd:)}
+
+{title:Description}
+
+{p}{cmd:geninvgauss} generates data {it:newvar} from an inverse 
+Gaussian distribution.
+such that the mean is {cmd:mu} and the 
+variance is {cmd:mu}^3/{cmd:lambda}.   
+
+{title:Options}
+
+{p 0 4}{cmd:mu(}{it:#}|{it:varname}{cmd:)} specifies the first parameter, 
+mu, either constant or a variable.
+
+{p 0 4}{cmd:lambda(}{it:#}|{it:varname}{cmd:)} specifies the second parameter, 
+lambda, either constant or a variable.
+
+{title:Example}
+
+{p 8 12}{inp:. geninvgauss x, mu(2) lambda(3)}{p_end}
+{p 8 12}{inp:. summarize x}{p_end}
+

@@ -1,0 +1,143 @@
+{smcl}
+{* 18 May 2003}{...}
+{hline}
+help for {hi:ras2dta}{right:(SJ5-2: dm0014)}
+{hline}
+
+{title:Conversion of ASCII-raster grids (from ArcInfo/ArcView) for use in Stata}
+
+{p 8 14 2}
+{cmd:ras2dta ,}
+{cmdab:f:iles(}{it:filelist}{cmd:)}
+[{cmdab:idc:ell(}{it:varname}{cmd:)}
+	{cmdab:x:coord(}{it:#}{cmd:)}
+	{cmdab:y:coord(}{it:#}{cmd:)}
+	{cmdab:miss:ing(}{it:#}{cmd:)}
+	{cmdab:drop:miss}
+	{cmdab:ext:ension(}{it:string}{cmd:)}
+	{cmdab:genx:coord(}{it:varname}{cmd:)}
+	{cmdab:geny:coord}{cmd:(}{it:varname}{cmd:)}
+	{cmdab:head:er}
+	{cmdab:sav:ing}{cmd:(}{it:filelist}{cmd:)}
+	{cmd:replace}
+	{cmd:clear}]
+
+
+{title:Description}
+
+{p 4 4 2} {cmd:ras2dta} imports grids exported from ArcInfo/ArcView as
+<*{cmd.asc}> into Stata and saves them in Stata data format. {cmd:ras2dta}
+asserts that all observations are imported and that the number of rows times
+the number of columns is equal to the number of observations. {cmd:ras2dta}
+automatically detects, if header information is in the imported ASCII-file.
+For files without a header, the number of X- and Y-coordinates have to be
+manually specified.
+
+
+{title:Options}
+
+{p 4 8 2} {cmd:files(}{it:filelist}{cmd:)} is required. It specifies the names
+of the ASCII files in {it:filelist} to be converted into Stata format.
+ASCII files must be located in the same directory and be listed with a
+separating space, without the file extension.
+
+{p 4 8 2} {cmd:idcell(}{it:#}{cmd:)} is optional. It generates a spatial
+identifier (unique ID code) for the grid cells imported. The ID code starts at
+one in the top-left corner and increments in steps of one until the last cell
+at the bottom-right corner, from left to right and then top to bottom.
+{cmd:idcell()} saves the variable under the specified name in {it:varname}.
+
+{p 4 8 2} {cmd:xcoord(}{it:#}{cmd:)} is required if no header is present in
+the ASCII file. The number of X-values (number of columns or ncols) must be
+entered as an integer value.
+
+{p 4 8 2} {cmd:ycoord(}{it:#}{cmd:)} is required if no header is present in
+the ASCII file. The number of Y-values (number of rows or nrows) must be
+entered as an integer value.
+
+{p 4 8 2} {cmd:missing(}{it:#}{cmd:)} is optional. It must be specified if
+missing values are not the default ESRI no-data value of -9999.
+
+{p 4 8 2} {cmd:dropmiss} is optional. If specified, all default (= -9999) or
+user-defined (via {cmd:missing()}) missing values are dropped, including the
+corresponding codes from {cmd:idcell()}.
+
+{p 4 8 2} {cmd:extension(}{it:string}{cmd:)} specifies the file extension of
+the ASCII file.  {cmd:extension(.asc)} is the default. For files without an
+extension, {cmd:extension(" ")} must be entered.
+
+{p 4 8 2} {cmd:genxcoord(}{it:varname}{cmd:)} is optional. It creates the
+variable {it:varname} carrying identifiers for the columns of the entire
+imported grid.  X-coordinates will start with 1 at the top-left corner and
+increment to the right in steps of 1 (this is not affected by {cmd:dropmiss}).
+
+{p 4 8 2} {cmd:genycoord(}{it:varname}{cmd:)} is optional. It creates the
+variable {it:varname} carrying identifiers for the rows of the entire imported
+grid. Y-coordinates will start with 1 at the top-left corner and increment to
+the bottom in steps of 1 (this is not affected by {cmd:dropmiss}).
+
+{p 4 8 2} {cmd:header(}{it:filename}{cmd:)} optionally saves one ASCII header
+as a Stata data file for each imported grid. The header files are named
+{cmd:h_}{it:filename}, where {it:filename} is the name of the imported grid,
+with one variable called {cmd:hdr}. Existing files with the same name
+will be replaced.
+
+{p 4 8 2} {cmd:saving(}{it:filelist}{cmd:)} saves the Stata files under
+different names, as specified in {it:filelist} inside the parentheses of
+{cmd:saving()}, (without separating comma and file extension). {cmd:saving()}
+will always save the files with the extension <*{cmd:.dta}>. If {cmd:saving()}
+is specified, the number of imported grids in {cmd:files()} must equal the
+number of files specified in {cmd:saving()}. The default is to save the file
+in the same directory and under the same name as the original ASCII grid.
+
+{p 4 8 2} {cmd:replace} replaces existing files with the same name in
+current working directory.
+
+{p 4 8 2} {cmd:clear} clears the data currently in memory.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. ras2dta, files(file1 file2 file3) dropmiss}
+
+{p 4 8 2}{cmd:. ras2dta, f(file1 file2) idc(idcode) miss(-9876) x(1234) y(5432) genx(xa) geny(xb) head sav(f1out f2out)}
+
+
+{title:Remarks}
+
+{p 4 8 2} - Watch the comma ({cmd:,}) in the syntax after {cmd:ras2dta}.
+
+{p 4 8 2} - {cmd:ras2dta} automatically detects if a header is present. At one
+call of {cmd:ras2dta} users can import grids with and without headers.
+{cmd:ras2dta} also imports grids with different spatial structures at one
+call.
+
+{p 4 8 2} - If users import grids without headers, all grids need to have the
+same structure in terms of rows, columns, and no data values. If headers are
+present in all grids, one call of {cmd:ras2dta} can import grids with
+different structures.
+
+{p 4 8 2} - Tested with Win 2000/XP, ArcInfo 8.x, ArcView 3.x, ArcGIS 8.x and
+Stata/SE 8.x
+
+{p 4 8 2} - Comments and suggestions appreciated.
+
+
+{title:Acknowledgments}
+
+{p 4 4 2} - Thanks to Nick Cox and Nick Winter for programming help via
+{browse "http://www.stata.com/support/statalist/":statalist}.
+
+
+{title:Author}
+
+{p 4 4 2} {browse "mailto:danielix@gmx.net?subject=ras2dta.ado":Daniel M{c u:}ller} {p_end}
+{p 4 4 2} {browse "http://www.agrar.hu-berlin.de/wisola/ipw/plr/":Junior Research Group Postsocialist Land Relations} {p_end}
+{p 4 4 2} {browse "http://www.agrar.hu-berlin.de/wisola":Institute for Agricultural Economics and Social Sciences} {p_end}
+{p 4 4 2} {browse "http://www.hu-berlin.de":Humboldt University Berlin} {p_end}
+
+
+{title:Also see}
+
+{p 4 13 2} Online:  help for {help infile}, {help egen}, {help dta2ras} (if installed), {help spatsam} (if installed)
+{p_end}

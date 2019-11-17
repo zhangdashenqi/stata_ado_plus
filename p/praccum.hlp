@@ -1,0 +1,162 @@
+.-
+help for ^praccum^ - 1.6.4 - 2Nov2005
+.-
+
+Accumulate results from ^prvalue^
+-------------------------------
+
+  ^praccum^, [^xis(^value^)^ ^u^sing^(^matrixnm^)^ ^s^aving^(^matrixnm^)^ ^gen^erate^(^rootname^)^]
+
+where either saving() or using() are required.
+
+Description
+-----------
+
+^praccum^ accumulates predictions from a series of calls to ^prvalue^ and 
+optionally saves these accumluated values to variables. These variables can 
+then be plotted. This command allows you to plot predicted values in 
+situations that cannot be handled by ^prgen^ (e.g., nonlinearities).
+
+The command works with cloglog, cnreg, intreg, logit, mlogit, mprobit, nbreg, 
+ologit, oprobit, poisson, probit, regress, slogit, tobit, zinb, zip, ztnb, 
+and ztp.
+
+
+Options
+-------
+
+^xis(^value^)^ specifies the value of the x-variable associated with the predicted
+    values that are being accumulated.  If ^xis^ is not specified, new values
+    are not accumulated.
+
+^using(^matrixnm^)^ specifies the name of matrix to which accumulated results 
+    should be added.  ^matrixnm^ will be created if it does not exist.
+
+^saving(^matrixnm^)^: is only used to save the initial results and differs from
+    differs from ^using()^ in that it will overwrite ^matrixnm^ if it exists.
+
+^generate(^rootname^)^: root name of variables to be created from the matrix 
+    specified by ^using^. This is only used when you are done accumulating 
+    results and are ready to generate the variables.
+
+Examples of included squared terms
+----------------------------------
+
+Consider the logit:
+
+^. use binlfp,clear^
+^. gen age2 = age*age^
+^. logit lfp k5 k618 age age2 wc hc lwg inc^
+
+If you want to plot the predictions against age, you cannot use ^prgen^ since 
+when age changes, age2 must also change. The command:
+
+^. prvalue , x(age=20 age2=400) rest(mean)^
+
+computes predicted values for age=20 and age2=20*20=400. The command:
+
+^. praccum , saving(mage) xis(20)^
+
+creates a matrix named mage that contains three columns. The first column will
+have a 20 for the value of age; the second the probability of a 0 given the 
+values of the independent variables used in ^prvalue^, and the third column 
+will have the probability of a 1. We now change the value of age and add this
+to the matrix mage:
+
+^. prvalue , x(age=25 age2=625) rest(mean)^
+^. praccum , using(mage) xis(25)^
+
+Here we are just adding a row to mage. This process repeats for other values:
+
+^. prvalue , x(age=30 age2=900) rest(mean)^
+^. praccum , using(mage) xis(30)^
+^. prvalue , x(age=35 age2=1225) rest(mean)^
+^. praccum , using(mage) xis(35)^
+^. prvalue , x(age=40 age2=1600) rest(mean)^
+^. praccum , using(mage) xis(40)^
+^. prvalue , x(age=45 age2=2025) rest(mean)^
+^. praccum , using(mage) xis(45)^
+^. prvalue , x(age=50 age2=2500) rest(mean)^
+^. praccum , using(mage) xis(50)^
+^. prvalue , x(age=55 age2=3025) rest(mean)^
+^. praccum , using(mage) xis(55)^
+^. prvalue , x(age=60 age2=3600) rest(mean)^
+^. praccum , using(mage) xis(60) gen(agsq)^
+
+Produces the output:
+
+^New variables created by praccum:^
+
+^Variable |     Obs        Mean   Std. Dev.       Min        Max^
+^---------+-----------------------------------------------------^
+^   agsqx |       9          40   13.69306         20         60^
+^  agsqp0 |       9    .4282142   .1752595   .2676314   .7479599^
+^  agsqp1 |       9    .5717858   .1752595   .2520402   .7323686  ^
+
+Which can be plotted:
+
+^. graph agsqp1 agsqx,c(s)^
+
+Example using ^forvalues^
+-------------------------
+
+The ^forvalues^ command makes using ^praccum^ much simpler.  The
+following yields the same output as the example above:
+
+^. capture matrix drop mage^
+^. forvalues count = 20(5)60 {^
+^.    local countsq = `count'*`count'^
+^.    prvalue, x(age `count' age2 `countsq') rest(mean) brief^
+^.    praccum, using(mage) xis(`count')^
+^. }^
+^. praccum, using(mage) gen(agsq)^
+
+Example using global macros
+---------------------------
+
+^forvalues^ is not available for Stata 6.  Here, the task can still be 
+simplified by using global macros. The advantage of this approach is
+that you can let Stata do the multiplying:
+
+^. global age = 20^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , saving(mage) xis($age)^
+^. global age = 25^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , using(mage) xis($age)^
+^. global age = 30^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , using(mage) xis($age)^
+^. global age = 35^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , using(mage) xis($age)^
+^. global age = 40^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , using(mage) xis($age)^
+^. global age = 45^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , using(mage) xis($age)^
+^. global age = 50^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , using(mage) xis($age)^
+^. global age = 55^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , using(mage) xis($age)^
+^. global age = 60^
+^.     global age2 = $age*$age^
+^.     prvalue , x(age=$age age2=$age2) rest(mean)^
+^.     praccum , using(mage) xis($age) gen(agsq)^
+^. graph agsqp1 agsqx,c(s)^
+
+.-
+Authors: J. Scott Long - jslong@@indiana.edu
+         Jeremy Freese - jfreese@@ssc.wisc.edu
+         www.indiana.edu/~jslsoc/

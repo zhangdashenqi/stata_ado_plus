@@ -1,0 +1,62 @@
+.-
+help for ^regpt^
+.-
+
+Regression with a Moving Point
+------------------------------
+
+^. regpt, [ r(correlation) n(sample size) ]^
+
+When you start ^regpt^, you can supply the correlation
+between X and Y and the sample size, or accept the default
+correlation of .3 and sample size of 30.  Based on the 
+correlation and sample size, points are randomly generated
+and then plotted showing a scatterplot with regression line.
+You are then shown a dialog box that allows you to move
+a "Moving Point", shown as a yellow square (assuming
+you are using the default Stata color scheme).
+
+You can move the point in the Y axis, adjusting its distance 
+from the regression line without the point included, 
+i.e. (Y-Yhat) .  As you adjust the point, you can compare 
+the regression line without the point (in green) with the 
+regression line with the point (in red).
+
+You can move the point in the X axis.  As you move the point
+along the X axis, the distance from the regression line
+without the point (Y-Yhat) is held constant.  This allows
+you to see the consequences of varying X while keeping 
+Y-Yhat constant.
+
+As you move the "Moving Point", you can see the equation for
+the regression line with the point change (and compare it to
+the regression line without the point).  You can also see 
+some Regression Diagnostic Statistics for the regression
+equation ^with^ the point in the equation, namely the
+^residual^, ^leverage^ and ^Cook's D^.
+
+By default, you are shown a plot that has a scatterplot
+and regression line.  You can choose to view other plots
+  - Scatterplot with Regression Line
+  - Residual vs. Fitted Plot
+  - Leverage vs. Residual Squared
+  - Leverage vs. Residual Squared with Cook's D
+    (Cook's D is indicated by the size of the circle).
+When you change the Plot type, you can click "Reshow Now"
+to immediately switch plot types.
+
+When you are done, you can click the ^Done^ button.
+You can reset X to 0, and Y-Yhat to 0 via the ^Reset^ button.
+You can see this help window by clicking ^Help^.
+
+If you have comments or suggestions, please email 
+Michael Mitchell at mnm@@ucla.edu .
+
+Author
+------
+
+Michael N. Mitchell
+Statistical Computing and Consulting
+UCLA, Academic Technology Services
+mnm@@ucla.edu
+   

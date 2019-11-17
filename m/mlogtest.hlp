@@ -1,0 +1,107 @@
+.-
+help for ^mlogtest^ - 25Aug2006
+.-
+
+Tests for multinomial logit model
+---------------------------------
+
+    ^mlogtest^ [varlist][, ^a^ll ^l^r ^w^ald ^c^ombine ^lrc^omb
+        ^s^et(varlist [\ varlist]) ^i^ia ^h^ausman ^sm^hsiao
+        ^d^etail ^b^ase]
+
+^mlogtest^ computes a variety of tests for multinomial logit models.  The user
+selects the tests they want by specifying the appropriate options. For each
+independent variable, ^mlogtest^ can perform either a likelihood-ratio or
+Wald test of the null hypothesis that the coefficients of the variable equal
+zero across all equations.  ^mlogtest^ can also perform Wald or likelihood-
+ratio tests of whether any pair of outcome categories can be combined. In
+addition, ^mlogtest^ allows one to compute both Hausman and Small-Hsiao tests
+of the assumption of the independence of irrelevance alternatives (IIA) for
+each possible omitted category.
+
+Options
+-------
+
+^varlist^ selects variables to test with the wald or lr options. By default,
+    the significance of each coefficient in the model is tested.
+
+^all^ specifies that all available tests should be performed.
+
+^lr^ conducts likelihood-ratio tests for each independent variable.
+
+^wald^ performs Wald tests for each independent variable.
+
+^combine^ computes Wald tests of whether two outcomes in the mlogit can be
+combined.
+
+^lrcomb^ conducts likelihood-ratio tests of whether two outcomes can be
+combined
+
+^hausman^ computes Hausman tests of the IIA assumption using Stata's ^hausman^ 
+command (see [R] ^hausman^)
+
+^suest^ computes Hausman tests of the IIA assumption using Stata's ^suest^ 
+command (see [R] ^suest^)
+
+^smhsiao^ performs Small-Hsiao tests of the IIA assumption.
+
+^iia^ specifies that all tests of the IIA assumption should be performed.
+
+^detail^ reports ^hausman^ output from IIA test (default is to provide only a
+summary of results)
+
+^base^ also conducts an IIA test omitting the base category of the original
+mlogit estimation.  This is done by re-estimating the model using the largest
+remaining category as the base category, although the original estimates are
+restored to memory afterward.
+
+^set(^varlist [\ varlist] ...^)^ specifies that a set of variables is to be
+considered together for the lrtest or waldtest.  The slash \ is used to specify
+multiple sets of variables.  This option is particularly useful when one has
+included a categorical independent variable in the model as a set of dummy
+variables, as one can test that the coefficients for all of the dummy variables
+are zero across all equations.
+
+Examples
+--------
+
+^. mlogit whoclass income dad_educ male black hispanic asian^
+
+^. mlogtest, all^
+
+^. mlogit whoclass income dad_educ male black hispanic asian singlpar stepmom^
+> ^stepdad^
+
+^. mlogtest, lr set(black hispanic asian \ singlpar stepmom stepdad)^
+
+Return matrices
+---------------
+
+r(combine): results of Wald tests to combine categories.  Rows represent all
+contrasts among categories; columns indicates the categories contrasted, the
+chisq, df, and p of test.
+
+r(lrcomb): results of LR tests to combine categories.  Rows represent all
+contrasts among categories; columns indicates the categories contrasted, the
+chisq, df, and p of test.
+
+r(hausman): results of Hausman tests of IIA assumption.  Each row is one test.
+Columns indicate the omitted category of a given test, the chisq, df, and p.
+
+r(smhsiao): results of Small-Hsiao tests of IIA assumption.
+
+r(wald): results of Wald test that all coefficients of an independent variable
+equals zero
+
+r(lrtest): results of likelihood-ratio test that all coefficients of an
+independent variable equals zero
+
+Acknowledgment
+--------------
+The code used for the routine to calculate the Small-Hsiao test is based
+on a program by Nick Winter.
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu

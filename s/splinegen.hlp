@@ -1,0 +1,100 @@
+{smcl}
+{* 24jan2007}{...}
+{hline}
+help for {hi:splinegen}{right:(SJ7-1:st0120)}
+{hline}
+
+{title:Generate regression spline basis functions}
+
+{p 8 17 2}
+{cmd:splinegen} {it:varname} [ {it:#} [ {it:# ...}]]
+{ifin}
+[{cmd:,}
+{cmdab:b:asis(}{it:stubname}{cmd:)}
+{cmdab:bk:nots(}{it:# #}{cmd:)}
+{cmdab:deg:ree(}{it:#}{cmd:)}
+{cmd:df(}{it:#}{cmd:)}
+{cmdab:kf:ig(}{it:#}{cmd:)}
+{cmdab:o:rthog}
+]
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:splinegen} creates new variables named {it:varname}{hi:_1},
+{it:varname}{hi:_2}, ..., containing basis functions for regression
+splines by using knots specified either in {it:#} [{it:#} {it:...}]
+or via the {cmd:df()} option.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:basis(}{it:stubname}{cmd:)} defines {it:stubname} as the first
+characters of the names of the new variables holding the basis
+functions. Default {it:stubname} is {it:varname}. The new variables
+are called {it:stubname}{hi:_1}, {it:stubname}{hi:_2}, ....
+
+{p 4 8 2}
+{cmd:bknots(}{it:# #}{cmd:)} define boundary knots for the
+spline. The spline function will be linear beyond the boundary
+knots. Default values of {it:# #} are the minimum and maximum
+values of {it:varname}.
+
+{p 4 8 2}
+{cmd:degree(}{it:#}{cmd:)} is the degree of spline basis functions
+desired. Possible values of {it:#} are 0, 1, and 3. Quadratic
+splines or splines higher than cubic are not supported at
+this time. The default is {cmd:degree(3)}, meaning cubic spline.
+
+{p 4 8 2}
+{cmd:df(}{it:#}{cmd:)} sets the desired degrees of freedom (df) of the spline
+basis. The number of knots required is one less than the df for linear and
+cubic splines and equal to the df for zero-order splines (i.e., a
+step-function or dummy-variable basis). Knots are placed at equally spaced
+centiles of the distribution of {it:varname}; e.g., for linear or cubic
+splines with {cmd:df(4)}, knots are placed at the 25th, 50th, and 75th
+centiles of the distribution of {it:varname}. For degree 1 and 3, default
+{it:#} is determined from the formula int(n^0.25)-1, where n is the sample
+size; for degree 0, {it:#} is int(n^0.25).
+
+{p 4 8 2}
+{cmd:kfig(}{it:#}{cmd:)} determines the amount of rounding applied to the
+knots determined automatically from the distribution of {it:varname}. The
+default is {cmd:kfig(6)}, meaning that four significant figures are preserved.
+This option is seldom specified.
+
+{p 4 8 2}
+{cmd:orthog} creates orthogonalized basis functions. All
+basis functions higher than the first (linear) function
+are uncorrelated and have mean 0 and standard deviation 1. The linear function
+is also uncorrelated with the higher-basis functions.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. splinegen x 12 20 40}
+
+{p 4 8 2}{cmd:. splinegen x, df(3) name(Z)}
+
+{p 4 8 2}{cmd:. splinegen x, df(3) degree(1) orthog q(Q)}
+
+
+{title:Author}
+
+{p 4 4 2}
+Patrick Royston, MRC Clinical Trials Unit, London.{break}
+patrick.royston@ctu.mrc.ac.uk
+
+
+{title:Acknowledgment}
+
+{p 4 4 2}
+Gareth Ambler (Department of Statistical Science, UCL, London) played a major
+role in developing the code for {cmd:splinegen}.
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  {helpb mvrs}, {helpb uvrs}

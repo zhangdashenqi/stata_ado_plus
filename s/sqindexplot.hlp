@@ -1,0 +1,132 @@
+{smcl}
+{* 25march2006}{...}
+{cmd:help sqindexplot}{right:(SJ6-4: st0111)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 11 13 2}{...}
+{p2col :{hi:sqindexplot} {hline 2} Sequence index plots}{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmdab:sqindexplot}
+{ifin}
+[{cmd:,} {it:options}]
+
+{synoptset 20}{...}
+{synopthdr}
+{synoptline}
+{synopt:{opth ranks(numlist)}}restrict tabulation on most frequent
+{it:numlist}{p_end}
+{synopt:{opt se}}apply same elements similarity{p_end}
+{synopt:{opt so}}apply same order similarity{p_end}
+{synopt:{opth order(varname)}}specify order of vertical axis{p_end}
+{synopt:{opth by(varname)}}plot groups of sequences based on {it:varname}{p_end}
+{synopt:{opth color(colorstyle)}}apply colors to the elements{p_end}
+{synopt:{opt gapinclude}}include sequences with gaps in the tabulation{p_end}
+{synopt:{it:twoway_options}}options allowed with {helpb graph twoway}{p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd}{cmd:sqindexplot} draws sequence index plots. These plots draw a
+horizontal line for each sequence, which changes its colors according
+to the elements.
+
+{pstd} Out of the box, sequence index plots have several shortcomings, which
+should be dealt with when fine-tuning the graph:
+
+{phang}o In general, colored versions of sequence index plots are
+  more sensible than black-and-white versions. The {cmd:color()} opton allows
+  fine-tuning of the colors used for the elements.
+
+{phang}o With many observations, there is a tendency to overplot the lines,
+which overrepresents elements with higher category values
+(levels). The effect can be moderated by tuning the {help aspectratio}. It
+might also be sensible to restrict the graph to the most frequent sequences
+by using the {cmd:ranks()} option.
+
+{phang}o Sequence index plots depend heavily on the order of
+the sequences along the vertical axis. Without further options, a naive
+algorithm is used to order the sequences; however, the {cmd:order()} option 
+sorts the sequences according to a user-defined variable. It is
+sensible to use the results of {helpb sqom} to order the sequences in a
+sequence index plot.
+
+
+{title:Options}
+
+{phang} {opt ranks(numlist)} is used to restrict the output to the
+most frequent sequences. {it:{help numlist}} refers to the position of the
+sequences in the sorted frequency table. Hence, {cmd:ranks(1)} refers to the
+most frequent sequence, whereas {cmd:ranks(1/10)} refers to the 10 most frequent
+sequences. You can also specify {cmd:ranks(2(2)20)}.
+
+{phang}{cmd:se} is used to request that a plot showing only the elements of
+sequences are used (same elements similarity). Hence, with this
+option sequences like A-B-A-B, B-A-A-B, and A-B-B-A would be 
+drawn as A-B.
+
+{phang} {cmd:so} is used to request a plot where only the order of
+elements is shown (same-order similarity). With this option the
+sequences A-B-B-A and A-B-A-A would both be drawn as if they were
+A-B-A.
+
+{phang}{cmd:order(}{it:varname}{cmd:)} is used to control the order of
+the sequences along the vertical axis. Without this option, a simple
+algorithm for the order is used. However, an order derived
+from an application of {help sqom} is preferable.
+
+{phang}{opt by(varname)} specifies to plot groups of sequences separately
+based on {it:varname}.
+
+{phang}{cmd:color(}{it:colorstyle}{cmd:)} specifies the colors for the
+elements.  You can specify one color for each element, whereby the
+first color refers to the element with the lowest level. See
+{it:{help colorstyle}} for a list of color choices.{p_end}
+
+{phang}{cmd:gapinclude} is used to include sequences with gaps. The
+default behavior is to drop sequences with gaps from the graph. 
+The term gap refers only to missing values on the element
+variable within a sequence. Sequences with missing values at the
+begining and at the end of a sequence are included in any case. You
+might consider using {cmd:sqset} with option {cmd:trim} to get rid of
+superfluous missings (see {help sq##3:sq} for details.){p_end}
+
+{phang}
+{it:twoway_options} are a set of common options supported by all
+{cmd:twoway} commands; see {it:{help twoway_options}}.
+
+
+{title:Examples}
+
+{phang}{cmd:. sqindexplot}
+
+{phang}{cmd:. sqindexplot, color(black red yellow green cranberry)}
+
+{phang}{cmd:. sqindexplot, so}
+
+{phang}{cmd:. sqindexplot, se}
+
+
+{title:Author}
+
+{pstd}Ulrich Kohler, WZB, kohler@wz-berlin.de{p_end}
+
+{title:Also see}
+
+{psee}
+Manual:  {bf:[G] graph}, {bf:[G] graph twoway rbar}, {bf:[G] barlook options} 
+
+{psee} Online: {helpb sq}, {helpb sqdemo}, {helpb sqset},
+{helpb sqdes}, {helpb sqegen}, {helpb sqstat}, {helpb sqindexplot},
+{helpb sqparcoord}, {helpb sqom}, {helpb sqclusterdat},
+{helpb sqclustermat}
+{p_end}
+

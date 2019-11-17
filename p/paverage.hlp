@@ -1,0 +1,65 @@
+{smcl}
+{* July 2008}{...}
+{hline}
+{cmd:help for paverage} 
+{hline}
+
+{title:Title}
+
+{p 4 8 2}
+{bf:paverage --- Calculate p-average series in a panel dataset.}
+
+{title:Syntax}
+
+{phang}
+{cmd: paverage} {helpb varlist}{cmd:,} {opt p(#)} {opth ind:iv(varname)} {opth yr(varname)}
+
+
+{title:Description}
+
+{pstd}
+A common way of analyzing panel data with large T is to use five-year or 10-year averages of the data in order to reduce business-cycle effects and 
+measurement error. {cmd:paverage} (pronounced p-average) calculates p-year averages of the variables in a panel dataset, where p=2,3,4,5,...,10. The time period
+must a multiple of p.
+After running {cmd:paverage} the labels of the original variables remain attached to the p-year average variables. 
+
+{pstd}
+I should caution users that calculating p-average of the series would throw away some variations in the data, and that this is a consequence they are willing to bear.
+
+{pstd}
+Note that {cmd:paverage} can be used for any {it:balanced} panel datasets not just for cross-country data.
+
+
+{title:Options}
+
+{dlgtab:Options}
+
+
+{pstd}
+{opt p(#)} indicates the number of year for which averages need to be calculated. # ranges from 2 to 10. For example, specifying p(5) will create a 5-year average dataset.
+
+{pstd}
+{opth ind:iv(varname)} specifies the variable containing the countries, individuals, or firms.
+
+{pstd}
+{opth yr(varname)} specifies the variable containing the years.
+
+
+{dlgtab:Examples}
+
+{phang}{cmd:. paverage gdp fdi import trade, p(5) ind(countryname) yr(year)}
+ 
+
+{title:Author}
+
+{p 4 4 2}{hi: P. Wilner Jeanty}, Post-Doctoral Researcher, Dept. of Agricultural, Environmental, and Development Economics,{break} 
+           The Ohio State University{break}
+           
+{p 4 4 2}Email to {browse "mailto:jeanty.1@osu.edu":jeanty.1@osu.edu} for any comments or suggestions.
+
+
+{title:Also see}
+
+{p 4 13 2}Manual: {hi:[D] collapse} 
+{p 4 13 2}Online: {helpb collapse}, {helpb egen}
+

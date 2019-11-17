@@ -1,0 +1,131 @@
+{smcl}
+{* 01 Oct 2003}{...}
+{hline}
+help for {hi:dta2ras}{right:(SJ5-2: dm0014)}
+{hline}
+
+{title:Creates ASCII grid file from Stata data file for import into ArcInfo/ArcView as raster grid}
+
+{p 8 14 2}
+{cmd:dta2ras}
+[{it:varlist}]
+{cmd:,} 
+{c -(}{cmdab:head:er(}{it:filename}{cmd:)} {c |} {cmdab:x:coord(}{it:#}{cmd:)}
+{cmdab:y:coord(}{it:#}{cmd:)}{c )-}
+[{cmdab:cell:size(}{it:#}{cmd:)}
+	{cmdab:xll:corner(}{it:#}{cmd:)}
+	{cmdab:yll:corner(}{it:#}{cmd:)}
+	{cmdab:miss:ing(}{it:#}{cmd:)}
+	{cmdab:idc:ell(}{it:varname}{cmd:)}
+	{cmdab:idf:ile(}{it:filename}{cmd:)}
+	{cmdab:exp:and}	
+	{cmdab:norest:ore}
+	{cmdab:sav:ing(}{it:filelist}{cmd:)}
+	{cmd:replace}]
+
+
+{title:Description}
+
+{p 4 4 2} {cmd:dta2ras} exports Stata data variables and saves them as ASCII
+raster grids in the format required by, e.g., ArcView and ArcInfo. If no
+{it:varlist} is specified, all the variables in the dataset are exported. The
+ASCII grid files include a standard header and can be readily imported into,
+e.g., ArcView (assuming Spatial Analyst or 3D-Analyst is loaded) with
+{bf:File} -> {bf:Import Data Source} -> {bf:ASCII Raster}. {cmd:dta2ras}
+asserts that the number of rows times the number of columns is equal to the
+number of observations. At one call of {cmd:dta2ras}, only variables of the
+same spatial structure (same number of rows and columns and same cellsize) can
+be exported.
+
+
+{title:Options}
+
+{p 4 8 2} {cmd:header(}{it:filename}{cmd:)} specifies the header file, which
+must be a Stata data file named {it:filename} with one variable named
+{cmd:hdr}. {help ras2dta} can automatically create this header file. If this
+option is not specified, {cmd:xcoord} and {cmd:ycoord} are required.
+
+{p 4 8 2} {cmd:xcoord(}{it:#}{cmd:)} is required if {cmd:header()} is not
+specified and defines the number of X-coordinates (number of columns or
+ncols) as integer values.
+
+{p 4 8 2} {cmd:ycoord(}{it:#}{cmd:)} is required if {cmd:header()} is not
+specified and defines the number of Y-coordinates (number of rows or
+nrows) as integer values.
+
+{p 4 8 2} {cmd:cellsize(}{it:#}{cmd:)} is optional. It specifies the cell size
+of the resulting grids. The default is {cmd:cellsize(1)}.
+
+{p 4 8 2} {cmd:xllcorner(}{it:#}{cmd:)} is optional. It specifies the
+X-coordinate of the lower-left cell. The default is {cmd:xllcorner(1)}.
+
+{p 4 8 2} {cmd:yllcorner(}{it:#}{cmd:)} is optional. It specifies the
+Y-coordinate of the lower-left cell. The default is {cmd:yllcorner(1)}.
+
+{p 4 8 2} {cmd:missing(}{it:#}{cmd:)} is optional. It needs to be specified,
+if missing values are not the default ArcInfo/ArcView no-data value of
+-9999.  The default is {cmd:missing(-9999)}.
+
+{p 4 8 2} {cmd:idcell(}{it:varname}{cmd:)} is a variable carrying the spatial
+identifier (unique ID code) of the grid cells and is required if {cmd:expand}
+is specified. The upper-left cell in {cmd:idcell} starts at 1 and must
+increment in steps of 1 moving from left to right, and then top to bottom. 
+
+{p 4 8 2} {cmd:idfile(}{it:filename}{cmd:)} is the Stata data file that carries
+the spatial identifier (ID code) of the grid cells and is required if
+{cmd:expand} is specified without {cmd:idcell()}. The upper-left cell in
+{cmd:idfile} must carry the identifier 1 and must increment in steps
+of 1 moving from left to right and then top to bottom. If {cmd:idfile()} is
+specified, the identifying variable in the master and using data must have the
+same name.
+
+{p 4 8 2} {cmd:expand} expands the dataset to the full number of observations,
+e.g., if a spatial sample was previously drawn using {help spatsam}.
+{cmd:expand} depends on the presence of {cmd:idcell()} or {cmd:idfile()}.
+
+{p 4 8 2} {cmd:norestore} prevents the restoration of the data previously in
+memory.
+
+{p 4 8 2} {cmd:saving(}{it:filelist}{cmd:)} saves the ASCII files under 
+different names, as specified in {it:filelist} (names separated by spaces,
+without comma and file extension). {cmd:saving()} saves the files
+with the extention {cmd:.asc}. If {cmd:saving()} is specified, the number of
+exported variables in {it:varlist} must equal the number of files specified in
+{it:filelist}. The default is to save the resulting raster files under the
+same name as the exported variables with the ending {cmd:_o.asc}.
+
+{p 4 8 2} {cmd:replace} replaces already existing files of same name in
+current working directory.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. dta2ras somevariable, header(hdr) idcell(idc)}
+
+{p 4 8 2}{cmd:. dta2ras var1 var2 varX, x(20) y(40) cell(10) exp idc(idcell) miss(-3333) xll(12345) yll(98765) sav(f1 f2 fX) replace}
+
+
+{title:Remarks}
+
+{p 4 8 2} - Tested under Win 2000/XP, ArcInfo 8.3, ArcView 3.x, and Stata/SE 8.x
+
+{p 4 8 2} - Comments and suggestions appreciated.
+
+
+{title:Acknowledgments}
+
+{p 4 4 2} Nick Cox provided useful programming assistance.
+
+
+{title:Author}
+
+{p 4 4 2} {browse "mailto:danielix@gmx.net?subject=ras2dta.ado":Daniel M{c u:}ller} {p_end}
+{p 4 4 2} {browse "http://www.agrar.hu-berlin.de/wisola/ipw/plr/":Junior Research Group Postsocialist Land Relations} {p_end}
+{p 4 4 2} {browse "http://www.agrar.hu-berlin.de/wisola/ipw/plr/":Junior Research Group Postsocialist Land Relations} {p_end}
+{p 4 4 2} {browse "http://www.hu-berlin.de":Humboldt University Berlin} {p_end}
+
+
+{title:Also see}
+
+{p 4 13 2}Online:  help for {help outfile}, {help tostring}, {help ras2dta} (if installed), {help spatsam} (if installed)
+{p_end}

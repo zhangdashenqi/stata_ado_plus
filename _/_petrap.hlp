@@ -1,0 +1,42 @@
+.-
+help for ^_petrap^ - 28 Jun 2006
+.-
+
+Check to see if model estimation incompatible with postestimation command
+-------------------------------------------------------------------------
+
+    ^_petrap^ [,^cmd^(string) ^svy^ ^r^obust ^c^luster ^w^eight ^pw^eight
+         ^iw^eight ^aw^eight ^force^ ]
+
+
+Description
+-----------
+
+^_petrap^ produces an error message if the previous model estimated uses 
+    any of the specified options.  It is intended to use for trapping
+    errors in models incompatible with estimation command.
+
+Options
+-------
+
+^cmd()^ name of command that should appear in error message.  if not
+    specified, then "program" is used
+    
+^force^ will ignore conditions, and thus return with no errors
+
+^robust^ exits with error if robust standard errors used in estimated model
+
+^cluster^ exits with error if cluster() specified
+
+^weight^ exits with error if pweight, aweight, or iweight specified
+
+^pweight^ exits with error if pweight specified
+
+^aweight^ exits with error if aweight specified
+
+^iweight^ exits with error if iweight specified
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu

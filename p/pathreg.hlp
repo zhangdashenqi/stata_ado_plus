@@ -1,0 +1,39 @@
+.-
+help for ^pathreg^					
+.-
+
+path analysis using ols regression
+----------------------------------
+
+   ^pathreg^ ^(^dv1 varlist1^)^ [ ^(^dv2 varlist2^)^ ^(^dv3 varlist3^)^ ^(^...^)^ ] 
+
+
+Description
+-----------
+
+^pathreg^ is a convience command that allows the user to specify all of the
+equations in a path analysis model.
+
+Warning
+-------
+
+^pathreg^ does not do any checks to determine that the path analysis model meets 
+all of the requirement and assumptions of path analysis.  This matter is left up 
+to the user.
+
+^Note:^  ^pathreg^ will work with Stata 11 but does not support factor variables.
+
+Example
+-------
+
+. ^pathreg (math female)(read math female)(write read math female)^
+
+
+Author
+------
+      Phil Ender
+      UCLA Statistical Consulting
+      ender@@ucla.edu
+
+
+

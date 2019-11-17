@@ -1,0 +1,81 @@
+.-
+help for ^nwest^                                            (STB-39: sg72)
+.-
+
+Regression models with Newey-West standard errors
+-------------------------------------------------
+
+    ^nwest^ ^command^ depvar [varlist] [^if^ exp] [^in^ range]
+        [^,^ ^lag(^#^)^ ^t(^varname^)^ ^force^ ^l^evel^(^#^)^ opts]
+
+
+^command^ is one of
+
+	^regress^       ^logit^       ^probit^       ^poisson^
+
+^nwest^ shares the features of all estimation commands; see help @est@.
+
+To reset problem-size limits; see help @matsize@.
+
+
+Description
+-----------
+
+^nwest^ produces Newey-West standard errors for coefficients estimated by OLS
+regression.  The error structure is assumed to be heteroscedastic and possibly
+autocorrelated up to some lag (autocorrelation is of unknown structure).
+
+Note that if ^lag(0)^ is specified, the variance estimates produced by ^newey^
+are simply the Huber/White/sandwich robust variance estimates as calculated 
+using the ^robust^ with the individual commands; see help @regress@, @logit@,
+@probit@, or @poisson@.
+
+
+Options
+-------
+
+^lag(^#^)^ specifies the maximum lag to consider in the autocorrelation 
+    structure.  If you specify ^lag()^>0, then you must also specify 
+    option ^t()^ (the default is zero).
+
+^t(^varname^)^ specifies the variable recording the time of each observation.
+    varname must record values indicating the observations are equally spaced
+    in time or you must also specify ^force^.
+
+^force^ specifies estimation is to be forced even though ^t()^ shows the data not
+    to be equally spaced.  ^nwest^ will estimate the model assuming the lags
+    based on the data ordered by ^t()^ are appropriate.
+
+^level(^#^)^ specifies the confidence level, in percent, for the confidence
+    intervals; see help @level@.
+
+^opts^ are other options allowed by the individual commands.
+
+Example
+-------
+
+	. ^nwest regress usr idel sysv, lag(3) t(time)^
+        . ^nwest logit foreign price weight displ, lag(0)^
+	. ^nwest poisson events age history gender, lag(2) t(t0) eform^
+	. ^nwest probit union area tenure educ married, lag(4) t(year)^
+
+
+Author
+------
+
+     James W. Hardin
+     Stata Corp.
+     Fax: 409-696-4601, 
+     email: stata@@stata.com
+
+
+Also see
+--------
+
+    STB:  STB-39 sg72
+ Manual:  [U] 26 Estimation and post-estimation commands
+          [U] 35 Overview of model estimation
+	  [R] newey
+On-line:  help for @est@, @lincom@, @linktest@, @test@, @testnl@, 
+                   @vce@, @matsize@;
+                   @regress@, @svyreg@, @xtgls@

@@ -1,0 +1,54 @@
+{smcl}
+{* *! version .95 1nov2007}{...}
+{cmd:help profileplot}
+{hline}
+
+{title:Title}
+
+{p2colset 5 22 24 2}{...}
+{p2col :{hi:profileplot} {hline 2}}Profile plot
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:profileplot} {varlist} {ifin} {weight}
+{cmd:,} {cmd:by}({varname}) [{cmdab:m:edian} {cmdab:xl:abel}({it:x-axis_labels}) 
+{cmdab:xt:itle}({it:title_string}) {cmdab:msym:bol}({it:marker_symbol}) 
+{cmdab:leg:end}({it:legend_options})  
+{cmdab:ang:le}({it:angle}) {cmdab:*} ]
+
+{synoptset 20 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Main}
+{synopt:{opt m:edian}}plot medians instead of means{p_end}
+{synopt:{opt xl:abel()}}labels for the x-axis{p_end}
+{synopt:{opt xt:itle()}}title for the x-axis{p_end}
+{synopt:{opt msym:bol()}}marker symbol, use i for invisible{p_end}
+{synopt:{opt leg:end()}}legend options{p_end}
+{synopt:{opt ang:le()}}angle for x-axis labels{p_end}
+{synopt:{opt *}}other graphics options{p_end}
+{synoptline}
+{cmd:pweight}s are allowed but are ignored with the {cmd:median} option.
+{p2colreset}{...}
+
+{title:Description}
+
+{pstd}
+{cmd:profileplot} draws a profile plot of several variables for each of
+two or more groups.
+
+{title:Examples}
+
+{cmd:. profileplot read write math science, by(group)}
+{cmd:. profileplot read write math science, by(group) median}
+{cmd:. profileplot read write math, by(group) xlabel(1 "R" 2 "W" 3 "M")}
+
+{title:Author}
+
+{p 4 4 2}Phil Ender{break}Statistical Consulting Group
+{break}UCLA Academic Technology Services{break}ender@ucla.edu
+
+{title:Acknowlegdements}
+
+{p 4 4 2}Xiao Chen of UCLA ATS for numerous helpful suggestions.{p_end}

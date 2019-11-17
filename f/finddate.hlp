@@ -1,0 +1,12 @@
+Display dates of data availability                               (STB-17: sts7)
+----------------------------------
+
+	^finddate^ [varlist] [^in^ range] [^if^ exp][^,^ [^Date(^varlist^)^] [^Nobs^] ]
+
+^finddate^ reports the first and last dates for which the specified variables 
+are non-missing.  If no date variables are specified, the first and last 
+observation numbers are reported.  If ^nobs^ is specified, ^finddate^ also 
+reports for each variable: the total number of non-missing observations, the 
+total number of "potential" observations (the number of observations from the 
+first to the last non-missing value), and the number of breaks in the series.
+

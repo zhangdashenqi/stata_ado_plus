@@ -1,0 +1,72 @@
+{smcl}
+{* 28jan2007}{...}
+{hline}
+help for {hi:asciiplot}
+{hline}
+
+{title:Graph ASCII character set in current graph font}
+
+{p 8 17 2}
+{cmd:asciiplot} 
+[ 
+{cmd:,} 
+{it:scatter_options}
+]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:asciiplot} creates a graph of all ASCII characters from 33
+through 255 using the current graph font.  The graph can be used to
+identify quickly the ASCII code of a symbol which you want to insert
+into a graph or to ascertain that such a symbol is not in fact
+available. 
+
+
+{title:Options} 
+
+{p 4 8 2}{it:scatter_options} are options of 
+{help twoway_scatter:twoway scatter}. 
+
+
+{title:Remarks} 
+
+{p 4 4 2}The ASCII code of a symbol is needed to insert special
+characters into the text of a Stata graph using the {cmd:char()}
+function.  You may assign the symbol to a local macro which is then
+referenced in a subsequent graph command, or you may use in-line
+evaluation of a call to {cmd:char()} in such a command.
+
+
+{title:Examples}
+
+{p 4 4 2}{cmd:. asciiplot}{p_end}
+{p 4 4 2}{cmd:. local cubed = char(179)}{p_end}
+{p 4 4 2}{cmd:. scatter  mpg trunk, xti( "Trunk Volume ft`cubed'" )}{p_end}
+{p 4 4 2}{cmd:. scatter  mpg trunk, xti( "Trunk Volume (ft`=char(179)')" )}
+
+{p 4 4 2}{cmd:. asciiplot, scheme(lean1) saving(ascii)} 
+
+
+{title:Authors}
+
+{p 4 4 2}Michael Blasnik{break}
+michael.blasnik@verizon.net
+	 
+{p 4 4 2}Svend Juul{break} 
+Institut for Folkesundhed, Afdeling for Epidemiologi, Aarhus{break}  
+sj@soci.au.dk
+
+{p 4 4 2}Nicholas J. Cox{break}
+Durham University{break} 
+n.j.cox@durham.ac.uk
+
+{p 4 4 2}Michael Blasnik developed the original idea of the graph.  Svend Juul
+provided some nice design suggestions, and Nick Cox wrote the initial ado
+file.
+
+
+{title:Also see}
+
+{p 4 13 2}Online: help for {help char()}
+

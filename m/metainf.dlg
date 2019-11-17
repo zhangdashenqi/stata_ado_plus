@@ -1,0 +1,79 @@
+/* 
+
+*! metainf dialog version 1.0.0, 13 May 2003, T. J. Steichen, steichen@triad.rr.com 
+*!    for metainf version 3.0.0,    Mar 2000, Aurelio Tobias, atobias@isciii.es 
+
+Influence of a single study in meta-analysis estimation
+-------------------------------------------------------
+
+Syntax: metainf theta setheta [if exp] [in range] 
+                 [, id(labvar) eform random print graph_options]
+
+
+To install in User Statistics menu via Stata commands:
+  . window menu append item "stUserStatistics" "Meta-based Influence Analysis (metain&f)" "db metainf"
+  . window menu refresh
+To permanently install, place the commands in your -profile.do- file.
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help metainf")
+RESET res1, label("Reset")
+
+DIALOG main, label("metainf 3.0.0 - Meta-based Influence Analysis") tabtitle("Main")
+BEGIN
+  TEXT     tx_effect      10   5 330 .,                 ///
+     label("Vars for Effect Sizes: theta, se(theta), in that order")
+  VARLIST  vl_effect       @  _ss  @ .,                 ///
+     label("Effect Sizes: theta, se(theta)")
+
+  CHECKBOX cb_id          10  60  40 .,                 ///
+     label("ID:")                                       ///
+     onclickon(main.vn_id.enable)                       ///
+     onclickoff(main.vn_id.disable)
+  VARNAME vn_id           50  60 290 .,                 ///
+     label("ID Variable")                               ///
+     option("id")
+
+  GROUPBOX gb_pool   10   85 195 _ht3h,                 ///
+     label("Pooling Model")
+  RADIO    r_fixed   15  100 185     .,                 ///
+     label("Fixed, Inverse Variance")  first            ///
+     option("fixed")
+  RADIO    r_random   @  125   @     .,                 ///
+     label("Random, Inverse Variance") last             ///
+     option("random")
+
+  CHECKBOX cb_eform 230   95 200     .,                 ///
+     label("Use exp(theta)")                            ///
+     option("eform")
+  CHECKBOX cb_print 230  125 200     .,                 ///
+     label("Print Details")                             ///
+     option("print")
+
+  GROUPBOX gb_hpopts   10 155  330   _ht1h,             ///
+     label("Allowed hplot Options:")
+  EDIT     ed_hpopts   15 175  320       .,             ///
+     label("hplot Options")
+END
+
+INCLUDE ifin
+
+
+PROGRAM command
+BEGIN
+  put "metainf "
+  varlist main.vl_effect 
+  INCLUDE _ifin_pr
+  beginoptions
+    option radio(main r_fixed r_random)
+    optionarg main.vn_id
+    option main.cb_eform
+    option main.cb_print
+    put main.ed_hpopts 
+  endoptions
+END

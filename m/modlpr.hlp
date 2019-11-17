@@ -1,0 +1,91 @@
+.-
+help for ^modlpr^                                                 (STB-57: sts16)
+.-
+
+Estimate long memory in a timeseries via Modified Log-Periodogram Regression
+----------------------------------------------------------------------------
+
+    ^modlpr^  varname  [^if^ exp] [^in^ range] [^, p^owers^(^numlist^)^ 
+		      ^notrend^] 
+
+^modlpr^ is for use with time-series data.  You must ^tsset^ your data before 
+using ^modlpr^; see help @tsset@. 
+
+
+Description
+-----------
+
+^modlpr^ computes a modified form of the Geweke/Porter-Hudak (GPH, 1983) 
+estimate of the long memory (fractional integration) parameter, d, of a 
+timeseries, proposed by Phillips (1999a, 1999b). If a series
+exhibits long memory, it is neither stationary (I[0]) nor is it a unit 
+root (I{1}) process; it is an I(d) process, with d a real number. However,
+distinguishing unit-root behavior from fractional integration may be
+problematic, given that the GPH estimator is inconsistent against d>1 
+alternatives. 
+
+This weakness of the GPH estimator (see ^gphudak^) is solved by Phillips' 
+Modified Log Periodogram Regression estimator, in which the dependent 
+variable is modified to reflect the distribution of d under the null 
+hypothesis that d=1. The estimator gives rise to a test statistic for d=1, 
+which is a standard normal variate under the null. Phillips suggests (p.11) 
+that deterministic trends should be removed from the series before application 
+of the estimator. By default, a linear trend is extracted from the series.
+This may be suppressed with the ^notrend^ option.
+
+A choice must be made of the number of harmonic ordinates to be included
+in the spectral regression. The regression slope estimate is an estimate of
+the slope of the series' power spectrum in the vicinity of the zero 
+frequency; if too few ordinates are included, the slope is calculated from
+a small sample. If too many are included, medium and high-frequency components
+of the spectrum will contaminate the estimate. A choice of root(T), or 
+power = 0.5, is often employed. To evaluate the robustness of the estimates,
+a range of power values (from 0.4 - 0.75) is commonly calculated as well.
+^modlpr^ uses the default power of 0.5. A list of powers may be given.
+
+The command displays the d estimate, number of ordinates, conventional 
+standard error and P-value, as well as the test statistic (^zd^) for
+the test of d=1, and its p-value. These values are returned in a matrix, 
+e(modlpr), formatted for display. ^estimates list^ for details. 
+
+
+Examples
+--------
+
+        . ^use http://fmwww.bc.edu/ec-p/data/Mills2d/fta.dta^
+	. ^modlpr ftap^
+	. ^modlpr ftap, power( 0.5 0.55:0.8)^
+
+
+References
+----------
+      
+Geweke, J. and Porter-Hudak, S.,  The Estimation and Application
+      of Long Memory Time Series Models, J. of Time Series Analysis,
+      1983, 221-238.
+
+Phillips, Peter C.B., Discrete Fourier Transforms of Fractional
+      Processes, 1999a. Unpublished working paper No. 1243, Cowles 
+      Foundation for Research in Economics, Yale University.
+      http://cowles.econ.yale.edu/P/cd/d12a/d1243.pdf
+      
+Phillips, Peter C.B., Unit Root Log Periodogram Regression, 1999b.
+      Unpublished working paper No. 1244, Cowles Foundation for 
+      Research in Economics, Yale University.
+      http://cowles.econ.yale.edu/P/cd/d12a/d1244.pdf
+      
+Authors
+-------
+
+        Christopher F Baum, Boston College, USA
+        baum@@bc.edu
+        
+        Vince Wiggins, Stata Corporation
+        vwiggins@@stata.com
+        
+Also see
+--------
+
+ Manual:  ^[R] regress^
+On-line:  help for @regress@, @time@, @tsset@; @ac@; @corrgram@;
+          @gphudak@ (if installed); @roblpr@ (if installed)

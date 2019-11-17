@@ -1,0 +1,210 @@
+{smcl}
+{* 27jun2001}{...}
+{hline}
+help for {hi:permute2}
+{hline}
+
+{title:Monte Carlo permutation tests}
+
+{p 8 12}{cmd:permute2} {it:progname} {it:varname1} [{it:varlist}]
+[{cmd:,} {cmd:by}{cmd:(}{it:groupvars}{cmd:)} 
+{cmdab:r:eps}{cmd:(}{it:#}{cmd:)} {cmdab:di:splay}{cmd:(}{it:#}{cmd:)}
+{cmdab:le:ft} {cmdab:ri:ght} {cmdab:nop:rob} {cmd:eps}{cmd:(}{it:#}{cmd:)}
+{cmd:post}{cmd:(}{it:filename}{cmd:)} {cmdab:do:uble} 
+{cmdab:ev:ery}{cmd:(}{it:#}{cmd:)} {cmd:replace} {cmd:leavemore} ] 
+
+{title:Description}
+
+{p} {cmd: permute2} is an extension to {help permute} which estimates p-values
+for permutation tests based on Monte Carlo simulations.
+
+{p} {cmd: permute2} generates results as in {help permute} but for as many
+statistics as {it:  progname} specifies.
+
+{p} {it: progname} is the name of the program that computes the test
+statistics and places the values in the global macros {cmd: S_1},
+{cmd: S_2}, ..., as specified by {it: progname}.  The arguments to
+{it:progname} are {it: varname1} and {it: varlist}.  {cmd: permute2}
+assumes that {it:  progname} will set the value of global macro {cmd: S_2}
+to the number of statistics when run with {cmd: S_1} equal to "first", but
+will not complain if {cmd:S_2} remains unchanged.  In either case
+{cmd: S_1} should not remain "first", nor should it be cleared out; typically
+{cmd: S_1} should be set to the value of the first test statistic as in
+{cmd:permute}.
+
+{p} For each repetition, the values of {it: varname1} are randomly permuted,
+{it:progname} is called to compute each test statistic, and a count is kept
+whether this value is more extreme than the observed value.
+
+{p} The values of the test statistics for each random permutation can also be
+stored in a dataset using the {cmd: post()} option.
+
+{title:Options}
+
+{p 0 4}{cmd:by}{cmd:(}{it:groupvars}{cmd:)} specifies that the permutations be
+performed within each group defined by the values of {it:groupvars}; i.e.,
+group membership is fixed and the values of {it:varname1} are independently
+permuted within each group.  For example, this permutation scheme is used for
+randomized-block anova to permute values within each block.
+
+{p 0 4}{cmd:reps}{cmd:(}{it:#}{cmd:)} specifies the number of random
+permutations to perform.  The default is 100.
+
+{p 0 4}{cmd:display}{cmd:(}{it:#}{cmd:)} displays output every {it:#}-th
+random permutation.  The default is 10.  {cmd:display(0)} suppresses all but
+the final output.
+
+{p 0 4}{cmd:left} | {cmd:right} request that one-sided p-values be computed.  
+If {cmd:left} is
+specified, an estimate of Pr(T <= T(obs)) is produced, where T is the test
+statistic and T(obs) is its observed value.  If {cmd:right} is specified, an
+estimate of Pr(T >= T(obs)) is produced.  By default, two-sided p-values
+are computed; i.e., Pr(|T| >= |T(obs)|) is estimated.
+
+{p 0 4}{cmd:noprob} specifies that no p-values are to be computed.
+
+{p 0 4}{cmd:eps}{cmd:(}{it:#}{cmd:)} specifies the numerical tolerance for 
+testing |T| >= |T(obs)|,
+T <= T(obs), or T >= T(obs).  These are considered true if, respectively,
+|T| >= |T(obs)| - {it:#}, T <= T(obs) + {it:#}, or T >= T(obs) - {it:#}.  
+By default, it
+is 1e-7.  {cmd:eps()} should not have to be set under normal circumstances.
+
+{p 0 4}{cmd:post}{cmd:(}{it:filename}{cmd:)} specifies a name of a 
+{cmd:.dta} file that will be created holding
+the values of the test statistic computed for each random permutation.
+
+{p 0 4}{cmd:double} can only be specified when using {cmd:post()}.  
+It specifies that the values
+of the test statistic be stored as type {cmd: double}; default is type 
+{cmd:float}.
+See help {help datatypes}.
+
+{p 0 4}{cmd:every}{cmd:(}{it:#}{cmd:)} can only be specified when using 
+{cmd:post()}.  It specifies that the
+values of test statistic be saved to disk every {it:#}-th repetition; see help
+{help postfile}.
+
+{p 0 4}{cmd:replace} indicates that the file specified by {cmd:post()} 
+may already exist and,
+if it does, it can be erased and replaced by a new one.
+
+{p 0 4}{cmd:leavemore} indicates that {help more} not be changed within
+{cmd:permute2}.  The default is to {cmd:set more off} before simulation and
+{cmd: set more on} before exiting.
+
+{title:Remarks}
+
+{p}{cmd:permute2} works faster when {it:varname1} is a 0/1 variable 
+(with no missing values).
+So, if using a 0/1 variable, specify it as the one to be permuted.
+
+{title:Guidelines for the program}
+
+{p}At a minimum {it:progname} must have the following outline:{p_end}
+{input}
+        program define {it:progname}
+                compute {it:test statistic}
+                global S_1 = {it:test statistic}
+        end
+{text}
+{p}Arguments to {it:progname} are {it:varname1 varlist}; i.e., the same
+variables that are specified with {cmd:permute2} are passed to {it:progname}.
+
+{p}See the help for {help permute} for examples of this case.
+
+{p} In addition, the global macro {cmd:S_1} is set to {cmd:"first"} for the
+first call to {it:progname}, which is assumed to return the number of test
+statistics otherwise computed in global macro {cmd:S_2}.  If {cmd:S_2} remains
+unchanged, {cmd:S_1} is assumed to contain the observed value of the (only)
+test statistic computed by {it:progname}; this is so that older programs
+written for {cmd:permute} will work for {cmd:permute2} without change.  If
+{cmd:S_2} is set to an integer, {cmd:permute2} then runs {it:progname} again
+to compute the observed values of each test statistic, T(obs).
+
+{p}Thus, {it:progname} can optionally have the form:{p_end}
+{input}
+        program define {it:progname} /* args = varname1 [varlist] */
+		local first $S_1
+                {it:setup and parse}
+                compute {it:test statistics}
+		/* check init condition */
+                if "`first'" == "first" {
+                	global S_1 = {it:save first test statistic}
+                        global S_2 = {it:number of T's}
+                        exit
+                }
+		/* save all test statistics */
+                global S_1 = {it:save first test statistic}
+                global S_2 = {it:save second test statistic}
+                ...
+                {it:save last test statistic}
+        end
+{text}
+{p}Here is an example of "myreg.ado", a program that estimates the
+permutation distribution p-value for all the coefficients in a regression
+assuming that the first of the independent variable is being permuted.{p_end}
+{input}
+        program define myreg
+                version 7
+                local first $S_1
+        
+                /* parse the arguments */
+                syntax varlist(min=2) [, NOI ]
+                if "`noi'"=="" {
+                        local noi quietly
+                }
+                /* the response is assumed to be the second variable */
+                gettoken x1 varlist : varlist
+                gettoken y varlist : varlist
+                local varlist `x1' `varlist'
+                /* count the number of regressors, + const */
+                local p : word count `varlist'
+                local p = `p'+1
+        
+                /* do analysis and save results */
+                `noi' regress `y' `varlist'
+                tempname b
+                matrix `b' = e(b)
+                local names : colnames `b'
+                * return number of regressors
+                if "`first'"=="first" {
+                        global S_1 = `b'[1,1]
+                        global S_2 = `p'
+                        exit
+                }
+        
+                * return stats in global S_i
+                forvalues i = 1/`p' {
+                        local xx : word `i' of `names'
+                        global S_`i' = `b'[1,`i']
+                        global S_name`i' = "`xx'" 
+                }
+        end
+{text}
+
+{p}To use this program, call {cmd:permute2} using{p_end}
+
+{p 4 8}{inp:. permute2 myreg length displ weight}{p_end}
+
+{title:Examples}
+
+{p 4 8}{inp:. permute2 myreg length displ weight}{p_end}
+{p 4 8}{inp:. permute2 myreg length displ weight, reps(1000)}{p_end}
+{p 4 8}{inp:. permute2 myreg length displ weight, reps(10000) display(100)}{p_end}
+
+{p 4 8}{inp:. permute2 myreg length displ weight, reps(1000) di(100) post(pearson)}{p_end}
+{p 4 8}{inp:. permute2 myreg length displ weight, reps(10000) di(1000) post(pearson) /* }
+{p_end}
+{p 4 8}{inp:  {space 8}    */ replace every(1000) double}{p_end}
+
+{title:Author}
+
+{cmd:permute} originally by William Sribney, StataCorp, 1998.
+{cmd:permute} converted to Stata version 7 code by Roberto Gutierrez, StataCorp, 2001.
+{cmd:permute2} Jeff Pitblado, StataCorp, 2001.
+
+{title:Also see}
+
+ Manual:  {hi: [R] postfile}, {hi: [R] simul}
+On-line:  help for {help perm}, {help permute}, {help postfile}, {help simul}

@@ -1,0 +1,126 @@
+{smcl}
+{* 16aug2004}{...}
+{hline}
+help for {hi:bssize}{right:(SJ4-3:st0073)}
+{hline}
+
+{title:Bootstrap replication size calculator}
+
+{p 8 17 2}{cmd:bssize initial} {cmd:,} [{cmd:tau(}{it:#}{cmd:)}
+{cmd:pdb(}{it:#}{cmd:)} {cmd:pctt(}{it:#}{cmd:)} ]
+
+{p 8 17 2}{cmd:bssize refine using }{it:filename} 
+
+{p 8 17 2}{cmd: bssize analyze} [{cmd:using} {it:filename}] {cmd:,} 
+[{cmd:tau(}{it:#}{cmd:)} {cmd:pdb(}{it:#}{cmd:)} 
+{cmd:append(}{it:filename}{cmd:)} ]
+
+{p 8 17 2}{cmd: bssize cleanup}
+
+{p 4 4 2}{it:filename} is the name of a file created by the {cmd:bootstrap}
+command or the {cmd:postfile} command.
+
+
+{title:Description}
+
+{p 4 4 2}
+The {cmd:bssize} suite of commands implement Andrews and Buchinsky's 
+method (2000) of choosing the number of bootstrap replications for 
+standard errors and percentile-{it:t} confidence intervals.  For more 
+information, see Poi (2004).
+
+{p 4 4 2}
+{cmd:bssize} {cmd:initial} provides an initial estimate of the number of 
+bootstrap replications needed; it corresponds to step 1 of Andrews and 
+Buchinsky's three-step method.
+
+{p 4 4 2}
+{cmd:bssize} {cmd:refine} takes as input a file containing the bootstrapped 
+values of the statistics and produces a refined estimate of the number 
+of bootstrap replications needed; it corresponds to steps 2 and 3 of the 
+three-step method.
+
+{p 4 4 2}
+{cmd:bssize} {cmd:analyze} takes as input a file containing the bootstrapped 
+values of the statistics and performs postestimation analysis of the 
+accuracy of the bootstrapped standard errors.  {cmd:bssize} {cmd:analyze} is
+not implemented for use with percentile-{it:t} confidence intervals.
+
+{p 4 4 2}
+{cmd:bssize} {cmd:cleanup} clears all the global macros set by {cmd:bssize}
+{cmd:initial} to store and pass information to {cmd:bssize} {cmd:refine}.
+All such macro names begin with {cmd:BSS_}.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:tau(}{it:#}{cmd:)} specifies the probability 1-tau with which the 
+bootstrapped statistic differs by no more than {it:pdb} percent from the 
+ideal bootstrap.  The default for {cmd:bssize} {cmd:initial} is 5%.  
+{cmd:tau()} is required with {cmd:bssize} {cmd:analyze} if {cmd:pdb()} is not 
+specified.
+
+{p 4 8 2}
+{cmd:pdb(}{it:#}{cmd:)} specifies the maximum percentage deviation between 
+the bootstrapped statistic and the ideal bootstrap acceptable with 
+probability 1-tau.  The default for {cmd:bssize} {cmd:initial} is 5%.  
+{cmd:pdb()} is required with {cmd:bssize} {cmd:analyze} if {cmd:tau()} is not 
+specified.
+
+{p 4 8 2}
+{cmd:pctt(}{it:#}{cmd:)} specifies the size, as a percentage, of the 
+percentile-{it:t} confidence intervals being produced.  If {cmd:pctt()} 
+is not specified, {cmd:bssize} assumes standard errors are being 
+bootstrapped instead of confidence intervals.
+
+{p 4 8 2}
+{cmd:append(}{it:filename}{cmd:)} ({cmd:bssize analyze} only) indicates an
+additional file that is to be appended to the {cmd:using} file before doing
+the post-estimation analysis.  For example, you might perform an initial
+number of bootstrap replications, save the results under one file name,
+perform additional replications, and save them under a different name.
+{cmd:append()} obviates the need to use Stata's {cmd:append} command to create
+one dataset before calling {cmd:bssize} {cmd:analyze}.
+
+
+{title:Example}
+
+{p 8 12 2}{cmd:. bssize initial, tau(0.01) pdb(5)}
+
+{p 8 12 2}{cmd:. sysuse auto, clear}
+
+{p 8 12 2}{cmd:. set seed 1}
+
+{p 8 12 2}{cmd:. bootstrap "regress mpg foreign displacement" _b, reps(1326) saving(one)}
+
+{p 8 12 2}{cmd:. bssize refine using one}
+
+{p 8 12 2}{cmd:. bootstrap "regress mpg foreign displacement" _b, reps(128) saving(two)}
+
+{p 8 12 2}{cmd:. use one, clear}
+
+{p 8 12 2}{cmd:. append using two}
+
+{p 8 12 2}{cmd:. bstat}
+
+{p 8 12 2}{cmd:. bssize analyze using one, append(two) pdb(2.5)}
+
+
+
+{title:References}
+
+{p 4 8 2}
+Andrews, D. W. K. and M. Buchinsky. 2000. A three-step method for 
+choosing the number of bootstrap repetitions.  {it:Econometrica} 68(1): 
+23-51.
+
+{p 4 8 2}
+Poi, B. P. 2004. From the help desk: Some bootstrapping techniques.
+{it:Stata Journal} 4(3): 312-328.
+
+
+{title:Author}
+
+    Brian Poi, bpoi@stata.com
+    StataCorp

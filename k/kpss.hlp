@@ -1,0 +1,103 @@
+.-
+help for ^kpss^                                   (STB-57 sts15; STB-58: sts15.1)
+.-
+
+Kwiatkowski-Phillips-Schmidt-Shin test for stationarity
+-------------------------------------------------------
+
+    ^kpss^ varname  [^if^ exp] [^in^ range] [^,^ ^m^axlag^(^#^)^ ^not^rend ^qs^ ^auto^]
+
+
+^kpss^ is for use with time-series data.  You must ^tsset^ your data before
+using ^kpss^; see help @tsset@.
+
+varname may contain time-series operators; see help @varlist@.
+
+
+Description
+-----------
+
+^kpss^ performs the Kwiatkowski, Phillips, Schmidt, Shin (KPSS, 1992) 
+test for stationarity of a time series. This test differs from those in
+common use (such as ^dfuller^ and ^pperron^) by having a null hypothesis
+of stationarity. The test may be conducted under the null of either trend
+stationarity (the default) or level stationarity. Inference from this test
+is complementary to that derived from those based on the Dickey-Fuller
+distribution (such as ^dfgls^, ^dfuller^ and ^pperron^). The KPSS test
+is often used in conjunction with those tests to investigate the possibility
+that a series is fractionally integrated (that is, neither I(1) nor I(0)):
+see Lee and Schmidt (1996). As such, it is complementary to ^gphudak^.
+
+The test's denominator--an estimate of the long-run variance of the 
+timeseries, computed from the empirical autocorrelation function--
+may be calculated using either the Bartlett kernel, as employed
+by KPSS, or the Quadratic Spectral kernel. Andrews (1991) and Newey
+and West (1994) "indicate that the latter kernel yields more accurate 
+estimates of sigma-squared than other kernels in finite samples" 
+(Hobijn et al., 1998, p.6).
+
+The maximum lag order for the test is by default calculated from the sample
+size, using a rule provided by Schwert (1989) using c=12 and d=4 in his
+terminology. The maximum lag order may also be provided with the ^maxlag^
+option and may be zero. If the maximum lag order is at least one, the test 
+is performed for each lag, with the sample size held constant over lags 
+at the maximum available sample. 
+
+Alternatively, the maximum lag order (bandwidth) may be derived from an
+automatic bandwidth selection routine, rendering it unnecessary to evaluate 
+a range of test statistics for various lags. Hobijn et al. (1998) found
+that the combination of the automatic bandwidth selection option and the 
+Quadratic Spectral kernel yielded the best small sample test performance
+in Monte Carlo simulations.
+
+Approximate critical values for the KPSS test are taken from KPSS, 1992.
+
+The KPSS test statistic for each lag is placed in the return array.
+
+
+Options
+-------
+
+^maxlag(^#^)^ specifies the maximum lag order to be used in calculating the 
+test. If omitted, the maximum lag order is calculated as described above.
+
+^notrend^ indicates that level stationarity, rather than trend stationarity,
+is the null hypothesis.
+
+^qs^ specifies that the autocovariance function is to be weighted by the 
+Quadratic Spectral kernel, rather than the Bartlett kernel.
+
+^auto^ specifies that the automatic bandwidth selection procedure proposed by
+Newey and West (1994) as described by Hobijn et al. (1998, p.7) is used to
+determine ^maxlag^. In that case, a single value of the test statistic is
+produced, at the optimal bandwidth.
+
+ 
+
+Examples
+--------
+
+	. ^use http://fmwww.bc.edu/ec-p/data/macro/nelsonplosser.dta^
+	
+	. ^kpss lrgnp^
+
+	. ^kpss D.lrgnp, maxlag(8) notrend^
+	
+	. ^kpss lrgnp if tin(1910,1970)^
+	
+	. ^kpss lrgnp, qs auto^
+
+
+Author
+------
+
+Christopher F Baum, Boston College, USA
+baum@@bc.edu
+
+Also see
+--------
+
+    STB: STB57: sts15; STB-58: sts15.1
+On-line: help for @dfuller@, @pperron@, @time@, @tsset@, 
+         @dfgls@ (if installed), @gphudak@ (if installed), @modlpr@ (if 
+         installed), @roblpr@ (if installed)

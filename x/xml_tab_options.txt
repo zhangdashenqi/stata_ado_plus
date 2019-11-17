@@ -1,0 +1,6 @@
+  VERSION=3.26
+  DEFAULT=format(S2100 (S2210 N2303)) cw(0 140) right wide stars(0.01 0.05 0.1)
+       S1=format(S2100 (S2210 N2303) (S2210 N2123)) cw(0 140) right wide stars(0.01 0.05 0.1) lines(COL_NAMES 1 _cons 1 LAST_ROW 13) stats(N r2)
+        M=format(N2103) cw(0 140)
+ CALCPATH=
+EXCELPATH=C:/Program Files/Microsoft Office/office12/excel.exe

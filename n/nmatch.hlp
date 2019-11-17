@@ -1,0 +1,41 @@
+.-
+help for ^nmatch^                                               (STB-26: dm32)
+.-
+
+Matching names
+--------------
+
+        ^nmatch^ namevar1 namevar2
+
+
+Description
+-----------
+
+^nmatch^ attempts to find names that "match".  ^namevar1^ is assumed to
+contain the surname and ^namevar2^ the forename for each case.  ^nmatch^
+adds five variables, ^_m1-_m5^, to the current data set.  These variables
+characterize the quality of matches found.  
+
+^_m1^ is coded with a missing value for unique cases and with a common
+integer value for cases that have identical values of ^namevar1^ and
+^namevar2^.  ^_m2^ (^_m3^) assigns common integer values to cases with
+identical values of ^namevar2^ (^namevar1^) and lexicographically adjacent
+values of ^namevar1^ (^namevar2^).  ^_m4^ assigns common integer values to
+cases that have identical values of ^namevar1^ and ^namevar2^ after certain
+common spelling variations are made consistent.  ^_m5^ assigns common integer
+values to cases that are exact matches after ^namevar1^ and ^namevar2^ are
+interchanged.
+
+
+Author
+------
+
+        Peter Sasieni, Ph.D.
+        Imperial Cancer Research Fund
+        Fax:  011-44-171-269-3429
+
+
+Also see
+--------
+
+    STB:  STB-26 dm32, STB-13 dm13, STB-13 dm13.1

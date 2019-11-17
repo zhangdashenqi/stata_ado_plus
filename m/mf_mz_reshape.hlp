@@ -1,0 +1,174 @@
+{smcl}
+{* 25aug2008}{...}
+{cmd:help mata mz_reshape()}
+{hline}
+
+{title:Title}
+
+{p 4 14 2}
+{bf:mz_reshape() -- Remodels a matrix according both to specified rows and columns}
+
+
+{title:Syntax}
+
+{p 4 23 2}
+{it:transmorphic matrix}
+{cmd:mz_reshape(}{it:x}{cmd:,} {it:m}{cmd:,} {it:n}{cmd:)}
+
+
+{pstd}
+where
+
+{p 12 16 2}
+{it:x}:  {it:transmorphic matrix}
+
+{p 12 16 2}
+{it:m}:  {it:real scalar} containing the new row dimension
+
+{p 12 16 2}
+{it:n}:  {it:real scalar} containing the new column dimension
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:mz_reshape()} returns a new matrix which is the matrix {it:x} remodeled
+to a matrix with {it:m} rows and {it:n} columns. {cmd:mz_reshape()} is similar
+to {bf:{help mata}} official  built in functions {bf:{help mf_rowshape:[M-5] colshape()}}
+and {bf:{help mf_rowshape:[M-5] rowshape()}}. But it is more flexible in that the
+user can set the number of rows and columns he/she wants for the new matrix. That
+makes that {cmd:mz_reshape()} performs transformations where both
+{bf:{help mf_rowshape:[M-5] colshape()}} and {bf:{help mf_rowshape:[M-5] rowshape()}}
+returns errors.
+{cmd:mz_reshape()} forms matrices by row. {cmd:mz_reshape()} returns to the first
+components of {it:x} and gets components from there if there are less components
+in {it:x} to make the new matrix.  The lingering components are left over if there
+are more components in {it:x} than in the new matrix.
+
+
+{title:Remarks}
+
+{pstd} Examples:
+
+        {com}: x
+        {res}        {txt}1    2    3    4
+            {c TLC}{hline 21}{c TRC}
+          1 {c |}  {res}50   51   52   53{txt}  {c |}
+          2 {c |}  {res}54   55   56   57{txt}  {c |}
+          3 {c |}  {res}58   59   60   61{txt}  {c |}
+          4 {c |}  {res}62   63   64   65{txt}  {c |}
+            {c BLC}{hline 21}{c BRC}
+
+        {com}: mz_reshape(x, 2, 8)
+        {res}        {txt}1    2    3    4    5    6    7    8
+            {c TLC}{hline 41}{c TRC}
+          1 {c |}  {res}50   51   52   53   54   55   56   57{txt}  {c |}
+          2 {c |}  {res}58   59   60   61   62   63   64   65{txt}  {c |}
+            {c BLC}{hline 41}{c BRC}
+
+        {com}: mz_reshape(x, 2, 6)
+        {res}        {txt}1    2    3    4    5    6
+            {c TLC}{hline 31}{c TRC}
+          1 {c |}  {res}50   51   52   53   54   55{txt}  {c |}
+          2 {c |}  {res}56   57   58   59   60   61{txt}  {c |}
+            {c BLC}{hline 31}{c BRC}
+
+        {com}: mz_reshape(x, 8, 2)
+        {res}        {txt}1    2
+            {c TLC}{hline 11}{c TRC}
+          1 {c |}  {res}50   51{txt}  {c |}
+          2 {c |}  {res}52   53{txt}  {c |}
+          3 {c |}  {res}54   55{txt}  {c |}
+          4 {c |}  {res}56   57{txt}  {c |}
+          5 {c |}  {res}58   59{txt}  {c |}
+          6 {c |}  {res}60   61{txt}  {c |}
+          7 {c |}  {res}62   63{txt}  {c |}
+          8 {c |}  {res}64   65{txt}  {c |}
+            {c BLC}{hline 11}{c BRC}
+
+        {com}: mz_reshape(x, 6, 2)
+        {res}        {txt}1    2
+            {c TLC}{hline 11}{c TRC}
+          1 {c |}  {res}50   51{txt}  {c |}
+          2 {c |}  {res}52   53{txt}  {c |}
+          3 {c |}  {res}54   55{txt}  {c |}
+          4 {c |}  {res}56   57{txt}  {c |}
+          5 {c |}  {res}58   59{txt}  {c |}
+          6 {c |}  {res}60   61{txt}  {c |}
+            {c BLC}{hline 11}{c BRC}
+        
+        {txt}  If the matrix {it:x} has only one element
+
+        {com}: x
+        {res}        {txt}1
+            {c TLC}{hline 6}{c TRC}
+          1 {c |}  {res}50{txt}  {c |}
+            {c BLC}{hline 6}{c BRC}
+
+        {txt}  We have
+
+        {com}: mz_reshape(x, 3, 5)
+        {res}        {txt}1    2    3    4    5
+            {c TLC}{hline 26}{c TRC}
+          1 {c |}  {res}50   50   50   50   50{txt}  {c |}
+          2 {c |}  {res}50   50   50   50   50{txt}  {c |}
+          3 {c |}  {res}50   50   50   50   50{txt}  {c |}
+            {c BLC}{hline 26}{c BRC}
+
+        {txt}  Case where we have a string matrix
+
+        {com}: A
+        {res}         {txt}1     2     3     4     5
+            {c TLC}{hline 31}{c TRC}
+          1 {c |}  {res}a11   a12   a13   a14   a15{txt}  {c |}
+          2 {c |}  {res}a21   a22   a23   a24   a25{txt}  {c |}
+          3 {c |}  {res}a31   a32   a33   a34   a35{txt}  {c |}
+            {c BLC}{hline 31}{c BRC}
+
+        {com}: mz_reshape(A, 2, 6)
+        {res}         {txt}1     2     3     4     5     6
+            {c TLC}{hline 37}{c TRC}
+          1 {c |}  {res}a11   a12   a13   a14   a15   a21{txt}  {c |}
+          2 {c |}  {res}a22   a23   a24   a25   a31   a32{txt}  {c |}
+            {c BLC}{hline 37}{c BRC}
+
+        {com}: mz_reshape(A, 4, 7)
+        {res}         {txt}1     2     3     4     5     6     7
+            {c TLC}{hline 43}{c TRC}
+          1 {c |}  {res}a11   a12   a13   a14   a15   a21   a22{txt}  {c |}
+          2 {c |}  {res}a23   a24   a25   a31   a32   a33   a34{txt}  {c |}
+          3 {c |}  {res}a35   a11   a12   a13   a14   a15   a21{txt}  {c |}
+          4 {c |}  {res}a22   a23   a24   a25   a31   a32   a33{txt}  {c |}
+            {c BLC}{hline 43}{c BRC}
+
+
+{title:Conformability}
+
+    {cmd:mz_reshape(}{it:x}{cmd:,} {it:m}{cmd:,} {it:n}{cmd:)}
+         {it:x}:  {it:r x c}
+         {it:m}:  {it:1 x 1}
+         {it:n}:  {it:1 x 1}
+    {it:result}:  {it:m x n}.
+
+
+{title:Diagnostics}
+
+{p 4 4 2}
+None
+
+{title:Source code}
+
+{p 4 4 2}
+{help ltimbimata_source##mz_reshape:mz_reshape.mata}
+
+
+{title:Author}
+
+{p 4 4 2} Diallo Ibrahima Amadou, {browse "mailto:zavren@gmail.com":zavren@gmail.com}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {bf:{help mf_rowshape:[M-5] colshape()}}, {bf:{help mf_rowshape:[M-5] rowshape()}}, {bf:{help ltimbimata}}
+{p_end}

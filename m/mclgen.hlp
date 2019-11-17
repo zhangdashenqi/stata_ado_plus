@@ -1,0 +1,56 @@
+.-
+help for ^mclgen^                                                 (STB-56: sbe37)
+.-
+
+Stata programs for multinomial conditional logit models
+-------------------------------------------------------
+
+    ^mclgen^ depvar
+
+The argument depvar is required. A categorical response factor with a
+maximum of 12 levels must be specified for use in the MCL model.
+
+
+Remarks
+-------
+
+Note that the ^mclgen^ program will ^modify the data^, and that the data
+should therefore be ^saved^ before running it. An MCL model is estimated
+on a "person/choice" file. In the "person/choice" file, each respondent
+has a separate record for each category of the response variable. A
+stratifying variable indexes respondents and a dichotomous variable
+indicates which record corresponds with the repondent's actual choice. 
+
+For a response factor with 5 levels, the dataset is therefore expanded
+to 5 times the number of cases. The response factor specified in mclgen
+indexes the response options for each respondent. ^mclgen^ also creates
+^__strata^ and ^__didep^, the stratifying variable and dichotomous
+variable for use by @mclest@.
+
+When the model is estimated by @clogit@, the dichotomous variable
+becomes the dependent variable and the stratifying variable is specified
+in the ^strata()^ option. The main effects of the response factor
+correspond with the intercept of a multinomial logistic model.
+Interactions of the response factor with independent variables
+correspond with the effects of these independent variables. These
+effects can be created using @desmat@ (STB-52).
+
+If the response factor has a fixed reference category, the log
+likelihood, estimates and standard errors will be exactly the same as a
+model estimated with @mlogit@. However, this procedure followed here
+allows much more flexibility in imposing restrictions on the response
+factor.
+
+Author
+------
+
+    John Hendrickx
+    Nijmegen Business School, University of Nijmegen
+    P.O. Box 9108
+    6500 HK Nijmegen
+    The Netherlands
+    J.Hendrickx@@mailbox.kun.nl
+
+
+
+

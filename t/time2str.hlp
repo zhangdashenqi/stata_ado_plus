@@ -1,0 +1,57 @@
+{smcl}
+{* 21oct2003}{...}
+{hline}
+help for {hi:time2str}{right:(author:  {hi:Tony Brady})}
+{hline}
+
+{title:Convert elapsed time variables to HH:MM:SS string format}
+
+{p 8 17}{cmd:time2str} {it:varlist}
+		{cmd:,} {{cmdab:g:enerate(}{it:newvarlist}{cmd:)} | {cmd:replace}}
+		[{cmdab:sep:arator(}{it:string}{cmd:)} {cmdab:sec:onds}]
+
+
+{title:Description}
+
+{p}Converts elapsed time-of-day variables to 24-hour clock string variables in HH:MM or HH:MM:SS format.
+{it:varlist} is expected to contain variables with numeric values between 0 and 1,
+representing the fraction of the day that has elapsed. For instance, 0.25
+represents 6:00am (see Table).
+
+{p}The new string variables to be created must be specified with the {cmd:generate()}
+option or {cmd:replace} can be used to force the new string variables to overwrite the
+existing variables.
+
+{p 5 12}Table: relationship between HH:MM string and elapsed time variable{p_end}
+{col 6}{dup 38:{c -}}
+{col 6}Time, HH:MM{col 20}aka{col 32}Elapsed time
+{col 6}{dup 38:{c -}}
+{col 9}00:00{col 20}Midnight{col 32}0.0
+{col 9}06:00{col 20}6 am{col 32}0.25
+{col 9}12:00{col 20}Midday{col 32}0.50
+{col 9}18:00{col 20}6 pm{col 32}0.75
+{col 6}{dup 38:{c -}}
+
+
+{title:Options}
+
+{p 5 9}{cmd:separator(}{it:string}{cmd:)} denotes the character(s) used to separate hours from minutes. Default is {cmd::}
+
+{p 5 9}{cmd:seconds} requests converted strings to be in HH:MM:SS format. The default is HH:MM.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. time2str taicu tbricu, gen(tadmit tbody)}{p_end}
+{p 8 12}{inp:. time2str taicu tbricu, replace separator(.)}{p_end}
+
+
+{title:Author}
+
+{p 8 12}Tony Brady, {browse "..":Sealed Envelope Ltd}, U.K.{p_end}
+{p 8 12}{browse "mailto:tony@sealedenvelope.com?subject=time2str.ado":tony@sealedenvelope.com}
+
+
+{title:Also see}
+
+{p 0 19}On-line:  help for {help str2time}{p_end}

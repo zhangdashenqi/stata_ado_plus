@@ -1,0 +1,167 @@
+{smcl}
+{* documented: January 31, 2006}{...}
+{* revised: February 26, 2006}{...}
+{cmd:help mtreatnb} {right:also see:  {help postestimation commands}}
+{hline}
+
+{title:Title}
+
+{cmd :mtreatnb} {hline 2} Multinomial treatment effects of a negative binomial regression model
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:mtreatnb} {depvar} [{indepvars}] {ifin} {weight} {cmd:,}
+	{opt mtreat:ment(depvar_mt indepvars_mt)} {opt sim:ulationdraws(#)}
+	[{it:{help mtreatnb##mtreatnb_options:options}}]
+
+{synoptset 20 tabbed}{...}
+{marker mtreatnb_options}{...}
+{synopthdr :options}
+{synoptline}
+{synopt :{opt base:category(#)}}value of {it:depvar} that will be the base 
+	category.{p_end}
+{synopt :{opt pre:fix(string)}}allows you to choose a prefix other than
+	{cmd:_I} for the indicator variables{p_end}
+{synopt :{opt r:obust}}specifies the robust or sandwich estimator of variance{p_end}
+{synopt :{opth cl:uster(varname)}}adjust standard errors for intragroup 
+	correlation{p_end}
+{synopt :{opt sca:le(#)}}allows you to choose the standard deviation of the
+	normally distributed quasirandom variables; default is 1{p_end}
+{synopt :{opt start:point(#)}}allows you to choose the starting point in the
+	Halton sequence from which the quasirandom variates are generated; 
+	default is 20{p_end}
+{synopt :{opt altfac:tors(string)}}allows you to choose the starting values 
+	for the parameters associated with the latent factors.{p_end}
+{synopt :{opt altst:art(string)}}allows you to choose the starting values 
+	for all parameters{p_end}
+{synopt :{it:{help mtreatnb##mtreatnb_maximize:maximize_options}}}control the 
+	maximization process; some options may be useful{p_end}
+{synopt :{opt ver:bose}}allows you to display iteration logs and estimates
+	tables for the mixed multinomial logit and nb regressions{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}{it:depvar}, {it:indepvars}, {it:depvar_mt}, and {it:indepvars_mt} 
+	may contain time-series operators; see {help tsvarlist}.{p_end}
+{p 4 6 2}{cmd:fweight}s, {cmd:pweight}s, {cmd:iweight}s, and {cmd:aweight}s 
+	are allowed; see {help weight}.{p_end}
+{p 4 6 2} See {help postestimation commands} for features available after 
+	estimation.
+
+
+{title:Description}
+
+{pstd}
+{cmd:mtreatnb} fits a treatment-effects model that considers the effects of an
+endogenously chosen multinomial treatment on another endogenous count outcome,
+conditional on two sets of independent variables.  The treatment variable is
+modeled via a multinomial logit and the outcome via a negative binomial
+regression.  The model is fitted using maximum simulated likelihood.  The
+simulator uses Halton sequences.
+
+
+{title:Options}
+
+{phang}
+{cmd:mtreatment(}{it:depvar_mt indepvars_mt}{cmd:)} specifies the variables
+for the multinomial treatment equation.  {it:depvar_mt} must have more than
+two and less than 10 categories.  This option is an integral part of
+specifying the treatment-effects model and is required.
+
+{phang}
+{opt simulationdraws(#)} specifies the number of simulation draws per
+observation and is required.  These draws are based on Halton sequences.
+
+{phang}
+{cmd:basecategory(}{it:#} or {it:string}{cmd:)} is the value or label of
+{it:depvar} that will be the base category in the multinomial treatment
+equations.
+
+{phang}
+{opt prefix(string)} lets you choose a prefix other than {cmd:_I} for the
+indicator variables created from the multinomial treatment variable.  The
+default is a set of indicator variables starting with {cmd:_I}.  When you use
+{cmd:mtreatnb}, it drops all previously created indicator variables starting
+with the prefix specified in the {cmd:prefix()} option or with {cmd:_I} by
+default.
+
+{phang}
+{opt robust} uses the robust or sandwich estimator of variance.  The default
+is the traditional calculation based on the information matrix.
+
+{pmore}
+The standard errors are robust by construction, i.e, they are of the
+Huber-White form.  This form is provides correct standard errors when maximum
+simulated likelihood estimation is used.
+
+{phang}
+{opt cluster(varname)} adjusts standard errors for intragroup correlation.
+
+{phang}
+{opt scale(#)} lets you choose the standard deviation of the normally
+distributed quasirandom variables. The default is {cmd:scale(1)}.
+
+{phang}
+{opt startpoint(#)} lets you choose the starting point in the Halton sequence
+from which the quasirandom variates are generated.  The default is
+{cmd:startpoint(20)}.
+
+{phang}
+{opt altfactors(string)} lets you choose the starting values for the
+parameters associated with the latent factors. Specify these values as
+comma-separated numbers.  The default starting values are zero.
+
+{phang}
+{opt altstart(string)} allows you to choose the starting values for all
+parameters.  Specify these values as comma-separated numbers
+
+{marker mtreatnb_maximize}{...}
+{phang}
+{it:maximize_options}: {opt dif:ficult}, {opt tech:nique(algorithm_spec)},
+{opt iter:ate(#)}, [{cmdab:no:}]{opt lo:g}, {opt tr:ace},
+{opt grad:ient}, {opt showstep}, {opt hess:ian},
+{opt shownr:tolerance}, {opt tol:erance(#)}, {opt ltol:erance(#)},
+{opt gtol:erance(#)}, {opt nrtol:erance(#)}, {opt nonrtol:erance}; see
+{help maximize}.  
+
+{pmore}
+Because {cmd:mtreatnb} has a complicated likelihood function, {opt difficult}
+may be a useful option if the default setup fails.
+
+{pmore}
+In addition, {opt altfactors(string)} and {opt altstart(string)} may be useful
+to generate alternative starting values if the default setup fails.  Note that
+if {opt altstart} is used, the intermediate mixed multinomial logit and nb
+regressions are not estimated.
+
+
+{title:Example}
+
+{phang}{cmd:. mtreatnb docvis age, mtreat(instype1 age firmsize) sim(50)}
+
+
+{title:References}
+
+{p 4 8 2}Deb, P., and P. K. Trivedi. Forthcoming. Specification and simulated 
+	likelihood estimation of a non-normal treatment-outcome model with 
+	selection: application to health care utilization. 
+	{it:Econometrics Journal}.
+
+{p 4 8 2}Gouriéroux, C., and A. Monfort. 1996. 
+	{it:Simulation-Based Econometrics Methods}. Oxford: Oxford University 
+	Press.
+
+
+{title:Author}
+
+	Partha Deb, Hunter College, USA
+	partha.deb@hunter.cuny.edu
+
+
+{title:Also see}
+
+{psee}
+Online:  {help postestimation commands}; {helpb treatreg}; {helpb nbreg}; 
+	{helpb mlogit}
+{p_end}

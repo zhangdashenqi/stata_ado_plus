@@ -1,0 +1,66 @@
+{smcl}
+{* 12may2004}{...}
+{hline}
+help for {hi:colortrans}
+{hline}
+
+{title:Translating between color formats}
+
+{phang2}
+{cmd:colortrans}
+	{it:input_color}
+	[{cmd:,} {cmdab:frac:tion} ]
+
+{pstd}
+where {it:input_color} is a color specification:
+
+{pmore}
+RGB: {space 1}{it:#} {it:#} {it:#}
+
+{pmore}
+CMYK: {it:#} {it:#} {it:#} {it:#}
+
+
+{title:Description}
+
+{pstd}
+{cmd:colortrans} translates a specified color from a given format to all the
+other implemented color formats.  The currently implemented color formats are:
+RGB and CMYK.
+
+
+{title:Options}
+
+{phang}
+{cmd:fraction} indicates that the color specified in {it:input_color} contain
+fractions (from 0 to 1) instead of integer (from 0 to 255).
+
+
+{title:Examples}
+
+{pstd}{cmd:. colortrans 255 0 0}{p_end}
+{pstd}{cmd:. colortrans 1 0 0, fraction}{p_end}
+{pstd}{cmd:. colortrans 255 0 0}{p_end}
+{pstd}{cmd:. colortrans 0 255 255 0}{p_end}
+{pstd}{cmd:. colortrans 0 1 1 0, fraction}{p_end}
+
+
+{title:Saved results}
+
+{pstd}
+{cmd:colortrans} saves in {cmd:r()}:
+
+{p2colset 9 25 32 2}{...}
+{pstd}Macros:{p_end}
+{p2col :{cmd:r(cmyk)}}the CMYK color specification{p_end}
+{p2col :{cmd:r(rgb)}}the RGB color specification{p_end}
+
+
+{title:Also see}
+
+{psee}
+Manual:  {hi:[G] palette}
+
+{psee}
+On-line:  help for {help palette}
+{p_end}

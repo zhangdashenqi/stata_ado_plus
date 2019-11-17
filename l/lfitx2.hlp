@@ -1,0 +1,122 @@
+.-
+help for ^lfitx2^                                    (STB-44: sg87)
+.-
+
+Goodness-of-fit after ^logistic^
+-------------------------------
+
+        ^lfitx2^ [^, e^ps^(^#^)^]
+
+
+Description
+-----------
+
+^lfitx2^ computes the significance level of Pearson's X2 goodness-of-fit 
+statistic for logistic regression with discrete or continuous covariates 
+(i.e., X2 is computed without aggregating observations with the same 
+covariate pattern), based on the asymptotic results of Windmeijer (1990). 
+
+^lfitx2^ should be used after ^logistic^, and it uses the same sample as 
+specified with ^logistic^. Currently, out-of-sample assessment and weights
+are not supported. Also, ^lfitx2^ does not adjust the significance of X2 
+for clustering between observations.
+
+
+Options
+-------
+
+^eps(^#^)^ specifies that all observations with expected probability p<eps 
+    or p>1-eps are excluded from computing the X2 statistic. The default
+    value of ^eps^ is 1e-5.
+
+
+Technical details
+-----------------
+
+Pearson's X2 is a popular a goodness-of-fit statistic for logistic regression 
+model, defined as
+             ____      (y(i) - p(i))^^2       
+        X2 = \    m(i) ----------------        
+             /___         p(i) (1-p(i))   
+
+^lfit^ produces this statistic if all observations have different covariate
+patterns (it groups observations by covariate patterns if not unique), and it
+displays a significance level of X2 based on a chi-square distribution with 
+n-p degrees of freedom, where n is the number of observations and p is the 
+number of "independent" estimated parameters. The Stata Reference Manual notes 
+that "the applicability of Pearson's X2 is questionnable, but not necessarily 
+inappropriate." (p351) However, McCullagh (1986) and Windmeijer (1990) show 
+that X2 is ^NOT^ chi-square distributed with "individual cases". Rather 
+McCullagh and Windmeijer show that
+
+              (X2 - n)^^2  
+     H(n) = n ---------  ---> Chi2(1)
+                v(n)
+where 
+             1      1 - 2 p(i)
+     v(n) =  - Sum -------------   -  z(n) inv(I(n)) z(n)
+             n     p(i) (1-p(i))
+
+     z(n) = (1/n) sum  (1-2 p(i)) x(i)   
+
+     I(n) = Fisher information for the logistic regression model
+
+where x(i) is the vector of covariates for the i-th case. Thus, in general 
+v(n) is not equal to 2, as would be expected if X2 would be (asymptotically)
+chi-square distributed. 
+
+Note that X2 and v(n) are strongly affected by observations with p(i) close
+to 0 or 1. Windmeijer suggests to exclude such observations in assessing
+goodness of fit. See option ^eps^.
+
+Windmeijer (1990) also derives the normalizing constants of Pearson's X2 
+statistic for other binary regression models such as probit-regression (^probit^)
+and complementary-log (^cloglog^) regression. Windmeijer (1994) generalizes 
+these results to the multinomial (^mlogit^) and to the conditional (^clogit^) 
+logistic regression models.
+
+
+References
+----------
+
+Hosmer, D. W. and S. Lemeshow. 1989.  Applied logistic regression. 
+     New York: John Wiley & Sons.
+   
+McCullagh, P. 1986. The conditional distribution of goodness-of-fit 
+     statistics for discrete data. Journal of the American Statistical 
+     Association 81: 104-107.
+
+Windmeijer, F. A. G. 1990. The asymptotic distribution of the sum of 
+     weighted squared residuals  in binary choice models. Statistica 
+     Neerlandica 44(2): 69-78.
+
+Windmeijer. F. A. G. 1994. A goodness-of-fit test in the multinomial 
+     logit model based on weighted squared residuals. Statistica 
+     Neerlandica 48I(3): 271-283.
+
+
+Saved Results
+-------------
+
+    ^S_1^       number of observations
+    ^S_2^       X2-statistic
+    ^S_3^       Windmeijer's H, a normalization of X2, that is approximately
+              chi-square distributed with 1 df.
+    ^S_4^       asymptotic variance of X2           
+        
+
+Author
+------
+
+      Jeroen Weesie
+      Utrecht University, Netherlands
+      J.Weesie@@fss.ruu.nl
+
+
+Also See
+-------- 
+
+    STB:  STB-44 sg87
+ Manual:  [R] logistic
+On-line: help on @logistic@
+

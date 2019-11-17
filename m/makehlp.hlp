@@ -1,0 +1,39 @@
+Automatically generate a help file
+----------------------------------
+
+Syntax
+------
+
+makehlp [varlist], ^file^(^str^)^ ^[^  ^replace^ ^]^
+
+
+Options
+-------
+
+^file^(^str^)^ specify the adofile including the .ado extension
+
+^replace^ replace the old help file
+
+Description
+-----------
+
+This should save a lot of time :)
+
+Examples
+--------
+
+. makehlp, file(makehlp.ado) replace
+
+Author(s)
+---------
+
+Dr Adrian Mander
+MRC Biostatistics Unit
+Forvie Site
+Addenbrookes
+Cambridge
+UK
+Email: adrian.mander@mrc-bsu.cam.ac.uk
+
+Also see
+--------

@@ -1,0 +1,54 @@
+.-
+help for ^_pepred^
+.-
+
+    _pepred [, level(integer) maxcnt(integer)]
+
+^_pepred^ is a utility program designed to generate predicted values from a
+series of specified values of the independent variables.  _pepred takes as 
+input the matrix PE_in; each row is an observation and the columns are 
+values for the independent variables in the regression model.  ^_pepred^ 
+temporarily adds these observations to the dataset and generates predicted 
+values.  _pepred puts the predicted values in return matrices that can then 
+be used by the calling program.
+
+Options
+-------
+
+^level()^ sets the level of the confidence interval for predicted values
+    or probabilities for the estimation commands for which these are 
+    provided.
+
+^maxcnt()^ is the maximum count value for which the probability is computed
+    in count models. Default is 9.
+
+Return Values
+-------------
+
+Scalars
+  r(always0) : pr(Always0) for zip and zinb
+  r(xb): value of xb
+  r(xb_lo): lower bound of confidence interval for xb
+  r(xb_hi): upper bound of confidence interval for xb
+  r(p0): predicted prob of 0 for binary model
+  r(p0_lo): lower bound of confidence interval for predicted probability of 0
+  r(p0_hi): upper bound of confidence interval for predicted probability of 0
+  r(p1): predicted prob of 1 for binary model
+  r(p1_lo): lower bound of confidence interval for predicted probability of 1
+  r(p1_hi): upper bound of confidence interval for predicted probability of 1
+  r(mu): predicted count or rate for count models
+
+Macros:
+  r(level) : confidence level for commands that have this
+
+Matrices:
+  r(probs): predicted probabilities for multiple categories or counts
+  r(values): values of outcome categories for rows of r(probs)
+  r(x): x values for independent variables
+  r(x2): x values for independent variables in second equation (^zip^, ^zinb^)
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+         

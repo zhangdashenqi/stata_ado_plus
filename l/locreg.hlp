@@ -1,0 +1,232 @@
+{smcl}
+{* 12February2010}{...}
+{cmd:help locreg}{right: ({browse "http://www.stata-journal.com/article.html?article=st0203":SJ10-3: st0203})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 15 17 2}{...}
+{p2col :{hi:locreg} {hline 2}}Local linear and local logit regressions with cross-validation
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmdab:locreg} {depvar} {ifin} {weight} [{cmd:,} {it:options}]
+
+{synoptset 30}{...}
+{synopthdr}
+{synoptline}
+{synopt:{cmdab:g:enerate(}{it:varname}[{cmd:, replace}]{cmd:)}}specify the name of the variable that will contain the fitted values{p_end}
+{synopt:{opth c:ontinuous(varlist)}}names of the continuous covariates{p_end}
+{synopt:{opth d:ummy(varlist)}}names of the binary covariates{p_end}
+{synopt:{opth u:nordered(varlist)}}names of the unordered covariates{p_end}
+{synopt:{opt k:ernel(kernel)}}kernel function, where {it:kernel} can be
+  {opt epan2} (Epanechnikov, the default),
+  {opt b:iweight},
+  {opt triw:eight},
+  {opt c:osine},
+  {opt g:aussian},
+  {opt p:arzen},
+  {opt r:ectangle},
+  {opt t:riangle},
+  {opt epanechnikov_o4},
+  {opt epanechnikov_o6},
+  {opt gaussian_o4},
+  {opt gaussian_o6},
+  or {opt gaussian_o8}
+  {p_end}
+{synopt:{cmdab:b:andwidth(}{it:#}[{it:#}[{it:# ...}]]{cmd:)}}bandwidth(s) used
+to smooth over the continuous variables; default is infinity{p_end}
+{synopt:{cmdab:l:ambda(}{it:#}[{it:#}[{it:# ...}]]{it:)}}lambda(s) used to
+smooth over the binary and unordered variables; default is {cmd:lambda(1)}{p_end}
+{synopt :{opt log:it}}activate the local logit estimator{p_end}
+{synopt :{opt mata_opt}}select the official optimizer introduced in Stata 10,
+Mata's {bf:{helpb mata optimize():optimize()}}{p_end}
+{synopt:{cmdab:s:ample(}{it:varname}[{cmd:, replace}]{cmd:)}}specify the name of the variable that marks the estimation sample{p_end}
+{synoptline}
+{p 4 6 2}
+{cmd:aweight}s and {cmd:pweight}s are allowed; see {help weight}.{p_end}
+
+
+{title:Description}
+
+{pstd}
+{cmd:locreg} computes the nonparametric estimation of the mean of {depvar}
+conditionally on the variables given in {cmd:continuous()}, {cmd:dummy()}, and
+{cmd:unordered()}.  A mixed kernel suggested by Racine and Li (2004) is used to
+smooth over the continuous and categorical data.  The more conventional
+approach consisting of estimating the regression plane inside each cell
+defined by the discrete variables can be obtained by setting {cmd:lambda()} to
+0.
+
+{pstd} A local linear estimator is used if the {cmd:logit} option is not
+selected.  For a binary dependent variable or for a dependent variable that is
+bound in (0,1), a local logit estimator is also offered and is used if
+{cmd:logit} has been activated.  Two algorithms are available to maximize the
+local logit likelihood functions.  The default is a simple Gauss-Newton
+algorithm written for this purpose.  If you select the {cmd:mata_opt} option,
+the official Stata 10 optimizer, Mata's {helpb mata optimize():optimize()}, is
+used.  We expect the official estimator to be more stable in difficult
+environments.  However, it can only be used if you have Stata 10 or newer.
+
+{pstd}
+{cmd:locreg} can be used in three different ways.  First, if only one value is
+given in {cmd:bandwidth()} and one in {cmd:lambda()}, {cmd:locreg} estimates
+the nonparametric regression using these values and saves the fitted values in
+{cmd:generate(}{it:varname}{cmd:)}.  {cmd:locreg} can also be used to estimate
+the smoothing parameters via cross-validation.  If we do not specify the
+{cmd:generate} option, but supply a list of values in the {cmd:bandwidth()} or
+{cmd:lambda()} option, only the cross-validation is performed.  Finally, if
+several values are specified in {cmd:bandwidth()} or {cmd:lambda()} and when
+the {cmd:generate()} option is also specified, {cmd:locreg} estimates the
+optimal smoothing parameters via cross-validation and thereafter estimates the
+conditional means with this smoothing parameter and returns the fitted values
+in the variable {cmd:generate(}{it:varname}{cmd:)}.
+
+
+{title:Options}
+
+{phang} {cmd:generate(}{it:varname}[{cmd:, replace}]{cmd:)} specifies the name
+of the variable that will contain the fitted values.  If this option is not
+used, only the leave-one-out cross-validation estimation of the smoothing
+parameters h and lambda will be performed.  The {cmd:replace} option allows
+{cmd:locreg} to overwrite an existing variable or to create a new one where
+none exists.
+
+{phang} {opt continuous(varlist)}, {opt dummy(varlist)}, and 
+{opt unordered(varlist)} specify the names of the covariates depending on
+their type.  Ordered discrete variables should be treated as continuous.
+
+{phang}
+{opt kernel(kernel)} specifies the kernel function.  {it:kernel} may be 
+{opt epan2} (Epanechnikov kernel function; the default), {opt biweight}
+(biweight kernel function), {opt triweight} (triweight kernel function), 
+{opt cosine} (cosine trace), {opt gaussian} (Gaussian kernel function), 
+{opt parzen} (Parzen kernel function), {opt rectangle} (rectangle kernel
+function), or {opt triangle} (triangle kernel function).  In addition to these
+second-order kernels, there are also several higher-order kernels:  
+{opt epanechnikov_o4} (Epanechnikov order 4), {opt epanechnikov_o6} (order 6),
+{opt gaussian_o4} (Gaussian order 4), {opt gaussian_o6} (order 6), and 
+{opt gaussian_o8} (order 8).
+
+{phang} {cmd:bandwidth(}{it:#}[{it:#}[{it:# ...}]]{cmd:)} is used to smooth
+over the continuous variables.  Note that the continuous regressors are first
+orthogonalized such that their covariance matrix is the identity matrix.  The
+bandwidth must be strictly positive.  If the bandwidth is set to the missing
+value ".", an infinite bandwidth is used.  The default value is infinity.  If
+a list of values is supplied, cross-validation is used with respect to every
+value in this list to estimate the optimal bandwidth among the proposed
+values.  If a list of values is supplied for {opt bandwidth()} and for 
+{opt lambda()}, cross-validation considers all pairwise combinations from
+these two lists.  In case of local multicollinearity, the bandwidth is
+progressively increased until the multicollinearity problem disappears.
+
+{phang} {cmd:lambda(}{it:#}[{it:#}[{it:# ...}]]{cmd:)} is used to smooth over
+the dummy and unordered variables.  It must be between 0 and 1.  A value of 0
+implies that only observations within the cell defined by all discrete
+regressors are used to estimate the conditional mean.  The default is
+{cmd:lambda(1)}, which corresponds to global smoothing.  If a list of values is
+supplied for {cmd:lambda()}, cross-validation is used with respect to every
+value in this list to estimate the lambda among the proposed values.  If a
+list of values is supplied for {cmd:bandwidth()} and for {cmd:lambda()},
+cross-validation considers all pairwise combinations from these two lists.
+
+{phang} {opt logit} activates the local logit estimator.  If it is not
+activated, the local linear estimator is used as the default.
+
+{phang} {opt mata_opt} selects the official optimizer introduced in Stata 10,
+Mata's {helpb mata optimize():optimize()}, to obtain the local logit.  The
+default is a simple Gauss-Newton algorithm written for this purpose.  This
+option is only relevant when the {cmd:logit} option has been specified.
+
+{phang} {cmd:sample(}{it:varname}[{cmd:, replace}]{cmd:)} specifies the name
+of the variable that marks the estimation sample.  This is similar to the
+function {cmd:e(sample)} for e-class commands.
+
+
+{title:Saved results}
+
+{phang}{cmd:locreg} saves the following in {cmd:r()}:
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Scalars}{p_end}
+{synopt:{cmd:r(N)}}number of observations{p_end}
+{synopt:{cmd:r(optb)}}optimal bandwidth{p_end}
+{synopt:{cmd:r(optl)}}optimal lambda{p_end}
+{synopt:{cmd:r(best_mse)}}smallest value of the cross-validation criterion{p_end}
+
+{synoptset 17 tabbed}{...}
+{p2col 5 15 19 2: Macros}{p_end}
+{synopt:{cmd:r(command)}}{cmd:locreg}{p_end}
+{synopt:{cmd:r(depvar)}}name of dependent variable{p_end}
+{synopt:{cmd:r(continuous)}}name of continuous covariates{p_end}
+{synopt:{cmd:r(dummy)}}name of binary covariates{p_end}
+{synopt:{cmd:r(unordered)}}name of unordered covariates{p_end}
+{synopt:{cmd:r(kernel)}}kernel function{p_end}
+{synopt:{cmd:r(model)}}linear or logistic model used{p_end}
+{synopt:{cmd:r(optimization)}}algorithm used{p_end}
+
+{synoptset 16 tabbed}{...}
+{p2col 5 15 19 2: Matrices}{p_end}
+{synopt:{cmd:r(cross_valid)}}bandwidths, lambda, and resulting values of the cross-validation criterion{p_end}
+
+
+{title:Version requirements}
+
+{pstd}This command requires Stata 9.2 or later.  Stata 10 is required to use
+the option {opt mata_opt}.  In addition, {cmd:locreg} requires the packages
+{cmd:moremata} (see Jann [2005b]) and {cmd:kdens} (see Jann [2005a]).
+Type {cmd:ssc describe moremata} and {cmd:ssc describe kdens}.
+
+
+{title:Methods and formulas}
+
+{p 4 6} See Fr{c o:}lich and Melly (2010).
+
+
+{title:References}
+
+{phang} Fr{c o:}lich, M., and B. Melly. 2008. Unconditional quantile treatment
+effects under endogeneity. Discussion Paper No. 3288, Institute for 
+the Study of Labor (IZA). http://ideas.repec.org/p/iza/izadps/dp3288.html.
+
+{phang} Fr{c o:}lich, M., and B. Melly. 2010. {browse "http://www.stata-journal.com/article.html?article=st0203":Estimation of quantile treatment effects with Stata.} {it:Stata Journal} 10: 423-457.
+
+{phang} Jann, B. 2005a. kdens: Stata module for univariate kernel density
+estimation. Statistical Software Components S456410, Department of Economics,
+Boston College. {browse "http://ideas.repec.org/c/boc/bocode/s456410.html":http://ideas.repec.org/c/boc/bocode/s456410.html}.
+
+{phang} Jann, B. 2005b. moremata: Stata module (Mata) to provide various 
+functions. Statistical Software Components S455001, Department of Economics,
+Boston College. {browse "http://ideas.repec.org/c/boc/bocode/s455001.html":http://ideas.repec.org/c/boc/bocode/s455001.html}.
+
+{phang}Racine, J., and Q. Li. 2004. Nonparametric estimation of regression
+functions with both categorical and continuous data.
+{it:Journal of Econometrics} 119: 99-130.
+
+
+{title:Authors}
+
+{pstd}Markus Fr{c o:}lich{p_end}
+{pstd}Universit{c a:}t Mannheim and{p_end}
+{pstd}Institute for the Study of Labor{p_end}
+{pstd}Bonn, Germany{p_end}
+
+{pstd}Blaise Melly{p_end}
+{pstd}Department of Economics{p_end}
+{pstd}Brown University{p_end}
+{pstd}Providence, RI{p_end}
+{pstd}blaise_melly@brown.edu{p_end}
+
+{pstd}Please feel free to share your comments,
+report bugs, and propose extensions.
+
+{pstd}If you use this command in your work, please cite Fr{c o:}lich and Melly
+(2008) and Fr{c o:}lich and Melly (2010).
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 10, number 3: {browse "http://www.stata-journal.com/article.html?article=st0203":st0203}{p_end}

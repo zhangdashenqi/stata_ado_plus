@@ -1,0 +1,142 @@
+{smcl}
+{* April 23, 2003}{...}
+{hline}
+help for {hi:do2htm}
+{hline}
+
+{title:Make results of a .do file into an HTML file}
+
+{p 8 17 2}{cmd:do2htm} 
+{it:dofile}
+[{cmd:,} 
+{cmd:replace} 
+{cmdab:ti:tle}{cmd:(}{it:string}{cmd:)} 
+{cmdab:in:put}{cmd:(}{it:string}{cmd:)} 
+{cmdab:r:esult}{cmd:(}{it:string}{cmd:)} 
+{cmd:bg(}{it:string}{cmd:)
+{cmd:ats} 
+] 
+
+
+{title:Description} 
+
+{p 4 4 2}{cmd:do2htm} runs your do file and saves the results as a .smcl file which is converted
+to an HTML file using a modified version of {cmd:log2html} (originally written by, and thanks to, Christopher F Baum and
+ Nicholas J. Cox, {cmd: findit log2html} to obtain that program).  If your file contains commands that 
+create graphs, you can preface these commands with {cmd:grss} (see {cmd:help grss}) and when the .do file is run the graphs will be
+stored as .png files and the .htm file will show the graphs after the graph command.
+This creates one continuous output file with your commands, output and graphs, all viewable within a web browser.
+
+{p 4 4 2}{cmd:do2htm} requires only the base name of the dofile: e.g. {cmd:my},
+if the .do file is named {cmd:my.do}. The name of the HTML file produced will
+be this base name with {cmd:.htm} appended, e.g. {cmd:my.htm}.
+
+{p 4 4 2}{cmd:do2htm} requires Stata version 8 at least, born on April 10, 2003 or later. 
+
+{title:Options}
+
+{p 4 8 2}{cmd:replace} specifies that if the HTML file exists, it is to be replaced.
+
+{p 4 8 2}{cmd:title()} specifies a string to be placed in the <TITLE> of the HTML page,
+and on the first line of the body of the page, using a <H2> heading.
+
+{p 4 4 2}The remaining options pertain to color choices. By default,
+{cmd:do2htm} produces a complete HTML page (i.e. with <HTML> and <BODY> tags)
+with a white background. Input lines (those resulting from user input) are
+rendered in RGB color "CC6600" (a shade of brown) and highlighted 
+result-window lines are rendered in RGB color "000099" (a shade of blue). 
+The options permit other choices for these three colors. For best results, 
+one of the 216 "web safe" colors that display properly in web browsers on 
+all computers in 256-color mode should be used. Also note that some 
+combinations of colors are not workable; e.g. a black ("000000") background 
+will cause all normally-rendered text to disappear.
+
+{p 4 8 2} 
+{cmd:input()} allows the specification of a different color for the user input
+lines, in standard RGB notation (three duples of two bytes, each 00-FF).
+
+{p 4 8 2} 
+{cmd:result()} allows the specification of a different color for the
+ highlighted result lines, in standard RGB notation.
+
+{p 4 8 2} 
+{cmd:bg()} allows the specification of a different color for the background, in
+standard RGB notation. For convenience, the argument may be given as "gray"
+or "grey", approximating most browsers' default behavior.
+
+{p 4 8 2} 
+{cmd:ats} specifies that all output will be black, with commands that are bold.  Also
+comments that start with two stars (**) are indented and presented in the default browser font, e.g. times roman, with 
+consecutive comments running together to appear as a single paragraph.  This option is named {cmd:ats} since
+it resembles the style of the ATS web pages.
+
+{title:Examples}
+
+{p 4 8 2}
+See accompanying file do2htmtest.do, also repeated below these examples
+
+{p 4 8 2}{inp:. do2htm do2htmtest, replace}{p_end}
+
+{p 4 8 2}{inp:. do2htm do2htmtest, replace ti("Automobile study")}
+
+{p 4 8 2}{inp:. do2htm do2htmtest, replace in(ff3300) res(003333) bg(grey)}
+
+{p 4 8 2}{inp:. do2htm do2htmtest, replace plain}
+
+{title:Example do file, do2htmtest.do}
+
+clear
+
+use http://www.ats.ucla.edu/stat/stata/notes/hsb2
+
+* show summarize command
+summarize
+
+* a long graph command with wide       space in the comment
+* and a very long command
+* Notice we start with "grss" so this graph will show up in the .htm file
+grss graph twoway (scatter read write, ylabel(0 5 to 100) xlabel(10 20 to 90) ) (lfit read write,  ylabel(0 5 to 100) xlabel(10 20 to 90))
+
+** this is
+** two comments
+** and commands spanning over multiple lines
+** Notice we start with "grss" so this graph will show up in the .htm file
+grss scatter ///
+  read ///
+  write ///
+  math
+
+* a short comment
+* A comment on the describe command that really goes on way too long and really is very wide and long
+describe
+
+* and now we make a scatterplot
+* but we forgot the "grss" prefix, so this does NOT show up in the
+* web page
+scatter science socst
+
+** a comment on tab starting with two stars
+tab ses
+
+{title:Reference}
+
+
+       {p 4 4 2}Priester, Gary W. 2000. All you need to know about web safe colors. 
+       {browse "http://www.webdevelopersjournal.com/articles/websafe1/websafe_colors.html"}
+
+{title:Acknowledgements}
+
+       {p 4 4 2}We acknowledge the authors of {cmd:log2html} Christopher F Baum, Boston College, and 
+Nicholas J. Cox, University of Durham, on which most of this program is based.  However, we are responsible for errors
+resulting from our modification of their program.
+		
+{title:Author} 
+
+        {p 4 4 2}Michael Mitchell, UCLA Academic Technology Services, mnm@ucla.edu
+
+{title:Also see} 
+
+{p 4 13 2}Manual:  {hi:[R] log}, {hi:[P] smcl}
+
+{p 4 13 2}On-line:  help for {help log}, {help smcl}, {help grss}, {help log2html}   
+

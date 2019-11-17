@@ -1,0 +1,376 @@
+{smcl}
+{* 30mar2010}{...}
+{cmd:help findname}{right: ({browse "http://www.stata-journal.com/article.html?article=up0030":SJ10-4: dm0048_1})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col :{hi:findname} {hline 2}}List variables matching name
+	patterns or other properties{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:findname} [{varlist}] {ifin} [{cmd:,} {it:options}]
+
+{synoptset 27 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab :Control}
+{synopt :{opt inse:nsitive}}perform case-insensitive pattern matching{p_end}
+{synopt :{opt loc:al(macname)}}put list of variable names in local macro {it:macname}{p_end}
+{synopt :{opt not}}list variable names not in {varlist}{p_end}
+{synopt :{opt place:holder(symbol)}}specify alternative to {cmd:@}{p_end}
+
+{syntab :Display}
+{synopt :{opt a:lpha}}list variable names in alphabetical order{p_end}
+{synopt :{opt d:etail}}display additional details{p_end}
+{synopt :{opt indent(#)}}indent output{p_end}
+{synopt :{opt s:kip(#)}}gap between variables; default is {cmd:skip(2)}{p_end}
+{synopt :{opt v:arwidth(#)}}display width for variable names; default is {cmd:varwidth(12)}{p_end}
+
+{syntab :Selection by data types, values, and formats}
+{synopt :{opt t:ype(typelist)}}has specified type{p_end}
+{synopt :{opt all(condition)}}has all values satisfying {it:condition}{p_end}
+{synopt :{opt any(condition)}}has any values satisfying {it:condition}{p_end}
+{synopt :{opt f:ormat(patternlist)}}has display format matching {it:patternlist}{p_end}
+
+{syntab :Selection by variable and value labels}
+{synopt :{opt varl:abel}}has variable label{p_end}
+{synopt :{opt varl:abeltext(patternlist)}}has variable label with text matching {it:patternlist}{p_end}
+{synopt :{opt vall:abel}}has value label{p_end}
+{synopt :{opt vall:abelname(patternlist)}}has value label with name matching {it:patternlist}{p_end}
+{synopt :{opt vallabelt:ext(patternlist)}}has value label with text matching {it:patternlist}{p_end}
+
+{syntab :Selection by characteristics}
+{synopt :{opt c:har}}has characteristic(s){p_end}
+{synopt :{opt c:harname(patternlist)}}has characteristic(s) with name matching {it:patternlist}{p_end}
+{synopt :{opt chart:ext(patternlist)}}has characteristic(s) with text matching {it:patternlist}{p_end}
+{synoptline}
+{p2colreset}{...}
+
+{phang}
+{it:typelist} used in {cmd:type(}{it:typelist}{cmd:)} is a list of one
+or more {help datatype:types}, each of which may be {cmd:numeric},
+{cmd:string}, {cmd:byte}, {cmd:int}, {cmd:long}, {cmd:float}, or
+{cmd:double}, or may be a {it:{help numlist}}, such as {cmd:1/8} to mean
+{bind:{cmd:str1} {cmd:str2} ... {cmd:str8}}.  Examples include{p_end}
+{p2colset 13 43 45 2}
+{p2col :{cmd:type(int)}}is of type {opt int}{p_end}
+{p2col :{cmd:type(byte int long)}}is of integer {opt type}{p_end}
+{p2col :{cmd:type(numeric)}}is a numeric variable{p_end}
+{p2col :{cmd:type(1/40)}}is {opt str1}, {opt str2}, ..., {opt str40}{p_end}
+{p2col :{cmd:type(numeric 1/2)}}is numeric or {opt str1} or {opt str2}{p_end}
+{p2colreset}{...}
+
+{phang}
+{it:patternlist} used in, for example, {cmd:format(}{it:patternlist}{cmd:)}, is
+a list of one or more patterns.  A pattern is the expected name or text
+with the likely addition of the characters {cmd:*} and {cmd:?}.  {cmd:*}
+indicates 0 or more characters go here and {cmd:?} indicates exactly 1
+character goes here.  Examples include{p_end}
+
+{p2colset 13 43 45 2}
+{p2col :{cmd:format(*f)}}format is %{it:#}.{it:#}{cmd:f}{p_end}
+{p2col :{cmd:format(%t*)}}has time or date format{p_end}
+{p2col :{cmd:format(%-*s)}}is a left-justified string{p_end}
+{p2col :{cmd:varl(*weight*)}}variable label includes word {opt weight}{p_end}
+{p2col :{cmd:varl(*weight* *Weight*)}}variable label includes word {opt weight} or {opt Weight}{p_end}
+{p2colreset}{...}
+
+{phang}
+To match a phrase, it is important to enclose the entire phrase in quotes.
+
+	    {cmd:varl("*some phrase*")}    variable label has {opt some phrase}
+
+{phang}
+If instead you used {cmd:varl(*some phrase*)}, then only variables having
+labels ending in {opt some} or starting with {opt phrase} would be listed.
+
+{phang}
+{it:condition} used in {cmd:all()} or {cmd:any()} is a true-or-false condition 
+defined by an expression in which variable names are represented by {cmd:@}.
+For example, {cmd:any(@ < 0)} selects numeric variables in which any values 
+are negative.
+
+
+{title:Description}
+
+{pstd}
+{cmd:findname} lists variable names of the dataset currently in memory
+in a compact or detailed format and lets you specify subsets of
+variables to be listed, either by name or by properties (for example, the
+variables are numeric).  In addition, {cmd:findname} leaves behind in
+{opth r(varlist)} the names of variables selected so that you can use
+them in a subsequent command.
+
+{pstd}
+{cmd:findname}, typed without arguments, lists all variable names of the
+dataset currently in memory in a compact form.
+
+{pstd}
+If two or more options specifying properties of variables are specified,
+{cmd:findname} identifies only those variables that satisfy all the option
+specifications, that is, the intersection of all the subsets identified.  The
+{cmd:not} option provides a direct way to identify the complementary set.  Two
+or more calls to {cmd:findname} with results saved in local macros using the
+{cmd:local()} option may be used together with macro operations to produce the
+union, set difference, etc., of different subsets.
+
+{pstd}
+{cmd:if} and {cmd:in} when specified only affect the operation of {cmd:any()}, 
+{cmd:all()}, or {cmd:vallabeltext()}.
+
+
+{title:Options}
+
+{dlgtab:Control}
+
+{phang}
+{opt insensitive} specifies that the matching of any pattern in 
+{it:patternlist} be case-insensitive.  For example, 
+{cmd:varl(*weight*) inse} is an alternative to, and more inclusive than, 
+{cmd:varl(*weight* *Weight*)}.
+
+{phang}
+{opt local(macname)} puts the resulting list of variable names into 
+local macro {it:macname}.
+
+{phang}
+{opt not} specifies that {varlist} or the specifications given define the set
+of variables not to be listed.  For instance, {bind:{cmd:findname pop*, not}}
+specifies that all variables not starting with the letters {opt pop} be
+listed.  The default is to list all the variables in the dataset or, if
+{it:varlist} or particular properties are specified, to list the variable
+names so defined.
+
+{phang}
+{opt placeholder(symbol)} specifies an alternative to {cmd:@} to use in the
+{cmd:any()} or {cmd:all()} option.  This should only be necessary for making
+string comparisons involving {cmd:@} as a literal character (or if your {cmd:@}
+key is somehow unavailable).
+
+{dlgtab:Display} 
+
+{phang}
+{opt alpha} specifies that the variable names be listed in alphabetical
+order.
+
+{phang}
+{opt detail} specifies that detailed output identical to that of 
+{helpb describe} be produced.  If {opt detail} is specified, 
+{opt indent()}, {opt skip()}, and {opt varwidth()} are ignored.
+
+{phang}
+{opt indent(#)} specifies the amount the lines are indented.
+
+{phang}
+{opt skip(#)} specifies the number of spaces between variable names; the
+default is {cmd:skip(2)}.
+
+{phang}
+{opt varwidth(#)} specifies the display width of the variable names; the
+default is {cmd:varwidth(12)}.
+
+{dlgtab:Selection by data types, values, and formats}
+
+{phang}
+{opt type(typelist)} selects variables of the specified {it:typelist}.
+Typing {cmd:findname, type(string)} would list all the names of string variables in
+the dataset, and typing {bind:{cmd:findname pop*, type(string)}} would
+list all the names of string variables beginning with the letters {opt pop}.
+
+{phang}
+{opt all(condition)} selects variables that have all values 
+satisfying {it:condition}.  If either {cmd:if} or {cmd:in} is specified, 
+attention is restricted to the observations specified.
+
+{phang} 
+{opt any(condition)} selects variables that have any values 
+satisfying {it:condition}.  If either {cmd:if} or {cmd:in} is specified, 
+attention is restricted to the observations specified.
+
+{phang}
+With either {cmd:all()} or {cmd:any()}, {it:condition}s that mismatch type are ignored.
+
+{phang} 
+{opt format(patternlist)} selects variables whose {help format}
+matches any of the patterns in {it:patternlist}.  {cmd:format(*f)} would
+select all variables with formats ending in {cmd:f}, which presumably
+would be all {cmd:%}{it:#}{cmd:.}{it:#}{cmd:f},
+{cmd:%0}{it:#}{cmd:.}{it:#}{cmd:f}, and
+{cmd:%-}{it:#}{cmd:.}{it:#}{cmd:f} formats.  {cmd:format(*f *fc)} would
+select all formats ending in {opt f} or {opt fc}.
+
+{dlgtab:Selection by variable and value labels}
+
+{phang}
+{opt varlabel} selects variables with defined {help label:variable labels}.
+
+{phang} 
+{opt varlabeltext(patternlist)} selects variables with variable-label text
+matching any of the words or phrases in {it:patternlist}.
+
+{phang}
+{opt vallabel} selects variables with defined {help label:value labels}.
+
+{phang} 
+{opt vallabelname(patternlist)} selects variables with value-label names
+matching any of the words in {it:patternlist}.
+
+{phang} 
+{opt vallabeltext(patternlist)} selects variables with value-label text
+matching any of the words or phrases in {it:patternlist}.  If either {cmd:if} or
+{cmd:in} is specified, attention is restricted to the observations specified.
+Either way, no attention is paid to value labels that do not correspond to
+values present in the data.
+
+{dlgtab:Selection by characteristics}
+
+{phang}
+{opt char} selects variables with defined {help char:characteristics}.
+Notes in the sense of {help notes} are characteristics.
+
+{phang} 
+{opt charname(patternlist)} selects variables with characteristic names matching
+any of the words in {it:patternlist}.
+
+{phang} 
+{opt chartext(patternlist)} selects variables with characteristic text matching
+any of the words or phrases in {it:patternlist}.
+
+
+{title:Examples}
+
+{pstd}
+All variables{p_end}
+{phang2}{cmd:. findname}{p_end}
+
+{pstd}All string variables{p_end}
+{phang2}{cmd:. findname, type(string)}{p_end}
+{phang2}{cmd:. edit `r(varlist)'}{p_end}
+
+{pstd}All {cmd:str1}, {cmd:str2}, {cmd:str3}, {cmd:str4} variables{p_end}
+{phang2}{cmd:. findname, type(1/4)}
+
+{p 4 4 2}All numeric variables{p_end}
+{phang2}{cmd:. findname, type(numeric)}{p_end}
+{phang2}{cmd:. order `r(varlist)'}{p_end}
+
+{phang2}{cmd:. findname, type(numeric)}{p_end}
+{phang2}{cmd:. summarize `r(varlist)'}{p_end}
+
+{p 4 4 2}
+All {cmd:byte} or {cmd:int} variables{p_end}
+{phang2}{cmd:. findname, type(byte int)}{p_end}
+
+{p 4 4 2}
+All {cmd:float} variables{p_end}
+{phang2}{cmd:. findname, type(float)}{p_end}
+
+{p 4 4 2}
+All variables that are not {cmd:float}{p_end}
+{phang2}{cmd:. findname, type(float) not}{p_end}
+
+{p 4 4 2}
+All date variables, that is, those with formats {cmd:%t*} or {cmd:%-t*}{p_end}
+{phang2}{cmd:. findname, format(%t* %-t*)}{p_end}
+
+{p 4 4 2}
+All variables with only integer values {p_end}
+{phang2}{cmd:. findname, all(@ == int(@))}{p_end}
+
+{p 4 4 2}
+All variables with any negative values {p_end}
+{phang2}{cmd:. findname, any(@ < 0)}{p_end}
+
+{p 4 4 2}
+Variables with left-justified string formats{p_end}
+{phang2}{cmd:. findname, format(%-*s)}{p_end}
+
+{p 4 4 2}
+Variables with comma formats{p_end}
+{phang2}{cmd:. findname, format(*c)}{p_end}
+
+{p 4 4 2}
+All variables with value labels attached{p_end}
+{phang2}{cmd:. findname, vallabel}{p_end}
+
+{p 4 4 2}
+All variables with the value label {cmd:origin} attached{p_end}
+{phang2}{cmd:. findname, vallabelname(origin)}{p_end}
+
+{p 4 4 2}
+Variables with characteristics defined{p_end}
+{phang2}{cmd:. findname, char}{p_end}
+
+{p 4 4 2}
+Variables with notes {p_end}
+{phang2}{cmd:. findname, charname(note*)} {p_end}
+
+{p 4 4 2} 
+Find text in characteristics{p_end}
+{phang2}{cmd:. notes mpg: hidden treasure}{p_end}
+{phang2}{cmd:. findname, chartext(*treasure*)}{p_end}
+
+
+{title:Author} 
+
+{p 4 4 2}Nicholas J. Cox{p_end}
+{p 4 4 2}Durham University{p_end}
+{p 4 4 2}Durham City, U.K.{p_end}
+{p 4 4 2}n.j.cox@durham.ac.uk{p_end}
+
+
+{title:Acknowledgments} 
+
+{p 4 4 2}{cmd:findname} owes a major debt to {helpb ds}.  {cmd:ds} and its
+relatives under differing names have had a complicated history in various
+official and user-written versions (for example, Anonymous [1992]; Cox [2000,
+2001]; Weiss [2008]; and {cmd:ds2}, {cmd:ds3}, and {cmd:ds5} on SSC).  My
+earlier work was aided by suggestions from Richard Goldstein, William Gould,
+Jay Kaufman, and Fred Wolfe.  More recently, Maarten Buis, Martin Weiss, Vince
+Wiggins, and several members of Statalist provided helpful comments both
+directly and indirectly.
+
+
+{title:References} 
+
+{p 4 8 2}Anonymous.  1992.  Short describes, finding variables, and codebooks.
+{browse "http://www.stata.com/products/stb/journals/stb8.pdf":{it:Stata Technical Bulletin} 8: 3-5}.  Reprinted in 
+{it:Stata Technical Bulletin Reprints}, vol. 2, pp. 11-14.  College Station,
+TX: Stata Press.
+
+{p 4 8 2}Cox, N. J.  2000.  dm78: Describing variables in memory.
+{browse "http://www.stata.com/products/stb/journals/stb56.pdf":{it:Stata Technical Bulletin} 56: 2-4}.  Reprinted in 
+{it:Stata Technical Bulletin Reprints}, vol. 10, pp. 15-17.  College Station,
+TX: Stata Press.
+
+{p 4 8 2}-----.  2001.  dm78.1: Describing variables in memory: update to
+Stata 7.  
+{browse "http://www.stata.com/products/stb/journals/stb60.pdf":{it:Stata Technical Bulletin} 60: 3}.  Reprinted in 
+{it:Stata Technical Bulletin Reprints}, vol. 10, pp. 17.  College Station, TX:
+Stata Press.
+
+{p 4 8 2}Weiss, M. 2008.  Stata tip 66: ds--A hidden gem.
+{browse "http://www.stata-journal.com/article.html?article=dm0040":{it:Stata Journal} 8: 448-449}.
+
+
+{title:Also see}
+
+{psee}
+Article:  {it:Stata Journal}, volume 10, number 4: {browse "http://www.stata-journal.com/article.html?article=up0030":dm0048_1},{break}
+          {it:Stata Journal}, volume 10, number 2: {browse "http://www.stata-journal.com/article.html?article=dm0048":dm0048}
+
+{psee}
+{space 1}Manual:  {bf:[D] ds} ({help forthcoming})
+
+{p 4 16 2}
+{space 3}Help:  {manhelp compress D}, {manhelp codebook D},
+         {manhelp describe D}, {manhelp format D},
+	 {manhelp label D}, {manhelp lookfor D}, {manhelp notes D},
+	 {manhelp order D}, {manhelp rename D}
+{p_end}

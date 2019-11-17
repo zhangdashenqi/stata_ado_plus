@@ -1,0 +1,220 @@
+.-
+ help for ^fsreg^, ^fsregrph^                      Stas Kolenikov, skolenik@@unc.edu
+.-
+
+  Forward search regression
+  -------------------------
+
+  ^fsreg^ depvar [varlist], ^clear ^[^sav^ing^(^filename^) replace id(^varname^) d^ots
+         ^res^iduals ^rstu^dent ^rsta^ndard ^nres(^#^) obs(^numlist^) init^ial^(^#^)^]
+         ^lmd(#)^ ^which^ ^med^ian
+
+  ^fsregrph^, [^be^tas^(^varlist^) b ts^tats^(^varlist^) t s^core ^r^esidual ^l^evel^(^#^)^]
+
+
+  Description
+  -----------
+
+^fsreg^ performs the forward search regression, and ^fsregrph^ displays the 
+results graphically, as given by Riani & Atkinson (2000). (Their concern was
+the choice of the parameter for Box-Cox transformation, which is known to
+be sensitive to outliers, either in the initial variables, or in transformed
+variables.)
+
+^fsreg^ attempts to find the sets of observations that do not seem to have 
+outliers by initially selecting and carefully extending an outlier-free set. 
+The initial set is chosen via Stata's robust regression, see help for @rreg@,
+or by a version of the least median deviation (LMD) regression. A small number 
+of observations (something like 10% of the whole sample) with the smallest 
+absolute deviation from this regression are chosen to be the initial data set. 
+Then at each stage the regression is re-estimated with the current sample, and 
+the observations that have the smallest residuals in the current regression 
+are added.
+
+Some diagnostic data is collected on the way. ^fsregrph^ displays the
+diagnostic plots. Usually, the outliers are added at the very end of the search
+process, which is evidenced by sharp jumps or drops on the graphs.
+
+
+  Options of ^fsreg^
+  ----------------
+
+^clear^ is not optional. It indicates your understanding that the current data
+        is going to be destroyed, unless you @save@d or @preserve@d them, and 
+        replaced by the diagnostic data.
+
+^saving^ specifies the name of the file to save the diagnostic data. If not 
+        provided, the default name ^FSRegData.dta^ will be used.
+
+^replace^ tells to re-write the diagnostic data file if the file under the
+        ^saving^ option already exists.
+
+^id^ can be used to provide a sort of identifier for the observations. If not
+        specified, the observation number in the original data file will be
+        used. This should be treated with some caution, as long as this number
+        will change depending on how the data set is sorted.
+
+^residuals^ allows to collect information on a number of the greatest residuals
+        as determined by the initial robust regression. These are likely to be
+        unusual observations, so it might be useful to trace them. If there is
+        a serious need of the variable transformation, however, then these 
+        residuals may not be informative. A two-stage procedure can be 
+        suggested: first, the ^fsreg^ is run without specifying any residuals,
+        and then once again tracing the residuals for selected observations;
+        see ^obs^ option and the explanation of the diagnostic file structure
+        below. Absolute values of residuals are written into the diagnostics 
+        file.
+
+^rstudent^ and ^rstandard^ can be used to trace the studentized and standardized
+        residuals instead of the usual ones. The shorthands follow the ^predict^ 
+        options for @regress@. ^rstudent^ tends to produce spiky plots, as Stata
+        sometimes calculates the studentized residual to be zero if the 
+        observation is not in the estimation sample.
+
+^nres^ specifies how many residuals should be traced.
+
+^obs^ allows to specify the list of suspect observations to be traced. Some sort
+        of residuals should be specified along with ^obs^.
+
+^initial^ gives the size of the initial outlier-free set. 
+
+^dots^ entertains the user by displaying a dot for each added observation and
+        providing other additional information.
+
+^lmd^ requests the least median deviation regression. What is actually done is 
+        that the given number of OLS regressions is run with randomly selected 
+        subsets of the data, and the one with the smallest median of the
+        absolute residuals is retained, so it is rather time-consuming. 
+
+        A built-in trick is that if ^lmd(0)^ is specified, then the initial 
+        subset is the first ^initial^ observations in the current data set. 
+        The trick is useful when you want to specify a certain subset to be 
+        the initial one, e.g. chosen in the previous run of the procedure.
+
+^median^ specifies that the median regression, or least absolute deviation
+        regression, is to be fitted rather than OLS regression at the 
+        quasi-LMS stage.
+
+^which^ shows the IDs of observations chosen for the initial outlier free
+        subset of data.
+
+
+  Options of ^fsregrph^
+  -------------------
+
+^score^ graphs the score tests for Box-Cox transformations with lambdas equal
+       to -2.0, -1.0, -0.5, 0.0, 0.5, 1.0 and 2.0.
+
+^betas^ displays how the coefficients estimates change as observations are
+       added to the model. The variables you are interested in should be listed
+       in the parentheses.
+
+^b^ is a shorthand for ^betas^ will all regressors included.
+
+^tstats^ displays how the t-statistics of the regressors change as observations 
+       are added to the model. The variables you are interested in should be 
+       listed in the parentheses.
+
+^t^ is a shorthand for ^tstats^ with all regressors included.
+
+^residual^ displays the (usual, studentized, or standardized) residuals
+       if the relevant information is present.
+
+^level^ specifies the confidence levels for the confidence intervals. The 
+       default is Stata's $S_level; see help for @level@.
+
+
+  Diagnostic data file
+  --------------------
+
+^fsreg^ creates the diagnostic data file of a certain structure. Some 
+explanations follow, although all variables are labelled.
+
+^_nobs^ is the variable that shows the current number of observations.
+^_added^ is the ID (or just the number) of the observation that is to be added
+        at the next step. If more than one observation was added into 
+        the "outlier free" set (and, respectively, one or more observations
+        dropped out of it. It might well be happening at the early stages
+        if the initial set is not really optimal), then this variable is 
+        set to missing. It is also missing in the last point, as there is
+        nothing more to add.
+^varlist^ specified in the call to ^fsreg^ are the regression coefficients
+        at the current step.
+^_t*^ are t-statistics of the regressors at the current step.
+^_sigma2^ is the mean squared error of the current regression. As observations
+        with larger and larger residuals are added, the MSE grows steadily,
+        but might jump up if a serious outlier is added at this step.
+^_sco*^ variables are score tests for Box-Cox's lambda -2, -1, -0.5, 0, 0.5, 1
+        and 2.
+^_r*^ variables, if any, are residuals identified by ID or observation number.
+^_lab*^ are labels for scores graphs.
+^_rstum^  is the largest studentized residual in the current sample. Sharp
+        increase is likely to indicate an entry of an outlier to the sample.
+^_resoutm^ is the smallest deletion residual out of the sample. Sharp drop
+        is likely to indicate an entry of an outlier.
+^_skew^ is the skewness coefficient of the residuals 
+^_kurt^ is the kurtosis coefficient of the residuals
+
+  Examples
+  --------
+
+ ^. use http://www.komkon.org/~tacik/stata/florida, clear^
+ ^. regress buch inco coll hsed o65 hisp blac whit lnpop^
+ ^. predict studres, rstudent^
+ ^. li county studres if abs(studres)>2^
+ ^. fsreg  buch inco coll hsed o65 hisp blac whit lnpop, clear dots^
+        ^obs(50 43 6 48 41 57) rstu^
+ ^. list _nobs _added^
+ ^. fsregrph, r^
+ ^. fsregrph, t^
+
+This sequence looks at the 2000 US presidential election for Florida. The first
+regression is a naive way to understand whether the number of votes for
+Buchanan is unusually high in Palm Beach county. Some people go further than
+that and say, "Such and such many votes should go to Gore rather than to
+Buchanan." The first objection to this simple regression would be heterogeneity
+of the data. The counties differ by size tremendously (you can check that with
+the data). So, we could look for the transformation of the data that would 
+improve upon it. One of possible (family of) transformations is Box-Cox 
+transformation, and we will be having a look at the suggested parameter within 
+the ^fsreg^ framework. The graph of the scores of several Box-Cox transformation
+parameters is produced by default as the result of ^fsreg^ procedure.
+
+We see on the graph produced by ^fsreg^ that the observation added at the last
+step is a large positive outlier. It has no influence on the scores for the 
+Box-Cox parameters less than zero (i.e. the transformations that make large
+values small), but it does affect the scores for the positive values of the 
+parameter. The models that retain this observation large or make it even larger 
+do not fit the data well, so the score tests for lambda are unsatisfactory. 
+Listing the numbers of the added observations reveals that this is in fact 
+Palm Beach county. It should also be noted that the observation added at 
+step 44 is likely to be unusually small (this turns out to be Lafayette 
+county): the scores that are sensitive to small numbers jump away from zero 
+at this point.
+
+So, good parameters for Box-Cox transformation lie between 0 and 0.5 for almost
+all subsets of the Florida election data set. Both these values do make sense 
+if one believes that the data follow Poisson distribution. The value of 0
+gives the canonical link, while the square root transformation is approximately
+variance stabilizing.
+
+
+  Author
+  ------
+
+Stas Kolenikov, skolenik@@[unc.edu, yahoo.com]
+Stata stuff: @net: from http://www.komkon.org/~tacik/stata/!http://www.komkon.org/~tacik/stata/@
+
+
+  See also
+  --------
+
+On-line: help for @regress@, @rreg@, @regdiag@, @diagplots@, @boxcox@; 
+         @boxcox2@ if installed; @atkplot@ if installed
+
+
+  References
+  ----------
+
+Riani, M., and A.C.Atkinson. Robust Diagnostic Data Analysis: Transformations
+in Regression. Technometrics, v. 42, 384--394 (2000).

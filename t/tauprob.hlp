@@ -1,0 +1,34 @@
+p-values for unit root and cointegration tests                   (STB-17: sts6)
+----------------------------------------------
+
+	^tauprob^ { ^c^ | ^ct^ | ^ctt^ } vars tau
+
+calculates the approximate asymptotic p-value for a unit root (Dickey-Fuller 
+or Phillips-Perron) or cointegration (Engle-Granger) test. The p-value is
+stored in the macro S_1, but it is not displayed.
+
+The first argument is one of the strings "c", "ct", or "ctt" (without
+quotation marks).  This argument indicates whether the tau statistic comes
+from a regression with a constant, constant and trend, or constant, trend,
+and trend squared, respectively.  The second argument is the number of
+variables in the cointegrating vector.  A "1" in this argument indicates a
+unit root test.  The third, and final, argument is the tau-statistic obtained
+from the Dickey-Fuller, Phillips-Perron, or Engle-Granger test.
+
+
+
+
+
+
+Author
+------
+        Craig S. Hakkio
+        Federal Reserve Bank of Kansas City
+        FAX: 816-881-2199
+
+
+Also see
+--------
+
+    STB:  sts6 (STB-17)
+On-line:  ^help^ for ^tauprob^

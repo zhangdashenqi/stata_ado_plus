@@ -1,0 +1,123 @@
+{smcl}
+{* 24aug2006}{...}
+{cmd:help permtest1}{right:(SJ7-3: st0134)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 18 20 2}{...}
+{p2col :{hi:permtest1} {hline 2}}Equality test for paired replicates{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{phang}
+Fisher-Pitman permutation test for paired replicates
+
+{p 8 19 2}
+{cmd:permtest1} {varname} {cmd:=} {it:{help exp}} {ifin}
+[{cmd:,} {cmd:runs(}{it:integer}{cmd:)} {cmd:exact} {cmd:simulate}] 
+
+{pstd}{cmd:by} may be used with {cmd:permtest1}; see {help prefix}.
+
+
+{title:Description}
+
+{pstd}
+{cmd:permtest1} assumes that when one makes paired observations for
+each subject or the obeservations for each paired replicate, the two scores
+observed are randomly assigned to the two condiditions. When and if
+appropriate data is given -- that is, its values are interval scaled -- this
+test is applicable and a powerful alternative to the Wilcoxon signed-rank
+test.
+
+{pstd}
+{cmd:permtest1} is for use with matched data.  For an
+equality test on two-sample interval-scaled data, see {helpb permtest2}.
+
+{pstd}
+The Fisher-Pitman permutation test for paired replicates has a high need for
+resources: Let n be the number of observations. Then 2^n calculations must be
+done to retrieve significance levels. This would make it almost impossible to
+compute the significance levels for many observations. It is possible to
+estimate significance levels by using Monte Carlo simulations.
+
+
+{title:Options}
+
+{phang}
+{cmd:runs(}{it:integer}{cmd:)} specifies the number of Monte Carlo simulation
+runs to perform. It defaults to 2 x 10^5.
+
+{phang}
+{cmd:exact} forces the calculation of exact significance levels. Specifying
+this option may increase run time even with moderate sample sizes. 
+
+{phang}
+{cmd:simulate} forces the estimation of significance levels with Monte Carlo
+simulations. This method is less accurate but also less time consuming. By
+default, the test uses Monte Carlo simulations automatically if the sample
+size exceeds 13. 
+
+{pstd}The options {cmd:exact} and {cmd:simulate} may not be specified at the
+same time, and the {opt runs(integer)} option makes sense only with Monte
+Carlo simulations.
+
+
+{title:Warning}
+
+{pstd}
+Be aware that using Monte Carlo simulations always bear a stochastic
+component. To make sure that the significance levels are not too inaccurate,
+one should conduct several runs of this test if using Monte Carlo simulations.
+
+
+{title:Examples}
+
+{psee}{cmd:. permtest1 expd_bubblegum=expd_tobacco if year=2006}{p_end}
+{psee}{cmd:. by gender: permtest1 expd_bubblegum=expd_tobacco if year=2006}{p_end}
+{psee}{cmd:. by treatment: permtest1 expd_bubblegum=expd_tobacco, mode(2) sims(100) smpsize(300)}{p_end}
+
+
+{title:Saved results}
+
+{pstd}
+{cmd:permtest1} saves the following in {cmd:r()}:
+
+{synoptset 19 tabbed}{...}
+{p2col 5 19 23 2: Scalars}{p_end}
+{synopt:{cmd:r(criticalValue)}}critical value{p_end}
+{synopt:{cmd:r(zero)}}number of zeros in the difference vector{p_end}
+{synopt:{cmd:r(negative)}}number of negative values in the difference vector{p_end}
+{synopt:{cmd:r(positive)}}number of positive values in the difference vector{p_end}
+{synopt:{cmd:r(runs)}}number of simulation runs conducted{p_end}
+{synopt:{cmd:r(mode)}}{cmd:1} if the exact test, {cmd:2} if Monte Carlo
+simulations were used{p_end}
+{synopt:{cmd:r(N)}}sample size{p_end}
+{synopt:{cmd:r(twotail)}}two-tailed p-value{p_end}
+{synopt:{cmd:r(uppertail)}}upper-tailed p-value{p_end}
+{synopt:{cmd:r(lowertail)}}lower-tailed p-value{p_end}
+{p2colreset}{...}
+
+
+{title:Author}
+
+{pstd}
+Johannes Kaiser <johannes.kaiser at uni-bonn.de>, Laboratory for Experimental
+Economics, Bonn, Germany.
+
+{pstd}
+I provide the program "as is" without warranty of any kind, either expressed
+or implied, including, but not limited to, the implied warrananties of
+merchantability and fitness for a particular purpose. The entire risk as to
+the quality and performance of the program is with you. Should the program
+prove defective, you assume the cost of all necessary servicing, repair, or
+correction.
+
+
+{title:Also see}
+
+{psee}
+Online:  {helpb permtest2}, {manhelp signrank R}
+{p_end}

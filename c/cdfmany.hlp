@@ -1,0 +1,39 @@
+.-
+help for ^cdfmany^                      Stas Kolenikov, skolenik@@recep.glasnet.ru
+.-
+
+Multiple cumulative distribution functions plot
+-----------------------------------------------
+
+         ^cdfmany^ varlist [^if^ exp] [^in^ range] [weights],
+                     [^up(^#^) low(^#^)^ ^ri^ght^(^#^) le^ft^(^#^)^]
+
+
+Description
+-----------
+
+This command produces and plots cdfs of the variables specified in varlist.
+^fweight^s and ^aweight^s are allowed, as they are in ^cumul^; see help @weights@.
+
+
+Options
+-------
+
+^up^ specifies the upper bound for the plot (y axis); default is 1
+
+^low^ specifies the lower bound for the plot (y axis); default is 0
+
+^left^ specifies the left bound for the plot (x axis)
+
+^right^ specifies the upper bound for the plot (x axis)
+
+These options are not to be mixed with the ^if^ and ^in^ modifiers! The latter
+affect the sample on which the estimation of cdf is based, while the former,
+the piece of graph which would be shown.
+
+
+See also
+--------
+
+ Manual: ^[R] cumul^
+On-line: help for @cumul@, @distplot@ (if installed)

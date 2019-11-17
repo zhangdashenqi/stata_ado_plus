@@ -1,0 +1,237 @@
+.-
+help on ^matcond^, ^matexp^, ^matginv^, ^matmax^, ^matmin^, ^matnorm^, ^matnull^, ^matorth^,
+        ^matpower^, ^matrand^, ^matrank^, ^maxsum^
+.-
+
+Contents
+--------
+
+        ^matcond^         condition number
+        ^maxexp^          matrix exponential
+        ^matginv^         Moore-Penrose generalized-inverse
+        ^matnull^         orthogonal basis of the null space
+        ^matorth^         orthogonal basis of column space
+        ^matpower^        power of a matrix
+        ^matrank^         rank (number of independent rows/columns)
+
+        ^matmax^          row/column/overall maximum
+        ^matmin^          row/column/overall minimum
+        ^matnorm^         (L2-)norm
+        ^matrand^         random matrix
+        ^matsum^          row/column/overall sum
+
+        ^mati^            displays the result of a matrix expression
+
+  These commands share a number of features:
+    - they accept valid matrix expressions
+    - if names for output are not specified, the output is displayed.
+    - the results are made available via r(name) objects
+
+
+Matrix functions based on the singular value decomposition
+----------------------------------------------------------
+
+^matcond^ A [^, c^ond^(^name_scalar^) d^isplay ^f^ormat^(^fmt^)^]
+
+    Returns the condition number (ratio of largest and smallest singular value)
+    of A in the scalar named in ^cond^.
+
+^matexp^ A [^, e^xp^(^name_matrix^)^ ^d^isplay ^f^ormat^(^fmt^)^]
+
+    Computes the matrix exponential of A. (Please distinguish this from the
+    element wise exponent of A).
+
+^matginv^ A [^, g^inv^(^name_matrix^) r^ank^(^name_scalar^) t^ol^(^#^) d^isplay ^f^ormat^(^fmt^)^]
+
+    Returns the Moore-Penrose (pseudo-) inverse A+ of the matrix A in a matrix
+    named in ^ginv^. The scalar ^rank^ returns the rank of A.
+
+    If A is a n x m matrix, its MP-inverse A+ is m x n, and is the unique
+    solution of
+       (1) A*A+*A = A,
+       (2) A+*A*B = B,
+       (3) A*A+ and A+*A are orthogonal projections.
+
+    If A is (square and) regular, the MP-inverse A+ is the normal matrix
+    inverse.
+
+    If A is square and singular, Stata's matrix function syminv() returns a
+    g-inverse, a different kind of generalized matrix inverse.
+
+    The row (column-) names of the MP-inverse A+ are the column (row-)names
+    of A.
+
+^matorth^ A [^, o^rth^(^name_matrix^) r^ank^(^name_scalar^) d^isplay ^t^ol^(^#^) f^ormat^(^fmt^)^]
+
+    Returns a orthogonal basis of the column space (image) of A in a matrix
+    named in ^orth^, and the rank of A in the scalar named in ^rank^.
+
+^matpower^ A^, k(^#^)^ [ ^p^ower^(^name_matrix^) r^ank^(^name_scalar^)^
+                                                 ^d^isplay ^t^ol^(^#^)^ ^f^ormat^(^fmt^)^]
+    Computes the k-the power of matrix A.
+
+^matnull^ A [^, n^ull^(^name_matrix^) r^ank^(^name_scalar^) d^isplay ^t^ol^(^#^) f^ormat^(^fmt^)^]
+
+    Returns a orthogonal basis of the null space of A in a matrix named in
+    ^null^, and the rank of A in the scalar named in ^rank^.
+
+^matrank^ A [^, r^ank^(^name_scalar^) d^isplay ^t^ol^(^#^) f^ormat^(^fmt^)^]
+
+    Returns the rank (number of independent rows or columns) of a matrix in
+    the scalar named in ^rank^.
+
+
+Other matrix functions
+----------------------
+
+^matnorm^ A [^, n^orm^(^str^) d^isplay ^f^ormat^(^fmt^)^]
+
+    Returns the L2-norm of A in a scalar named in ^norm^.
+
+^matmax^ A [^, r^ow^(^mat_name^) c^olumn^(^mat_name^) a^ll^(^scalar_name^) d^isplay ^f^ormat^(^fmt^)^]
+^matmin^ A [^, r^ow^(^mat_name^) c^olumn^(^mat_name^) a^ll^(^scalar_name^) d^isplay ^f^ormat^(^fmt^)^]
+^matsum^ A [^, r^ow^(^mat_name^) c^olumn^(^mat_name^) a^ll^(^scalar_name^) d^isplay ^f^ormat^(^fmt^)^]
+
+    Computes and/or displays the row-wise, column-wise and over-all maximum,
+    minimum, and sum over the elements of a matrix. More than one operator may
+    be specified simultaneously. These commands default to the column-wise
+    operators.
+
+^matrand^ n m A [^,^ { ^n^ormal^(^mn var^)^ | ^u^niform^(^lo hi^)^ | ^c^onst^(^lo hi^)^ }
+                                                        ^d^isplay ^f^ormat^(^fmt^)^]
+
+    Creates a n-x-m matrix A (overwriting A if it already exists) with elements
+    generated independently from :
+      ^normal^   distribution with mean mn and variance var
+      ^uniform^  distribution on the interval [lo hi]
+      ^const^    distribution on the costants lo, lo+1, ..., hi
+    If no distribution is specified, ^matrand^ defaults to u(0 1). Note that A
+    is not optional.
+
+^mati^ A
+
+    displays a matrix or matrix expression. ^mati^ saves the result in ^ANS^.
+
+
+Options
+-------
+
+^display^ specifies that the computed results are displayed. All programs that
+    are described here, display the results if output names for matrices (
+    scalars) are not specified.
+
+^format(^fmt^)^ specifies a format (e.g., %10.5f, %10.0g) to display matrix
+    results.
+
+^tol(^#^)^ specifies the tolerance for deciding what singular values are
+    `really' zero. See below for details. You typically don't have to set
+    this option.
+
+
+Numerical details
+-----------------
+
+The main tool used by these programs is the singular value decomposition of
+the matrix A = U S V', where U and V are (column-) orthonormal and S is
+diagonal with positive entries. We heavily lean on Stata's singular value
+decomposition command (^matrix svd^).
+
+Following Matlab, we compute the ^rank^ r(X) of X as the number of singular
+values that exceed tol, where
+
+        tol = max(singular values of A) * size(A) * eps
+
+This is also used in computing the MP-inverse (see below) and the column
+orthogonalization. The ^condition number^ c(A) of A as
+
+        c(A) = max(singular values of A) / min(singular values of A)
+
+If the minimum of the singular values is 0, the condition number is defined
+as missing.
+
+The ^Moore-Pensore-inverse^ of a matrix A is computed as V*IS*U', where IS
+is a diagonal matrix with the reciproce of singular values S, or 0 if the
+singular values are smaller than tol (see above).
+
+The k-th power of a matrix is computed as V*S^^k*U'. Note that a matrix "to
+the power -1" is just the Moore-Penrose inverse.
+
+The matrix exponential is computed as V*exp(S)*U'. In a future version of
+^matexp^ is provide a more stable algorithm using Pade approximation. (See
+Golub and Van Loan for details.)
+
+Stata can only compute the "economy" solution of the SVD, and hence the svd
+cannot be used directly to obtain the null space of a matrix. To compute
+the null space of a matrix we therefore use the fact that the null space of
+matrix A equals the null space of A'A. The latter can be obtained from the
+spectral decomposition of A'A, using the tolerance to decide what
+eigenvectors span the null space. Tne user be warned that this procedure is
+not numerically optimal for ill-conditioned problems, i.e., for matrices A
+with a singular value `close' to 0.
+
+
+Examples
+--------
+
+    . ^matrand 5 3 A^                               (random matrix A, idd U(0,1))
+    . ^matrand 5 7 B, n(0 10)^                      (random matrix A, iid N(0,1))
+
+    . ^matginv A^                                 (display Moore-Penrose inverse)
+    . ^matginv A, ginv(AI)^                        (return Moore-Penrose inverse)
+
+    . ^matcond A+B^                             (display condition number of A+B)
+    . ^matrank A, rank(ra)^                             (return rank of matrix A)
+    . ^matsum A, row(rsumA)^                           (return row-wise sum of A)
+
+    . ^mati A'*A^                                                 (displays A'*A)
+
+
+Known problems
+--------------
+
+We would like
+
+     matmin A[2,1...]
+
+to return the minimum of the 2nd row of A. The parsing of matmin, and similarly
+all other matrix programs, is not smart enough to recognize that the comma is
+part of the matrix expression, and does not delimit the options. (^syntax^ can
+match on parentheses, not on ^[]^). It is however easy to help the parser by
+using quotes,
+
+     matmin "A[2,1...]"
+
+
+
+References
+----------
+
+    Campbell, S.L. & C.D. Meyer, Jr. (1979)
+        Generalized Inverses of Linear Transformations. London: Pitman.
+
+    Golub, G.H. & and C.F. van Loan (1983)
+        Matrix Computations. Oxford: North Oxford Academic.
+
+    Rao and Mitra (19xx)
+        Generalized Inverses and its Applications. New York: Wiley
+
+    The MathWorks, Matlab Reference manual. V5.
+        Cambridge, MA: The Mathworks Inc.
+
+
+Author
+------
+
+        Jeroen Weesie
+        Dept of Sociology/ICS
+        Utrecht University
+        J.Weesie @@ fss.uu.nl
+
+
+Also see
+--------
+
+ Manual:  [6m] matrices
+On-line:  help for @matrix@, @varfunc@
+
+

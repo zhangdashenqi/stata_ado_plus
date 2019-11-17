@@ -1,0 +1,113 @@
+{smcl}
+{hline}
+help for {hi:nlhockey}
+{hline}
+
+{title:"Hockey Stick" Regression}
+
+{p 4 8 2}
+{cmd:nl hockey}
+{it:yvar}
+{it:xvar1}
+[{it:xvarlist}]
+[, {cmdab:l:eft0} {cmdab:r:ight0}]
+
+{title:Description}
+
+{p 4 4 2}
+This command uses piecewise linear or "hockey stick" regression. It
+assumes that the effect of {it:xvar1} can best be
+fitted by two straight lines, with different slopes, and calculates
+the two slopes and the value of {it:xvar1} at which the slope changes
+(the breakpoint).
+
+{title:Options}
+
+{p 4 8}
+{cmdab:r:ight0} constrains the slope to the right of the breakpoint to
+be 0.
+{p_end}
+
+{p 4 8}
+{cmdab:l:eft0} constrains the slope to the left of the breakpoint to
+be 0.
+{p_end}
+
+{title:Remarks}
+
+{p 4}
+If called with just {it:yvar} and {it:xvar1}, {cmd:nlhockey} fits the model
+
+{centre:{it:yvar} = a + b*{it:xvar1} if {it:xvar1} <= c}
+{centre:{it:yvar} = d + e*{it:xvar1} if {it:xvar1} >= c}
+
+{p}
+This model requires 5 parameters, but since we want the two lines to
+meet when {it:xvar1} = c, there is a constraint on the parameters
+
+{centre:a + b*c = d + e*c}
+
+{p}
+so the model has only 4 degrees of freedom. The parameters estimated
+by the model are a, b, c and e: if d is of interest it must be
+calculated from the other parameters. In the output of nlhockey, the
+three parameters relating to {it:xvar1} (c, b and e) are given first,
+called breakpoint, slope_l and slope_r respectively. Then any
+coefficients for variables in {it:xvarlist}, and finally parameter a
+(called cons).
+
+{p 4}
+If {it:varlist} is included in the model, it is assumed that there
+is a linear association between these variables and {it:yvar}, so
+the models fitted become
+
+{centre:{it:yvar} = a + b*{it:xvar1} + f*{it:xvar2} if {it:xvar1} <= c}
+{centre:{it:yvar} = d + e*{it:xvar1} + f*{it:xvar2} if {it:xvar1} >= c}
+
+{p}
+i.e. only one extra parameter is estimated for each of these variables.
+
+{p 4}
+There is a short quadratic section between the two straight lines,
+to ensure that the derivative of the predictor function w.r.t
+{it:xvar1}  is continuous at the break point. By  
+default, the width of this quadratic section is 1/100 times the
+range of {it:xvar1}, but it can be changed by
+setting the global variable $eps.
+
+{p 4}
+The options {cmd:left0} and {cmd:right0} force the constraints b = 0
+and e = 0 respectively. Specifying both of these options is an
+error. Also, specifying either of them inappropriately can lead to odd
+results: if {cmd:left0} is specified and the slope for small values of
+{it:xvar1} is non-zero, the breakpoint c may be set less than the
+minimum value of {it:xvar1} in the dataset. The model is then no
+longer identified: for any given breakpoint, there is an intercept a
+which gives exactly the same model a simple linear regression. You
+should run {cmd:loghockey} without either of these options first, and
+only if the parameter estimates and standard errors from this model
+convince you should you specify either of these options.
+
+{title:References}
+
+{p 4 }
+The code in nlhockey.ado is based very closely on the Splus code by
+Mary Lindstrom that was posted to the S-news mailing list, April 24,
+2000. Also see
+
+{p}
+Bacon & Watts
+"{it:Estimating the Transition Between Two Intersecting Straight Lines}",
+Biometrika, 1971. 
+
+{title:Author}
+
+{p 4 4 2}
+Mark Lunt, Arthritis Research UK Epidemiology Unit
+
+{p 4 4 2}
+The University of Manchester
+
+{p 4 4 2}
+Please email {browse "mailto:mark.lunt@manchester.ac.uk":mark.lunt@manchester.ac.uk} if you encounter problems with this program.
+

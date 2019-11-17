@@ -1,0 +1,45 @@
+{smcl}
+{* 03apr2001}{...}
+{hline}
+help for {hi:rndallo}{right:(STB:  )}
+{hline}
+
+{title:Randomly allocate subjects to treatment groups}
+
+{p 8 15}{cmd:rndallo} {it:#subj #treat #blocks}[{cmd:,} 
+{cmdab:l:abel(}{it:"text"}[{it:"text"}][{it:...}]) 
+{cmdab:T:itle(}{it:"text"}){cmd:seed}({it:#})
+{cmdab:out:file(}{it:filename} [{cmd:,} {cmd:replace}] {cmd:replace} ]
+
+{title:Description}
+
+{p}
+{cmd:rndallo} generates a list of randomly assign subjects to treatment groups
+using permuted blocks of fix size.  {it:#subj} is the number of subjects to be allocated, {it:#treat}
+is the number of treatment groups, arms or interventions, and {it: #blocks} is the block size which must be a 
+multiple of the number of treatments. The list can be either loged or saved to a Stata database.
+
+{title:Options}
+
+{p 0 4}{cmd:label(}{it:"text"}[{it:"text"}][{it:...}]) is used to specifies distict value 
+labels for the treatment groups. 
+
+{p 0 4}{cmd:title({it:"text"})} can be use to place a title or header on the output report.
+
+{p 0 4}{cmd:seed} ({it:#})sets the seed for the initial value of the random-number 
+generator. # should be specified as an integer; see help {help seed}. 
+
+{p 0 4}{cmd:outfile(}{it:filename} [{cmd:,} {cmd:replace}]{cmd:)} saves in {it:filename} the 
+allocation results.
+
+{p 0 4}{cmd:replace} specifies that the data currently in memory should be replaced by the 
+allocation result data.
+
+{title:Examples}
+
+{p 8 12}{inp:. rndallo 300 3 18}     
+
+{p 8 12}{inp:. rndallo 300 3 18, label(placebo tx1 tx2)}
+
+{p 8 12}{inp:. rndallo 300 3 18, label(placebo tx1 tx2) title("Aspirin Randomized Clinical Trial")}
+

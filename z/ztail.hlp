@@ -1,0 +1,35 @@
+.-
+help for ^ztail^
+.-
+
+Normal distribution demonstration
+---------------------------------
+
+ ^ztail^ prob tails
+ 
+
+Description
+-----------
+
+^ztail^ displays a standard normal distribution with
+      vertical lines marking the tails with an area of 
+      ^prob^.  Use ^tails^ = 1 for a one-tailed region; 
+      ^tails^ = 2 for a two-tailed region. 
+
+
+Examples
+--------
+
+ . ^ztail .05 1^
+ . ^ztail .05 2^
+
+
+
+Author
+------
+
+Philip B. Ender
+UCLA Department of Education
+UCLA Academic Technology Services
+ender@@ucla.edu 
+

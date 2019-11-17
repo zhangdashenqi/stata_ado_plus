@@ -1,0 +1,35 @@
+{smcl}
+{p 0 4}
+{bf:{help vgsg:A Visual Guide to Stata Graphics}} > {bf:{help vgsg_ref:Cross reference}} > {bf:Pie}
+{p_end}
+{hline}
+
+{title:{helpb graph pie:Pie}}
+
+{phang}
+Types of pie graphs{break}
+{manhelp graph_pie G:graph pie} 
+
+{phang}
+Sorting{break}
+{help graph_pie##pie_options:{bf:[G] graph pie} - {it:options}}
+
+{phang}
+Colors and exploding{break}
+{help graph_pie##pie_subopts:{bf:[G] graph pie} - {it:pie_subopts}}
+
+{phang}
+Labels{break}
+{help graph_pie##plabel_subopts:{bf:[G] graph pie} - {it:plabel_subopts}}{break}
+{help graph_pie##plabel_subopts:{bf:[G] graph pie} - {it:ptext_subopts}}{break}
+{manhelpi cat_axis_label_options G}
+
+{phang}
+Legend{break}
+{manhelpi legend_option G}
+
+{phang}
+By{break}
+{manhelpi by_option G}
+
+{hline}

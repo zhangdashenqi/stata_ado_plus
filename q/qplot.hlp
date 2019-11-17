@@ -1,0 +1,177 @@
+{smcl}
+{* 12nov2003/28oct2004/21apr2005/17aug2005/5nov2006/25feb2010/8nov2010}{...}
+{cmd:help qplot}{right: ({browse "http://www.stata-journal.com/article.html?article=up0030":SJ10-4: gr42_5})}
+{hline}
+
+{p2colset 5 14 16 2}{...}
+{p2col: {bf:qplot} {hline 2}}Quantile plots{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2} 
+{cmd:qplot}
+{varname}
+{ifin}
+[{cmd:,}
+{cmd:over(}{it:varname}{cmd:)}
+{cmd:by(}{it:varname}[{cmd:,} {it:suboptions}]{cmd:)}
+{cmdab:miss:ing}
+{cmd:a(}{it:#}{cmd:)}
+{cmdab:rank:s} 
+{cmdab:rev:erse}
+{cmdab:trsc:ale(}{it:transformation_syntax}{cmd:)}
+{cmdab:x:variable(}{it:varname}{cmd:)} 
+{it:graph_options}]
+
+{p 8 17 2}
+{cmd:qplot} 
+{varlist}
+{ifin}
+[{cmd:,}
+{cmd:by(}{it:varname}[{cmd:,} {it:suboptions}]{cmd:)}
+{cmdab:miss:ing}
+{cmd:a(}{it:#}{cmd:)}
+{cmdab:rank:s}
+{cmdab:rev:erse}
+{cmdab:trsc:ale(}{it:transformation_syntax}{cmd:)} 
+{cmdab:x:variable(}{it:varname}{cmd:)} 
+{it:graph_options}]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:qplot} produces a plot of the ordered values of one or more
+variables against the so-called plotting positions, which are essentially
+quantiles of a uniform distribution on [0,1] for the same number of values; or
+optionally the so-called unique ranks; or optionally a specified transformation
+of either of those; or optionally a specified variable. 
+
+{p 4 4 2}For {it:n} values of a variable {it:x} ordered so that
+
+{p 8 8 2}{it:x}[1] <= {it:x}[2] <= ... <= {it:x}[{it:n}-1] <= {it:x}[{it:n}]
+
+{p 4 4 2}the plotting positions are ({it:i} - {it:a}) / ({it:n} - 2{it:a} + 1)
+for {it:i} = 1, ..., {it:n} and constant {it:a}. The unique ranks run 1 to
+{it:n}; tied values being allocated different ranks so that each integer is
+assigned to a value. 
+
+{p 4 4 2}For more than one variable in {it:varlist}, only observations with all
+values of {it:varlist} present are shown.
+
+{p 4 4 2}The plot is a scatterplot by default.  It is possible to use
+{helpb advanced_options:recast()} to recast the plot as another
+{helpb graph_twoway:twoway} type,
+such as {cmd:connected}, {cmd:dot}, {cmd:dropline}, {cmd:line}, or {cmd:spike}.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:by(}{it:varname}[{cmd:,} {it:suboptions}]{cmd:)} specifies
+that calculations be carried out separately for each distinct value of
+a specified single variable. Results will be shown separately in distinct
+panels. See {manhelpi by_option G}.
+
+{p 4 8 2}{cmd:over(}{it:varname}{cmd:)} specifies that calculations be
+carried out separately for each distinct value of a specified single variable.
+Curves will be shown together within the same panel.  {cmd:over()} is only
+allowed with a single {it:varname}.
+
+{p 4 8 2}{cmd:missing}, used with {cmd:over()} or {cmd:by()}, permits the use
+of nonmissing values of {it:varname} corresponding to missing values for the
+variable(s) named by {cmd:over()} and {cmd:by()}.  The default is to ignore
+observations with such values.
+
+{p 4 8 2}{cmd:a(}{it:#}{cmd:)} specifies {it:a} in the formula for plotting
+position. The default is {it:a} = 0.5, giving ({it:i} - 0.5)/{it:n}. Other
+choices include {it:a} = 0, giving {it:i}/({it:n} + 1), and {it:a} = 1/3,
+giving ({it:i} - 1/3)/({it:n} + 1/3).
+
+{p 4 8 2}{cmd:ranks} specifies the use of ranks rather than plotting
+positions.
+
+{p 4 8 2}{cmd:reverse} reverses the sort order, so that values decrease from 
+top left. Ordered values are plotted against 1 - plotting position or 
+{it:n} - rank + 1. 
+
+{p 4 8 2}{cmd:trscale(}{it:transformation_syntax}{cmd:)} specifies the use of
+an alternative transformed scale for plotting positions (or ranks) on the
+graph.  Stata syntax should be used with {cmd:@} as placeholder for
+untransformed values. To show percents, specify {cmd:trscale(100 * @)}. To
+show probabilities on an inverse normal scale, specify
+{cmd:trscale(invnorm(@))}; on a logit scale, specify {cmd:trscale(logit(@))};
+on a folded root scale, specify {cmd:trscale(sqrt(@) - sqrt(1 - @))}; on a
+loglog scale, specify {cmd:trscale(-log(-log(@)))}; on a cloglog scale,
+specify {cmd:trscale(cloglog( @)))}. Tools to make associated labels and ticks
+easier are available on SSC; see {stata ssc desc mylabels:ssc desc mylabels}. 
+Alternatively, see Cox (2008).
+
+{p 4 8 2}{opt xvariable(varname)} specifies a preexisting plotting position or
+rank variable that should be used as the x-axis variable.
+The user takes responsibility. 
+
+{p 4 8 2}{it:graph_options} refers to options of {helpb graph} appropriate to
+the {it:plottype} specified.  
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. qplot mpg}{p_end}
+{p 4 8 2}{cmd:. qplot mpg, over(foreign) clp(l _) recast(line)}{p_end}
+{p 4 8 2}{cmd:. qplot length width height, recast(connected)}{p_end}
+{p 4 8 2}{cmd:. qplot mpg, reverse rank recast(spike) xla(1 10(10)70 74)}{p_end}
+{p 4 8 2}{cmd:. qplot mpg, recast(bar) barw(`=1/74') base(0)}
+
+{p 4 4 2}Ecologists often plot abundance data as Whittaker plots
+(see, for example, Krebs [1989, 344]):
+
+{p 4 8 2}{cmd:. egen percent = pc(abundance)}{p_end}
+{p 4 8 2}{cmd:. qplot percent, rank reverse ysc(log) yti("Relative abundance, %")} 
+
+{p 4 4 2}Hydrologists plot discharges in reverse order as flow duration curves,
+often with a logarithmic scale for discharge and a normal probability scale. 
+
+{p 4 8 2}{cmd:. mylabels 1 2 5 10(10)90 95 98 99, myscale(invnorm(@/100)) local(plabels)}{p_end}
+{p 4 8 2}{cmd:. qplot discharge, reverse ysc(log) trscale(invnorm(@)) recast(line) xla(`plabels') xti("exceedance probability, %") yti("discharge, m{c -(}c 179{c )-}/s")} 
+
+
+{title:References} 
+
+{p 4 8 2}Cox, N. J. 2008. 
+{browse "http://www.stata-journal.com/article.html?article=gr0032":Stata tip 59: Plotting on any transformed scale}.
+{it:Stata Journal} 8: 142-145. 
+
+{p 4 8 2}Krebs, C. J. 1989. {it:Ecological Methodology}.
+New York: HarperCollins.
+
+
+{title:Author}
+
+{p 4 4 2}Nicholas J. Cox, Durham University{break} 
+        n.j.cox@durham.ac.uk
+
+
+{title:Acknowledgment}
+
+{p 4 4 2}Patrick Royston suggested and first implemented what is here the 
+{cmd:xvariable()} option. 
+	 
+
+{title:Also see}
+
+{p 4 14 2}
+Article:  {it:Stata Journal}, volume 10, number 4: {browse "http://www.stata-journal.com/article.html?article=up0030":gr42_5}{break}
+         {it:Stata Journal}, volume 6, number 4: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0017":gr42_4}{break}
+         {it:Stata Journal}, volume 5, number 3: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0012":gr42_3}{break}
+         {it:Stata Journal}, volume 4, number 1: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0006":gr42_2}{break}
+         {it:Stata Technical Bulletin} 61: {browse "http://www.stata.com/products/stb/journals/stb61.pdf":gr42_1}{break}
+         {it:Stata Technical Bulletin} 51: {browse "http://www.stata.com/products/stb/journals/stb51.pdf":gr42}
+{p_end}
+
+{p 5 14 2}Manual:  {manlink G graph}, {manlink R cumul},
+                   {manlink R diagnostic plots}
+
+{p 7 14 2}Help:  {manhelp graph G}, {manhelp cumul R}, {manhelp quantile R},
+{helpb distplot} (if installed), {helpb mylabels} (if installed)
+{p_end}

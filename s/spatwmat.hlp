@@ -1,0 +1,97 @@
+{smcl}
+{* 29jan2001}{...}
+{hline}
+help for {hi:spatwmat}{right:(STB-60: sg162)}
+{hline}
+
+{title:Spatial weights matrices for spatial data analysis}
+
+{p 8 14} {cmd:spatwmat} [ {cmd:using} {it:filename} ] {cmd:,}
+{cmdab:n:ame}{cmd:(}{it:weights_matrix}{cmd:)}
+[ {cmdab:drop}{cmd:(}{it:numlist}{cmd:)}
+{cmdab:x:coord}{cmd:(}{it:varname}{cmd:)}
+{cmdab:y:coord}{cmd:(}{it:varname}{cmd:)}
+{cmdab:b:and}{cmd:(}{it:numlist}{cmd:)}
+{cmdab:f:riction}{cmd:(}{it:#}{cmd:)}
+{cmdab:bin:ary} {cmdab:s:tandardize}
+{cmdab:e:igenval}{cmd:(}{it:eigen_matrix}{cmd:)} ]
+
+
+{title:Description}
+
+{p} {cmd:spatwmat} imports or generates the spatial weights matrices required
+by {help spatgsa}, {help spatlsa}, {help spatdiag}, and {help spatreg}. As an option,
+{cmd:spatwmat} also generates the eigenvalues matrix required by {help spatreg}.
+
+
+{title:Options}
+
+{p 0 4} {cmd:using }{it:filename} requests that matrix {it:weights_matrix}
+be imported from {it:filename}, an external Stata datafile which includes
+exactly {it:N} cases and {it:N} variables containing the user-defined spatial
+weights (missing values are not allowed).
+
+{p 0 4} {cmd:name(}{it:weights_matrix}{cmd:)} is always required. It specifies
+the name of the {it:N}x{it:N} spatial weights matrix to be generated, where
+{it:N} denotes the number of locations object of analysis.
+
+{p 0 4} {cmd:drop(}{it:numlist}{cmd:)}, if used with option
+{cmd:using }{it:filename}, specifies the cases (rows) and variables (columns)
+to be dropped before generating matrix {it:weights_matrix}.
+
+{p 0 4} {cmd:xcoord(}{it:varname}{cmd:)} is required if option
+{cmd:using }{it:filename} is not specified. It specifies the name of the
+variable containing the {it:x}-coordinate of each location object of analysis.
+
+{p 0 4} {cmd:ycoord(}{it:varname}{cmd:)} is required if option
+{cmd:using }{it:filename} is not specified. It specifies the name of the
+variable containing the {it:y}-coordinate of each location object
+of analysis. Both the {it:x}-coordinate and the {it:y}-coordinate must be
+expressed in projected units, e.g., metres, kilometres, miles, or arbitrary
+digitizing units.
+
+{p 0 4} {cmd:band(}{it:numlist}{cmd:)} is required if option
+{cmd:using }{it:filename} is not specified. It specifies the lower and upper
+bounds of the distance band within which location pairs must be considered
+"neighbors" (i.e., spatially contiguous) and, therefore, assigned a nonzero
+spatial weight.
+
+{p 0 4} {cmd:friction(}{it:#}{cmd:)} specifies the friction parameter to be
+used in the computation of spatial weights.
+
+{p 0 4} {cmd:binary} requests that a binary weights matrix be generated. To
+this aim, all nonzero spatial weights are set to 1.
+
+{p 0 4} {cmd:standardize} requests that a row-standardized weights matrix be
+generated. To this aim, all nonzero spatial weights are rescaled so that - 
+within each row - their sum equals 1.
+
+{p 0 4} {cmd:eigenval(}{it:eigen_matrix}{cmd:)} requests that an additional
+{it:N}x1 matrix be generated containing the eigenvalues of {it:weights_matrix}.
+This matrix is required by {help spatreg}.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. spatwmat using ColumbusSWM.dta, name(W)}
+
+{p 8 12}{inp:. spatwmat using ColumbusSWM.dta, name(W) drop(11/49) standardize}
+
+{p 8 12}{inp:. spatwmat, name(W) xcoord(x) ycoord(y) band(0 3) binary}
+
+{p 8 12}{inp:. spatwmat using ColumbusSWM.dta, name(W) standardize eigenval(E)}
+
+
+{title:Author}
+
+{p 8} Maurizio Pisati {p_end}
+{p 8} Department of Sociology and Social Research {p_end}
+{p 8} University of Milano Bicocca - Italy {p_end}
+{p 8} maurizio.pisati@galactica.it {p_end}
+
+
+{title:Also see}
+
+{p 0 19}On-line:  help for {help spatgsa}, {help spatcorr}, {help spatlsa},
+{help spatdiag}, {help spatreg} if installed
+{p_end}

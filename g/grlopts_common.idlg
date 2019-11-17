@@ -1,0 +1,55 @@
+/*
+    grlopts_common.idlg    
+    Common set of controls for grlopts. Any dialogs that use this file 
+    should define a DIALOG tab and INCLUDE grlopts_common_sc.
+    
+    This idlg requires the use of _graph.idlg and _std_graph.idlg for 
+    lengths, widths, heights.
+    This idlg requires the use of _glist_def.idlg and _glist_sc.idlg 
+    at the beginning of your dialog file for initiating lists.    
+    
+*!  VERSION 1.0.0  07may2004
+
+*/  
+  
+  GROUPBOX gb_line           _lft      _top      _gwd1     _ht6,	///
+  		label("Line options")
+  TEXT     tx_ccol           _lft4_1gi _ms       _txwd     .,		///
+  		label("Color:") right
+DEFINE y @y
+  COMBOBOX cb_ccol           _txsep    @         _tcr2b4g  .,		///
+  		label("Line color") 					///
+  		option(clcolor) 					///
+  		dropdownlist						///
+  		contents(_dclst_2) 					///
+  		onselchangelist(rlopts_color_ccol)			///
+		values(_dvlst_2)
+  COLOR    cl_ccol           _tcr2b4gsep @       _colorwd  .,		///
+  		label("Line color") 					///
+  		option(clcolor) 					///
+  		default(255 0 0)
+  		
+  TEXT     tx_clpat          _lft4_1gi _ls       _txwd     .,		///
+  		label("Pattern:") right
+  COMBOBOX cb_clpat          _txsep    @         _txr2b4g  .,		///
+  		label("Pattern") 					///
+  		dropdownlist 						///
+  		contents(_dclst_4) 					///
+  		option(clpat) values(_dvlst_4)  		
+  		
+  TEXT     tx_clwid          _igft4_2  y         _txwd     .,		///
+  		label("Width:") right
+  COMBOBOX cb_clwid          _txsep    @         _txr2b4g  .,		///
+  		label("Connect width") 					///
+  		dropdownlist						///
+  		contents(_dclst_5) values(_dvlst_5)			///
+  		option(clwid)
+
+  TEXT     tx_conn           _igft4_2  _ls       _txwd     .,		///
+  		label("Type:") right 
+  COMBOBOX cb_conn           _txsep    @         _txr2b4g  .,   	///
+  		label("Connect type") 					///
+  		option(connect) 					///
+  		dropdownlist 						///
+  		contents(_dclst_6) values(_dvlst_6)
+/* END */  		

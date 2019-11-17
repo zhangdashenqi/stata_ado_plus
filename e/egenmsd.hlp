@@ -1,0 +1,47 @@
+{smcl}
+{* 13Mar2002}{...}
+{hline}
+help for {hi:egenmsd}
+{hline}
+
+{title:Extensions to generate}
+
+{p 8 30}{cmd:egen} [{it:type}] {it:newvar} {cmd:=}
+{it:fcn}{cmd:(}{it:arguments}{cmd:)} [{cmd:if} {it:exp}] [{cmd:in} {it:range}]
+[{cmd:,} {it:options}]
+
+
+{p}{cmd:by} {it:...} {cmd::} may be used with some {cmd:egen} functions as
+noted below; see help {help by}.
+
+
+{title:Description}
+
+{p}{cmd:egen} creates {it:newvar} of the optionally specified storage type
+equal to {it:fcn}{cmd:(}{it:arguments}{cmd:)}.  Depending on {it:fcn()},
+{it:arguments}, if present, refers to an expression, {it:varlist}, or a
+{it:numlist} and the {it:options} are similarly {it:fcn} dependent.  Note that
+the explicit subscripting (using {cmd:_N} and {cmd:_n}), which is commonly
+used with {cmd:generate}, should not be used with {cmd:egen}; see
+{hi:[U] 16.7 Explicit subscripting}.
+
+
+{title:{cmd:egen} functions}
+
+{p 0 4}{cmd:msd(}{it:exp}{cmd:)} {cmd:,} {c -(}{cmd:lag(}{it:#}{cmd:)} | {cmd:lead(}{it:#}{cmd:)}
+{c )-} may not be combined with {cmd:by}.  It creates a {it:#}-period moving standard deviation of {it:exp}.
+You must specify {cmd:lag()} or {cmd:lead()}.  [{cmd:if} {it:exp}] is not allowed with
+{cmd:ma()}.
+
+
+{title:Examples}
+
+{p 1 5}{inp:. egen lagsum = msd(x), lag(5)}{p_end}
+{p 1 5}{inp:. egen leadsum = msd(y), lead(5)}
+
+
+{title:Also see}
+
+ Manual:  {hi:[R] egen}
+{p 0 19}On-line:  help for {help collapse}, {help functions},
+{help generate}{p_end}

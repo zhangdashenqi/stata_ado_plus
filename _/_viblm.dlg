@@ -1,0 +1,313 @@
+/*
+ visualizing main effect 
+ logistic regression
+ VERSION 1.0.0
+*/ 
+
+VERSION 8.2
+
+POSITION . . 197 530
+  
+DEFINE _gb_x1  193      /*x size for groupbox*/
+DEFINE _lft     1       /*left margin*/
+DEFINE _ilft    5       /*left margin inside maximal box*/
+DEFINE _top     10      /*top margin*/
+DEFINE _ht12   110      /*medium height*/
+DEFINE _ht20   230 
+DEFINE _ht13   100      /*good height*/
+DEFINE _ht9     80      /*more height*/
+DEFINE _ht5     70      /*more height*/
+DEFINE _ht3     50      /*small height*/
+
+DEFINE _tx3wd   30      /*width of a text field about three characters*/
+DEFINE _en4wd   28      /*width of down and up button*/
+DEFINE _en5wd   35      /*width of an edit field*/
+DEFINE _en3wd   30      /*width of a small edit field*/
+DEFINE _bigwd  180      /*width of a wide edit field*/
+DEFINE _mbtn    80      /*width of a button size*/
+DEFINE _mbtn1   90      /*width of a button size*/
+DEFINE _bpos   130      /*x position of update button*/
+DEFINE _en14wd  90      /*edit box for <=14 digits*/
+DEFINE _en12wd  60      /*smaller field*/
+DEFINE _ckswd   40      /*checkbox small width*/
+DEFINE _bpos1  110      /*version control checkbox position*/
+DEFINE _bht     20      /*button height*/
+DEFINE _bwd     45      /*button width*/
+DEFINE _bwd1    55      /*button width*/
+DEFINE d100    100
+
+DEFINE _hugewd  165      /*x size for groupbox*/
+
+
+DEFINE _mms    +15        /*tiny vertical skip*/
+DEFINE _ms     +25        /*medium vertical skip*/
+DEFINE _ls     +30        /*large vertical skip*/
+DEFINE bwd     +30        /*relative x position*/
+DEFINE bjump   +35        /*more relative x position*/
+DEFINE bjump1  +55        /*more jumps*/
+DEFINE bjump2  +70
+DEFINE bjump3  +65
+DEFINE _csep   +16        /*column sep*/      
+DEFINE _vskip  +15        /*vertical skip*/
+DEFINE pwd     +40        /*panel selction skip*/
+
+HELP hlp1, view("help viblmdb")
+CANCEL can1, label("Quit")
+RESET  rst1
+
+
+DIALOG main, label("VIBL Main Effect") tabtitle("main effect")
+
+BEGIN
+/*-----------------------------graph type control box-------------------------------------------------*/
+ GROUPBOX type_ctrl   _lft     _top     _gb_x1      _ht3,    label("Choose Types of Graphs")
+ CHECKBOX ck_p1      _ilft     _mms      _ckswd        .,    label("I") default(global DB_p1) nomem  ///
+                                                             onclickoff(program tp1)
+ CHECKBOX ck_p2        pwd      @       _ckswd        .,    label("II") default(global DB_p2)  ///
+							      nomem onclickoff(program tp2)
+ CHECKBOX ck_p3        pwd      @       _ckswd        .,    label("III") default(global DB_p3) nomem onclickon(program tp2on) ///
+                                                             onclickoff(program tp3)
+
+  GROUPBOX x_ctrl      _lft        _ms    _gb_x1      _ht20,    label("Graph Options")
+/*******************************covariate contribution control******************************************/
+  TEXT      tx_cc_all   _ilft      _mms    _bigwd        .,    label("Range for CC: (Type II and III only)")
+  TEXT     tx_cc_min   _ilft       _ms    _tx3wd        .,    label("Min")
+  EDIT     ex_cc_min     bwd        @     _en5wd        .,    label("cmin") default(global DB_clow) nomem numonly
+  TEXT     tx_cc_max    bjump1      @     _tx3wd        .,    label("Max")
+  EDIT     ex_cc_max    bwd         @     _en5wd        .,    label("cmax") default(global DB_chigh) nomem numonly
+ 
+  CHECKBOX ck_cc_all   _ilft      _ls    _en12wd        .,    label("CC List") default(global DB_cck) onclickon(script tcc_en) onclickoff(program tcc_dis)
+  EDIT     ex_cc_all    bjump2      @   _en14wd        .,    label("cc_all") nomem default("-1  0  1")
+ 
+  TEXT     tx_x_all   _ilft      _ms   _en14wd        .,    label("Range for X:")
+  TEXT     tx_x_min   _ilft      _ms    _tx3wd        .,    label("Min")
+  EDIT     ex_x_min     bwd        @    _en5wd        .,    label("xmin") default(global DB_xmin) nomem numonly
+  TEXT     tx_x_max    bjump1      @    _tx3wd        .,    label("Max")
+  EDIT     ex_x_max    bwd         @    _en5wd        .,    label("xmax") default(global DB_xmax) nomem numonly
+
+ /***********************label for variables****************************************/
+ TEXT     tx_x_lab       _ilft    _ls      _en12wd        .,    label("Label for X: ")
+ EDIT     ex_x_lab      bjump2     @       _en14wd        .,    label("x lab") default(global DB_x_lab) nomem
+
+  CHECKBOX ck_logit   _ilft     _ls       _mbtn        .,   label("Logit")  onclickon(script slogit) default(global DB_logit) nomem
+  CHECKBOX    ck_v7   _bpos1     @        _mbtn        .,   label("Version 7")  default(global DB_v7) nomem ///
+                                                            onclickon(main.ck_v8.setoff) onclickoff(main.ck_v8.seton)
+  CHECKBOX  ck_prob   _ilft     _ms     _en14wd        .,   label("Probability") default(global DB_prob) onclickon(script sprob) nomem
+  CHECKBOX    ck_v8   _bpos1     @        _mbtn        .,   label("Version 8")  default(global DB_v8) nomem onclickon(main.ck_v7.setoff) ///
+                                                            onclickoff(main.ck_v7.seton) 
+
+/*-----------------------------Type I control box-------------------------------------------------*/
+/*-----------------dynamic control box-----------------------------------------------*/
+  GROUPBOX gp_b       _lft     _ms     _gb_x1    _ht13,    label("Dynamic Control of Coefficients")
+  TEXT     tx_b0       _ilft   _ms       _tx3wd        .,    label("b0 = ")
+  EDIT     ex_b0         bwd     @       _en5wd        .,    numonly label("b0") default(global DB_b0) nomem
+  BUTTON   bt_b0d      bjump     @       _en4wd        .,    label("Dn") onpush(program b0down)
+  BUTTON   bt_b0u      bjump     @       _en4wd        .,    label("Up")   onpush(program b0up)
+  TEXT     tx_b0b      bjump     @       _en5wd        .,    label("by")
+  EDIT     ex_b0_inc   _csep     @       _en3wd        .,    label("b0_inc") default(global DB_b0_inc) numonly nomem
+
+  TEXT     tx_b1       _ilft   _ms       _tx3wd        .,    label("b1 = ")
+  EDIT     ex_b1         bwd     @       _en5wd        .,    numonly label("b1") default(global DB_b1) nomem
+  BUTTON   bt_b1d      bjump     @       _en4wd        .,    label("Dn") onpush(program b1down)
+  BUTTON   bt_b1u      bjump     @       _en4wd        .,    label("Up")   onpush(program b1up)
+  TEXT     tx_b1b      bjump     @       _en5wd        .,    label("by")
+  EDIT     ex_b1_inc   _csep     @       _en3wd        .,    label("b1_inc") default(global DB_b1_inc) numonly nomem
+
+  TEXT     tx_cc       _ilft   _ms       _tx3wd        .,    label("cc = ")
+  EDIT     ex_cc         bwd     @       _en5wd        .,    numonly label("Coeff") default(global DB_cc) nomem
+  BUTTON   bt_ccd      bjump     @       _en4wd        .,    label("Dn") onpush(program ccdown)
+  BUTTON   bt_ccu      bjump     @       _en4wd        .,    label("Up")   onpush(program ccup)
+  TEXT     tx_cc_inc   bjump     @       _en5wd        .,    label("by")
+  EDIT     ex_cc_inc   _csep     @       _en3wd        .,    label("cc_inc") default(global DB_cc_inc) numonly nomem
+
+
+/**********************Predictor Options**************************************************/
+GROUPBOX p_ctrl     _lft      _ms     _gb_x1      _ht5,    label("Predictor Options")
+
+RADIO    r1        _ilft      _mms    _bwd1           .,  first  label("Dummy") onclickon(program xdummy)
+RADIO    r2        bjump2       @    _mbtn           .,  last label("Continuous") onclickon(program xcont)
+
+TEXT     tx_xat    _ilft      _ms    _en14wd        .,    label("Compare X =")
+EDIT     ex_xata    bjump3      @      _en5wd        .,    label("xata") nomem default(global DB_xat)
+TEXT     tx_xinc    pwd         @      _tx3wd        .,    label(" vs. X=")
+EDIT     ex_xatb    bjump       @      _en5wd        .,    label("xatb") nomem default(global DB_xinc)
+
+/*******************end of all panels*********************************************/ 
+  BUTTON    pst      _ilft    pwd       _mbtn1        .,   label(Paste Syntax) onpush(program paste)
+  BUTTON   bt_pup    d100      @       _mbtn1        .,  label("Update plots") onpush(program pup)
+
+
+END
+
+PROGRAM xcont
+BEGIN
+  call main.ex_xata.enable
+  call main.ex_xatb.enable
+  call main.ex_x_min.enable
+  call main.ex_x_max.enable
+END
+
+PROGRAM xdummy
+BEGIN
+
+  call main.ex_xata.disable
+  call main.ex_xatb.disable
+
+  call main.ex_x_min.disable
+  call main.ex_x_max.disable
+
+  call main.ex_xata.setvalue 0
+  call main.ex_xatb.setvalue 1
+  call main.ex_x_min.setvalue 0
+  call main.ex_x_max.setvalue 1
+ 
+END
+
+PROGRAM b0up
+BEGIN
+   put "_viblm_dcc "
+   require main.ex_b0
+   put main.ex_b0 " "
+
+   require main.ex_b0_inc
+   put main.ex_b0_inc " "
+
+   put "  1  "
+   put "  b0 "
+   stata
+END
+
+PROGRAM b0down
+BEGIN
+   put "_viblm_dcc "
+   require main.ex_b0
+   put main.ex_b0 " "
+
+   require main.ex_b0_inc
+   put main.ex_b0_inc " "
+
+   put "  -1  "
+   put "  b0  "
+   stata
+END
+
+PROGRAM b1up
+BEGIN
+   put "_viblm_dcc "
+   require main.ex_b1
+   put main.ex_b1 " "
+
+   require main.ex_b1_inc
+   put main.ex_b1_inc " "
+
+   put "  1  "
+   put "  b1 "
+   stata 
+END
+
+PROGRAM b1down
+BEGIN
+   put "_viblm_dcc "
+   require main.ex_b1
+   put main.ex_b1 " "
+
+   require main.ex_b1_inc
+   put main.ex_b1_inc " "
+
+   put "  -1  "
+   put "  b1  "
+   stata
+END
+
+PROGRAM ccup
+BEGIN
+   put "_viblm_dcc "
+   require main.ex_cc
+   put main.ex_cc " "
+
+   require main.ex_cc_inc
+   put main.ex_cc_inc " "
+
+   put "  1  "
+   put "  cc  "
+   stata
+END
+
+PROGRAM ccdown
+BEGIN
+   put "_viblm_dcc "
+   require main.ex_cc
+   put main.ex_cc " "
+
+   require main.ex_cc_inc
+   put main.ex_cc_inc " "
+
+   put "  -1  "
+   put "  cc  "
+   stata
+END
+
+PROGRAM tp1 /*type I is off*/
+BEGIN
+  if (!main.ck_p2 & !main.ck_p3) {
+  call main.ck_p1.seton  /*ONLY type I control on*/
+}
+
+END
+
+PROGRAM tp2  /*type II off*/
+BEGIN
+  if (!main.ck_p3 & !main.ck_p2) {
+  call main.ck_p1.seton
+ }   
+END
+
+PROGRAM tp3 /*type III off*/
+BEGIN
+  if (!main.ck_p2 & !main.ck_p3) {   
+  call main.ck_p1.seton
+ }  
+
+END
+   
+SCRIPT tcc_en
+BEGIN
+   main.ex_cc_all.enable
+   main.ex_cc.disable
+   main.ex_cc_inc.disable
+   main.bt_ccd.disable
+   main.bt_ccu.disable
+END
+
+PROGRAM tcc_dis
+BEGIN
+
+  if (!main.ck_p1 & !main.ck_p2 & !main.ck_p3) {   
+  call main.ck_p1.seton
+ }  
+
+  call main.ex_cc_all.disable
+  call main.ex_cc.enable
+  call main.ex_cc_inc.enable
+  call main.bt_ccd.enable
+  call main.bt_ccu.enable
+
+END
+
+PROGRAM pup
+BEGIN
+   put "_viblm_update "
+   put " 0 "
+  stata
+END
+
+PROGRAM paste
+BEGIN
+   put "_viblm_update "
+   put " 1 "
+  stata
+END
+
+ 
+
+ 

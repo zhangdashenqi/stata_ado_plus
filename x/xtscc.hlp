@@ -1,0 +1,175 @@
+{smcl}
+{* *! version 1.1.3  14dec2006}{...}
+{cmd:help xtscc}{right:(SJ7-3: st0128)}
+{right:also see:  {help xtscc postestimation}}
+{hline}
+
+{title:Title}
+
+{p 4 8 2}{cmd:xtscc} {hline 2} Regression with Driscoll-Kraay standard errors{p_end}
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:xtscc}
+{depvar}
+[{indepvars}]
+{ifin}
+{weight}
+[, {it:options}]
+
+
+{synoptset 14}{...}
+{synopthdr}
+{synoptline}
+{synopt:{opt lag:(#)}}set maximum lag order of autocorrelation; default is m(T)=floor[4(T/100)^(2/9)]{p_end}
+{synopt:{opt fe:}}perform fixed effects (within) regression{p_end}
+{synopt:{opt pool:ed}}perform pooled OLS/WLS regression; default{p_end}
+{synopt:{opt l:evel(#)}}set confidence level; default is {cmd:level(95)}{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+{p_end}
+{p 4 6 2}
+You must {cmd:tsset} your data before using {opt xtscc}; see 
+{manhelp tsset TS}.{p_end}
+{p 4 6 2}
+{opt by}, {opt statsby}, and {opt xi} may be used with
+{opt xtscc}; see {help prefix}.{p_end}
+{p 4 6 2}{opt aweight}s are allowed unless option {opt fe} is specified; see {help weight}.{p_end}
+{p 4 6 2}
+See {help xtscc postestimation} for features available after estimation.{p_end}
+
+
+{title:Description}
+
+{p 4 4 2}
+{opt xtscc} produces Driscoll and Kraay (1998) standard errors for
+coefficients estimated by pooled OLS/WLS or fixed-effects (within) regression.
+{it:depvar} is the dependent variable and {it:varlist} is an optional list
+of explanatory variables.{p_end}
+
+{p 4 4 2}
+The error structure is assumed to be heteroskedastic, autocorrelated up to
+some lag and possibly correlated between the groups (panels). These standard
+errors are robust to general forms of cross-sectional (spatial) and
+temporal dependence when the time dimension becomes large. Because
+this nonparametric technique of estimating standard errors places no 
+restrictions on the limiting behavior of the number of panels, the size of the
+cross-sectional dimension in finite samples does not constitute a constraint
+on feasibility -- even if the number of panels is much larger than T.
+Nevertheless, because the estimator is based on an asymptotic theory, one
+should be somewhat cautious with applying this estimator to panels 
+that contain a large cross-section but only a short time dimension.
+
+{p 4 4 2}
+The {cmd:xtscc} command is suitable for use with both balanced and unbalanced
+panels. Furthermore, it can handle missing values.{p_end}
+
+
+{title:Options}
+
+{phang}
+{opt lag(#)} specifies the maximum lag to be considered in the autocorrelation
+   structure.  By default, a lag length of
+   m(T)=floor[4(T/100)^(2/9)] is assumed.
+
+{phang}
+{opt fe} performs fixed-effects (within) regression with Driscoll and Kraay
+standard errors.  These standard errors are robust to general forms of
+cross-sectional ("spatial") and temporal dependence (provided that T is
+sufficiently large). See above.  If the residuals are assumed to be
+heteroskedastic only, use {cmd:xtreg, fe robust}.
+
+{phang}
+{opt pooled} performs pooled OLS/WLS regression with Driscoll-Kraay standard
+errors.  These standard errors are heteroskedasticity consistent and robust to
+general forms of cross-sectional (spatial) and temporal dependence
+when the time dimension becomes large.  If the residuals are
+assumed to be heteroskedastic only, use {cmd:xtreg, fe robust}.  When the
+standard errors should be heteroskedasticity- and autocorrelation consistent,
+use either {cmd:regress, cluster()} or {cmd:newey, lag(}{it:#}{cmd:) force}.
+Analytic weights are allowed for use with option {cmd:pooled}; see
+{help weight}.
+
+{phang}
+{opt level(#)}; see {help estimation options##level():estimation options}.
+
+
+
+{title:Examples}
+
+{phang2}{stata "webuse grunfeld" : . webuse grunfeld}
+
+{p 4 4 2}Pooled OLS estimation{p_end}
+
+{phang2}{stata "reg invest mvalue kstock, robust cluster(company)" : . reg invest mvalue kstock, robust cluster(company)}{p_end}
+
+{phang2}{stata "est store robust" : . est store robust}{p_end}
+
+{phang2}{stata "newey invest mvalue kstock, lag(4) force" : . newey invest mvalue kstock, lag(4) force}{p_end}
+
+{phang2}{stata "est store newey" : . est store newey}{p_end}
+
+{phang2}{stata "xtscc invest mvalue kstock, lag(4)" : . xtscc invest mvalue kstock, lag(4)}{p_end}
+
+{phang2}{stata "est store dris_kraay" : . est store dris_kraay}{p_end}
+
+{phang2}{stata "est table *, b se t" : . est table *, b se t}{p_end}
+
+{p 4 4 2}Fixed-effects (within) regression{p_end}
+
+{phang2}{stata "est clear" : . est clear}{p_end}
+
+{phang2}{stata "xtreg invest mvalue kstock, fe robust" : . xtreg invest mvalue kstock, fe robust}{p_end}
+
+{phang2}{stata "est store fe_robust" : . est store fe_robust}{p_end}
+
+{phang2}{stata "xtscc invest mvalue kstock, fe lag(4)" : . xtscc invest mvalue kstock, fe lag(4)}{p_end}
+
+{phang2}{stata "est store fe_dris_kraay" : . est store fe_dris_kraay}{p_end}
+
+{phang2}{stata "est table *, b se t" : . est table *, b se t}{p_end}
+
+
+{title:Reference}
+
+{phang}
+Driscoll, J. C., and A. C. Kraay. 1998. Consistent covariance matrix
+       estimation with spatially dependent panel data.
+       {it:Review of Economics and Statistics} 80: 549-560.{p_end}
+
+
+{title:Notes}
+
+{p 4 6 2}
+- The main procedure of {opt xtscc} is implemented in Mata and largely follows
+Driscoll and Kraay's GAUSS program, which is available from 
+{browse www.johncdriscoll.net/:http://www.johncdriscoll.net/}.{p_end}
+{p 4 6 2}
+- The {cmd:xtscc} uses functions from Ben Jann's {cmd:moremata} package.
+
+
+{title:Acknowledgments}
+
+{p 4 4}
+I thank David M. Drukker and William Gould from StataCorp for their
+useful comments and suggestions.
+
+
+{title:Author}
+
+{p 4 4}Daniel Hoechle, University of Basel, daniel.hoechle@unibas.ch{p_end}
+
+
+{title:Also see}
+
+{psee}
+Manual:  {bf:[R] regress}, {bf:[TS] newey}, {bf:[XT] xtreg}
+
+{psee}
+Online:  {help xtscc postestimation};{break}
+{manhelp tsset TS}, {manhelp regress R}, {manhelp newey TS},
+{manhelp xtreg XT}, {manhelp _robust P}
+{p_end}

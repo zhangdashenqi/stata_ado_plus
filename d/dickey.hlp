@@ -1,0 +1,84 @@
+Test for a unit root                                              (STB-7: sts2)
+--------------------
+
+
+	^dickey^ varname [^, l^ags^(^#^) f^indlag ^t^rend regress_options]
+
+
+
+Description
+-----------
+
+^dickey^ tests the null hypothesis that varname has a unit root.  The test is
+performed by regressing the first difference of varname on its lagged level
+and lags of the first difference.  A constant and a time trend may also be
+included.  The test statistic is the t-statistic on the lagged level of
+varname.  Under the null hypothesis, this statistic does not have a t-distri-
+bution.  Its true distribution under the null has been calculated and is
+tabulated in Fuller (1976, 373), where the test is described in detail.
+
+
+
+
+Options
+-------
+
+
+^lags(^#^)^ specifies the number of lags to be considered.   The default is 4.
+
+^findlag^ reports statistics on the optimal number of lags.
+
+^trend^ includes a time trend term in the regression.
+
+regress_options refers to any of the options of ^regress^; see ^help regress^.
+
+
+
+(Examples follow.)
+
+
+
+
+
+
+
+
+
+Examples
+--------
+
+ . ^dickey gnp^
+
+reports the Dickey-Fuller test statistic for the hypothesis that GNP has a unit
+root.  In this example, a constant and zero through four lags of the first
+difference of GNP are included in the test regressions.  In addition, estimates
+of the optimal number of lags (up to the default 4) are reported.
+
+
+. ^dickey gnp, lags(5)^
+
+would consider up to 5 lags.
+
+
+
+
+References 
+----------
+
+Fuller, W. A.  1976.  ^Introduction to Statistical Time Series^.  New York:
+    John Wiley & Sons.
+
+
+
+Author
+------
+ 
+Sean Becketti, Federal Reserve Bank of Kansas City.
+
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7)
+On-line:  ^help^ for ^ac^, ^coint^, ^findlag^, ^lag^

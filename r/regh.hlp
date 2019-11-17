@@ -1,0 +1,144 @@
+.-
+help for ^regh^, ^reghv^                                  (STB-42: sg77)
+.-
+
+Linear regression with multiplicative heteroscedasticity
+--------------------------------------------------------      
+
+    ^regh^ eqmean eqlnvar [^if^ exp] [^in^ range] [^, r^obust ^c^luster^(^varname^)^ 
+                  ^tw^ostage ^l^evel^(^#^)^ ^f^rom^(^matname^)^ maximize_options ]
+
+    ^reghv^ depvar [varlist]  [^if^ exp] [^in^ range]^, v^ar^(^varlist^)^ 
+                  [^r^obust ^c^luster^(^varname^) tw^ostage ^l^evel^(^#^)^ maximize_options ]
+
+^regh^ (^reghv^) shares the features of all estimation commands; see
+^[R] estimation commands^.
+
+^regh^ typed without arguments, redisplays previous estimation results.
+
+To reset problem-size limits, see help @matsize@.
+
+
+Description
+-----------
+
+^regh^ and ^reghv^ estimate the linear regression models with normal residuals 
+with multiplicative heteroscedasticity,
+        
+    ^y(i) = m(i) + s(i) * e(i)^
+
+    ^m(i) = E y(i) = b(0) + b(1)x(1i) + ... b(k)x(ki)^
+
+    ^v(i) = Var e(i) = exp(g(0) + g(1)z(1i) + ... g(m)z(mi))^
+
+where y(i) is are independent random variable (the "dependent variable") with 
+mean m(i) and variance v(i), and x(i) and z(i) are (vectors of) covariates 
+predicting the mean and log-variance of ^y^ respectively.  (See the option 
+^cluster^ below for correlated observations.)  The residuals e(i) are assumed 
+to be standard normal distributed. The (vector-) coefficients ^b^ and ^g^ are
+to be estimated. 
+
+^eqmean^ is an equation that contains the dependent variable, followed by the
+x-variables. ^eqlnvar^ is an equation that contains the ^z^-variables. A 
+constant is automatically appended to both ^eqmean^ and ^eqlnvar^. In the 
+current implementation, constants cannot be dropped.
+
+^reghv^ simply sets up appropriate equations (named ^lp_mean^ and ^lp_lnvar^), 
+and interfaces to ^regh^. Thus, to replay results type ^regh^.
+
+
+Options
+-------
+
+^var(^varlist^)^ specifies the variables used to model the log(variance) 
+    of the residuals. (Only with ^reghv^).
+
+^robust^ specifies that the robust method of calculating the variance-covariance
+    matrix is to be used instead of the traditional calculation (Harvey 1976). 
+    The robust variant of vce is also computed for the 2sls estimator.
+
+^cluster(^varname^)^ implies ^robust^ and specifies a variable on which clustering
+    is to be based.  The cluster-variable may be of type string.
+
+^twostage^ specifies that Harvey's 2SLS estimator (and the associated consistent 
+    covariance matrix) should be computed, otherwise the maximum-likelihood 
+    estimator is used. 
+
+
+Maximize options
+----------------
+
+^level(^#^)^ specifies the confidence level, in percent, for confidence intervals
+    of the coefficients.
+
+^from(^matname^)^ specifies a matrix (row-vector) with initial values. ^from^ 
+    should be properly named (see help @ml@ for details). ^from^ enables efficient 
+    bootstrapping where one may use "full sample" estimates as starting values 
+    for the resamples.
+
+maximize_options control the maximization process; see ^[R] maximize^.  You 
+    should never have to specify the more technical of these options, although
+    we do recommend specifying the ^trace^ option.
+
+
+Examples
+--------
+
+   . ^eq lpm: y x1-x4^             (equation for depvar y, predictors for E(y))
+   . ^eq lpv: x2 x5-x8^              (equation with predictors for log(var(y)))
+
+   . ^regh lpm lpv, two^                    (two-stage least squares estimates)
+   . ^regh lpm lpv^                                      (full-information mle)
+   . ^regh lpm lpv, robust^                   (mle with robust standard errors)
+
+Note that the last command is equivalent to
+
+   . ^reghv y x1-x4, var(x2 x5-x8) robust^
+
+We want to test that human capital indicators variables (edu=formal education,
+exp=years-of-experience) explain income "the same extent" for men and women.
+
+   . ^eq lpm: inc edu exp^ 
+   . ^eq lpv: sex^           
+   . ^regh lpm lpv^
+   . ^test [lpv][sex]^         (Wald-test that variance does not depend on sex)
+
+
+Notes and references
+--------------------
+
+^regh^ implements a hand-coded version of Harvey's alternating scoring algorithm
+for normal distributed residuals. I added step-halving to improve stability. In
+my experience, this algorithm is fast and converges well. 
+
+^regh2^ is similar to ^regh^ but uses ml/deriv2 rather than my own optimization
+code. It is slower, but, maybe, more stable for ill-conditioned problems.
+
+^reghf^ (in preparation) computes maximum-likelihood estimators for (location, 
+scale) models with non-normal residuals (e.g., Cauchy, logistic). See ^probith^ 
+for estimating probit models with multiplicative heteroscedasticy.
+
+^reghm^ computes ml-estimators, based on normal distributed residuals, for a 
+model in which the log-variance 
+
+    ^ln v(i) = a * m(i) + (g(0) + g(1)z(1i) + ... g(m)z(mi))^
+
+If in this model the g-parameters are approximately 0, and so v(i) = f(m(i)), 
+a box-cox transformation of y(i) may be adequate to stabilize variance.
+
+
+References
+----------
+
+Greene, W. H. 1993. Econometric Analysis. 2nd ed. New York: Macmillan.
+
+Harvey, A. C. 1976. Estimating regression models with multiplicative
+heteroscedasticity. Econometrica 44: 461-465.
+
+
+Also see
+--------
+
+    STB:  STB-42 sg77
+ Manual:  [R] estimate, [R] fit, [R] htest
+On-line:  help for @fit@, @reghf@, @probith@ 

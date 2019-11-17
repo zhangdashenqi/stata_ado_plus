@@ -1,0 +1,96 @@
+{smcl}
+{* 20dec2004}{...}
+{hline}
+help for {hi:swor}{right:(STB-59: dm86; SJ5-1: dm86_1)}
+{hline}
+
+{title:Draw random sample (alternative to {cmd:sample})}
+
+{p 8 17 2}
+{cmd:swor}
+{it:#}
+[{cmd:if} {it:exp}] 
+[{cmd:in} {it:range}] 
+[{cmd:, by(}{it:groupvars}{cmd:)} 
+{cmdab:g:enerate(}{it:newvar}{cmd:)} 
+{cmdab:k:eep} ]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:swor} draws a pseudo-random sample of size 
+{it:#} from the data in memory, by 
+default {cmd:drop}ping (optionally {cmd:keep}ing) the remaining observations.  
+Observations not meeting the optional {cmd:if} and {cmd:in} criteria are kept 
+(sampled at 100%). {it:#} must be positive and no greater than the number of 
+observations in each group to be sampled.
+
+{p 4 4 2}Sampling here is defined as drawing observations without replacement.  
+See help on {help sample} for sampling without replacement specified in percent 
+to be sampled, rather than absolute number. See help on {help bootstrap} for 
+sampling with replacement.
+
+{p 4 4 2} 
+If you are serious about drawing random samples, you must first set the 
+random number seed; see help {cmd:generate}. 
+
+
+{title:Remarks} 
+
+{p 4 4 2}
+The original rationale of {cmd:swor} when published was first to 
+provide samples of specified absolute size. Subsequently, a {cmd:count} 
+option was added to official Stata's {help sample} that allowed this. 
+{cmd:swor}'s remaining rationale is provided by the {cmd:generate()} 
+and {cmd:keep} options; 
+consequently it is updated for users wishing to exploit these features. 
+
+
+{title:Options} 
+
+{p 4 8 2}{cmd:by()} specifies that a sample of size {it:#}
+is to be drawn within each  set of values of {it:groupvars}.
+
+{p 4 8 2}{cmd:generate()} generates {it:newvar} containing 1 for those 
+observations included in the sample and 0 for those not included.
+
+{p 4 8 2}{cmd:keep} overrides the default dropping of nonsampled observations.
+{cmd:keep} must be combined with {cmd:generate()}. 
+
+
+{title:Examples} 
+
+{p 4 4 2}draw sample of 100:
+{break}{cmd:. swor 100}
+ 
+{p 4 4 2}keep all {cmd:sex != 0}, but {cmd:sample 100} from {cmd:sex == 0}:
+{break}{cmd:. swor 100 if sex == 0}
+   
+{p 4 4 2}sample 100 from each group of {cmd:sex}: 
+{break}{cmd:. swor 100, by(sex)}            
+
+{p 4 4 2}sample 100 from each group of {cmd:sex}, but keep all observations: 
+{break}{cmd:. swor 100, by(sex) gen(sample) keep}
+    
+{p 4 4 2}sample 100 if {cmd:sex == 0} and keep only those observations:
+{break}{cmd:. swor 100 if sex == 0, gen(sample)} 
+{break}{cmd:. keep if sample} 
+
+
+{title:Author} 
+
+{p 4 4 2}Nicholas J. Cox, University of Durham, U.K.{break} 
+         n.j.cox@durham.ac.uk
+
+
+{title:Acknowledgments} 
+
+{p 4 4 2}Gabriel Demombynes pointed to a problem produced by 
+unstable sorting. 
+
+
+{title:Also see} 
+
+{p 4 13 2}Manual:  {hi:[R] sample}
+
+{p 4 13 2}On-line:  help for {help sample}, {help bootstrap} 

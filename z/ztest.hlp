@@ -1,0 +1,88 @@
+{smcl}
+{* 20nov2000}{...}
+{hline}
+help for {hi:ztest}, {hi:ztesti}
+{hline}
+
+{title:Proportion comparison tests}
+
+{p 8 14}{cmd:ztest} {it:varname} {cmd:=} {it:#p} [{cmd:if} {it:exp}] [{cmd:in}
+{it:range}] [{cmd:,} {cmdab:l:evel}{cmd:(}{it:#}{cmd:)} ]
+
+{p 8 14}{cmd:ztest} {it:varname1} {cmd:=} {it:varname2} [{cmd:if} {it:exp}]
+[{cmd:in} {it:range}] [{cmd:,} {cmdab:unp:aired}
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)} ]
+
+{p 8 14}{cmd:ztest} {it:varname} [{cmd:if} {it:exp}] [{cmd:in}
+{it:range}]{cmd:,} {cmd:by(}{it:groupvar}{cmd:)} [ 
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)} ]
+
+{p 8 14}{cmd:ztesti} {it:#N} {it:#succ} {it:#p} [{cmd:,}
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)} ]
+
+{p 8 14}{cmd:ztesti} {it:#b} {it:#c} 
+[{cmd:,} {cmdab:l:evel}{cmd:(}{it:#}{cmd:)} ]
+
+{p 8 14}{cmd:ztesti} {it:#N1} {it:#succ1} {it:#N2} {it:#succ2}
+[{cmd:,} {cmdab:l:evel}{cmd:(}{it:#}{cmd:)} ]
+
+
+{p}{cmd:by} {it:...} {cmd::} may be used with {cmd:ztest} (but not with
+{cmd:ztesti}); see help {help by}.
+
+
+{title:Description}
+
+{p}{cmd:ztest} performs one-sample, two-sample, and paired sample (McNemar) z
+tests on the equality of proportions.  This is based on the normal
+approximation to the binomial distribution.  All variables are assumed to be
+binary (i.e. take on the values 0 or 1).
+
+{p}In the first form, {cmd:ztest} performs a one-sample z test of the
+hypothesis that {it:varname} has a proportion of {it:#p}.
+
+{p}In the second form without any options specified, {cmd:ztest} performs the
+McNemar test of paired binary observations.
+
+{p}In the second form with the {cmd:unpaired} option specified, {cmd:ztest}
+performs a two-sample z test of the hypothesis that the proportion of
+{it:varname1} equals the proportion of {it:varname2}.
+
+{p}In the third form, {cmd:ztest} performs a two-sample z test of the
+hypothesis that {it:varname} has the same proportion within the two groups
+defined by {it:groupvar}.
+
+{p}{cmd:ztesti} is the immediate form of {cmd:ztest}; see help {help immed}.
+The first form of {cmd:ztesti} performs one-sample z tests.  The second form
+does McNemar tests.  The third form does independent sample z tests.
+
+
+{title:Options}
+
+{p 0 4}{cmd:by(}{it:groupvar}{cmd:)} preforms an unpaired (two-sample) z test.
+{it:groupvar} is to take on two unique values and the proportion of the first
+group is compared to the proportion of the second.  (Do not confuse the
+{cmd:by()} option with the {cmd:by} {it:...}{cmd::} prefix; both may be
+specified.)
+
+{p 0 4}{cmd:unpaired} also indicates that the data are to be treated as
+unpaired; i.e., a two-sample z test should be performed.  You use the unpaired
+option when the two set of values to be compared are in different variables
+rather than different observations of the same variable.
+
+{p 0 4}{cmd:level(}{it:#}{cmd:)} specifies the confidence level, in percent,
+for confidence intervals of the proportions; see help {help level}.
+
+
+{title:Examples}
+
+{p 1 5}{inp:. ztest mpg = 20}{p_end}
+
+{p 1 5}{inp:. ztesti 24 9 .45} (N=24,succ=62.6; test p=.45){p_end}
+
+
+{title:Also see}
+
+ Manual:  {hi:[R] bitest}, {hi:[R] ttest}
+{p 0 19}On-line:  help for {help bitest}, {help ttest}, {help ci},
+{help immed}{p_end}

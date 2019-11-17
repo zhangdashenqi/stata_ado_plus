@@ -1,0 +1,141 @@
+
+.-
+help for ^reshape2^                                             (STB-38: dm48)
+.-
+
+An enhancement of reshape
+-------------------------
+
+        ^reshape2 c^lear
+        ^reshape2 i^d varname [ varname ... ]
+        ^reshape2 co^ns varname [ varname ... ]
+        ^reshape2 g^roups groupvar #[^-^#] [#[^-^#] ...] [^,^ ^l^ong^(^string^)^ ^s^tring]
+        ^reshape2 v^ars maskname [ maskname ... ]
+        ^reshape2^ { ^wide^ | ^long^ }
+        ^reshape2 q^uery
+
+
+Description
+-----------
+
+^reshape2^ converts data from wide to long and vice-versa.
+
+^reshape2^ assumes that the names of variables for which there are related
+observations fit ^masks^ (see keyword ^vars^ below) in which the placeholder ^@@^
+is replaced by a set of values (see ^groups^ below) in wide-format and by a 
+single character in long-format (see the option ^long^ for the groups keyword).
+
+^reshape clear^ clears the current definition elements.
+
+^reshape2 vars^ identifies a list of masks, seperated by white space, for each 
+of the variable(s) for which there are related observations. A mask should 
+contain at most one place-holder ^@@^. If a mask does not contain a ^@@^, a ^@@^
+is silently appended to the mask. (Actually, a keyword mask would better 
+describe the function of this subcommand. For compatibility with ^reshape^, we 
+stick to the name ^vars^.)
+
+^reshape2 groups^ names a single variable that will record the grouping variable
+along with the values it will assume.  The grouping variable is the variable 
+that will be created when converting from wide to long and the values are the 
+values it will assume, seperated by blanks. If the option ^string^ is specified,
+the values are interpreted as strings. Otherwise, the values should be positive
+integers, and the specification of the group values may include numeric ranges.
+
+^reshape2 cons^ identifies the variable(s) that are "relatively" constant; that 
+is, that do not change across related observations. 
+
+^reshape2 id^ specifies the case-identification variable(s) (e.g., the 
+respondent number). In ^wide^-format, the id-variable(s) should strictly vary 
+between observations. For compatibility with ^reshape^, if ^reshape2 id^ is not 
+specified, the ^cons^ variables are used as identification variables. The 
+separation of cons variables into id-variables and "other" cons-variables allows 
+^reshape2^ to process data manipilation with many ^cons^ variables, whereas 
+^reshape^ was limited to 10 cons variables.
+
+^reshape query^ dsiplays the current definitions.
+
+^reshape long^ converts data to long format.  
+
+^reshape wide^ converts to wide.
+
+
+Example 1
+---------
+
+        id  sex   inc80   inc81   inc82         id   year   sex    inc
+        -------------------------------         ----------------------
+         1    0    5000    5500    6000          1     80     0   5000
+         2    1    2000    2200    3300          1     81     0   5500
+         3    0    3000    2000    1000          1     82     0   6000
+                                                 2     80     1   2000
+                                                 2     81     1   2200
+                                                 2     82     1   3300
+                                                 3     80     0   3000
+                                                 3     81     0   3300
+                                                 3     82     0   1000
+
+        . ^reshape2 groups year 80-82^
+        . ^reshape2 vars inc^
+        . ^reshape2 cons id sex^
+
+        . ^reshape2 long^                      (goes from left-form to right)
+        . ^reshape2 wide^                      (goes from right-form to left)
+
+
+Example 2 (3 level data)
+------------------------
+
+We will now illustrate how ^reshape2^ can be used for the manipulation of data
+that contains more than 2 levels. While the current implementation of reshape2
+does not support the description of 3-level data, 2 simple reshape2 steps will
+get the job done.  We consider 3-level data on incomes in 3 years of spouses
+in 1000 households. The data are in wide-wide format in which observations are
+households: All information about the people in one household are containend
+in one record. Incomes in the years 1990-1992 (in inc variables that end in
+90-92) of men and women (with education medu and fedu) who share a common
+household for which characteristics (geographics,kids,...) are described in
+variables that start with the prefix h. Households are identified in the
+variable hnr.
+
+We want to transform the data to long-wide format in which the observations 
+are people. This can be arranged as follows.
+ 
+        . ^reshape2 id     hnr^
+        . ^reshape2 cons   hcity hnkids^
+        . ^reshape2 groups sex m f, string^
+        . ^reshape2 masks  @@inc90 @@inc91 @@inc92 @@edu^
+        . ^reshape2 long^
+
+Next we want to transform the data to person-years ('long-long') format.
+
+        . ^reshape2 id     hnr sex^
+        . ^reshape2 cons   edu^
+        . ^reshape2 groups year 90-92^
+        . ^reshape2 masks  inc@@^
+        . ^reshape2 long^
+
+The results of these transformation are as follows.
+        
+   wide-wide (^1000^ obs), variables are ^hnr hcity hnkids medu minc90^ 
+        ^minc91 minc92 fedu finc90 finc91 finc92^     
+
+   long-wide (^2000^ obs) variables are ^hnr hcity hnkids sex edu inc90^ 
+        ^inc91 inc92 ^     
+
+   long-long (^6000^ obs) variables are ^hnr hcity hnkids sex edu year inc^ 
+
+
+Author
+------
+
+       Jeroen Wessie
+       Utrecht University
+       Netherlands 
+       email: weesie@@weesie.fsw.ruu.nl
+
+Also see
+--------
+
+    STB:  dm48 (STB-38)
+ Manual:  [5d] reshape
+On-line:  help for @stack@, @xpose@

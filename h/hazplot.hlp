@@ -1,0 +1,316 @@
+.-
+help for ^hazplot^                                            (Kenneth L. Simons)
+.-
+
+Smoothed hazard (transition/failure) rate plots for panel data at integer times
+-------------------------------------------------------------------------------
+
+        ^hazplot^ [^if^ exp] [^in^ range] ^,^ [^p^lot ^l^ist ^k(^#^)^ ^sig^ma^(^#^)^ ^br^eakpt^(^#^)^
+	                    ^by(^varlist^)^ ^comp^risk^(^varname^)^
+                            ^o^verlay ^c^onnect^(^c...c^)^ ^s^ymbol^(^s...s^)^
+	                    ^ti^tle^(^string^)^ ^gphb^rk ^gphp^rint graph_options]
+
+
+Description
+-----------
+
+^hazplot^ plots hazard rates or smoothed hazard rates.  It works only on data in
+panel form with integer time variables, and the data must have been stset
+using the time0() option.  For example, you might have employee records with
+one line of data for each employee in each year.
+
+Smoothing weights together observations from different points in time to
+remove noise from the data.  The smoothing is limited to within a moving
+window of plus or minus k (inclusive) units of time, and is weighted according
+to a Gaussian (normal) distribution with standard deviation sigma.  Also, it
+is possible to specify a breakpoint such that smoothed values at all points in
+time less than the breakpoint are treated independently of all points in time
+greater than or equal to the breakpoint; thus, smoothing does not take into
+account any observations from the other side of the breakpoint.  To make a
+plot smoother, increase the values of k and sigma.
+
+The default is to smooth over a window of plus or minus one unit of time,
+weighting by a normal distribution with a standard deviation of one.  To turn
+off smoothing, specify the option k(0).
+
+You can plot hazard rates for competing types of risk (these will be overlayed
+on graphs of up to 8 competing types of risk).  You can also plot hazard rates
+separately for multiple groups using the by() option, and if so you can either
+view the plots side-by-side or (without competing risks) use the overlay
+option to view them as a single graph with up to 8 by-groups (up to 4 with a
+graphed breakpoint).  To split the graph at the breakpoint you specified, use
+the gphbrk option (only available if overlay is on).  You can also use
+standard graph options including connect(), symbol(), and title(); you can
+have the graph sent to your printer by using the gphprint option; or you can
+list the resulting smoothed hazards by using the list option.
+
+In this version, graphs are not labeled in a way that distinguishes types of
+risk or groups.  Sorry about this limitation and please feel free to
+reprogram the graphing to do a better job if you have the time and
+inclination!  If you are having trouble distinguishing between curves on the
+graph, it may help to use the list option to check the hazards computed for
+each risk type and by-group.  (Competing risks will not necessarily receive
+color and other line properties in any particular order, so don't use the line
+color to tell between risk types.  They will be in the some order in the plot
+as you see if you list the results.)  I have also had trouble with the
+vertical axis of graphs having numbers that can't be read because they get
+chopped off at the left edge of the graph window; if this happens, try using
+the yscale(#,#) option.  For publication, it's easy to use the list option
+and then create the graph in a spreadsheet program.
+
+Finally, note that with interval data of the sort analyzed here, hazard rates
+are necessarily approximations.  This applies even more for competing risks.
+The hazards plotted are good approximations as long as the percentage of
+failures per time-interval are fairly small.  (See the remarks below.)
+
+
+Options
+-------
+
+^p^lot specifies that the hazard plots are to be shown as one or more graphs.
+
+^l^ist specifies that the hazard plot data are to be displayed as a list.
+
+^k(^#^)^ specifies the width of the moving window for smoothing, as plus or
+    minus k units of time (inclusive).  The default is 1.
+
+^sig^ma^(^#^)^ specified the standard deviation of the normal distribution used
+    for weighting when smoothing.  The default is 1.
+    
+^br^eakpt^(^#^)^ specifies a breakpoint in computing the smoothed values, such that
+    data points earlier versus data points later than or equal to the
+    breakpoint have no influence on each other's smoothed values.  For example
+    if the data span years 1900 to 2000 and the breakpoint is 1930, the 
+    smoothed hazard for years 1900-1929 is computed using only data for those
+    earlier years, and the smoothed hazard for 1930-2000 is computed using
+    only data for those later years.
+
+^by(^varlist^)^ indicates the plot is to be computed separately for each by
+    group.
+
+^comp^risk^(^varname^)^ indicates the name of a variable containing data on exit by
+    competing risks.  The variable must take the value 0 if no failure occurs.
+    Otherwise it must contain an integer that specifies the type of failure.
+
+^gphb^rk causes the break at the breakpoint, if any, to be visible in plots,
+    rather than connecting points across the break.
+
+^o^verlay indicates that plots are to be overlayed into a single graph.
+
+^c^onnect^(^c...c^)^ is the same option as for @graph@.
+
+^s^ymbol^(^s...s^)^ is the same option as for @graph@.
+
+^ti^tle^(^string^)^ is the same option as for @graph@.
+
+^gphp^rint causes the graph to be printed on your printer.
+
+You may also use other options to the @graph@ command.
+
+
+Remarks
+-------
+
+Let h(t) denote the smoothed hazard as a function of time within a group.
+It is calculated as h(t) = a(t) / [b(t) * prdlen], where a(t) = sum(phi(tau) *
+f(tau)), b(t) = sum(phi(tau) * n(tau)), and prdlen is the time interval
+between data points.  The sums are computed over all points in time tau that
+fall within the moving window and that are on the same side of the breakpoint
+as t.  The function phi(tau) is the weight function, and equals the value of a
+standard normal distribution of z at the point z = (t - tau)/(sigma * prdlen).
+The functions of time f(tau) and n(tau) represent the number of failures (of
+the type of risk under consideration) and individuals at risk, respectively,
+at time tau.
+
+I make no promises that this smoothing method is any sense the best or most
+efficient among the class of nonparametric density estimation techniques for
+hazards.  However, at present there appears to be no clear best method, and
+the method used here works well.
+
+The hazard rates estimated are an approximation, for purposes of the usual
+interpretation of continuous time hazard rates.  With interval-censored data,
+as the data are assumed to be by hazplot, the exact time of failure is not
+known.  If there are 10 observations and 9 failures in a year, the hazard rate
+is estimated as 0.9 per year.  This is exactly the right approximation to use
+for the fractional failure rate in discrete time.  But reality usually
+operates in continuous time, and moreover it is possible that most failures
+happen in January rather than December.  Without modeling the timing of the
+failure process, if one truly is stuck with interval-censored data, it is not
+possible to know what is the right failure rate.  In general, if the
+percentage of individuals that fail per time interval is relatively small,
+the estimation tends to yield a reasonable time-average estimate of the
+hazard rate.
+
+If you have accurate enough data about failure times, you can improve accuracy
+of the results by splitting the panels so they cover smaller time periods.
+Suppose for example you have data about the time patients began treatment,
+died, and were discharged.  If the data are accurate to the nearest minute,
+then you might construct a panel data set with one row of data for each day,
+hour, or minute of a patient's stay.  The data organized by day are the least
+accurate, while the data organized by minute are the most accurate.  However, 
+the data organized by hours require about 24 times as much memory as the data
+organized by day, and the data organized by minute take about another 60 times
+more memory still.  So, given that ^hazplot^ is limited to working with panel
+data, you should choose a form of organization that is reasonably accurate
+but does not require ridiculous amounts of memory in your computer.  Stata's
+@stsplit@ command can be a helpful tool if you need to convert panel data to
+use shorter time intervals.  I suggest you edit the data to give the time of
+entry into and exit from the dataset more exactly, in 1/24ths of a day, before
+using stsplit.  That way you will have less work to do to eliminate the hours
+when the patients had not yet arrived or had already died, and to make sure
+the failure variable correctly reflects whether each patient died in the row
+corresponding to his or her final hour alive in the hospital.  (After splitting
+the data, multiply the times at the start and end of each period by 24 and
+round off so the times are integers with identical time intervals, as required
+by hazplot.)  You may still need to update any other time-varying variables, so
+that they take on the correct values in the different hours throughout each day.
+
+For competing risks with failures recorded at intervals, a further issue
+arises.  Suppose employees can resign or be fired during a year.  Once the
+employee leaves the job for one of these two reasons, she is no longer at risk
+of leaving for the other reason.  If an employee resigned it might be anytime
+during the year, say 9 months through the year.  The individual should then be
+counted as no longer being at risk in the last three months of the year,
+causing the estimated hazard rate from firing to be higher than would be the
+case if the employee were considered as at risk of being fired (and yet not
+fired in this case) for the whole 12 months.  The hazplot program deals with
+this issue by assuming that if an individual fails due to one type of risk,
+the individual is only eligible for other types of risk during one-half of the
+time interval.  This approximation should be fine as long as the percentage of
+failures per time period is reasonably small for each type of risk.
+
+
+Examples
+--------
+
+ . ^hazplot^
+ . ^hazplot if sex==1 ^
+ . ^hazplot, by(sex)^
+ . ^hazplot, list^
+ . ^hazplot, by(sex) k(20) sigma(10)^     (smoother)
+ . ^hazplot, by(sex) k(50) sigma(20)^     (even smoother)
+ . ^hazplot, by(sex) k(50) sigma(20) breakpt(1970)^
+ . ^hazplot, by(sex) k(50) sigma(20) breakpt(1970) overlay^
+ . ^hazplot, by(sex) k(50) sigma(20) breakpt(1970) overlay yscale(0,0.4)^
+ . ^hazplot, comprisk(failtype)^
+
+
+Detailed Example
+----------------
+
+Below is an example of ^hazplot^ in use.  Suppose that you have data on the
+survival of patients who receive a treatment at time 0, with their survival
+or death recorded at the end of each day.  You need a variable that indicates
+time at the beginning of each person-day and another variable that indicates
+time at the end of the person-day, as well as an id variable with a unique
+number for each person, and a failure (vs. censoring) variable.  In this
+example, each person's id is in the variable i, the variables begin and end
+record the times at the beginning and end of each period, and the variable
+died records whether the patient died during the period.  Recall that a
+limitation of ^hazplot^ is that begin and end must be integers, with begin
+minus end equalling the same amount of time for all rows of data.
+
+. list
+
+            i     begin       end      died 
+  1.        1         0         1         0  
+  2.        1         1         2         0  
+  3.        1         2         3         1  
+  4.        2         0         1         1  
+  5.        3         0         1         0  
+  6.        3         1         2         0  
+  7.        3         2         3         0  
+  8.        3         3         4         0  
+  9.        3         4         5         0  
+ 10.        4         7         8         0  
+ 11.        4         8         9         1  
+
+In this example, individual 1 is at risk from time 0.0 days.  That individual
+survives until the end of the third day and then fails/dies (at time 3.0).
+Individual 2 is at risk from time 0.0 days and fails/dies at the end of the
+first day (at time 1.0).  Individual 3 is at risk from time 0.0 through the
+end of the fifth day (time 5.0), but is still surviving at the time he/she/it
+leaves the sample.  Individual 4 is a special case that you may have.  This
+individual enters the sample at time 7.0 (the beginning of the eighth day)
+and is not considered as being at risk at earlier times.  In the example,
+individual 4 survives until the end of the ninth day and then fails/dies.
+
+The following command tells Stata how to interpret these survival-time data:
+
+. stset end, time0(begin) failure(died) id(i)
+
+                id:  i
+     failure event:  died ~= 0 & died ~= .
+obs. time interval:  (begin, end]
+ exit on or before:  failure
+
+------------------------------------------------------------------------------
+       11  total obs.
+        0  exclusions
+------------------------------------------------------------------------------
+       11  obs. remaining, representing
+        4  subjects
+        3  failures in single failure-per-subject data
+       11  total analysis time at risk, at risk from t =         0
+                             earliest observed entry t =         0
+                                  last observed exit t =         9
+
+Having declared the survival time data, you can now generate the hazard plot:
+
+. hazplot
+
+The plot will not have nice formatting for the numbers on the axes, nor will
+it label separate curves if you use the by() option.  So it is probably
+okay for exploratory work, but you might want to get the numbers used in
+the graph and construct your own publication-quality graph.  To get the
+numbers, you can do:
+
+. hazplot, list
+Smoothed hazard plot results
+title: Hazard smoothed, k = 1, sigma = 1
+k = 1, sigma = 1
+List (by by-vars) of: timevar hazard samplesize
+
+-> __0000A0=        1  
+             _t   __0000AE      __0000BG 
+  1.          1   .2373571             3  
+  4.          2   .2410381             2  
+  6.          3   .2618081             2  
+  8.          4   .2151129             1  
+  9.          5          0             1  
+ 10.          8   .3775407             1  
+ 11.          9   .6224594             1  
+
+The "hazplot, list" command generates a list with three variables.  The list
+does not have a nice heading row, because I haven't programmed it!  But, the
+output tells you the variables that are listed: timevar hazard samplesize.
+These correspond to the titles "_t   __0000AE      __0000BG" below.  Copy the
+resulting list into (e.g.) Excel to create your own high-quality plots.
+Excel's text-to-table command (available from a menu) will help you turn the
+data you've copied into proper columns.  (The terms __0000AE and __0000BG, as
+well as __0000A0, are temporary names created by Stata.  When you use Stata,
+the temporary names will probably be different.  The line
+"-> __0000A0=        1 " is a by-product of the fact that the command is written
+to handle multiple groups using the by() option.  In this case there is only one
+group, but with more groups, each group's part of the list would be preceded by
+something similar.
+
+
+Author
+------
+
+Kenneth L. Simons (2000)
+
+
+Revisions
+---------
+
+11 July 2000 - Added remarks about data splitting to the help file.
+10 July 2000 - Added detailed example to the help file.
+ 5 Feb. 2000 - Initial release.
+
+
+Also see
+--------
+
+On-line:  help for @kdensity@, and (if installed) @sthaz@

@@ -1,0 +1,42 @@
+{smcl}
+{* 20oct2002 NJC for SJ} 
+{hline}
+help for {hi:kornbrot} {right: (SJ2-4: snp9_1)}
+{hline}
+
+{title:Kornbrot's rank difference test} 
+
+{p 8 16}
+{cmd:kornbrot} 
+{it:varname1} 
+{cmd:=} 
+{it:varname2} 
+[{cmd:if} {it:exp}] 
+[{cmd:in} {it:range}]
+
+
+{title:Description} 
+
+{p}
+{cmd:kornbrot} tests the equality of distributions for matched pairs of
+observations for ordinal variables {it:varname1} and {it:varname2}, 
+using the Wilcoxon matched-pairs signed-ranks test.
+
+
+{title:Example} 
+
+{p 4 8}{inp:. kornbrot mpg1 = mpg2} 
+
+
+{title:Author} 
+
+        Richard Goldstein
+        richgold@ix.netcom.com
+
+
+{title:Also see} 
+
+    STB:  STB-29 snp9
+ Manual:  [R] signrank
+On-line:  help for {help signrank}, {help kwallis}, {help ttest} 
+

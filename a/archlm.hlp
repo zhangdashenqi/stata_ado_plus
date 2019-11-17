@@ -1,0 +1,73 @@
+.-
+help for ^archlm^                                                 (STB-55: sg135)
+.-
+
+Perform a LM test for autoregressive conditional heteroskedasticity (ARCH)
+--------------------------------------------------------------------------
+
+	^archlm^  [^if^ exp] [^in^ range] [, ^l^ags^(^numlist^) nos^ample] 
+
+^archlm^ is for use after ^regress^; see help @regress@.
+
+^archlm^ is for use with time-series data.  You must ^tsset^ your data before 
+using ^archlm^; see help @tsset@.
+
+
+Description
+-----------
+
+^archlm^ computes a Lagrange multiplier test for autoregressive conditional
+heteroskedasticity (ARCH) effects in a regression residual series for a 
+specified number of lags p, as proposed by Engle (1982). A list of lag orders
+may be given; if none are given, one lag is presumed. For each specified order,
+the squared residual series is regressed on p of its own lags. The test 
+statistic, a T R^^2 measure, is distributed Chi-squared(p) under the null 
+hypothesis of no ARCH effects.
+
+The command displays the test statistic, degrees of freedom and P-value 
+for each specified lag order, and places values in the return array. Type
+^return list^ to see such values. 
+
+
+Options
+-------
+
+^lags(^numlist^)^ specifies the lag order(s) to be tested by ^archlm^.  Test
+    results will then be produced for each specified lag order in numlist.
+    By default, ^archlm^ will use p = 1, that is, a single lag.
+
+^nosample^ inidicates that the test be performed on either all observations
+    included in ^archlm^'s ^if^ and ^in^ conditions if specified.  By default,
+    ^archlm^ includes only observations in the estimation sample.
+
+
+Examples
+--------
+
+	. ^regress csales isales^
+	. ^archlm^
+	. ^archlm, lags(4 8 12)^
+
+
+References
+----------
+
+Engle, Robert, "Autoregressive Conditional Heteroskedasticity with Estimates of
+    the Variance of United Kingdom Inflation", Econometrica, 50, 1982, 987-1007
+
+
+Authors
+-------
+
+        Christopher F Baum, Boston College, USA
+        baum@@bc.edu
+
+        Vince Wiggins, Stata Corporation
+        vwiggins@@stata.com
+
+        
+Also see
+--------
+
+ Manual:  ^[R] regress^, ^[R] regression diagnostics^
+On-line:  help for @regdiag@, @regress@, @time@, @tsset@; @arch@

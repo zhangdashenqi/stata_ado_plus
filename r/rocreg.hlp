@@ -1,0 +1,256 @@
+{smcl}
+{* 26 January 2009 version 1.1.6}{...}
+{cmd:help rocreg}{right: ({browse "http://www.stata-journal.com/article.html?article=st0155":SJ9-1: st0155})}
+{hline}
+
+
+{title:Title}
+
+{p2colset 5 15 17 2}{...}
+{p2col :{hi:rocreg} {hline 2}}Receiver operating characteristic (ROC) regression{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 16 2}
+{cmd:rocreg} {it:{help varname:disease_var}} {it:{help varname:test_varlist}}
+{ifin} [{cmd:,} {it:options}]
+
+{synoptset 18 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:ROC generalized linear model}
+{synopt :{opth regc:ov(varlist)}}specify regression covariates (intercept terms){p_end}
+{synopt :{opth sregc:ov(varlist)}}specify regression covariates (slope terms){p_end}
+{synopt :{opt li:nk(function)}}{cmd:probit} (default) or {cmd:logit} link function{p_end}
+{synopt :{opt int:erval(a b np)}}interval ({it:a,b}) and number of false positive
+rate (FPR) points, {it:np}, over which model is to be fit{p_end}
+
+{syntab:Standardization method}
+{synopt :{opt pvcm:eth(method)}}specify percentile value (PV) calculation method; {cmd:empirical} (default) or {cmd:normal}{p_end}
+{synopt :{opt tiec:orr}}correction for ties{p_end}
+
+{syntab:Covariate adjustment}
+{synopt :{opth adjc:ov(varlist)}}specify covariates to adjust for{p_end}
+{synopt :{opt adjm:odel(model)}}specify model adjustment; {cmd:stratified} (default) or {cmd:linear}{p_end}
+
+{syntab:Sampling variability}
+{synopt :{opt ns:amp(#)}}specify number of bootstrap samples; default is {cmd:nsamp(1000)}{p_end}
+{synopt :{opt nobs:trap}}omit bootstrap sampling{p_end}
+{synopt :{opt noccs:amp}}specify cohort rather than case-control bootstrap sampling{p_end}
+{synopt :{opt nosts:amp}}draw samples without respect to covariate strata{p_end}
+{synopt :{opt cl:uster(varlist)}}specify variables identifying bootstrap resampling clusters{p_end}
+{synopt :{opt res:file(filename)}}save bootstrap results in {it:filename}[{it:#}]{p_end}
+{synopt :{opt replace}}overwrite specified bootstrap results file if it already exists{p_end}
+{synopt :{opt l:evel(#)}}specify confidence level; default is {cmd:level(95)}{p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd} {cmd:rocreg} fits an ROC-GLM regression model
+({help rocreg##refrlink:Pepe 2003, sec. 6.4; Alonzo and Pepe 2002})
+for each of the specified continuous disease markers or
+diagnostic test variables in
+{it:test_varlist}, the 0/1 outcome indicator variable {it:disease_var}, and
+optionally, covariates.  Covariates specified with {cmd:regcov()} are included
+in the intercept of the ROC curve.
+Covariates specified with {cmd:sregcov()} are included in the slope of the ROC
+curve.  Bootstrap standard errors and confidence intervals (CIs) for the model
+parameters are obtained.
+
+{pstd}
+ROC calculations are based on PVs of the case
+measures relative to the corresponding marker distribution among controls.
+
+{pstd}
+Adjustment for variables that affect the control distribution of the marker can be achieved either by stratification or with a linear regression approach.
+
+{pstd} The ROC-GLM is fit over the FPR range ({it:a,b})
+by using thresholds corresponding to {it:np} equally spaced FPR points in
+({it:a,b}).
+
+
+{title:Options}
+
+{dlgtab:ROC regression}
+
+{phang} {cmd:regcov(}{it:varlist}{cmd:)} specifies the variables to be
+included in the ROC regression model that affect the intercept term
+of the ROC curve.
+
+{phang} {cmd:sregcov(}varlist{cmd:)} specifies the variables to be included in
+the ROC regression model that affect the slope of the ROC curve.
+
+{phang} {cmd:link(}{it:function}{cmd:)} specifies the ROC-GLM link function.
+{it:function} can be one of the following:
+
+{phang2} {cmd:probit}, the default, corresponds to the binormal ROC model.
+That is, {bind:PHI^(-1){ROC(f)} = intercept + slope * PHI^(-1)(f)}, where
+PHI is the standard normal cumulative distribution function.
+
+{phang2} {cmd:logit} corresponds to the bilogistic ROC model.  That is,
+{bind:logit{ROC(f)} = intercept + slope * logit(f)}.
+
+{phang} {cmd:interval(}{it:a b np}{cmd:)} specifies the FPR interval
+({it:a,b}) and the number of points ({it:np}) in the interval over
+which the ROC-GLM is to be fit.  The default is {cmd:interval(0 1 10)}.
+
+{dlgtab:Standardization method}
+
+{phang} {cmd:pvcmeth(}{it:method}{cmd:)} specifies how the PVs are to be
+calculated.  {it:method} can be one of the following:
+
+{phang2} {cmd:empirical}, the default, uses the empirical distribution of the
+test measure among controls (D=0) as the reference distribution for the
+calculation of case PVs.  The PV for the case measure y_i is the proportion
+of control measures, Y_Db, that is smaller than y_i.
+
+{phang2} {cmd:normal} models the test measure among controls with a normal
+distribution.  The PV for the case measure y_i is the standard normal
+cumulative distribution function of {bind:(y_i - mean)/sd}, where the mean and
+the standard deviation are calculated by using the control sample.
+
+{phang} {opt tiecorr} indicates that a correction for ties between case and
+control values is included in the empirical PV calculation.  The correction is
+important only in calculating summary indices, such as the area under the ROC
+curve.  The tie-corrected PV for a case with the marker value
+y_i is the proportion of control values {bind:Y_Db < y_i} plus one half the
+proportion of control values {bind:Y_Db = y_i}, where {bind:Y_Db} denotes controls. By default, the PV calculation
+includes only the first term, i.e., the proportion of control values
+{bind:Y_Db < y_i}. This option applies only to the empirical PV calculation
+method.
+
+{dlgtab:Covariate adjustment}
+
+{phang} {cmd:adjcov(}{it:varlist}{cmd:)} specifies the variables to be
+included in the adjustment.
+
+{phang} {cmd:adjmodel(}{it:model}{cmd:)} specifies how the covariate
+adjustment is to be done.  {it:model} can be one of the following:
+
+{phang2} {opt stra:tified} PVs are calculated separately for each
+stratum defined by {it:{help varlist}} in {opt adjcov()}.  This
+is the default if {opt adjmodel()} is not specified and {cmd:adjcov()}
+is.  Each case-containing stratum must include at least two controls.
+Strata that do not include cases are excluded from calculations.
+
+{phang2}
+{opt line:ar} fits a linear regression of the marker distribution on
+the adjustment covariates among controls.  Standardized residuals based on this
+fitted linear model are used in place of the marker values for cases and
+controls.
+
+{dlgtab:Sampling variability}
+
+{phang} {cmd:nsamp(}{it:#}{cmd:)} specifies the number of bootstrap
+samples to be drawn for estimating sampling variability of parameter
+estimates.  The default is {cmd:nsamp(1000)}.
+
+{phang} {cmd:nobstrap} omits bootstrap sampling and estimation of standard
+errors and CIs.  If {cmd:nsamp()} is specified, {cmd:nobstrap} will override
+it.
+
+{phang} {cmd:noccsamp} specifies that bootstrap samples be drawn from the
+combined sample rather than sampling separately from cases and controls;
+case-control sampling is the default.
+
+{phang} {cmd:nostsamp} draws bootstrap samples without respect to covariate
+strata. By default, samples are drawn from within covariate strata when
+stratified covariate adjustment is requested via the {cmd:adjcov()} and {cmd:adjmodel()} options.
+
+{phang} {cmd:cluster(}{it:varlist}{cmd:)} specifies variables identifying
+bootstrap resampling clusters.  See the cluster option in {manhelp bootstrap R}.
+
+{phang}{opt resfile(filename)} creates a Stata file (a {cmd:.dta} file) with
+the bootstrap results for the ROC-GLM model.  The Stata file is called
+{it:filename}{cmd:.dta} if a single marker is specified or
+{it:filename#}{cmd:.dta} for the {it:#}th marker if more than 1 marker is
+included in {it:test_varlist}.  {helpb bstat} can be run on this file to
+view bootstrap results again.
+
+{phang}{opt replace} specifies that if the specified file already exists,
+then the existing file should be overwritten.
+
+{phang} {cmd:level(}{it:#}{cmd:)} specifies the confidence level for CIs as a
+percentage. The default is {cmd:level(95)} or as set
+by {helpb set level}.
+
+
+{title:Saved results}
+
+{pstd} Parameter estimates from the ROC-GLM curve fit and the corresponding
+bootstrap covariance matrix are available as {helpb bootstrap postestimation}
+results.  See also help for {helpb postest} and {helpb estat bootstrap}.  If
+more than one variable is included in {it:test_varlist}, estimation
+results for the {it:#}th marker are {help estimates store:stored} under the name
+{it:rocreg_m#}.  Returned estimation result matrices include the following:
+
+{synoptset 11 tabbed}{...}
+{p2col 5 11 15 2: Matrices}{p_end}
+{synopt:{cmd:e(b)}} 1 x k matrix of ROC-GLM parameter
+estimates; k = 2 + number of covariates included in the intercept and slope
+terms.  Columns correspond to alpha_0 and alpha_1 parameters plus coefficients
+for any specified covariates.{p_end}
+{synopt:{cmd:e(V)}} k x k bootstrap covariance matrix for the k ROC-GLM parameters.{p_end}
+{synopt:{cmd:e(GLMparm)}} n x k matrix of ROC-GLM
+parameter estimates.  Rows correspond to the marker variables included in
+{it:test_varlist}, and columns are as for {cmd:e(b)}.  Returned whether
+bootstrap sampling is specified or not ({cmd:nobstrap}).{p_end}
+{p2colreset}{...}
+
+
+{title:Examples}
+
+{phang} {cmd:. use http://labs.fhcrc.org/pepe/book/data/nnhs2}{p_end}
+
+{phang} {cmd:. rocreg d y1, cluster(id) noccsamp}{p_end}
+
+{phang} {cmd:. rocreg d y1, adjcov(gender) regcov(gender) cluster(id) noccsamp level(90)}{p_end}
+
+{phang} {cmd:. rocreg d y1, adjcov(gender) regcov(gender) pvcmeth(normal) cluster(id) noccsamp}{p_end}
+
+{phang} {cmd:. rocreg d y1 y2, adjcov(currage gender) adjmodel(linear) regcov(currage) cluster(id) noccsamp}{p_end}
+
+{phang} {cmd:. rocreg d y1, adjcov(gender) regcov(gender) sregcov(gender) link(logit) cluster(id) noccsamp}{p_end}
+
+
+{marker refrlink}{...}
+{title:Reference}
+
+{phang}Alonzo, T. A., and M. S. Pepe. 2002.  Distribution-free ROC analysis
+using binary regression techniques.  {it:Biostatistics} 3:421-432.
+
+{phang}Pepe, M. S.  2003.
+{browse "http://www.stata.com/bookstore/pepe.html":{it:The Statistical Evaluation of Medical Tests for Classification and Prediction}}.
+Oxford: Oxford University Press.
+
+
+{title:Authors}
+
+{phang}Gary Longton{p_end}
+{phang}Fred Hutchinson Cancer Research Center{p_end}
+{phang}Seattle, WA{p_end}
+{phang}glongton@fhcrc.org{p_end}
+
+{phang}Margaret Pepe{p_end}
+{phang}Fred Hutchinson Cancer Research Center and University of Washington{p_end}
+{phang}Seattle, WA{p_end}
+{phang}mspepe@u.washington.edu
+
+{phang}Holly Janes{p_end}
+{phang}Fred Hutchinson Cancer Research Center{p_end}
+{phang}Seattle, WA{p_end}
+{phang}hjanes@fhcrc.org{p_end}
+
+
+{title:Also See}
+
+{psee}
+Article: {it:Stata Journal}, volume 9, number 1: {browse "http://www.stata-journal.com/article.html?article=st0155":st0155}
+
+{psee}
+Online:  {helpb roccurve}, {helpb comproc} (if installed)
+{p_end}

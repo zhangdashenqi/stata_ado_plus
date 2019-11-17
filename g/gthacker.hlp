@@ -1,0 +1,106 @@
+{smcl}
+{* 11:18 PM 10/30/2005}{...}
+{hline}
+help for {hi:gthacker}{right:author:  {hi:Alfaro, Rodrigo}}
+{hline}
+
+{title:Gerring-Thacker linear regression (Fixed-Effects with standard error correction)}
+
+{p 8 13 2}{cmd:gthacker} {it:depvar} [{it:indepvars}] [{cmd:if} {it:exp}] [{cmd:in} {it:range}]{cmd:,} [ {cmdab:lag:(}{it:#}{cmd:)}
+{cmdab:l:evel:(}{it:#}{cmd:)}
+{cmd:nofe} ]
+
+{p 4 4 2}
+The syntax of {help predict} following {cmd:gthacker} is
+
+{ p 8 16 2}{cmd:predict} [{it:type}] {it:newvarname} [{cmd:if} {it:exp}]
+[{cmd:in} {it:range}] [{cmd:,} {it:statistic}]
+
+{ p 4 4 2}
+where {it:statistic} is {cmdab:xb:} for fitted values (default) or 
+{cmdab:r:esiduals} for residuals (y-xb). Note that fitted values are available 
+both in and out of sample; type
+"{cmd:predict} {it:...} {cmd:if e(sample)} {it:...}" if wanted only for the
+estimation sample and residuals are calculated only for the estimation
+sample even when "{cmd:if e(sample)}" is not specified. Moreover, residuals
+include fixed-effects component. For further predict analysis use {help areg}.
+
+
+{title:Description}
+
+{ p 4 4 2}
+{cmd:gthacker} fits a fixed-effects models with Newey-West standard error correction using {help newey} command with the option force. You should set the cross-sectional time-series variables first using {help tsset}. The user-command 
+{help xtivreg2} solves the same problem, but includes several additional features. 
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:lag(}{it:#}{cmd:)} specifies the number of lags used in the Newey-West standard error correction. The default is non-correction.
+
+{p 4 8 2}{cmd:level(}{it:#}{cmd:)} specifies the confidence level, in percent, for confidence intervals.  The default is {cmd:level(95)} or as set by {cmd:set level}; see help {help level}.
+
+{p 4 8 2}{cmd:nofe} specifies that the regression does not have fixed-effects. The default is fixed-effects.
+
+{title:Examples}
+
+{p 4 8 2} Setting the database{p_end}
+
+{p 4 8 2}{cmd:. tsset Banks Year}{p_end}
+
+
+{p 4 8 2} 1. Fixed-Effects linear regression{p_end}
+
+{p 4 8 2}{cmd:. gthacker IMR_ln Polity4 GDPpc Trend}{p_end}
+
+{p 4 8 2} is the same as{p_end} 
+
+{p 4 8 2}{cmd:. xtreg IMR_ln Polity4 GDPpc Trend, fe}{p_end}
+
+{p 4 8 2} or{p_end}
+
+{p 4 8 2}{cmd:. areg IMR_ln Polity4 GDPpc Trend, a(Banks)}{p_end}
+
+
+{p 4 8 2} 2. Robust fixed-effects linear regression{p_end}
+
+{p 4 8 2}{cmd:. gthacker IMR_ln Polity4, lag(0)}{p_end}
+
+{p 4 8 2} is the same as{p_end} 
+
+{p 4 8 2}{cmd:. areg IMR_ln Polity4, a(Banks) robust}{p_end}
+
+
+{p 4 8 2} 3. Robust Linear regression{p_end}
+
+{p 4 8 2}{cmd:. gthacker IMR_ln Polity4, nofe lag(0)}{p_end}
+
+{p 4 8 2} is the same as{p_end} 
+
+{p 4 8 2}{cmd:. reg IMR_ln Polity4, robust}{p_end}
+
+
+{p 4 8 2} 4. Linear regression with Newey-West std error correction{p_end}
+
+{p 4 8 2}{cmd:. gthacker IMR_ln Polity4, nofe lag(1)}{p_end}
+
+{p 4 8 2} is the same as{p_end} 
+
+{p 4 8 2}{cmd:. newey IMR_ln Polity4, lag(1) force}{p_end}
+
+
+{p 4 8 2} 5. Fixed-effects linear regression with Newey-West std error correction{p_end}
+
+{p 4 8 2}{cmd:. gthacker IMR_ln Polity4, lag(1)}{p_end}
+
+{p 4 8 2} is the same as{p_end} 
+
+{p 4 8 2}{cmd:. xtivreg2 IMR_ln Polity4, fe bw(2) robust small}{p_end}
+
+
+{title:Author}
+
+{ p 4 4 2} Rodrigo A Alfaro, Boston University {p_end}
+{ p 4 4 2} raalfaro@hotmail.com
+
+{* p 4 13 2}
+Online: help for {help areg}, {help newey}, {help regress}, {help xtreg}, {help xtregar}, {help xtivreg2}

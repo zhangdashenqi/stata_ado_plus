@@ -1,0 +1,238 @@
+{smcl}
+{* 17Feb2007}{...}
+{hline}
+help for {hi:prvalue}{right:17Feb2007}
+{hline}
+
+{title:Predicted values with confidence intervals for regression models}
+
+{p 8 15 2}{cmd:prvalue} [{cmd:if} exp] [{cmd:in} range] [{cmd:,}
+{cmd:x(}{it:variables_and_values}{cmd:)}
+{cmdab:r:est(}{it:stat}{cmd:)}
+{cmd:all}
+{cmdab:l:evel(}{it:#}{cmd:)}
+{cmdab:s:ave}
+{cmdab:d:iff}
+{cmdab:lab:el(}{it:string}{cmd:)}
+{cmdab:b:rief}
+{cmdab:max:cnt(}{it:#}{cmd:)}
+{cmdab:noba:se}
+{cmdab:nola:bel}
+{cmdab:ys:tar}
+{cmd:ept}
+{cmdab:del:ta}
+{cmdab:boot:strap}
+{cmdab:rep:s(}{it:#}{cmd:)}
+{cmdab:si:ze(}{it:#}{cmd:)}
+{cmdab:bias:corrected}|{cmdab:percent:ile}|{cmdab:norm:al}
+{cmd:match}
+{cmdab:do:ts}
+{cmdab:sa:ving(}{it:filename, save_options}{cmd:)}]
+
+{p 4 4 2}
+where {it:variables_and_values} is an alternating list of variables
+and either numeric values or mean, median, min, max, upper, lower,
+previous.
+
+{p 4 4 2}
+{it:stat} is either mean, median, min, max, upper, lower,
+previous, grmean(group mean), mrmedian, grmin, grmax.
+
+
+{title:Description}
+
+{p 4 4 2}
+After estimating a regression model, {cmd:prvalue} computes the
+predicted values at specific values of the independent variables.
+Depending on the model and the options chosen, predicted values can
+be estimated values of y, y*, probabilities for each outcome, or expected rate.
+By default, the predictions are calculated holding all other variables
+at their mean. Values for specific independent variables can be set
+using the x() option after {cmd:prvalue}. For example, to compute
+predicted values when educ is 10 and age is 30, type {cmd:prvalue, x(educ=10 age=30)}.
+Values for the unspecified independent variables can be set using the rest()
+option, e.g., {cmd:prvalue, x(educ=10 age=30) rest(mean)}. Changes in
+predictions as values of the independent variables change can be
+computed using the {cmd:save} and {cmd:diff} options. The {cmd:if}
+and {cmd:in} conditions specify conditions for computation of means,
+min, etc., that are used with rest(). The command works with {help cloglog},
+{help cnreg}, {help fit}, {help gologit}, {help intreg}, {help logistic},
+{help logit}, {help mlogit}, {help nbreg}, {help ologit}, {help oprobit},
+{help poisson}, {help probit}, {help regress}, {help rologit}, {help slogit}, {help tobit}, {help zinb},
+{help ztnb}, and {help ztp}. Standard maximum likelihood based confidence intervals
+are computed for cnreg, fit, intreg, regress, and tobit. All other models for which
+confidence intervals are available use delta method as default except for {help zinb} and {help zip}.
+Confidence intervals for {help zinb} and {help zip} can only use bootstrap method.
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:save}  saves current values of indepenent variables and predictions
+for computing changes using the diff option.
+
+{p 4 8 2}
+{cmd:diff}  computes difference between current predictions and those
+that were saved.
+
+{p 4 8 2}
+{cmd:label()} adds a label for the prvalue associated with a given 
+{cmd:save} or {cmd:diff}. Labels are shown when using {cmd:prvalue, diff}.
+
+{p 4 8 2}
+{cmd:level()} sets the {help level} of the confidence interval for predicted
+values or probabilities for the commands for which these are provided. The
+default is 95.
+
+{p 4 8 2}
+{cmd:maxcnt()} is the maximum count value for which the probability
+is computed in count models. Default is 9.
+
+{p 4 8 2}
+{cmd:x()} sets the values of independent variables for calculating
+predicted values.  The list must alternate variable names and values.
+The values may be either numeric values or can be mean, median, min,
+max, previous, upper, or lower.  The latter cannot be used if rest()
+specifies a group summary statistic (e.g., grmean).
+
+{p 4 8 2}
+{cmd:rest()} sets the independent variables not specified in x()
+to their {cmd:mean} (default), {cmd:minimum}, {cmd:maximum}, {cmd:median}
+when calculating predicted values. {cmd:grmean} sets these independent
+variables to the mean conditional on the variables and values specified
+in x(); {cmd:grmedian},{cmd:grmax}, and {cmd:grmin} can also be used.
+If {cmd:prvalue} has already been run after the last estimate,
+{cmd:previous} will set unspecified variables to their prior values.
+For models other than mlogit, {cmd:upper} and {cmd:lower} can be used
+to set independent variables to their minimum or maximum depending
+on which will yield the upper or lower extreme predicted value.
+
+{p 4 8 2}
+{cmd:all} specifies that any calculations of means, medians, etc.,
+should use the entire sample instead of the sample used to estimate
+the model.
+
+{p 4 8 2}
+{cmd:nolabel} uses values rather than value labels in output.
+
+{p 4 8 2}
+{cmd:nobase} suppresses inclusion of the base values of x in the output.
+
+{p 4 8 2}
+{cmd:brief} prints only limited output.
+
+{p 4 8 2}
+{cmd:ystar} prints the predicted values and maximum likelihood based
+confidence intervals of ystar for binary, ordinal, ols regression,
+or tobit models.
+
+{p 4 8 2}
+{cmd:ept} computes confidence intervals for predicted probabilities
+for cloglog, logit, and probit by endpoint transformation.
+This method cannot be used for changes in predictions.
+
+{p 4 8 2}
+{cmd:delta} calculates confidence intervals by the delta method
+using analytical derivatives. This method works with cloglog, logistic,
+logit, probit, ologit, oprobit, gologit, poisson, and nbreg.
+
+{p 4 8 2}
+{cmd:bootstrap} computes confidence intervals using the bootstrap
+method. This method takes roughly 1,000 times longer to compute than
+other methods. This method works with cloglog, logistic, logit, mlogit,
+probit, ologit, oprobit, gologit, poisson, nbreg, zip, and zinb.
+
+{p 4 8 2}
+{cmd:dots} is used with bootstrap to write a . at the beginning of
+each replication and periodically prints the percent of total
+replications that have been completed. If computations appears to
+be stuck (i.e., new dots do not appear), it is likely that the
+estimation is not converging for the current bootstrap sample.
+This is to be most common with zip, zinb and gologit.
+When this happens, you can click on the break symbol to stop
+computations for the current sample or wait until the maximum
+number of iterations have been computed (by default, the maximum
+number of iterations is 16,000). When a model does not converge
+for a given bootstrap sample, that sample is dropped.
+
+{p 4 8 2}
+{cmd:match} specifies that the bootstrap will resample within
+each category of the dependent variable in proportion to the
+distribution of the outcome categories in the estimation sample.
+If match is not specified, the proportions in each category of
+the bootstrap sample are determined entirely by the random draw
+and it is possible to end up with samples in which no cases are
+found in some of the categories. This option does not apply to
+regression or count models (cnreg, intreg, nbreg, poisson, regress,
+tobit, zinb, and zip). Usually, bootstrapped confidence intervals
+using match option tend to be smaller than those without.
+
+{p 4 8 2}
+{cmd:percentile} computes the bootstrapped confidence interval using
+the percentile method. This is the default method for bootstrap.
+
+{p 4 8 2}
+{cmd:biascorrected} computes the bootstrapped confidence interval
+using the bias-corrected method.
+
+{p 4 8 2}
+{cmd:normal} computes the bootstrapped confidence interval using
+the normal approximation method.
+
+{p 4 8 2}
+{cmd:saving()} creates a Stata data file (.dta file) containing
+the bootstrap distribution for predictions (predicted probabilities
+and expected rates) and discrete changes in discrete choice models
+that {cmd:prvalue} applies to.
+
+
+{title:Examples}
+
+{p 4 4 2}
+To compute the predicted values and confidence intervals using delta method
+for an ordered logit in which all independent variables are held at the mean.
+
+{p 4 8 2}{cmd:.oprobit warm yr89 male white age ed prst}
+
+{p 4 8 2}{cmd:.prvalue, delta}
+
+{p 4 4 2}To compute predicted values and confidence intervals using
+bootstrap method where all independent variables are held at their
+minimum
+
+{p 4 8 2}{cmd:.prvalue, rest(minimum) boot}
+
+{p 4 4 2}
+To compute values for white females, holding all other variables
+at their median with default delta method for confidence intervals.
+
+{p 4 8 2}{cmd:.prvalue, x(white=1 male=0) rest(median)}
+
+{p 4 4 2}
+To compute values for white females, holding all other variables at
+the median for white females with default delta method for confidence
+intervals.:
+
+{p 4 8 2}{cmd:.prvalue, x(white=1 male=0) rest(grmedian)}
+
+{p 4 4 2}
+To compute values at the minimum of education, holding all other
+variables to the mean with default delta method for confidence intervals.:
+
+{p 4 8 2}{cmd:.prvalue, x(ed=min)}
+
+{p 4 4 2}
+To compare the predicted values and compute confidence intervals of discrete
+changes for males and females using delta method:
+
+{p 4 8 2}{cmd:.prvalue, x(male=0) save delta}
+
+{p 4 8 2}
+ :::
+
+{p 4 8 2}{cmd:.prvalue, x(male=1) dif delta}
+
+{hline}
+
+{p 2 4 2}Authors: J. Scott Long & Jun Xu{p_end}
+{p 11 4 2}{browse www.indiana.edu/~jslsoc/spost.htm}{p_end}
+{p 11 4 2}spostsup@indiana.edu{p_end}

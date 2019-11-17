@@ -1,0 +1,32 @@
+Pearson correlation with p-value                                (STB-13: sg5.1)
+--------------------------------
+
+	^pearson^ var1 var2 [^if in^]
+
+
+displays the Pearson product-moment correlation between var1 and var2.  
+The p-value of the correlation is also displayed.
+
+
+
+Saved results
+-------------
+
+^pearson^ saves its results in the system macros S_1, ... :
+
+         ^S_1^          Number of observations
+         ^S_4^          Correlation between var1 and var2
+         ^S_5^          p-value of correlation between var1 and var2
+
+
+
+Author
+------
+
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sg5.1 (STB-13), sg5 (STB-5)

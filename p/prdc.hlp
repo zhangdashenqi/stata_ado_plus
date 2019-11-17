@@ -1,0 +1,110 @@
+.-
+help for ^prdc^ - 25Oct2005
+.-
+
+?? if, in, all and ystar options need to be verified.
+
+Compute descrete change of a specified amount for list of variables.
+--------------------------------------------------------------------
+
+    ^prdc^ [varlist] [^if^ exp] [^in^ range] [, ^x(^variables_and_values^)^
+        ^r^est^(^stat^)^ ^ys^tar ^b^rief ^all ^max^cnt ^(^#^)^ ^noba^se
+        ^nola^bel ^f^rom^(^#^)^ ^to(^#^)^ ^c^hange^(^#^)^ ^bin^ary
+        ^u^nit ^sd^ ^unc^entered <you can also use options for confidence
+        intervals used with ^prvalue^.]
+where
+
+    ^varlist^ contains the names of variables for which discrete change will
+        be computed.
+
+    ^variables_and_values^ is an alternating list of variables and either
+        numeric values or mean, median, min, max, upper, lower, previous
+
+    ^stat^ is either mean, median, min, max, upper, lower, previous, grmean
+        (group mean), grmedian, grmin, grmax
+
+Description
+-----------
+
+^prdc^ computes discrete changes with confidence intervals for regression
+models for categorical and count variables. Discrete change is the
+difference in the predicted value as one independent variable changes
+values while all others are held constant at specified values. ^prdc^ is
+simply a convenient way to execute a save-dif pair of ^prvalue^ commands.
+By default, the discrete change is computed for a unit increase centered
+around the mean.
+
+Values for specific independent variables can be set using the x() option
+after ^prdc^. Values for the unspecified independent variables can be
+set using the rest() option. The ^if^ and ^in^ conditions specify conditions
+for computation of means, min, etc., that are used with rest().
+
+The discrete change is computed by the amounts (more than one can be specified)
+specified with the options. ^prdc^ works with all regression programs that are
+compatable with prvalue.
+
+Options specifying levels of variables
+--------------------------------------
+
+^x()^ explicitly sets the values of specified independent variables.
+
+^rest()^ sets the independent variables not specified in x() to their ^mean^
+    (default), ^minimum^, ^maximum^, ^median^ when calculating predicted values.
+    ^grmean^ sets these independent variables to the mean conditional on the
+    variables and values specified in x().  If ^prvalue^ has already been run
+    after the last estimate, ^previous^ will set unspecified variables to their
+    prior values.  For models other than mlogit, ^upper^ and ^lower^ can be used
+    to set independent variables to their minimum or maximum depending on
+    which will yield the upper or lower extreme predicted value.
+
+Options specifying the amout of change
+--------------------------------------
+
+^from()^ specifies the start value of the change.
+
+^to()^ specifies the start value of the change.
+
+^binary^ specifies a change from 0 to 1.
+
+^unit^ specifies a unit change at the values specified with x() and rest().
+
+^sd^ specifies a standard deviation change at the values specified with x()
+    and rest().
+
+^change()^ specifies the amount of the discrete change at the values
+    specified with x() and rest().
+
+^uncentered^ specifies that the uncentered discrete change rather than the
+    centered discrete change is to be computed for unit, sd and change.
+
+Other Options
+-------------
+
+^maxcnt()^ is the maximum count value for which the probability is computed
+    in count models. Default is 9.
+
+^ystar^ requests change in predicted y*, rather than probabilities.
+
+
+^all^ specifies that any calculations of means, medians, etc., should use
+    the entire sample instead of the sample used to estimate the model.
+
+^nolabel^ uses values rather than value labels in output.
+
+^nobase^ suppresses inclusion of the base values of x in the output.
+
+^brief^ prints only limited output.
+
+^help^ presents guide to interpreting headings of output.
+
+
+Examples
+--------
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+
+
+
+

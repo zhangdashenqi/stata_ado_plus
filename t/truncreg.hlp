@@ -1,0 +1,123 @@
+.-
+help for ^truncreg^                                         
+.-
+
+Truncated Regression
+---------------------------
+
+	^truncreg^ depvar [varlist] [weight] [^if^ exp] [^in^ range] [^,^ 
+			^noc^onstant ^lev^el^(^#^)^ ^m^arginal ^at(^matname^)^
+			^ll(^varname|#^)^ ^ul(^varname|#^)^ ^r^obust 
+			^c^luster^(^varname^)^ maximize_options ] 
+
+
+^aweight^s, ^pweight^s and ^fweight^s are allowed ; see help @weights@.  
+
+^truncreg^ shares the features of all estimation commands; see help @est@.
+
+
+The syntax of @predict@ following ^truncreg^ is
+
+	^predict^ [type] newvarname [^if^ exp] [^in^ range] [^,^ statistic ]
+
+where statistics is
+
+	^xb^			fitted values; the default
+	^p^r^(^a^,^b^)^               Pr(a<y<b)      (a and b may be numbers
+	^e(^a^,^b^)^                E(y |a<y<b)     or variables; a=. means
+						-inf; b==. means inf)
+	^stdp^ 			standard error of the prediction 
+        ^stdf^                  standard error of the forecast
+
+These statistics are available both in and out of sample; type "^predict^ ...
+^if e(sample)^ ..." if wanted only for the estimation sample.
+
+
+Description
+-----------
+
+^truncreg^ estimates a model of depvar on indepvars from a sample drawn from
+a restricted part of the population. 
+
+Options
+-------
+
+
+^noconstant^ suppresses the constant term (intercept) in the regression.
+
+^level(^#^)^ specifies the significance level, in percent, for confidence intervals
+    of the coefficients; see help @level@.
+
+^ll(^varname|#^)^ and ^ul(^varname|#^)^ indicate the censoring points.  You may specify
+    one or both.  ^ll()^ indicates the lower limit for left truncation.  
+    Observations with depvar<=^ll()^ are left-truncated; observations with 
+    depvar>=^ul()^ are right -truncated.  
+
+^robust^ specifies that the Huber/White/sandwich estimator of variance is to be 
+    used in place of the conventional MLE variance estimator. ^robust^ combined 
+    with ^cluster()^ further allows observations which are not independent 
+    within cluster (although they must be independent between clusters)
+
+    if you specify ^pweights^s, ^robust^ is implied. See ^[U] 23.11 Obtaining 
+    robust variance estimates^.
+
+^cluster(^varname^)^ specifies that the observations are independent across groups.
+    varname specifies to which group each observation belongs. ^cluster()^ can 
+    be used with ^pweight^s to produce estimates for unstratified cluster-
+    sampled data.
+     
+    ^cluster()^ implies ^robust^; that is, specifying ^robust cluster()^ is 
+    equivalent to typing ^cluster()^ by itself.
+
+^marginal^ estimates the marginal effects in the model in the subpopulation. 
+    Whether the marginal effect or the coefficient itself is of interest 
+    depends on the intended inferences of the study. If the analysis if to 
+    be confined to the subpopulation, then marginal effect is of interest. 
+    If the study is intended to extend to the entire population, however, 
+    then it is the coefficients that are actually of interest.
+
+^at(^matname^)^ specifies the point around which the marginal effect is to be
+    estimated. The default is to estimate the effect around the mean of the
+    independent variables. ^at(^matname^)^ can be specified only when ^marginal^
+    is also specified.
+
+maximize_options control the maximization process; see help maximize.  Use the
+    trace option to view parameter convergence.  Use the ltol(#) option to
+    relax the convergence criterion; default is 1e-6 during specification
+    searches.
+
+Options for @predict@
+-------------------
+
+^xb^, the default, calculates the linear prediction for the entire population.
+
+^stdp^ calculates the standard error of the linear prediction.
+
+^pr(^a^,^b^)^ calculates the Pr(a < xb+u < b), the probability that y|x would be
+      observed in the interval (a,b). 
+      
+      a and b may be specified as numbers or variable names; ^pr(ll,ul)^ 
+      calculates the probability that y|x will not be truncated. 
+
+      a==. means minus infinity; b==. means plus infinity.
+
+^e(^a^,^b^)^ calculates E(xb+u | a< xb+u < b), the expected value of y|x conditional
+      on y|x being in the interval (a,b). ^e(ll,ul)^ calculates the expected 
+      value of y|x conditional on y|x being in the subpopulation. 
+
+
+Examples
+--------
+
+	. ^truncreg price mpg for, ll(4000) ul(10000)^
+	. ^truncreg, marginal^
+	. ^mat B=(25,1)^
+	. ^truncreg, marginal at(B)^
+
+Also see
+--------
+
+ Manual:  ^[U] 23 Estimation and post-estimation commands^,
+	  ^[U] 29 Overview of model estimation in Stata^,
+	  ^[R] tobit^
+On-line:  help for @est@, @postest@, @tobit@ 

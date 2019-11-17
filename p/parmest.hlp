@@ -1,0 +1,566 @@
+{smcl}
+{hline}
+help for {cmd:parmest} and {cmd:parmby} {right:(STB-49: dm65; STB-58: dm65.1; SJ3-3: st0043; SJ4-3: st0043_1)}
+{hline}
+
+{title:Convert estimation results to a dataset with one observation per parameter}
+
+{p 8 19 2}{cmd:parmest} {cmd:,} [
+ {cmdab:li:st}{cmd:(} [{it:varlist}] [{cmd:if} {it:exp}] [{cmd:in} {it:range}] 
+ [ {cmd:,} [{it:list_options}] ] {cmd:)}
+ {cmdab:sa:ving}{cmd:(}{it:filename}[{cmd:,replace}]{cmd:)} {cmdab::no}{cmdab:re:store} {cmd:fast}
+ {cmdab:fl:ist}{cmd:(}{it:global_macro_name}{cmd:)}
+ {cmdab:ef:orm} {cmdab:d:of}{cmd:(}{it:#}{cmd:)}
+ {cmdab:le:vel}{cmd:(}{it:numlist}{cmd:)} {cmdab:cln:umber}{cmd:(}{it:numbering_rule}{cmd:)}
+ {cmdab:l:abel} {cmdab:yl:abel}
+ {cmdab:idn:um}{cmd:(}{it:#}{cmd:)} {cmdab:ids:tr}{cmd:(}{it:string}{cmd:)}
+ {cmdab:em:ac}{cmd:(}{it:name_list_1}{cmd:)} {cmdab:es:cal}{cmd:(}{it:name_list_2}{cmd:)} {cmdab:ev:ec}{cmd:(}{it:name_list_3}{cmd:)}
+ {cmdab:sta:rs}{cmd:(}{it:numlist}{cmd:)}
+ {cmdab:ren:ame}{cmd:(}{it:oldvarname_1 newvarname_1 ... oldvarname_n newvarname_n}{cmd:)}
+ {cmdab:fo:rmat}{cmd:(}{it:varlist_1 format_1 ... varlist_n format_n}{cmd:)}
+ {cmdab::no}{cmdab:dou:ble} {cmdab:float}
+ ]
+
+{p 8 15 2}{cmd:parmby} {cmd:"}{it:command}{cmd:"} {cmd:,} [ {cmd:by(}{it:varlist}{cmd:)} {cmdab:com:mand} {it:parmest_options} ]
+
+{p 4 4 2}
+where {it:command} is a Stata {help estcom:estimation command}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:parmest} takes, as input, the most recently calculated set of 
+{help return:estimation results}, created by the most recently executed 
+{help est:estimation command}.  It creates, as output, a new dataset, with
+one observation per estimated parameter, and variables containing parameter
+names, estimates, standard errors, {it:z}-test or {it:t}-test statistics,
+{it:p}-values, confidence limits, and other estimation results if requested.
+{cmd:parmby} executes an {help est:estimation command} for each
+by-group specified by the by-variable and then creates an output dataset
+with one observation for each estimated parameter in each by-group for which
+the command executed successfully, and all the variables in the {cmd:parmest}
+output dataset, together with the by-variables.  The output dataset created
+by {cmd:parmby} or {cmd:parmest} may be listed to the Stata log, saved to a
+disk file, or written to the memory (overwriting any pre-existing dataset).
+{cmd:parmby} works by calling {cmd:parmest}, and therefore should not be
+downloaded without {cmd:parmest}.
+
+
+{title:Options for use with {cmd:parmest} and {cmd:parmby}}
+
+{p 4 8 2}
+{cmd:parmest} and {cmd:parmby} have a large number of options, which are
+listed in the following 5 groups:
+
+{p 8 8 2}{bf:1.} Output-destination options for {cmd:parmest} and {cmd:parmby}.
+(These specify where the output dataset is written.){p_end}
+{p 8 8 2}{bf:2.} Confidence-interval options for {cmd:parmest} and {cmd:parmby}.
+(These allow the user to change the selection of confidence limits and {it:p}-values in the output.){p_end}
+{p 8 8 2}{bf:3.} Variable-adding options for {cmd:parmest} and {cmd:parmby}.
+(These allow the user to add optional extra variables to the output dataset.){p_end}
+{p 8 8 2}{bf:4.} Variable-modifying options for {cmd:parmest} and {cmd:parmby}.
+(These allow the user to change the names, {help format:display formats} and {help datatype:storage types}
+of variables in the output dataset.){p_end}
+{p 8 8 2}{bf:5.} Options for {cmd:parmby} only.
+(These may not be specified for {cmd:parmest}.){p_end}
+
+
+{title:Output-destination options for {cmd:parmest} and {cmd:parmby}}
+
+{p 4 8 2}{cmd:list(}{it:varlist} [{cmd:if} {it:exp}] [{cmd:in} {it:range}] [, {it:list_options} ] {cmd:)}
+specifies a list of variables in the output dataset, which will be listed to
+the Stata log by {cmd:parmby} or {cmd:parmest}.  The {cmd:list()} option can
+be used with the {cmd:format()} option (see below) to produce a list of
+parameter names, estimates, confidence limits, {it:p}-values, and other
+parameter attributes, with user-specified numbers of decimal places or
+significant figures.  You may optionally also specify {help if} or {help in}
+clauses to list subsets of parameters, or change the display style using a
+list of {it:list_options} allowed as options by the {help list} command.  If
+the {cmd:rename()} option is specified (see below), any variable names
+specified by the {cmd:list()} option must be the new names.  If the {cmd:by()}
+option is specified with {cmd:parmby} (see below), the variables
+specified by the {cmd:list()} option are listed by the by-variables, as when
+{help by:by ...:} is used with the {help list} command.
+
+{p 4 8 2}{cmd:saving(}{it:filename}[{cmd:,replace}]{cmd:)} saves the output
+dataset to a disk file.  If {cmd:replace} is specified and a file of that
+name already exists, the old file is overwritten.
+
+{p 4 8 2}{cmd:norestore} specifies that the output dataset will be written to
+the memory, overwriting any pre-existing dataset. This option is
+automatically set if {cmd:fast} is specified. Otherwise, if {cmd:norestore} is
+not specified, the pre-existing dataset is restored in the memory after
+the execution of {cmd:parmby} or {cmd:parmest}.
+
+{p 4 8 2}{cmd:fast} is a stronger version of {cmd:norestore}, intended for use
+by programmers.  It specifies that the pre-existing dataset in the memory
+will not be restored, even if the user presses {help break:Break} during the
+execution of {cmd:parmby} or {cmd:parmest}.  If {cmd:norestore} is specified
+and {cmd:fast} is absent, {cmd:parmest} or {cmd:parmby} will go to extra
+work so that it can restore the original data if the user presses
+{help break:Break}.
+
+{p 8 8 2}Note that the user must specify at least one of the four options
+{cmd:list()}, {cmd:saving()}, {cmd:norestore}, and {cmd:fast}. These four
+options specify whether the output dataset is listed to the Stata log, saved
+to a disk file, or written to the memory (overwriting any pre-existing
+dataset). More than one of these options can be specified.
+
+{p 4 8 2}{cmd:flist(}{it:global_macro_name}{cmd:)} specifies the name of a
+global macro, containing a filename list (possibly empty). If {cmd:saving()}
+is also specified, {cmd:parmest} or {cmd:parmby} will append the name of
+the dataset specified in the {cmd:saving()} option to the value of the global
+macro specified in {cmd:flist()}. This enables the user to build a list of
+filenames in a global macro, containing the output of a sequence of estimation
+result sets saved by {cmd:parmest} or {cmd:parmby}.  These files may later be
+concatenated using {help append} or using {help dsconcat} if installed.
+
+
+{title:Confidence-interval options for {cmd:parmest} and {cmd:parmby}}
+
+{p 4 8 2}{cmd:eform} specifies that the estimates and confidence limits in the
+output dataset are to be exponentiated, and the standard errors multiplied by
+the exponentiated estimates.  This option is usually used if the estimated
+parameters were calculated on a log scale, as is done by {help logit} and
+{help logistic} with odds ratios, by {help glm} and {help binreg} with risk
+ratios, by {help stcox} with hazard ratios, or by {help regress} with
+geometric mean ratios.  Note that, if the user wants exponentiated confidence
+intervals in the output dataset, the {cmd:eform} option must be
+specified for {cmd:parmby} or {cmd:parmest}, whether or not the {cmd:eform} or
+equivalent option was specified for the {help estcom:estimation command}.
+
+{p 4 8 2}{cmd:dof(}{it:#}{cmd:)} specifies the degrees of freedom for
+{it:t}-distribution-based confidence limits. If {cmd:dof()} is positive, 
+confidence limits for all parameters are calculated using the
+{it:t}-distribution with {cmd:dof()} degrees of freedom. If {cmd:dof()} is
+zero, confidence limits are calculated using the standard normal
+distribution. If {cmd:dof()} is absent (or negative), confidence limits
+are calculated from the most recent {help return:estimation results}, as
+follows.  If the most recent {help est:estimation command} is {help svymean},
+{help svyratio} or {help svytotal}, and the command was specified with the
+{cmd:available} option instead of the {cmd:complete} option, the degrees
+of freedom used for each parameter is extracted from the corresponding row of
+the column vector {hi:(e(_N_psu)-e(_N_str))'}, where {hi:e(_N_psu)} contains
+the numbers of primary sampling units (clusters) for each parameter and
+{hi:e(_N_str)} contains the numbers of strata for each parameter.  (See
+{hi:[SVY] svymean} for formulas.) Otherwise, if there is a nonmissing result
+{hi:e(df_r)}, containing the residual degrees of freedom, the degrees of
+freedom for all parameters is set to the value of {hi:e(df_r)}. Otherwise, the
+confidence limits are calculated using the standard normal distribution.
+
+{p 4 8 2}{cmd:level(}{it:numlist}{cmd:)} specifies the confidence levels, in
+percent, for the confidence limit variables created in the output dataset.
+These levels do not have to be integers, but must be at least 0 and strictly
+less than 100.  For each level {it:xx}, {cmd:parmest} and {cmd:parmby}
+calculate a lower {it:xx} percent confidence limit variable with a default
+name of form {hi:min}{it:xx} and an upper {it:xx} percent confidence level
+with a default name of form {hi:max}{it:xx}. The numbering of the confidence
+limit variable names can be changed using the {cmd:clnumber} option (see
+below), and the names of the confidence limits can be changed using the
+{cmd:rename} option (see below). The default is {cmd:level(95)}, or another
+single number set by {help set level}. Note that the {cmd:level()} option used
+by {cmd:parmby} or {cmd:parmest} is not affected by any {cmd:level()} option
+specified for the {help estcom:estimation command}. (See 
+{hi:[U] Estimation and post-estimation commands}.)
+
+{p 4 8 2}{cmd:clnumber(}{it:numbering_rule}{cmd:)} specifies the rule used to
+number the names of the confidence limit variables created in the output
+dataset.  The {it:numbering_rule} may be {cmd:level} or {cmd:rank}, and is set
+in default to {cmd:level} if the {cmd:clnumber} option is not specified. For
+each confidence level {it:xx} specified by the {cmd:levels()} option,
+{cmd:parmest} and {cmd:parmby} calculate a lower {it:xx} percent confidence
+limit with the default name {hi:min}{it:yy}, and an upper {it:xx} percent
+confidence limit with the default name {hi:max}{it:yy}, where the number
+{it:yy} depends on the confidence level {it:xx} according to a rule specified
+by the {it:numbering_rule} of the {cmd:clnumber()} option. If the
+{it:numbering_rule} is {cmd:rank}, the number {it:yy} is the rank, in
+ascending order, of the confidence level {it:xx} in the set of confidence
+levels specified by the {cmd:levels()} option.  For instance, if the user 
+specifies {cmd:levels(90 95 99) clnumber(rank)}, the 90 percent
+confidence limits are named {hi:min1} and {hi:max1}, the 95 percent confidence
+limits are named {hi:min2} and {hi:max2}, and the 99 percent confidence limits
+are named {hi:min3} and {hi:max3}. If the numbering rule is {cmd:level} (the
+default), the number {it:yy} is equal to the confidence level {it:xx}.
+For instance, if the user specifies {cmd:levels(90 95 99) clnumber(lewel)},
+the 90 percent confidence limits are named {hi:min90} and {hi:max90}, the
+95 percent confidence limits are {hi:min95} and {hi:max95}, and the 99 percent
+confidence limits are {hi:min99} and {hi:max99}.  If the confidence level
+{it:xx} contains a decimal point, the decimal point is replaced with "_"
+in the variable names {hi:min}{it:xx} and {hi:max}{it:xx}.  If the confidence
+level {it:xx} contains "e-" (because of very small e-format confidence
+levels), the "e-" is replaced with "em" in the variable names
+{hi:min}{it:xx} and {hi:max}{it:xx}.  Therefore, if the user specifies
+{cmd:level(95 99.99) clnumber(level)}, then the output dataset contains 95%
+lower and upper confidence limits in variables {hi:min95} and {hi:max95}, and
+99.99% lower and upper confidence limits in variables {hi:min99_99} and
+{hi:max99_99}. The option {cmd:clnumber(rank)} is useful if the confidence
+levels contain many numbers after the decimal point, which may be the case if
+the user specifies Bonferroni-corrected or Sidak-corrected confidence limits.
+
+
+{title:Variable-adding options for {cmd:parmest} and {cmd:parmby}}
+
+{p 4 8 2}{cmd:label} specifies that a variable named {hi:label} is to be
+generated in the output dataset, containing the variable labels of variables
+corresponding to the parameter names, if such variables can be found in the
+existing dataset. For a parameter named {hi:_cons}, which is always a
+constant term in a model, the variable {hi:label} is set to "Constant".  If
+the estimation command is {help lincomest} (a version of {help lincom}
+downloadable from {help ssc:SSC}), then {hi:label} is set to the linear
+combination formula specified to {help lincomest}.
+
+{p 4 8 2}{cmd:ylabel} specifies that a variable named {hi:ylabel} is to be
+generated in the output dataset, containing the variable labels of
+{it:y}-variables.  If the most recent {help est:estimation command} is 
+{help svymean}, {help svyratio} or {help svytotal}, then the variable labels
+correspond to the equation names, if such variables can be found in the
+existing dataset. Otherwise, the variable labels correspond to the variable
+specified in the estimation result {hi:e(depvar)} returned by the most recent
+{help est:estimation command}, if such a variable can be found in the existing
+dataset.
+
+{p 4 8 2}{cmd:idnum(}{it:#}{cmd:)} specifies an ID number for the set of
+estimation results.  It is used to create a numeric variable {hi:idnum} in the
+output dataset, with that value for all observations.  This is useful if the
+output dataset is concatenated with other {cmd:parmest} or {cmd:parmby}
+output datasets using {help append} or using {help dsconcat} if installed.
+
+{p 4 8 2}{cmd:idstr(}{it:string}{cmd:)} specifies an ID string for the set of
+estimation results.  It is used to create a string variable {hi:idstr} in the
+output dataset, with that value for all observations.  This is useful if the
+output dataset is concatenated with other {cmd:parmest} or {cmd:parmby}
+output datasets using {help append} or using {help dsconcat} if installed.
+(A {cmd:parmest} or {cmd:parmby} output dataset may contain a variable
+{hi:idnum}, a variable {hi:idstr}, both, or neither.)
+
+{p 4 8 2}{cmd:emac(}{it:name_list_1}{cmd:)} specifies a list of names of macro
+{help estimates:estimation results} to be stored as additional string
+variables in the output dataset.  These variables will be named {hi:em_1},
+..., {hi:em_}{it:n}, in the order in which they are specified in the
+{it:name_list_1}. Their values will be the values of the corresponding macro
+{help estimates:estimation results}, truncated if necessary to the maximum
+length of a string variable in the version of Stata currently being used
+(e.g., 80 characters in Small or Intercooled Stata 8, or 244 characters in
+{help specialedition:Stata 8 SE}).
+
+{p 4 8 2}{cmd:escal(}{it:name_list_2}{cmd:)} specifies a list of names of
+scalar {help estimates:estimation results} to be stored as additional numeric
+variables in the output dataset. These variables will be named {hi:es_1},
+..., {hi:es_}{it:n}, in the order in which they are specified in the
+{it:name_list_2}. Their values will be the values of the corresponding scalar
+{help estimates:estimation results}.
+
+{p 4 8 2}{cmd:evec(}{it:name_list_3}{cmd:)} specifies a list of names of
+matrix {help estimates:estimation results} to be stored as additional numeric
+variables in the output dataset. These variables will be named {hi:ev_1},
+..., {hi:ev_}{it:n}, in the order in which they are specified in the
+name_list.  Their values will be extracted from the corresponding matrix 
+{help estimates:estimation results}, and will be reformatted if necessary, in
+order to fit in a variable with one observation per model parameter.  If the
+matrix is a square matrix with numbers of rows and columns equal to the number
+of parameters in the model, then the corresponding output variable will
+contain its vector diagonal. Otherwise, if the matrix has a number of columns
+equal to the number of parameters, then the corresponding output variable will
+contain its first row. Otherwise, if the matrix has a number of rows equal to
+the number of parameters, then the corresponding output variable will contain
+its first column. Otherwise, the corresponding output variable will contain
+its first column, truncated or completed with missing values as necessary. If
+the matrix estimation result does not exist, then the corresponding output
+variable will be filled with missing values. These rules may seem complicated,
+but are probably sensible.
+
+{p 4 8 2}{cmd:stars(}{it:numlist}{cmd:)} specifies a descending list of
+{it:p}-value thresholds.  If {cmd:stars()} is specified, then a string
+variable {hi:stars} is created in the output dataset, containing, in each
+observation, a string of stars whose length is equal to the number of
+{it:p}-value thresholds in the list at least as large as the value of the
+{it:p}-value variable {hi:p} in that observation. For instance, if the user 
+specifies {cmd:stars(0.05 0.01 0.001 0.0001)}, then the variable {hi:stars}
+will contain an empty string {hi:""} if {hi:p>0.05}, a single star {hi:"*"} if
+{hi:0.05>=p>0.01}, two stars {hi:"**"} if {hi:0.01>=p>0.001}, three stars
+{hi:"***"} if {hi:0.001>=p>0.001}, and four stars {hi:"****"} if
+{hi:p<=0.0001}.
+
+
+{title:Variable-modifying options for {cmd:parmest} and {cmd:parmby}}
+
+{p 4 8 2}{cmd:rename(}{it:oldvarname_1 newvarname_1 ... oldvarname_n newvarname_n}{cmd:)}
+specifies a list of pairs of variable names. The first variable name of each
+pair specifies a variable in the {cmd:parmest} output dataset, which is
+renamed to the second variable name of the pair. This option may be used to
+change the names of output variables to prevent name clashes, especially with
+variables specified in the {cmd:by()} option of {cmd:parmby}, which cannot be
+renamed using the {cmd:rename()} option.  (See 
+{bf:Output datasets created by {cmd:parmest} and {cmd:parmby}} below.)
+
+{p 4 8 2}{cmd:format(}{it:varlist_1 format_1 ... varlist_n format_n}{cmd:)}
+specifies a list of pairs of variable lists and {help format:display formats}.
+The {help format:formats} will be allocated to the variables in the output
+dataset specified by the corresponding {it:varlist}s.  If {cmd:rename()} is
+specified, then any variable names specified by the {cmd:format()} option must
+be the new names.
+
+{p 4 8 2}{cmd:nodouble} specifies that there will be no variables in the
+output dataset of storage type {help double}. If {cmd:nodouble} is not
+specified, then all numeric variables in the output dataset will be of type
+{help double}, and therefore stored to double precision, except if they can be
+compressed without loss of precision, in which case they will be compressed as
+far as possible without loss of precision. If {cmd:nodouble} is specified,
+then variables of type {help double} in the output dataset will be converted
+to type {help float}, even if this results in loss of precision.  (See help
+for {help recast}.)
+
+{p 4 8 2}{cmd:float} is an alternative way of specifying {cmd:nodouble}.
+
+
+{title:Options for {cmd:parmby} only}
+
+{p 4 8 2}{cmd:by(}{it:varlist}{cmd:)} specifies a list of existing variables
+which would normally appear in the {cmd:by} {it:varlist}{cmd::} section of the
+Stata estimation command called by {cmd:parmby}.  {cmd:parmby} creates an
+output dataset with one observation for each parameter in each by-group in
+which the command executed successfully. The output dataset contains values
+of the by-variables in each by-group (if {cmd:by()} is specified), in addition
+to the variables created by {cmd:parmest}. However, the {cmd:by()} option is
+optional, and {cmd:parmby} will still work without it, creating an output
+dataset with one observation per parameter of a single set of estimation
+results.
+
+{p 4 8 2}{cmd:command} is a variable-adding option.  If specified, it creates
+a string variable named {hi:command} in the output dataset, containing the
+text of the {help estcom:estimation command} called by {cmd:parmby}.  The text
+of the command is truncated, if necessary, to the maximum length of a string
+variable under the edition of Stata currently in use, eg 80 characters in
+Small or Intercooled Stata 8, or 244 characters in 
+{help specialedition:Stata 8 SE}. (See help for {help limits}.) The variable
+{hi:command} has the same value in all observations in the output dataset, and
+is useful as an identifier if the user creates multiple {cmd:parmby} output
+datasets, using different commands, and concatenates them using {help append},
+or using {help dsconcat} if installed.
+
+
+{title:Output datasets created by {cmd:parmest} and {cmd:parmby}}
+
+{p 4 4 2}
+The output dataset created by {cmd:parmest} or {cmd:parmby} has one
+observation per parameter of a set of estimation results, or one observation
+per parameter per by-group if the {cmd:by()} option is specified with
+{cmd:parmby}. If the {cmd:rename()} option is not specified, then the output
+dataset contains the following variables:
+
+{p2colset 5 25 27 2}{...}
+{p2col :{title:Default name}}{title:Description}{p_end}
+{p2line}
+{p2col :{hi:idnum}}Numeric ID{p_end}
+{p2col :{hi:idstr}}String ID{p_end}
+{p2col :{hi:eq}}Equation name{p_end}
+{p2col :{hi:parm}}Parameter name{p_end}
+{p2col :{hi:label}}Parameter label{p_end}
+{p2col :{hi:ylabel}}{it:y}-variable label{p_end}
+{p2col :{hi:estimate}}Parameter estimate{p_end}
+{p2col :{hi:stderr}}SE of parameter estimate{p_end}
+{p2col :{hi:dof}}Degrees of freedom{p_end}
+{p2col :{hi:t}}{it:t}-test statistic{p_end}
+{p2col :{hi:z}}{it:z}-test statistic{p_end}
+{p2col :{hi:p}}{it:p}-value{p_end}
+{p2col :{hi:stars}}Stars for {it:p}-value{p_end}
+{p2col :{hi:min}{it:yy}}Lower {it:xx}% confidence limit{p_end}
+{p2col :{hi:max}{it:yy}}Upper {it:xx}% confidence limit{p_end}
+{p2col :{hi:em_}{it:y}}{it:y}th macro estimation result specified by {cmd:emac()}{p_end}
+{p2col :{hi:es_}{it:y}}{it:y}th scalar estimation result specified by {cmd:escal()}{p_end}
+{p2col :{hi:ev_}{it:y}}{it:y}th vector estimation result specified by {cmd:evec()}{p_end}
+{p2colreset}{...}
+
+{p 4 4 2}
+The variables {hi:idnum} and {hi:idstr} are only present if the user specifies
+the options {cmd:idnum()} and {cmd:idstr()}, respectively. The variable
+{hi:eq} is only present if the estimation results are from a command which
+creates estimation matrices with equation names, eg a command which fits a
+multiple equation model. The variable {hi:label} is only present if the
+{cmd:label} option is specified. The variable {hi:ylabel} is only present if
+the {cmd:ylabel} option is specified. Either the variables {hi:dof} and {hi:t}
+are present or the variable {hi:z} is present, depending on the setting of the
+{cmd:dof()} option, or on the estimation results, if {cmd:dof()} is not
+specified. The variable {hi:dof} is calculated as specified in the section on
+the {cmd:dof()} option (see above). Note that the degrees of freedom in
+{hi:dof} may be different for different parameters of the same model, and are
+not always integers. The {it:p}-values in the variable {hi:p} test the
+hypothesis that the corresponding parameter is zero, or one if the {cmd:eform}
+option is specified.  The variable {hi:stars} is only present if the option
+{cmd:stars()} is specified, and contains the specified numbers of stars for
+the {it:p}-values in the variable {hi:p}.  The {it:xx}% confidence limits
+{hi:min}{it:yy} and {hi:max}{it:yy} are calculated using a list of one or more
+confidence levels {it:xx}, which may be specified in the {cmd:level()} option,
+or by {help set level}, and which is a single confidence level of 95% if not
+specified.  The number {it:yy} used to number the {it:xx} percent confidence
+limits {hi:min}{it:yy} and {hi:max}{it:yy} is equal to the confidence level
+{it:xx} unless the user specifies {cmd:clnumber(rank)}, in which case the
+number {it:yy} is the rank, in ascending order, of the confidence level
+{it:xx}.  There is one {hi:em_}{it:y} variable for each macro estimation
+result in the list specified by the {cmd:emac()} option, one {hi:es_}{it:y}
+variable for each scalar estimation result specified by the {cmd:escal()}
+option, and one {hi:ev_}{it:y} variable for each vector estimation result
+specified in the {cmd:evec()} option. The variables {hi:em_}{it:y} are string
+variables, truncated if necessary to the maximum length for a string variable
+under the edition of Stata used. All of these variables can be renamed using
+the {cmd:rename()} option.
+
+{p 4 4 2}
+The output dataset created by {cmd:parmby} contains all the variables in the
+output dataset created by {cmd:parmest}, and also the following additional
+variables:
+
+{p2colset 5 25 27 2}{...}
+{p2col :{title:Default name}}{title:Description}{p_end}
+{p2line}
+{p2col :{it:by-variables}}Variables specified in the {cmd:by()} option{p_end}
+{p2col :{hi:parmseq}}Parameter sequence number{p_end}
+{p2col :{hi:command}}Estimation command{p_end}
+{p2colreset}{...}
+
+{p 4 4 2}
+The {it:by-variables} are only present if the {cmd:by()} option is specified.
+The variable {hi:command} is only present if the {cmd:command} option is
+specified.  The {cmd:parmby} output dataset is sorted primarily by the
+{it:by-variables}, in the order specified in the {cmd:by()} option, if the
+{cmd:by()} option is specified, and sorted secondarily by {hi:parmseq}, which
+contains the sequential order of the parameter in the estimation result vector
+(which is usually {hi:e(b}}).  The variables {hi:command} and {hi:parmseq} can
+be renamed by {cmd:parmby} using the {cmd:rename()} option, but the
+{it:by-variables} cannot be renamed by {cmd:parmby}.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:parmby} is similar to {help statsby}, but it creates a dataset with one
+observation per parameter per by-group, instead of a dataset with one
+observation per by-group. Also, in default, {cmd:parmby} outputs the
+estimation output to the log, although the user can use {help quietly} to
+suppress this.  {cmd:parmby} is a "quasi-byable" front end for {cmd:parmest},
+and is the command recommended for use in any new programs for creating output
+datasets on disk or in memory.  {cmd:parmest} is an older command and is now
+mainly used when the user wishes simply to use the {cmd:list()} option to list
+the estimation output with user-specified formats or parameter labels, so that
+the results for each parameter are presented to a number of decimal places
+or significant figures as specified and may also be labeled
+with the variable label corresponding to the parameter. The {cmd:parmest}
+command is therefore used as an alternative version of 
+{help est_table:estimates table}, with the added power to calculate confidence
+limits.  With either {cmd:parmby} or {cmd:parmest}, the user must specify at
+least one of the four options {cmd:list()}, {cmd:saving()}, {cmd:norestore}
+and/or {cmd:fast}. These options specify whether the output dataset is listed
+to the Stata log, saved to a disk file, or written to the memory (overwriting
+any pre-existing dataset).
+
+
+{title:Examples}
+
+{p 4 4 2}
+The following examples use the {cmd:list()} option to list a subset of the
+output dataset to the Stata log.  After these examples are executed, there is
+no new dataset either in the memory or on disk.
+
+{p 8 16 2}{cmd:. regr price mpg weight,robust}{p_end}
+{p 8 16 2}{cmd:. parmest,format(estimate min95 max95 %8.2f p %8.1e) list(,)}{p_end}
+
+{p 8 16 2}{cmd:. glm mpg foreign,family(gamma) link(power -1)}{p_end}
+{p 8 16 2}{cmd:. parmest, label format(estimate min95 max95 p %8.2f p %8.1e) list(parm label estimate min95 max95 p,clean noobs)}{p_end}
+
+{p 8 16 2}{cmd:. regress price mpg weight foreign displacement headroom,robust}{p_end}
+{p 8 16 2}{cmd:. parmest,label format(p %8.1e) stars(0.05 0.01 0.001 0.0001) list(parm label estimate min95 max95 p stars,clean noobs)}{p_end}
+
+{p 8 16 2}{cmd:. parmby "qui logit foreign mpg, or", label eform for(estimate min95 max95 %8.2f p %8.1e) li(parm label estimate min95 max95 p)}{p_end}
+
+{p 8 16 2}{cmd:. parmby "qui logit foreign mpg, or", level(95 97.5) cln(rank) label eform for(estimate min* max* %8.2f p %8.1e) li(parm label estimate min2 min1 max1 max2 p,clean noobs)}{p_end}
+
+{p 4 4 2}
+The following examples use the {cmd:norestore} option to create an output
+dataset in the memory, overwriting any pre-existing dataset.
+
+{p 8 16 2}{cmd:. parmby "regr mpg weight,robust",by(foreign) label command norestore}{p_end}
+
+{p 8 16 2}{cmd:. gene gpm=1/mpg}{p_end}
+{p 8 16 2}{cmd:. rename foreign t}{p_end}
+{p 8 16 2}{cmd:. parmby "regr gpm weight",by(t) label rename(t tstat p pvalue) norestore}{p_end}
+
+{p 8 16 2}{cmd:. gene byte pw1=1}{p_end}
+{p 8 16 2}{cmd:. svyset [pwei=pw1],clear}{p_end}
+{p 8 16 2}{cmd:. parmby "svymean mpg weight,by(foreign) available",norestore ev(_N _N_subp V_db) em(depvar) es(N)}{p_end}
+{p 8 16 2}{cmd:. describe}{p_end}
+{p 8 16 2}{cmd:. list eq parm ev_* em_* es_*}{p_end}
+
+{p 4 4 2}
+The following examples use the {cmd:saving()} option to create an output
+dataset in a disk file.
+
+{p 8 16 2}{cmd:. parmby "logit foreign mpg, or", label eform saving(parms1.dta)}{p_end}
+
+{p 8 16 20}{cmd:. parmby "regr mpg weight displ,robust",by(foreign) label saving(myparms,replace)}{p_end}
+
+{p 4 4 2}
+The following example demonstrates the use of {cmd:parmby} with multiple
+regression commands, saving the results in multiple temporary datasets. These
+datasets are then concatenated, using the {help dsconcat} command, to form a
+single dataset in memory, with one observation for each parameter in each
+regression. The {help dsconcat} command can be downloaded from {help ssc:SSC}
+using the {help ssc} command in Stata. This example uses the options
+{cmd:idnum()} and {cmd:idstr()} to create analysis identifier variables, which
+contain information identifying the regression model for each parameter.
+
+{p 8 16 2}{cmd:. gene gpm=1/mpg}{p_end}
+{p 8 16 2}{cmd:. tempfile tf1 tf2 tf3}{p_end}
+{p 8 16 2}{cmd:. parmby "regr gpm weight", lab saving(`tf1',replace) idn(1) ids(Unadjusted)}{p_end}
+{p 8 16 2}{cmd:. parmby "regr gpm foreign", lab saving(`tf2',replace) idn(2) ids(Unadjusted)}{p_end}
+{p 8 16 2}{cmd:. parmby "regr gpm weight foreign", lab saving(`tf3',replace) idn(3) ids(Adjusted)}{p_end}
+{p 8 16 2}{cmd:. dsconcat `tf1' `tf2' `tf3'}{p_end}
+{p 8 16 2}{cmd:. list idnum idstr parm estimate min95 max95 p,noobs nodis}{p_end}
+
+{p 4 4 2}
+The following advanced example demonstrates the use of the {cmd:flist()}
+option with the {help dsconcat} command (downloadable from {help ssc:SSC}).
+{cmd:parmby} is used to carry out multiple regression analyses, storing the
+results in temporary files, whose names are stored by the {cmd:flist()} option
+in a global macro {hi:tflist}. The files are then concatenated using 
+{help dsconcat} to create a single long dataset in memory, with one
+observation for each parameter of each regression model.  For each parameter,
+the regression model for that parameter is identified by the string variable
+{hi:command} and the numeric analysis identifier variable {hi:idnum}. The
+dataset is sorted, described and listed.
+
+{p 8 16 2}{cmd:. global tflist ""}{p_end}
+{p 8 16 2}{cmd:. global modseq=0}{p_end}
+{p 8 16 2}{cmd:. foreach X of var headroom trunk weight length turn displacement gear_ratio {c -(}}{p_end}
+{p 8 16 2}{cmd:.   global modseq=$modseq+1}{p_end}
+{p 8 16 2}{cmd:.   tempfile tf$modseq}{p_end}
+{p 8 16 2}{cmd:.   parmby "regr mpg `X'",by(foreign) label command format(estimate min95 max95 %8.2f p %8.1e) idn($modseq) saving(`tf$modseq',replace) flist(tflist)}{p_end}
+{p 8 16 2}{cmd:. {c )-}}{p_end}
+{p 8 16 2}{cmd:. dsconcat $tflist}{p_end}
+{p 8 16 2}{cmd:. sort idnum command foreign parmseq}{p_end}
+{p 8 16 2}{cmd:. describe}{p_end}
+{p 8 16 2}{cmd:. by idnum command:list foreign parm label estimate min95 max95 p,noobs}{p_end}
+
+
+{title:Author}
+
+{p 4 4 2}
+Roger Newson, King's College London, UK.{break}
+Email: {browse "mailto:roger.newson@kcl.ac.uk":roger.newson@kcl.ac.uk}
+
+
+{title:Also see}
+
+{p 4 13 2}
+STB:  STB-49 dm65, STB-58 dm65.1
+
+{p 4 13 2}
+Manual:  {hi:[U] 23 Estimation and post-estimation commands},{break}
+         {hi:[U] 29 Overview of Stata estimation commands},{break}
+         {hi:[R] statsby}, {hi:[R] append}
+
+{p 4 13 2}
+Online:  help for {help append}, {help statsby}, {help est}, {help postest}, 
+            {help est_table} {break}
+	 help for {help dsconcat}, {help lincomest} if installed
+{p_end}

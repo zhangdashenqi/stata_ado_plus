@@ -1,0 +1,41 @@
+.-
+help for ^ftable^
+.-
+
+Table of critical values of F
+-----------------------------
+ 
+	^ftable^ [ ^df1 df2^ ] [, ^alpha()^ ]
+
+
+Description
+-----------
+
+^ftable^ displays a table of the critical values of F.
+
+ 
+ Options
+ -------
+ 
+ ^alpha^  alpha level for critical values of F.  Default
+        is alpha = 0.05.
+  
+  ^df1 df2^ optional degrees of freedom for a specific critical value of F.
+
+
+Examples
+--------
+
+ . ^ftable^
+ . ^ftable 3 10^
+ . ^ftable, alpha(.1)^
+
+
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 

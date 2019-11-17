@@ -1,0 +1,66 @@
+-------------------------------------------------------------------------
+Help for ulogit: Univariate log-likelihood tests for model identification 
+-------------------------------------------------------------------------
+
+The syntax for ^ulogit^ is:
+
+                    ^ulogit^ depvar predictors
+     
+
+Comparing the log-likelihood of a logistic regression model containing only 
+the intercept with that of a model having a single predictor provides prima 
+facie evidence of whether the predictor in fact contributes to the model. 
+The comparison statistic is provided by the likelihood ratio test. At the 
+early model building stage, a p value of .25 or under can be considered 
+adequate for inclusion of the variable as a main effect predictor. However, 
+this does not mean that transformation or collapsing value levels may not 
+prove to later enhance a variables contribution to a full model. What we 
+are really looking for at this stage are high p values. If we find one at 
+say .80, we can probably exclude it from subsequent analyses. But a caveat 
+- if the variable may serve as a factor in a significant interaction, we 
+may need to retain it regardless of its p value.
+
+^ulogit^ calculates for each variable listed after the response variable, 
+its coefficient, log-likelihood, Chi-square (LL ratio statistic), 95% 
+confidence interval, and significance. The intercept only model log-likelihood 
+is also provided for comparison. Predictors must all by numeric.
+
+The intercept only log-likelihood can be calculated directly from the 
+distribution of the reponse variable. Let n0 and n1 represent the respective 
+number of observations having 0's or 1's; and let N be the total number of 
+nonmissing observations. The log-likelihood can be determined by:
+
+               ^LL = n0 ln(n0) + n1 ln(n1) - N ln(N)^
+            
+After the ^logit^ command, one can also obtain the LL statistic directly 
+from Stata by:
+
+               ^LLo = -(_result(6)+(-2*_result(2)))/2^
+            
+where _result(6) is the chi2 and _result(2) is the log-likelihood of the 
+model with predictor(s).
+
+
+The likelihood ratio test evaluates the hypothesis that the slope coefficient
+is zero. Given LL1 as the log-likelihood of the model with the predictor, 
+and LL0 as the intercept only log-likelihood, the ratio is determined by:
+
+                        ^chi2 = 2(LL1 - LL0)^
+
+
+Reference:
+Hosmer, D. W. and Lemeshow, S.  1989.  Applied Logistic Regression. 
+New York: John Wiley & Sons.
+
+
+See Also: ^unilogit^ by author in STB-9 (sqv5) for alternative table
+
+
+
+Author and help:
+
+^Joseph Hilbe^
+Arizona State University
+^hilbe@@asu.edu^
+jhilbe@@aol.com
+

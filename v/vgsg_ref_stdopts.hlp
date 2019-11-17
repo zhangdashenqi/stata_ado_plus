@@ -1,0 +1,27 @@
+{smcl}
+{p 0 4}
+{bf:{help vgsg:A Visual Guide to Stata Graphics}} > {bf:{help vgsg_ref:Cross reference}} > {bf:Standard options}
+{p_end}
+{hline}
+
+{title:Standard options}
+
+{phang}
+Titles{break}
+{manhelpi title_options G}
+
+{phang}
+Schemes{break}
+{manhelpi scheme_option G}
+
+{phang}
+Sorting graphs{break}
+{manhelpi scale_option G}{break}
+{manhelpi region_options G}
+
+{phang}
+Graph regions{break}
+{manhelpi region_options G}
+
+{hline}
+

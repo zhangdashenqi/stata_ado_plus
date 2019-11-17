@@ -1,0 +1,44 @@
+
+.-
+help for ^robmean^
+.-
+
+Trimmed, winsorized means & Huber 1-step estimator
+--------------------------------------------------
+
+ ^robmean^ varname  [^if^ exp] [^in^ range] [^,^ trim(^pro^) k(^const^) ]
+ 
+Description
+-----------
+
+^robmean^ computes untrimmed, trimmed, winsorized statistics,
+       1-step Huber estimator and a modified 1-step estimator.
+
+Options
+-------
+^trim^ indicates the proportion of cases to trim from each end
+     of the distribution (default = 0.2). 
+     
+^k^ the constant used for the M-estimator (default = 1.28).     
+
+Examples
+--------
+
+ . ^robmean write^
+ . ^robmean write, trim(.1)^
+
+Reference
+---------
+
+Wilcox, R. (2001)  Fundamentals of modern statistical methods.
+     New York: Springer.
+Wilcox, R. (2002)  Applying Contemporary Statistical Techniques.
+     San Diego: Academic Press.
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 

@@ -1,0 +1,76 @@
+{smcl}
+{* 11Nov2008}{...}
+{hline}
+help for {cmd:fmlogit postestimation}
+{hline}
+
+{title:Title}
+
+{p2colset 5 32 35 2}{...}
+{p2col :{hi:fmlogit postestimation} {hline 2}}Postestimation tools for
+fmlogit{p_end}
+{p2colreset}{...}
+
+
+{title:Description}
+
+The following standard postestimation commands are also available:
+
+{synoptset 14 tabbed}{...}
+{p2coldent :command}description{p_end}
+{synoptline}
+INCLUDE help post_estat
+INCLUDE help post_estimates
+INCLUDE help post_lincom
+INCLUDE help post_lrtest
+INCLUDE help post_mfx
+INCLUDE help post_nlcom
+{synopt :{helpb seqlogit postestimation##predict:predict}}predictions{p_end}
+INCLUDE help post_predictnl
+INCLUDE help post_suest
+INCLUDE help post_test
+INCLUDE help post_testnl
+{synoptline}
+{p2colreset}{...}
+
+{marker predict}{...}
+{title:Syntax for predict}
+
+{p 8 16 2}
+{cmd:predict} {dtype} {newvar} {ifin} 
+[{cmd:,} {it:statistic} 
+{opt out:come(varname)}
+{opt eq:uation(eqno)}
+]
+
+{synoptset 14 tabbed}{...}
+{synopthdr :statistic}
+{synoptline}
+{synopt :{cmd:xb}}xb, the linear predictor{p_end}
+{synopt :{cmd:stdp}}standard error of the prediction{p_end}
+{synopt :{cmdab:pr}}proportion{p_end}
+{synopt :{opt sc:ore}}first derivative of the log likelihood with respect 
+to the linear predictor. {p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Options for predict}
+
+{phang}
+{opt out:come(varname)} specifies the outcome. This option may only be used
+with the {cmd:pr} option.
+
+{phang}
+{opt eq:uation(#)} specifies the equation, as in {help predict}. This option
+may only be used with the {cmd:xb}, {cmd:stdp}, and {cmd:score} options.
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online: help for {helpb fmlogit}, {helpb estimates}, {helpb lincom}, 
+{helpb lrtest}, {helpb mfx}, {helpb nlcom}, {helpb predictnl},
+{helpb suest}, {helpb test}, {helpb testnl}
+{p_end}
+

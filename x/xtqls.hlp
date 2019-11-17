@@ -1,0 +1,131 @@
+{smcl}
+{* 23aug2006}{...}
+{cmd:help xtqls}{right:(SJ7-2: st0122)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 14 18 2}{...}
+{p2col :{hi:xtqls} {hline 2}}Fit population-averaged panel-data models using quasi-least squares
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:xtqls} {depvar} [{indepvars}] [{cmd:,} {it:options}]
+
+{synoptset 18}{...}
+{synopthdr}
+{synoptline}
+{synopt :{opth "i(varname:varname_i)"}}use {it:varname_i} as the panel ID variable{p_end}
+{synopt :{opth "t(varname:varname_t)"}}use {it:varname_t} as the time variable{p_end}
+{synopt :{opth "f(family)"}}specify the family for the outcome variable {p_end}
+{synopt :{opth "c(corr)"}}specify the correlation structure {p_end}
+{synopt :{opth vce(vcetype)}}{it:vcetype} may be {opt model}, {opt robust}, {opt jack}, or {opt boot}{p_end}
+{synoptline}
+
+{marker family}{...}
+{synopthdr :family}
+{synoptline}
+{synopt :{opt gau}}Gaussian{p_end}
+{synopt :{opt bin}}Bernoulli/binomial {p_end}
+{synopt :{opt poi}}Poisson{p_end}
+{synoptline}
+
+{marker correlation}{...}
+{synopthdr :correlation}
+{synoptline}
+{synopt :{opt AR 1}}AR(1){p_end}
+{synopt :{opt sta 1}}tridiagonal {p_end}
+{synopt :{opt exc}}exchangeable{p_end}
+{synopt :{opt Markov}}Markov {p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}
+See {help xtgee postestimation} for features available after estimation.{p_end}
+{p 4 6 2}
+See {help logistic estimation commands} and {helpb regress}
+for lists of related estimation commands.
+
+
+{title:Description}
+
+{pstd}
+{cmd:xtqls} fits population-averaged panel-data models.  In particular,
+{cmd:xtqls} fits general linear models and allows you to specify the
+within-group correlation structure for the panels. {cmd: xtqls} is based on
+GEE and calls {cmd: xtgee} within an iterative process. As a result, all
+the usual post-{cmd: xtgee} commands are available after {cmd: xtqls}. The
+saved results are also identical for {cmd: xtqls} and {cmd: xtgee}. 
+{cmd:xtqls} might be considered if (1) {cmd:xtgee} fails to converge, (2)
+{cmd:xtgee} yields an estimated correlation matrix that is
+non-positive definite (infeasible), or (3) the user wants to specify a
+correlation structure that has not yet been implemented in the framework of
+GEE. 
+
+
+{title:Options}
+
+{pstd}
+The {it:options} for {cmd:xtqls} (all required) are as follows:
+
+{phang}
+{opt i(var_i)} specifies the ID variable for subjects or clusters.
+
+{phang}
+{opt t(var_t)} specifies the variable for timings of observations.
+
+{phang}
+{opt f(family)} specifies the distribution of {it:depvar}.  {it:family}
+is one of the following:
+
+           {cmd:gau}      Gaussian
+	   {cmd:bin}      Bernoulli/binomial
+	   {cmd:poi}      Poisson
+
+{phang}
+{opt c(correlation)} specifies that the correlation structure be used.
+{it:correlation} is one of the following:
+
+           {cmd:AR 1}     AR(1)
+	   {cmd:sta 1}    tridiagonal
+	   {cmd:exc}      equicorrelated
+	   {cmd:Markov}   Markov
+	    
+{phang}
+{opt vce(vcetype)} specifies the type of covariance structure for estimation
+of beta-hat.  {it:vcetype} is one of the following:
+
+           {cmd:model}    model-based covariance structure
+	   {cmd:robust}   sandwich-type robust sandwich covariance matrix
+	   {cmd:jack}     obtains jackknife standard errors
+	   {cmd:boot}     obtains bootstrapped standard errors
+
+{pmore}
+See {it:{help vce_option}}.
+
+
+{title:Examples}
+
+{phang}{cmd:. use random_small}{p_end}
+{phang}{cmd:. xtqls bmiz basebmi month, i(id) t(month) f(gau) vce(robust)}
+              {cmd:c(sta 1)}{p_end}
+{phang}{cmd:. xtcorr}{p_end}
+{phang}{cmd:. xtqls bmiz basebmi month, i(id) t(month) f(gau) vce(model)}
+              {cmd:c(Markov)}{p_end}
+{phang}{cmd:. xtcorr}{p_end}
+{phang} {cmd:. xtqls obese basebmi month, i(id) t(month) f(bin 1) vce(model)}
+              {cmd:c(AR 1)}{p_end}
+{phang}{cmd:. xtcorr}{p_end}
+{phang}{cmd:. xtqls obese basebmi month, i(id) t(month) f(bin 1) vce(model)}
+              {cmd:c(exc)}{p_end}
+{phang}{cmd:. xtcorr}
+
+
+{title:Also see}
+
+{psee}
+Online:  {help xtgee postestimation};{break}
+{helpb logistic}, {helpb regress}
+{p_end}

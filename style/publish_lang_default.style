@@ -1,0 +1,45 @@
+*! Default language settings for - publish.ado -
+*! Version 1.0.0 - 1 November 2005
+*! Author: Tamas Bartus, Corvinus University Budapest 
+//
+// Notes: 
+//    comments beginning with // or * are allowed
+//    it is also possible to place a comment at the end of lines
+//    
+// If you wish to modify the defaults, 
+//  1. Feel free to edit THE ARGUMENTS (that is, texts to the right of = character) in this file without changing its name, or
+//  2. save a copy of this file as publish-lang_[keyword].style, and edit THE ARGUMENTS in that file.
+//      warning: method 2. forces you to specify the style([keyword]) option! 
+//
+// In either case, please consult the help file publish.hlp
+
+// General
+
+TitleLeft    = "Table"
+TitleRight   = ""
+NumberChar   = ""
+FirstColHead = "Variable"
+
+NameForTotal = "Total"
+Frequency = Frequency
+Percent = Percent
+
+NotesTitle   = "Notes"
+
+// Head for second column in publish describe: "Definition"
+
+des_def = Definition
+
+// publish_tab : only tab1
+
+tab_freq	= Freq.                 
+tab_percent	= Percent
+tab_valid	= Valid
+tab_cum		= Cum.
+tab_missing	= Missing
+
+// publish_est
+
+n			= N
+cons		= Constant
+cut			= Cutoff

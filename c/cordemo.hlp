@@ -1,0 +1,43 @@
+
+
+.-
+help for ^cordemo^
+.-
+
+Correlation demonstration
+--------------------------
+
+ ^cordemo^ [ r n ]
+ 
+
+Description
+-----------
+
+^cordemo^ generates random values for x and y with
+         with correlation equal to the arguement corr. 
+         A scatterplot with regression line are 
+         displayed.
+
+Default Values
+--------------
+
+The defaults for correlation and sample size are 0 and 100.
+
+
+Examples
+--------
+
+ . ^cordemo^
+ . ^cordemo .2 ^
+ . ^cordemo .2 200^
+
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+

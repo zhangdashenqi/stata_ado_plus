@@ -1,0 +1,43 @@
+Confidence interval simulation, enhanced
+----------------------------------------
+
+ ^cidemo2 samplesize^ , [ ^level^( ) ^samples^( )]
+
+Description
+-----------
+
+  ^cidemo2^ draws 100 random samples of size ^samplesize^
+  from a normal distribution. 
+
+  By default 100 samples are drawn and a 95% 
+  confidence interval is computed for each of 
+  the 100 means.  The results are displayed in 
+  an error bar graph.  
+
+Options
+--------
+
+    ^level^( )   - the confidence level, default = 95%
+    ^samples^( ) - the number of samples to display, default = 100
+
+    You can create an animation showing how the confidence level impacts
+    the size of the confidence interval by including more than one confidence
+    levels in the ^level( )^ option.  For example, ^level(80 81 to 99)^ shows
+    20 consecutive graphs with confidence of 80%, 81%, 82% to 99%.
+
+Examples
+--------
+
+ . ^cidemo2 25^
+ . ^cidemo2 25, level(90)^
+ . ^cidemo2 25, samples(50)^
+ . ^cidemo2 25, level(99 98 to 90)^
+
+Author
+------
+
+      Michael N. Mitchell
+      (Based on a program written by Philip B. Ender)
+      Statistical Computing and Consulting
+      UCLA, Office of Academic Computing
+      mnm@@ucla.edu, ender@@ucla.edu 

@@ -1,0 +1,120 @@
+{smcl}
+{* 24aug2006}{...}
+{cmd:help permtest2}{right:(SJ7-3: st0134)}
+{hline}
+
+{title:Title}
+
+{p2colset 5 18 20 2}{...}
+{p2col :{hi:permtest2} {hline 2}}Equality test for two independent samples{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{phang}
+Fisher-Pitman permutation test for two independent samples
+
+{p 8 19 2}
+{cmd:permtest2} {varname} {ifin}{cmd:,} {cmd:by(}{it:groupvar}{cmd:)}
+[{cmd:runs(}{it:integer}{cmd:)} {cmd:exact} {cmd:simulate}]
+
+{pstd}{cmd:by} may be used with {cmd:permtest2}; see {help prefix}.
+
+
+{title:Description}
+
+{pstd}
+{cmd:permtest2} tests the hypothesis that two independent samples (i.e.,
+unmatched data) are from populations with the same distribution using the
+Fisher-Pitman permutation test for two samples. When and if appropriate data
+is given -- that is, its values are interval scaled -- this test is applicable
+and a powerful alternative to the Wilcoxon Mann-Whitney rank-sum test.
+
+{pstd}
+{cmd:permtest2} is for use with unmatched data from two independent samples.
+For equality tests on matched data, see {helpb permtest1}.
+
+
+{title:Options}
+
+{phang}
+{cmd:by(}{it:groupvar}{cmd:)} is required and specifies the grouping variable.
+It must be numeric, and there must be exactly two different groups in the
+specified sample.
+
+{phang}
+{cmd:runs(}{it:integer}{cmd:)} specifies the number of Monte Carlo simulation
+runs to perform. It defaults to 2 x 10^5.
+
+{phang}
+{cmd:exact} forces the calculation of exact significance levels. Specifying
+this option may increase run time even with moderate sample sizes.
+
+{phang}
+{cmd:simulate} forces the estimation of significance levels with Monte Carlo
+simulations. This method is less accurate but also less time consuming. By
+default, the test uses Monte Carlo simulations automatically if the sample
+size exceeds 15.
+
+{pstd}The options {cmd:exact} and {cmd:simulate} may not be specified at the
+same time, and the {opt runs(integer)} option makes sense only with Monte
+Carlo simulations.
+
+
+{title:Warning}
+
+{pstd}
+Be aware that using Monte Carlo simulations always bear a stochastic
+component.  To make sure that the significance levels are not too inaccurate,
+one should conduct several runs of this test if using Monte Carlo simulations.
+
+
+{title:Examples}
+
+{psee}{cmd:. permtest2 expd_shoes, by(gender)}{p_end}
+{psee}{cmd:. by year: permtest2 expd_chocolate, by(gender)}{p_end}
+{psee}{cmd:. permtest2 beercnsm, by(gender) simulate runs(300000)}{p_end}
+{psee}{cmd:. permtest2 voting, by(gender) exact porder}
+
+
+{title:Saved results}
+
+{pstd}
+{cmd:permtest1} saves the following in {cmd:r()}:
+
+{synoptset 19 tabbed}{...}
+{p2col 5 19 23 2: Scalars}{p_end}
+{synopt:{cmd:r(criticalValue)}}critical value{p_end}
+{synopt:{cmd:r(n1)}}number of zeros in the difference vector{p_end}
+{synopt:{cmd:r(n2)}}number of negative values in the difference vector{p_end}
+{synopt:{cmd:r(runs)}}number of simulation runs conducted{p_end}
+{synopt:{cmd:r(mode)}}{cmd:1} if the exact test, {cmd:2} if Monte Carlo
+simulations were used{p_end}
+{synopt:{cmd:r(N)}}sample size{p_end}
+{synopt:{cmd:r(twotail)}}two-tailed p-value{p_end}
+{synopt:{cmd:r(uppertail)}}upper-tailed p-value{p_end}
+{synopt:{cmd:r(lowertail)}}lower-tailed p-value{p_end}
+{p2colreset}{...}
+
+
+{title:Author}
+
+{pstd}
+Johannes Kaiser <johannes.kaiser at uni-bonn.de>, Laboratory for Experimental
+Economics, Bonn, Germany.
+
+{pstd}
+I provide the program "as is" without warranty of any kind, either expressed
+or implied, including, but not limited to, the implied warrananties of
+merchantability and fitness for a particular purpose. The entire risk as to
+the quality and performance of the program is with you. Should the program
+prove defective, you assume the cost of all necessary servicing, repair, or
+correction.
+
+
+{title:Also see}
+
+{psee}
+Online:  {helpb permtest1}, {manhelp signrank R}
+{p_end}

@@ -1,0 +1,66 @@
+.-
+help for ^rxrmaxl^       				STB-28: sg45
+.-
+
+Generalized ridge regression: shrinkage extent
+----------------------------------------------
+
+        ^rxrmaxl^ depvar varlist [^if^ exp] [^in^ range]
+
+                [^,^ ^m^steps^(^#^)^ ^omd^min^(^#^)^ ^q^shape^(^#^)^ ^r^escale^(^#^)^ ^t^ol^(^#^)^ ]
+
+
+To reset problem-size limits, see ^help matsize^.
+
+
+Description
+-----------
+
+^rxrmaxl^ calculates three normal-theory, maximum-likelihood criteria
+(classical, empirical Bayes, and random coefficients) for a choice of
+shrinkage extent in the ridge regression of ^depvar^ on ^varlist^.
+
+
+Options
+-------
+
+^msteps(^#^)^ specifies the number of steps per unit increase in ^MCAL^, the multi-
+    collinearity allowance parameter; the default value is 4.  The total number
+    of steps along the generalized shrinkage path from the least squares solu-
+    tion (^MCAL^=0) to all zero coefficients (^MCAL^=p) will thus be 1+(msteps*p).
+
+^omdmin(^#^)^ is the strictly positive minimum value to be used for calculation
+    of (1-delta) shrinkage factors.  The default is 10e-13.
+
+^qshape(^#^)^ controls the shape (or curvature) of the generalized shrinkage
+    path through likelihood space; the default value is 0, which yields Hoerl-
+    Kennard "ordinary" ridge regression.  ^qshape^=1 yields uniform shrinkage,
+    and all ^qshape^ values between -5 and 5 are allowed.
+
+^rescale(^#^)^ controls the scaling of the response variable and all p
+    predictor variables in the ^varlist^.  The default value is ^rescale^=1 to
+    scale all centered variables to have sample variance 1.  ^rescale^=0 should
+    be specified to retain the original scalings.
+
+^tol(^#^)^ specifies search convergence criterion and defaults to 0.01.
+
+
+Example
+-------
+
+ . ^rxrmaxl mpg cylnds cubins hpower weight, q(-1)^
+
+
+Author
+------
+
+        Robert L. Obenchain
+        Eli Lilly and Company
+
+
+Also see
+--------
+
+    STB:  STB-28 sg45
+On-line:  ^help^ for @rxridge@ and @rxrcrlq@
+

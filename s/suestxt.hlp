@@ -1,0 +1,313 @@
+.-
+help for ^suestxt^                                                  [STB-52: sg120]
+.-
+
+Seemingly Unrelated ESTimation
+------------------------------
+
+   ^suest f^it name ^:^ est_cmd
+   ^suest save^ name scorevar1 [scorevar2 ...]
+   ^suest c^ombine [name_list] [^, c^luster^(^varname^) l^evel^(^#^)^]
+
+   ^suest clear^
+   ^suest drop^ name_list
+   ^suest q^uery
+
+
+Description
+-----------
+
+^suest^ combines a series of parameter-estimates and associated (co)variance
+matrix into a single parameter-vector and ^simulateneous^ covariance matrix
+of the sandwich/robust type that can be analyzed with Stata's standard
+post-estimation commands such as @test@ and @testnl@. This allows the testing
+of cross-model hypotheses. One can also compute a two-stage linear-constrained
+estimator with cross-model linear constraints via @linest@.
+
+^suest^ does not require that the models are estimated on the same samples,
+due to explicit selection, or due to missing values. However if weights are
+applied, the same weights should be applied to all models.
+
+
+Key commands
+
+   ^suest fit^ invokes an estimation command and saves the required results under
+      a name of at most 4 chars. Currently, the following estimation commands
+      are supported:
+
+         @clogit2@, @cloglog@, @heckman@, @heckprob@, @intreg@, @logistic@, @logit@, @poisson@,
+         @ologit@, @mlogit@, @nbreg@, @oprobit@, @probit@, @regh@, @scobit@, @zip@.
+
+      Note that ^regress^ is not included in the list as it does not support a
+      ^score()^ option. Use my ^regh^ (STB 42) instead.
+
+      ^clogit2^ is a special version of ^clogit^, with identical syntax but a
+      ^score()^ option, that is appropriate for conditional logit models with
+      exactly one positive response per group (e.g., McFadden's discrete choice
+      model). To obtain a valid estimator for the asymptotic (co)variance
+      matrix of the estimators, one has to specify the option ^cluster(^varname^)^
+      with ^suest combine^, where varname is the group identifier specified with
+      ^clogit2^. If the data are additionally clustered, e.g., the data comprises
+      discrete choices of multiple members of households, the highest level of
+      clustering should be specified with ^suest combine^.
+
+   ^suest save^ is for estimation commands too complicated for ^suest fit^ to
+      handle such as ^streg^ models and some multiple equation models. It saves
+      information from the last estimation command under a name of at most
+      4 chars. The estimation command should support and be invoked with the
+      ^score()^ option, specifying that score statistics are computed. These
+      score variables should be transferred to ^suest save^.
+
+      The estimation command should not be invoked with options robust or
+      ^cluster^. See ^suest combine^.
+
+   ^suest combine^ computes a simultaneous robust (sandwich) co-variance matrix
+      for the models in the name_list. If no name_list is supplied, all saved
+      models are included. If the data are clustered, this should be specified
+      during the generation of the simultaneous vce, not during estimation.
+
+      The within-model covariance matrix is identical to what would been
+      obtained by specifying a robust/cluster option during estimation.
+      ^suest^ however, also estimates the between-model covariances of parameter
+      estimates.
+
+      ^suest combine^ posts its results just like a proper estimation command.
+      Thus, after ^suest combine^, one use use ^test^ and ^testnl^ to test
+      intra-model and cross-term hypotheses.
+
+      ^suest^ typed without arguments after ^suest^ replays the results, just
+      like other estimation commands.
+
+
+Utility commands
+
+   ^suest clear^ drops the objects (matrix, variables, including score
+       statistics) associated with all models.
+
+   ^suest drop^ drops the objects (matrix, variables, including score
+       statistics) associated with the named models.
+
+   ^suest query^ lists the names of the saved models.
+
+
+Options
+-------
+
+^cluster(^varname^)^ specifies that the observations are independent across groups
+    (clusters) but not necessarily within groups.  varname specifies to which
+    group each observation belongs; e.g., ^cluster(^personid^)^ in data with
+    repeated observations on individuals.  ^cluster()^ affects the estimated
+    standard errors and variance-covariance matrix of the estimators (VCE), but
+    not the estimated coefficients; see [U] 23.11 Obtaining robust variance
+    estimates.
+
+^level(^#^)^ specifies the confidence level, in percent, for confidence intervals
+    of the coefficients; see help @level@.
+
+
+Example 1
+---------
+
+We apply ^suest^ to perform a Hausman-type test for the assumption of the
+"Independence of Irrelevant Alternatives" (IIA) of a discrete choice model
+estimated by ^mlogit^. You may want to compare the following with the example
+included in the help file of @hausman@.
+
+    . ^suest fit A: mlogit travmode age gender income^
+    . ^suest fit B: mlogit travmode age gender income, if travmode != 2^
+    . ^suest combine^
+    . ^test [A1=B1]^
+    . ^test [A3=B3], acc^
+
+If the observations are clustered, e.g., we have subjects clustered within
+households (hhid), the above Hausman test is inappropriate. A generalized
+Hausman test can be obtained simply by replacing the ^suest combine^ command
+with
+
+    . ^suest combine, cluster(hhid)^
+
+
+Example 2
+---------
+
+We consider a ordinal probit analysis. We want to test the hypotheses that the
+coefficients (for simplicity, I ignore the cutpoints) are invariant under
+dropping the observations associated with a response category. This is, of
+course, a variant of the assumption of Independence of Irrelevant Alternatives
+of discrete choice modelling. Assume that the depvar ^y^ has 3 categories 1..3.
+
+   . ^suest clear^
+   . ^suest fit A: oprobit y x1 x2^
+   . ^suest fit B: oprobit y x1 x2 if y~=1^
+   . ^suest combine^
+   . ^test [ALF = BLP]^
+
+We have now obstained a robust version of the ^hausman^ test that compares the
+full-sample estimator with a limited-information estimator. We continue with
+the computation and storing other limited-information estimators.
+
+   . ^suest fit C: oprobit y x1 x2 if y~=2^
+   . ^suest fit D: oprobit y x1 x2 if y~=3^
+
+We are now ready to do the generalized Hausman test for the hypotheses that
+all 4 estimators "estimate the same thing",
+
+   . ^suest combine A B C D^
+   . ^test [ALP = BLP]^
+   . ^test [ALP = CLP], acc^
+   . ^test [ALP = DLP], acc^
+
+
+Example 3
+---------
+
+We test that the analyses using ^logit^, ^probit^, and ^cloglog^ regression
+"yield the same results". Since the three models have a different scale,
+this informal hypothesis is formulated formally as
+
+   Ho: b_logit, b_probit, and b_cloglog are proportional
+
+The following sample session illustrates how this test can be conducted
+using ^suest^.
+
+   . ^suest clear^                               start all over with suest
+
+   . ^suest fit L: logit y x1 x2 x3^             fit a model, save results as L
+
+   . ^suest fit P: probit y x1 x2 x3^            fit a model, save results as P
+
+   . ^suest combine^                             makes the simultaneous results
+                                                 of L and P available like an
+                                                 common estimation command
+
+   . ^testnl ( [L]x1/[P]x1 = [L]x2/[P]x2 )^      testnl can be invoked now
+            ^( [L]x1/[P]x1 = [L]x3/[P]x3 )^      on L and P
+
+   . ^suest, level(90)^                          results can be redisplayed
+
+   . ^suest fit C: cloglog y x1 x2 x3^           fit a model, save as C
+
+   . ^suest combine^                             now (L,P,C) are combined
+
+   . ^testnl ( [L]x1/[P]x1 = [L]x2/[P]x2 )^      now test proportionality
+            ^( [L]x1/[P]x1 = [L]x3/[P]x3 )^      of L, P, and C
+            ^( [L]x1/[C]x1 = [L]x2/[C]x2 )^
+            ^( [L]x1/[C]x1 = [L]x3/[C]x3 )^
+
+
+Remarks
+-------
+
+The statistical theory behind ^suest^ is actually just a non-standard application
+of the sandwich estimator, with Rogers' modification for clustering, as
+computed by @_robust@. We develop the argument for 2 estimators b1 and b2 that
+are defined as equation-estimators, i.e., defined as solution of the equations
+
+   S1(b1) = sum s1_i(b1) = 0.                                           (1)
+   S2(b2) = sum s2_i(b2) = 0.
+
+Let Gji = d/dbj sj_i be the Jacobian of estimation equation. Clearly, maximum-
+likelihood estimation are equation estimators with score
+
+   S_i = d/d beta log(L_i).
+
+Similarly generalized estimation equations and many other estimators can be
+fitted in. With a simply trick we can define the two equations in (1) as a
+single simply equation. Define
+
+   SS1(b1,b2) = S(b1), and
+   SS2(b1,b2) = b2.
+
+Writing SS = (SS1,SS2) and b = (b1,b2), (1) can be formulated as
+
+   SS(b)  = 0.
+
+The the Jacobian of SS be easily expressed in terms of the Jacobians of S1
+and S2, and
+                  ( G1  0  )
+   G = dSS / db = (        )  is blockdiagonal.
+                  ( 0   G2 )
+
+Similarly, the score statistics associated with SS are simply the concatenated
+score statistics of S1 and S2, with out-of-sample values set to 0. Thus, the
+variance of b can be estimated using the ^_robust^ command on the hessian matrix
+G with the concatenated scores.
+
+We want to stress the vce(b1) obtained by the seemingly unrelated estimation
+method is the same as would have been obtained as the robust vc-estimator b,
+treated "in isolation".  Moreover, we have
+
+   cov(b1,b2) = G1 * A12 * G2,
+
+where
+
+   A12 = sum_i s_1i s_i2'
+
+which is just the cross-product version of a simple total estimator.
+
+If b1 and b2 are estimated on different samples, we have to form the union of
+the samples, and set the scores to 0 outside the estimation sample. Clearly,
+this implies that if there is no overlap in the samples for the estimators b1
+and b2, the cross-model cross-score product matrix A12 is 0, and so the
+estimators b1 and b2 are uncorrelated (and even independent).
+
+
+Saved results and side effects
+------------------------------
+
+^suest^ changes equation names of the models saved under its command. For models
+without an explicit equation name, ^suest^ uses the model name as an equation
+name. For models with equations, ^suest^ prefixes model the name to the equation
+names, truncated to 8 chars (provided that this yields unique equation names,
+otherwise ^suest^ simply numbers the equations).
+
+^suest^ takes care of the non-standard way in which ologit and oprobit store
+results: it collects the coefficients under equation ^LP^, and it renames the
+cutpoints to equation ^cutX:_cons^. Thus, ^predict^ may not work properly
+after invoking ^suest^.
+
+^suest^ also sets the out-of-sample values of the score statistics to 0.
+
+
+References
+----------
+
+   Armingher, G. (1990)  Testing Against Misspecification in Parametric
+       Rate Models. In: K.U. Mayer & N.B. Tuma, Event History Analysis in
+       Life Course research. University of Wisconsin Press.
+
+   Hausman, J. ( 1978)  Specification tests in Econometrics,
+       Econometrica 46: 1251-1271.
+
+   White, H. (1982)  Maximum-Likelihood Estimation of Misspecified Models,
+       Econometrica 50: 1-25.
+
+   White, H. (1994) Estimation, Inference and Specification Analysis.
+       Cambridge: Cambridge University Press.
+
+
+Author
+------
+
+    Jeroen Weesie
+    Dept of Sociology/ICS
+    Utrecht University
+    J.Weesie@@fss.uu.nl
+
+This research is supported by grant PGS 50-370 by the Netherlands Organization
+for Scientific Research. It has benefit greatly from discussions with and
+suggestions by Bill Gould, Jerry Hausman, Chris Snijders, Hal White, and Vince
+Wiggins.
+
+
+Also see
+--------
+
+ Manual: [R] _robust
+
+On-line: help for @_robust@   (Robust variance estimates programming command)
+                  @hausman@   (Hausman specification test)
+                  @test@      (Test linear hypotheses after model estimation)
+                  @testnl@    (Test nonlinear hypotheses after model estimation)
+
+    STB: help for @linest@    (Two-stage estimation with linear constraints)

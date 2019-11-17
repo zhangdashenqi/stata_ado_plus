@@ -1,0 +1,113 @@
+/*
+ spxttobit
+*! VERSION 1.0 15jan2012
+*/
+VERSION 10.0
+INCLUDE _std_xlarge
+DEFINE _dlght 300
+INCLUDE header
+HELP hlp1, view("help spxttobit")
+RESET res1
+
+SCRIPT PREINIT
+BEGIN
+ program parseMessage
+ script se_createAsGEE
+END
+
+SCRIPT show_xtset
+BEGIN
+ create STRING note
+ note.setvalue `"For a population-averaged model,"'
+ note.append   `" correlation structures other than"'
+ note.append   `" "exchangeable" and "independent""'
+ note.append   `" require that a time variable be specified."'
+ note.withvalue create CHILD xtset, message(`"" " `"@"'"')
+END
+
+DIALOG main, label("spxttobit- Tobit Spatial Panel Autoregressive GLS Regression") ///
+	tabtitle("Main")
+BEGIN
+ BUTTON   bu_xtset	_xsetbu	_top	_setbuwd ., ///
+ onpush(script show_xtset)			 ///
+ label("Panel settings...")
+ BUTTON   bu_mi_xtset  _xsetbu	_top	_setbuwd ., ///
+ onpush("view dialog mi_xtset")			 ///
+ label("Panel settings...")
+  TEXT  tx_id   20      _top  70  .,	///
+	label("Cross Section:")
+  TEXT  tx_gmm   200       @     80  .,	///
+	label("GMM")
+
+  EDIT sp_id   20    _ss    70  .,	///
+	option("id")			///
+	label("Cross Sections")
+  EDIT sp_gmm   200      @    80  .,	///
+	option("gmm")			///
+	label("GMM")
+
+ TEXT tx_fn1	_lft	_ls	250 	.,	///
+ label("Weight Matrix File Name (dta)") 
+ TEXT tx_weights 280    @       120     .,	///
+	label("Spatial Weight Matrix")
+ FILE fi_fn1   _lft    _ss	250 	.,	///
+ label("Brows...")				///
+ option("wmfile")					///
+ filter("Stata dta File (*.dta)|*.dta|All (*.*)|*.*") ///
+ defext(dta)
+ EDIT ed_wmat  280   @   120  ., ///
+	label("Spatial Weight Matrix")	///
+	option("wmat")
+
+ GROUPBOX gb_group1   _lft     _ss       _iwd     _ht10 , 
+  TEXT     tx_yvar     _ilft   +15    _vnwd     .,	/*
+		*/ label("Dependent Variable:")		/*
+		*/
+  TEXT     tx_xvar     _vlx      @      _cwd2     .,	/*
+		*/ label("Independent Variables:")	/*
+		*/
+  VARNAME  vn_yvar     _ilft         _ss       _vnwd   .,	/*
+		*/ label("Dependent Variable")		/*
+		*/
+  VARLIST  vl_xvar     _vlx         @         380      .,	/*
+		*/ label("Independent Variables")	/*
+		*/
+ CHECKBOX ck_nocons   @   _ms      @  ., option("noconstant") /*
+*/ label("Suppress Constant Term") 
+ TEXT tx_aux     _ilft   _ss   510   .,	///
+	label("Auxiliary Variables")
+ VARLIST vl_aux  _ilft   _ss  510    ., ///
+	label("Auxiliary Variables") ///
+	option(aux)
+
+ CHECKBOX ck_stand   _ilft  _xls   400  ., option("stand") /*
+*/ label("Standardized Weight Matrix and Eigenvalue") 
+END
+
+INCLUDE byifin
+INCLUDE weights_fpai
+INCLUDE se
+
+PROGRAM command
+BEGIN
+ put /program by_output
+ put "spxttobit "
+ varlist main.vn_yvar main.vl_xvar
+ put " " /program ifin_output
+ put " " /program weights_output
+ put /program se_prefix_output
+ require main.fi_fn1
+ require main.ed_wmat
+ require main.sp_id 
+beginoptions
+ optionarg main.fi_fn1
+ optionarg main.ed_wmat
+ optionarg main.sp_id
+ optionarg main.vl_aux
+ option main.ck_nocons
+ option main.ck_stand
+ optionarg main.sp_gmm
+ put " " /program se_output
+ endoptions
+ END
+

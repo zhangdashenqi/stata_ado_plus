@@ -1,0 +1,20 @@
+Printing graphs and creating WordPerfect graph files
+----------------------------------------------------
+by Thomas R. Saving & Jeff Montgomery, Dept. of Economics, Texas A&M University
+
+
+                    ^gphprt^ graphfilename scale
+
+takes any Stata ^.gph^ file, creates the appropriate print file, sends the
+file to your printer, and then erases the print file, leaving the original
+^.gph^ file in place.  The full path name of the graph file is required and
+scale is expressed as a percent of a full landscape page.  If you want a
+smaller image, express your desired size as a percent of 100.  For example,
+a scale of 75 will give you an image that has x- and y-axes 75% of the axes
+for the full-page graph.
+
+Note that the file extension need not be included if you have used the
+Stata default extension ^.gph^.  The scale parameter need not be included
+if the default of full page landscape is satisfactory.
+
+Example:  ^. gphprt c:\stata\files\mygraph 75^

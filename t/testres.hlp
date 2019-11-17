@@ -1,0 +1,107 @@
+.-
+help for ^testres^                                       (STB-40: sg73)
+.-
+
+Table making program testres
+----------------------------
+
+    ^testres^ model_name test_number, [text describing the null hypothesis]
+
+where "model_name" is the name of the model specified in the immediately
+preceding ^modl^ command and "test_number" is a user specified identifier
+for the just issued ^test^ or ^testparm^ command.
+
+
+^testres^ must be used with a preceding ^modl^ command and ^testres^
+immediately follows a ^test^ or a ^testparm^ command.
+
+
+Description
+-----------
+
+    ^testres^ is used in conjunction with the ^modl^, ^test^ (or ^testparm^),
+and ^modltbl^ commands to display in output tables the results (p values) of
+tests of linear restrictions from estimated models.
+
+
+Example
+-------
+
+In the following example we estimate two different models, and we want to
+compare the estimates of the coefficients and t stats for var1 and var2 in
+the two models by displaying the estimates in a ^modltbl^ table. Furthermore,
+we want to test whether the coefficients on var3 and var4 in each model are
+jointly zero, and whether the coefficient of var5 is twice the coefficient of
+var6 in the second model.
+
+   . regress depvar var1 var2 var3 var4
+
+   . modl A var1 var2
+
+   . spec  1 "Baseline model"
+
+   . testparm var3 var4
+
+   . ^testres^ A 1 ,var3 = var4 = 0
+
+   . regress depvar var1 var2 var3 var4 var5 var6
+
+   . modl B var1 var2
+
+   . spec  2 "Model 1 plus var5 and var6"
+
+   . testparm var3 var4
+
+   . ^testres^ B 1 ,var3 = var4 =0
+
+   . test var5=2*var6
+
+   . ^testres^ B 2 ,var5 = 2*var6
+
+   . ^modltbl^ ts A B
+
+
+In this example, each ^modl^ command identified the model and the variables
+for which we want the estimates displayed in the ^modltbl^ table, each
+^spec^ command includes a description of the particular model above the
+^modltbl^ table, and each ^testres^ command identifies the model and the
+particular test for which we want results (p values) displayed. In this case
+we want the results of a test of the null hypothesis that the coefficients on
+var3 and var4 are jointly zero displayed for both model A and model B, and
+we are labeling this test as test "1"; hence, the two commands above,
+
+   . ^testres^ A 1        (the results in model A of test #1)
+
+   . ^testres^ B 1        (the results in model B of test #1)
+
+We also specified that we want the results of a test that the coefficient on
+var5 is twice the coefficient on var6 displayed (we label this test as
+test #2) for model B; hence, the command above,
+
+   . ^testres^ B 2        (the results in model B of test #2)
+
+
+The end result in the ^modltbl^ table will be headings describing the specifi-
+cations of the two models (from the ^spec^ commands), displays of the
+coefficient estimates and t stats for var1 and var2 for model A and model B
+(from the ^modl^ commands), and displays of the p values on test #1 for
+model A and model B, and on test #2 for model B, followed by a description
+of the two different null hypotheses which were tested (from the ^testres^
+commands).
+
+
+
+Author
+------
+
+      John H. Tyler                       
+      Harvard Graduate School of Education
+      email: tylerjo@@hugse1.harvard.edu
+
+
+Also see
+--------
+
+    STB:  STB-40 sg73
+ Online:  help for @modl@ (if installed), @modltbl@ (if installed)
+

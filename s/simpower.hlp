@@ -1,0 +1,55 @@
+.-
+help for ^simpower^
+.-
+
+ANOVA Power Simulation
+----------------------
+
+Usage #1
+
+In this usage, you supply the number of groups, the sample
+sizes of the groups, the means and the standard deviations.  
+
+  . ^simpower^ , ^gr^oups^(^#^)^  ^n(^# #..^)^ ^mu(^# #..^)^ ^s(^# #..^)^ 
+              [ ^reps(^#^)^ ^seed(^#^)^ ]
+
+Examples
+--------
+
+The following example performs 1000 ANOVA simulations 
+with 2 groups, both groups having an N=10 and sd=3.
+  . ^simpower, groups(2) n(10 10) mu(10 15) s(3 3)^ 
+
+This example performs 1000 simulations with 3 groups
+having Ns of 10 10 and 20 and standard deviations
+of 3 6 and 3.
+  . ^simpower, groups(3) n(10 10 20) mu(10 15 12) s(3 6 3)^ 
+
+.-
+
+Usage #2
+
+  . ^simpower^ depvar indvar [, ^reps(^#^)^ ]
+
+With this usage, simanova computes a one way anova of
+^depvar^ by ^indvar^.  It uses the sample sizes, means
+and standard deviations to peform the power simulation.
+
+Examples
+--------
+
+  . ^use http://www.ats.ucla.edu/stat/stata/notes/hsb2^
+  . ^simanova science prog^
+  . ^simanova science prog, reps(5000)^
+
+Acknowledgement
+---------------
+Adapted from simanova by Michael N. Mitchell
+
+Author
+------
+Philip B. Ender
+UCLA Department of Education
+UCLA Academic Technology Services
+ender@@ucla.edu
+

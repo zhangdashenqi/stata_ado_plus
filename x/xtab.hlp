@@ -1,0 +1,54 @@
+Extended cross-tabulations                                    (STB-10: sg12)   
+--------------------------
+
+  ^xtab^ varlist1 [weight] [^if^ exp] [^in^ range]^,^ ^by(^varlist2^)^ tabulate_options
+
+Description
+-----------
+
+^xtab^ cross-tabulates each of the variables in varlist1 against each of the
+variables in varlist2, applying the tabulate_options to each cross-tabulation.
+
+Example
+-------
+
+Suppose you have 6 variables, var1, var2,... var6.  You wish to see how the
+first three (var1-var3) are each related to each of the last three (var4-
+var6).  Using ^xtab^, you type:
+
+             ^xtab^ var1 var2 var3^, by(^var4 var5 var6^)^ options
+
+This generates the following cross-tabulations:
+
+                  var1 by var4    var1 by var5    var1 by var6
+                  var2 by var4    var2 by var5    var2 by var6
+                  var3 by var4    var3 by var5    var3 by var6
+
+In each case, the options you specified would also be presented with
+the cross-tabulation.
+
+Consider this command to be a multi-way extension of the ^tab2^ command,
+designed for different purposes.  For example, if you had five variables
+in varlist1, and two variables in varlist2, this command would generate
+ten tables.  ^tab2^ with all seven variables would generate 21 tables.
+
+In general, if you have n1 variables in the first varlist, and n2 variables
+in the second varlist, ^xtab^ will generate n1*n2 tables.  ^tab2^ applied to
+the combination of each varlist will generate (n1+n2)*(n1+n2-1)/2 tables,
+which will always be larger for n1>1 or n2>1.
+
+Thus, use ^tab2^ if you really wish to see ^all^ of the two-way cross-
+tabulations among a set of variables.  Use ^xtab^ if you wish to see a
+specific set of variables individually cross-tabulated with another
+specific set of variables.
+
+
+Also see
+--------
+Manual: [5s] tabulate
+On-line: ^help^ for ^tab^, ^etab^
+
+Author
+------
+
+Dean H. Judson, 1030 James St., Newberg, OR 97132, 503-537-0660

@@ -1,0 +1,130 @@
+.-
+help for ^pwcorrs^                                         [STB-49 sg64.1]
+.-
+                                    
+Correlations of variables
+-------------------------                          
+                                                       
+ 
+     ^pwcorrs^ [varlist] [if exp] [in range] [weight] 
+	[, ^o^bs ^sig^ ^p^rint(#) ^st^ar(#) ^b^onferroni ^sid^ak ^p^rint(#)
+	   ^a^bove(#) ^v^ars(#) ^sor^t ^cwd^eletion ^sp^earman ^se^lect(list)]
+                                        
+                                                               
+                                                     
+                
+Description                             
+-----------         
+
+^pwcorrs^ displays the Pearson or Spearman rank correlation matrix for 
+varlist or, if ^vars^ was not specified, for all the variables in the dataset. 
+The default calculation of individual correlation coefficients is made 
+independently and thus the matrix contains the pairwise coefficients. 
+Optionally, pairwise deletion can be requested. The sample n and
+a test of independence are reported as an option. String variables are
+omitted from the analytic processing. Duplicate variables specified in 
+varlist are removed before processing. A specific subset of variables
+can be selected for processing and displayed using the select option.    
+         
+                      
+Options used with ^pwcorrs^                          
+-------------------------                           
+
+^spearman^ specifies Spearman correlations. The default is to perform
+    Pearson correlations.
+                                 
+^obs^ adds a line to each row of the matrix reporting the number of 
+    observations used in calculating the correlation coefficient. 
+                                   
+^sig^ adds a line to each row of the matrix reporting the significance level 
+    of each correlation coefficient.               
+                                                        
+^print(#)^ specifies the significance level of correlation coefficients to be
+    printed.  Coefficients with larger significance levels are left blank.  
+    ^print(10)^ or ^print(.1)^ would list only coefficients significant at the
+    10% level or better.      
+                                                                
+^star(#)^ specifies the significance level of coefficients to be starred.
+    ^star(5)^ or ^star(.05)^ would star all coefficients significant at the 5%
+    level or better.              
+                                                         
+^bonferroni^ makes the Bonferroni adjustment to calculated significance 
+    levels. This affects printed significance levels and the ^print()^ and
+    ^star()^ options.  "^pwcorr2, print(.05) bonferroni^" prints 
+    coefficients with Bonferroni-adjusted significance levels of .05 or less.
+                                             
+^sidak^ makes the Sidak adjustment to calculated significance levels.  This
+    affects printed significance levels and the ^print()^ and ^star()^ 
+    options. "^pwcorr2, print(.05) sidak^" prints coefficients with Sidak-
+    adjusted significance levels of .05 or less.             
+
+^vars(#)^ specifies that on the first # variables on the varlist are to be 
+    correlated with the the variables on the varlist. This produces # columns
+    of correlations rather than a correlation matrix. From 1 to 6 vars may be
+    specified.
+
+^select(list)^ selects the number or letters of the alphabet to be included
+    in the analyses. A range can be selected as well, e.g., (a f s-w _ 3).
+
+^sort^ requests the varlist be reported in sorted order. If ^vars(#)^ is 
+    specified the first ^vars(#)^ will not be sorted.
+
+^above(#)^ specifies the minimum level of correlation coefficients to be
+    printed.  Coefficients with smaller coefficients are left blank.
+    above(.5) would list only coefficients of 0.5 or greater.
+
+^cwdeletion^ removes observations with missing values for the varlist from
+    the calculations.
+
+                             
+              
+Examples                   
+--------                    
+                          
+ . ^pwcorrs^                    
+ . ^pwcorrs price weight mpg displ^   
+ . ^pwcorrs price weight mpg displ, sig var(2) sort^
+ . ^pwcorrs price weight mpg displ, sig obs var(2) above(0.5) sp cwd sort^
+ . ^pwcorrs price weight mpg displ, sig obs^      
+ . ^pwcorrs price weight mpg displ, sig bon se(a b s-t)^    
+ . ^pwcorrs price weight mpg displ, star(.05)^      
+ . ^pwcorrs price weight mpg displ, star(.05) bon^    
+ . ^pwcorrs price weight mpg displ, print(.05) star(.01) bon^
+
+ . ^pwcorrs ha com _all,v(2) sort sel(a f s-w _3) sp^          
+                           Spearman Correlations                          
+                    
+            |       ha     comp 
+  ----------+------------------
+         ha |   1.0000           
+       comp |   0.3848   1.0000    
+        age |   0.4940   0.1602  
+   am_stiff |   0.1675   0.1491
+   anxindex |   0.0539  -0.0733 
+   fatigsca |   0.0673   0.0345
+   followup |   0.0622   0.1599
+   severity |   0.1855  -0.0135
+        sex |   0.0978   0.1652
+   sleepsca |   0.0999   0.0032
+   smokenow |  -0.0079  -0.0391
+   smokepst |   0.0117  -0.0154 
+    smokeve |   0.0204   0.0112
+   specdate |  -0.0687   0.0183
+    tjrhipl |   0.1161  -0.0021
+    tjrhipr |  -0.0913  -0.0294
+     tjrknl |   0.1900   0.0424
+     tjrknr |   0.1902   0.1813
+        wdi |   0.2440   0.1255
+     weight |  -0.0919  -0.0369
+   wpainsca |   0.0965  -0.0438
+
+  .  
+
+Also see                 
+--------                  
+
+    STB:  sg64.1 (STB-49), sg64 (STB-35)                        
+ Manual:  [R] ^spearman^ ^correlate^ 
+On-line:  help for @impute@, @pwcorr@, @spearman@, @correlate@,
+         @summarize@, @vce@
+

@@ -1,0 +1,29 @@
+.-
+help for ^sdmdemo^ 
+.-
+
+Sampling distribution of the mean demonstration
+-----------------------------------------------
+
+.  ^sdmdemo^ [n]
+
+Description
+-----------
+
+^sdmdemo^ displays a standard normal distribution and
+         a sampling distribution of the mean for
+         sample size ^n^.  The default value for ^n^ is
+         1, but you can supply a different value.  You 
+         can then alter the value of ^n^ via the 
+         dialog box that is displayed.  You can also
+         show a "movie" that shows how the sampling 
+         distribution of the mean changes as ^n^ varies
+         from 1 to 25
+         
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA, Academic Technology Services
+      ender@@ucla.edu 

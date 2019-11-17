@@ -1,0 +1,29 @@
+Specify date variables                                          (STB-15: sts4)
+----------------------
+
+	^datevars^ [ varname [ varname [ ... ] ] ]
+
+specifies the variables that identify the date of each observation.
+
+
+Remarks
+-------
+
+^datevars^ tells Stata which variables contain date information.  The ^period^
+command tells Stata how to interpret the variables specified by ^datevar^.
+If there is more than one variable, specify the "slowest-moving" variable
+first.  For example, with monthly data, you would type ^datevars year month^,
+NOT ^datevars month year^.
+
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts4 (STB-15)
+On-line:  ^help^ for ^findsmpl^, ^period^

@@ -1,0 +1,98 @@
+.-
+help for ^exlocs^                                             (Kenneth L. Simons)
+.-
+
+Create data points for extra geographic locations
+-------------------------------------------------
+
+        ^exlocs^ [^if^ exp] [^in^ range] , ^n(^#^)^ [^o^rigline^(^newvarname^)^
+                                           ^exl^ocnum^(^newvarname^)^
+				           ^nex^locs^(^newvarname^)^ ^dropex^s]
+
+
+Description
+-----------
+
+The ^exlocs^ command is for analysis of geographic data.  It is useful when, for
+each data point, there are multiple latitudes and longitudes.  A first latitude
+and longitude must be given in variables named lat and lon.  Additional latitudes
+and longitudes may be given in variables named exlat1, exlon1, exlat2, exlon2,
+....  Each entry in a dataset may have a no-extra-location code for some or all
+of the extra latitude & longitude variables, but for a given line of data the
+no-extra-location codes must all be in the variables with the higher numbers
+(for example, the first three extra latitudes and longitudes may be valid
+locations and the following four may be no-extra-location codes, but it is not
+okay for extra variables 1, 3, and 6 only to be no-extra-location codes).
+The no-extra-location code is the number 999, or a missing data code.  This
+command generates an extra line of data for each extra location in each of the
+original lines of data.  The extra locations replace the variables lat and lon
+in the added data.  All other variables remain the same for each original data
+point and its extra locations.
+
+
+Options
+-------
+
+^n(^#^)^ specifies the number of extra location latitudes (and longitudes)
+    recorded.  This number must be specified.
+
+^o^rigline^(^newvarname^)^ specifies a new variable to be created that contains
+    the data point number (in the order in which the data were sorted) before
+    adding the extra locations as new data points.
+
+^exl^ocnum^(^newvarname^)^ specifies a new variable to be created that contains
+    0 for the original data points and otherwise 1, 2, etc. according to whether
+    the locations came from exlon1 and exlat1, exlon2 and exlat2, etc.
+
+^nex^locs^(^newvarname^)^ specifies a new variable to be created that contains
+    the number of extra locations added for each original data point.  For
+    example, if 3 new locations were added for the original data point 7, then
+    the original data point plus all three new data points have a value of 3
+    for the newly-created variable.
+
+^dropex^s causes the exlat1, exlon1, etc. variables that were used to be dropped
+    after creating the new data points.
+
+
+Remarks
+-------
+
+If this command terminates prematurely, because of an error or because of
+pressing the @break@ key or button, the data may be modified improperly.  Save
+your data, if necessary, before using the ^exlocs^ command!
+
+The command assumes that exlon# is 999 or missing only if exlat# is 999 or
+missing.  New data points are created or not based on the exlat# variables.
+The values of the exlat# and exlon# variables will then be copied into the lat
+and lon variables for any new data points.  Therefore, you may wish to ensure
+that exlon# is 999 or missing when (and only when) exlat# is 999 or missing;
+otherwise newly-created data points may have lon equal to 999 or missing.
+
+The command also does not check whether each line of data has the no-extra-
+location codes all in the variables with the higher numbers (see above).  You
+should ensure that the data have been coded properly in this respect.  If they
+are coded improperly, some of the extra locations (those for which locations
+are 999 or missing for a given data point in exlat# and exlon# variables with
+lower numbers) will be ignored.
+
+
+Examples
+--------
+
+ . ^gen exlat1 = sumhomex^      (sumhomex is latitude of extra summer home)
+ . ^gen exlon1 = sumhomey^     (sumhomex is longitude of extra summer home)
+ . ^exlocs, n(1)^
+ . ^exlocs, n(1) origline(origline) exlocnum(exlocnum) nexlocs(nexlocs)^
+ . ^exlocs, n(1) dropexs^
+
+
+Author
+------
+
+Kenneth L. Simons (1999)
+
+
+Also see
+--------
+
+On-line:  help for @globdist@, @circnum@

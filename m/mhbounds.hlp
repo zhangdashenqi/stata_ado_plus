@@ -1,0 +1,141 @@
+{smcl}
+{* 29jan2007}{...}
+{hline}
+help for {hi:mhbounds}{right:(SJ7-1: st0121)}
+{hline}
+
+{title:Mantel-Haenszel bounds to check sensitivity of estimated average treatment effects on the treated}
+
+{p 8 12 2}
+  {cmd:mhbounds} {it:outcome} [{it:if}]{cmd:,} 
+  {opth g:amma(numlist)} 
+  [{opth treated(newvar)}
+   {opth weight(newvar)}
+   {opth support(newvar)}
+   {opth stratum(newvar)}
+   stratamat]
+
+
+{title:Description}
+
+{pstd}{cmd:mhbounds} calculates Rosenbaum bounds for average treatment effects
+on the treated in the presence of unobserved heterogeneity (hidden bias)
+between treatment and control cases, where both treatment and response
+variables are binary (for applications in economics, see Aakvik [2001]
+and Caliendo, Hujer, and Thomsen [2005]). {cmd:mhbounds} takes the response
+variable as input variable, {it:newvar}. The procedure then calculates
+Mantel-Haenszel tests statistics that give bound estimates of significance
+levels at given levels of hidden bias under the assumption of either
+systematic over- or underestimation of treatment effects. When {helpb psmatch}
+or {helpb psmatch2} is installed, {cmd:mhbounds} uses {cmd:_treated},
+{cmd:_weight}, and {cmd:_support}.  When {cmd:mhbounds} is run independently
+from {cmd:psmatch} or {cmd:psmatch2}, users must provide variable
+names indicating the treatment, the weight received in the matching process,
+and the support.  {cmd:mhbounds} is suited for {it:k}th nearest neighbor
+matching without replacement and for stratification matching.
+
+
+{title:Options}
+
+{phang}
+{opth gamma(numlist)} is required and specifies the values of cap gamma for
+which to carry out the sensitivity analysis. Estimates at cap gamma = 1 (no
+heterogeneity) are included in the calculations by default.
+
+{phang}
+{opth treated(newvar)} specifies the name of the user-provided treatment
+variable. If no name is provided, {cmd:mhbounds} expects {cmd:_treated} from
+{cmd:psmatch} or {cmd:psmatch2}.
+
+{phang}
+{opth weight(newvar)} specifies the name of the user-provided variable
+containing the frequency with which the observation is used as a match. If no
+name is provided, {cmd:mhbounds} expects {cmd:_weight} from {cmd:psmatch} or
+{cmd:psmatch2}.
+
+{phang}
+{opth support(newvar)} specifies the name of the user-provided common support
+variable.  If no name is provided, {cmd:mhbounds} expects {cmd:_support} from
+{cmd:psmatch} or {cmd:psmatch2}.
+
+{phang}
+{opth stratum(newvar)} specifies the name of the user-provided variable
+indicating strata.  Aakvik (2001) notes that the Mantel-Haenszel test can be
+used to test for no treatment effect both within different strata of the
+sample and as a weighted average between strata.  This option is particularly
+useful after stratification matching, using, for example, {helpb atts}.
+
+{phang}
+{opt stratamat}, combined with {opt stratum(newvar)}, keeps in memory
+not only the matrix {cmd:outmat} containing the overall/combined test
+statistics but also the matrices {cmd:outmat_j} containing the
+strata-specific test statistics, j=1,...,{it:#}strata.
+
+
+{title:Remarks}
+
+{pstd}
+In some applications, the significance level on the bounds might fall first
+and then rise again. This is the case when gamma becomes so large that
+the estimated average treatment effect on the treated changes sign and becomes
+significant.
+
+
+{title:Examples}
+
+{phang}1.  Running {cmd:mhbounds} after {cmd:psmatch2}:
+
+{phang2}{cmd:. psmatch2 college, outc(wage) pscore(pscore) caliper(.25)}
+                {cmd:common noreplacement}{p_end}
+{phang2}{cmd:. mhbounds wage, gamma(1 (0.05) 2)}{p_end}
+
+{pmore}Here {cmd:mhbounds} performs sensitivity analysis at gamma =
+1,1.05,1.10,...,2.
+
+{phang}2.  Running {cmd:mhbounds} with user-defined treatment, weight, and
+support indicators:
+
+{phang2}{cmd:. mhbounds outcome, gamma(1 (0.05) 2) treated(mytreat)}
+               {cmd:weight(myweight) support(mysupport)}
+
+{phang}3.  Running {cmd:mhbounds} with user-defined treatment, weight, and
+support indicators with different strata in the population:
+
+{phang2}{cmd:. mhbounds outcome, gamma(1 (0.05) 2) treated(mytreat)}
+               {cmd:weight(myweight) support(mysupport) stratum(mystratum)}
+	       {cmd:stratamat}
+
+
+{title:References}
+
+{phang}
+Aakvik, A. 2001. Bounding a matching estimator: The case of a Norwegian
+training program. {it:Oxford Bulletin of Economics and Statistics} 63: 115-143.
+
+{phang}
+Caliendo, M., R. Hujer, and S. L. Thomsen. 2005. The employment effects of job
+creation schemes in Germany. IZA Discussion Paper No. 1512. Bonn, Germany.
+
+{phang}
+Rosenbaum, P. R. 2002. {it:Observational Studies}. 2nd ed. New York: Springer.
+
+
+{title:Authors}
+
+        Sascha O. Becker
+        CES and Ifo at University of Munich, Germany
+        so.b@gmx.net 
+
+        and 
+        
+        Marco Caliendo
+        DIW Berlin, Germany
+        mcaliendo@diw.de
+
+
+{title:Also see}
+
+{psee}
+Online:  {helpb pscore}, {helpb atts}, {helpb psmatch}, {helpb psmatch2},
+if installed
+{p_end}

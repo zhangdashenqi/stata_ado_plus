@@ -1,0 +1,129 @@
+{smcl}
+{* 19feb2008}{...}
+{hi:help wagegap}{right:also see: {helpb adolist}}
+{hline}
+
+{title:Title}
+
+{p 4 15 2}{hi:wagegap} {hline 2} Wage gap decomposition packages
+
+
+{title:Description}
+
+{pstd}
+This package list comprises ado packages used for the
+decomposition of wage gaps or income differentials between
+groups and related applications.
+
+
+{title:Packages}
+
+{dlgtab:Decomposition of wage differentials}
+
+{p 4 19 2}{helpb oaxaca}{space 6}
+module to compute Blinder-Oaxaca decomposition {it:by} Ben Jann
+{p_end}
+{p 4 19 2}{helpb decomp}{space 6}
+alternate module to compute Blinder-Oaxaca decomposition {it:by} Ian Watson
+{p_end}
+{p 4 19 2}{helpb decompose}{space 3}
+antecessor of {cmd:oaxaca} {it:by} Ben Jann
+{p_end}
+
+{dlgtab:Difference-in-difference decomposition}
+
+{p 4 19 2}{helpb jmpierce2}{space 3}
+module to compute trend decomposition of wage differentials {it:by} Ben Jann
+{p_end}
+{p 4 19 2}{helpb smithwelch}{space 2}
+alternate module to compute trend decomposition of wage differentials {it:by} Ben Jann
+{p_end}
+
+{dlgtab:Generalizations}
+
+{p 4 19 2}{helpb gdecomp}{space 5}
+module to compute non-linear Blinder-Oaxaca decomposition {it:by} Tamas Bartus
+{p_end}
+{p 4 19 2}{helpb fairlie}{space 5}
+module to compute Fairlie decomposition for binary outcomes {it:by} Ben Jann
+{p_end}
+{p 4 19 2}{helpb jmpierce}{space 4}
+module to compute decomposition of differences in various statistics {it:by} Ben Jann
+{p_end}
+{p 4 19 2}{helpb dfl}{space 9}
+module to compute DiNardo/Fortin/Lemieux counterfactual densities {it:by} Joao Pedro Azevedo
+{p_end}
+
+{dlgtab:Related packages}
+
+{p 4 19 2}{helpb devcon}{space 6}
+module to apply the deviation contrast transform {it:by} Ben Jann
+{p_end}
+{p 4 19 2}{helpb margeff}{space 5}
+module required by {cmd:gdecomp} {it:by} Tamas Bartus
+{p_end}
+
+
+{title:Remarks}
+
+{pstd}{cmd:oaxaca}, {cmd:decomp}, and {cmd:decompose} compute the classical
+Blinder-Oaxaca wage gap decomposition (Blinder 1973, Oaxaca 1973). {cmd:oaxaca}
+provides standard errors for the decomposition components. {cmd:decompose} is an
+early version of {cmd:oaxaca}.
+
+{pstd}{cmd:jmpierce2} and {cmd:smithwelch} are concerned with the decomposition
+of changes in the wage gap over time (Juhn et al. 1991, Smith and Welch 1989)
+or, say, wage gap differences between countries (Blau and Kahn 1996).
+
+{pstd}{cmd:gdecomp} uses marginal effect to generalize the Blinder-Oaxaca
+decomposition to nonlinear models. {cmd:fairlie} implements one approach
+to decompose group differences in a binary outcome suggested by Fairlie
+(2005).
+
+{pstd}{cmd:jmpierce} and {cmd:dfl} are concerned with differences in
+distributional properties in general, not only in means. Whereas
+{cmd:jmpierce} provides a method to decompose differences in various
+summary measures based on adjusted residual distributions (Juhn et al. 1993),
+{cmd:dfl} focuses on differences in counterfactual density functions based
+on reweighting (DiNardo et al. 1996).
+
+{pstd}{cmd:devcon} provides a solution for the identification problem
+that exists with categorical regressors in the Blinder-Oaxaca decomposition.
+{cmd:margeff} is a package required by {cmd:gdecomp}. It computes partial
+effects after model estimation.
+
+{pstd}What is certainly missing in this collection is a package to implement
+decomposition methods based on quantile regression in the manner of,
+e.g., Machado and Mata (2005). Furthermore, it would be wishful to have
+implementations of alternative decomposition approaches for binary outcomes
+(see the references in help {helpb fairlie}).
+
+
+{title:References}
+
+{phang}Blau, F.D., L.M. Kahn (1996). Wage Structure and Gender Earnings Differentials: an International Comparison. Economica 63: S29-S62.{p_end}
+{phang}Blinder, A.S. (1973). Wage Discrimination: Reduced Form and Structural Estimates. The Journal of Human Resources 8: 436-455.{p_end}
+{phang}DiNardo, J.E., N. Fortin, T. Lemieux (1996). Labour Market Institutions and the Distribution of Wages, 1973-1992: A Semiparametric Approach. Econometrica 64: 1001-1046.{p_end}
+{phang}Fairlie, R.W. (2005). An extension of the Blinder-Oaxaca decomposition technique to logit and probit models. Journal of Economic and Social Measurement 30: 305-316.{p_end}
+{phang}Juhn, C., K.M. Murphy, B. Pierce (1991). Accounting for the Slowdown in Black-White Wage Convergence. Pp. 107-143 in: Workers and Their Wages, ed. by Marvin Kosters, Washington, DC: AEI Press.{p_end}
+{phang}Juhn, C., K.M. Murphy, B. Pierce (1993). Wage Inequality and the Rise in Returns to Skill. Journal of Political Economy 101: 410-442.{p_end}
+{phang}Machado, J.A.F., J. Mata (2005). Counterfactual decomposition of changes in wage distributions using quantile regression. Journal of Applied Econometrics 20: 445-465.{p_end}
+{phang}Oaxaca, R. (1973). Male-Female Wage Differentials in Urban Labor Markets.  International Economic Review 14: 693-709.{p_end}
+{phang}Smith, J.P., F.R. Welch (1989). Black Economic Progress After Myrdal. Journal of Economic Literature 27: 519-564.{p_end}
+
+
+{title:Package list source file}
+
+{pstd} {view wagegap.pkl, adopath asis:wagegap.pkl}
+
+
+{title:Assembled by}
+
+{pstd} Ben Jann, ETH Zurich, jann@soz.gess.ethz.ch
+
+
+{title:Also see}
+
+{psee} Online:  {helpb ado}, {helpb adoupdate}, {helpb ssc},
+{help sj}, {help stb}; {helpb adolist} (if installed)
+

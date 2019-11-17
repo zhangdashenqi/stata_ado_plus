@@ -1,0 +1,96 @@
+.-
+help for ^listcoef^ - 03Nov2005
+.-
+
+List transformed regression coefficients and guidelines for interpretation
+--------------------------------------------------------------------------
+
+    ^listcoef^ [varlist], [^pv^alue(#) [^f^actor|^p^ercent|^s^td] ^c^onstant
+        ^r^everse ^gt^ ^lt^ ^adj^acent ^nol^abel ^ex^pand ^m^atrix  ^h^elp]
+
+Description
+-----------
+
+^listcoef^ lists the estimated coefficients for a variety of regression models.
+Options allow you to specify different transformations of the coefficients,
+such as factor change and percent change. Coefficients can be standardized for
+a unit variance in the independent and/or dependent variables. For ^mlogit^,
+coefficients for all comparisions among outcomes are included.
+
+NOTE: For models with categorical outcomes, the output is much clearer if you
+assign value labels to the dependent variable.
+
+Options
+-------
+
+^varlist^ indicates that coefficients for only these variables are to be listed
+    If no ^varlist^ is given, coefficients for all variables are listed.
+
+^pvalue^ specifies that only coefficients with a this significance level or
+    smaller will be printed.
+
+^factor^ specifies that factor change coefficients should be listed.
+
+^percent^ specifies that percent change coefficients should be listed.
+
+^std^ specifies that coefficients standardized to a unit variance for the
+    independent and/or dependent variables should be listed.
+
+^constant^ includes the constants in the output.
+
+^reverse^ reverses the comparison implied by the computation of factor or
+    percent change coefficients for ^logit^, ^ologit^, ^clogit^, or ^rologit^;
+    that is, it presents results indicating the change in the odds of b vs. a
+    instead of a vs. b.
+
+^matrix^ returns results in r() class matrices.
+
+^help^ includes details on the meaning of each coefficient.
+
+Options for ^mlogit^ and/or ^slogit^
+---------------------------------
+
+^gt^ specifies that only comparisons where the first category has a larger
+    value than the second will be printed (e.g., comparing outcome 2
+    versus 1, but not 1 versus 2).
+
+^lt^ specifies that only comparisons where the first category has a smaller
+    value than the second will be printed (e.g., comparing outcome 1 versus
+    2, but not 2 versus 1).
+
+^adjacent^ specifies that only comparisons where the two category values are
+    adjacent will be printed (e.g., comparing outcome 1 versus 2 or 2 versus
+    1, but not 1 versus 3).
+
+^nolabel^ requests that category numbers rather than value labels be used
+    in the output.
+
+^expand^ requests expanded output comparing all pairs of outcome categories
+    for ^slogit^.
+
+Compatable Models
+-----------------
+
+^listcoef^ can be used with: ^clogit^, ^cloglog^, ^cnreg^, ^intreg^, ^logistic^, ^logit^,
+^mlogit^, ^mprobit^, ^nbreg^, ^ologit^, ^oprobit^, ^poisson^, ^probit^, ^regress^, ^rologit^,
+^slogit^, ^tobit^, ^zinb^, ^zip^, ^ztnb^, and ^ztp^.
+
+Examples
+--------
+
+To compute standardized regression coefficients for only those variables that
+are significant at the .05 level, including the constant:
+
+ . ^regress job fem phd ment fel art cit^
+ . ^listcoef,constant pv(.05)^
+
+For mlogit, to compute the percentage change in the odds for white with help
+on the interpretation:
+
+ . ^mlogit occ white ed exp^
+ . ^listcoef white, percent help^
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu

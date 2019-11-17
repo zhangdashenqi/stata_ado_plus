@@ -1,0 +1,111 @@
+{smcl}
+{* 3nov2004/8oct2007/18dec2009}{...}
+{hline}
+{cmd:help ovfplot}{right:({browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0027":SJ10-1: gr0009_1})}
+{hline}
+
+{title:Title}
+
+{p 4 4 2}{hi:ovfplot} {hline 2} Plots of observed versus fitted values after model fit
+
+
+{title:Syntax}
+
+{p 8 17 2}{cmd:ovfplot}
+[{cmd:,} 
+{it:scatter_options}
+{cmd:lowess}[{cmd:(}{it:lowess_options}{cmd:)}]
+{cmd:rcspline}[{cmd:(}{it:rcspline_options}{cmd:)}]
+[{cmd:addplot(}{it:plot}{cmd:)} 
+{c |}
+{cmd:plot(}{it:plot}{cmd:)}]
+]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:ovfplot} plots observed versus fitted or predicted values for the
+response from an immediately previous {cmd:regress} or similar command, with 
+a line of equality superimposed. 
+
+
+{title:Options}
+
+{p 4 8 2} 
+{it:scatter_options} affect the rendition of the plotted points; see
+{help scatter}.
+Note also that the presentation of the line of equality observed = fitted  
+can be tuned by using the options {cmd:clstyle()}, 
+{cmd:clpattern()}, {cmd:clwidth()}, and {cmd:clcolor()}. 
+
+{p 4 8 2}{cmd:lowess} specifies that a trace of lowess smoothing of observed 
+given predicted be added to the plot. {cmd:lowess} may also be specified 
+with options for {helpb twoway lowess}. 
+
+{p 4 8 2}{cmd:rcspline} (Stata 10 and later) specifies that a trace of restricted cubic spline
+smoothing of observed given predicted be added to the plot. {cmd:rcspline} 
+may also be specified with either the {cmd:nknots()} or {cmd:knots()} 
+options of {helpb mkspline} or the graphics options of {helpb twoway mspline}. 
+
+{p 4 8 2}
+{opth "addplot(addplot_option:plot)"} (Stata 9 and later) or
+{opth "plot(plot_option:plot)"} (Stata 8 only)
+provides a way to add other plots to the generated graph.
+
+
+{title:Remarks} 
+
+{p 4 4 2}In more technical detail, {cmd:ovfplot} plots a single dependent or
+response variable as specified in {cmd:e(depvar)} on the y axis and
+whatever single variable is calculated by the default of {cmd:predict} on the
+x axis, which makes sense whenever those variables are on the same scale.
+ 
+{p 4 4 2}The plot is restricted to the estimation sample.  
+
+{p 4 4 2}Such plots have also been called calibration plots (e.g., Harrell
+[2001]; Gelman and Hill [2007]). 
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. sysuse auto}
+
+{p 4 8 2}{cmd:. regress mpg weight}{p_end}
+{p 4 8 2}{cmd:. ovfplot}{p_end}
+{p 4 8 2}{cmd:. gen weightsq = weight^2}{p_end}
+{p 4 8 2}{cmd:. regress mpg weight weightsq}{p_end}
+{p 4 8 2}{cmd:. ovfplot}{p_end}
+{p 4 8 2}{cmd:. ovfplot, rcspline}{p_end}
+{p 4 8 2}{cmd:. ovfplot, rcspline(nknots(3))}
+
+{p 4 8 2}{cmd:. glm mpg weight foreign, link(log)}{p_end}
+{p 4 8 2}{cmd:. ovfplot, by(foreign)}
+
+
+{title:References}
+
+{p 4 8 2}Gelman, A., and J. Hill. 2007. 
+{it:Data Analysis Using Regression and Multilevel/Hierarchical Models}.
+New York: Cambridge University Press. 
+
+{p 4 8 2}Harrell Jr., F. E. 2001. 
+{it:Regression Modeling Strategies: With Applications to Linear Models, Logistic Regression, and Survival Analysis}.
+New York: Springer. 
+    
+
+{title:Author}
+
+{p 4 4 2}Nicholas J. Cox{break}
+Durham University, U.K.{break} 
+n.j.cox@durham.ac.uk
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 10, number 1: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0027":gr0009_1},{break}
+         {it:Stata Journal}, volume 4, number 4: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=gr0009":gr0009}
+
+{psee}
+{space 2}Help:  {manhelp predict R}, {manhelp scatter G:graph twoway scatter}, {helpb modeldiag} 
+{p_end}

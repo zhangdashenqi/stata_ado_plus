@@ -1,0 +1,48 @@
+{smcl}
+{* 13nov2003}{...}
+{hline}
+help for {hi:simexplot}{right:(SJ3-4: st0049, st0050, st0051)}
+{hline}
+
+{title:Plotting the effect of measurement error on parameter estimates}
+
+{p 8 12 2}
+{cmd:simexplot} {it:varlist} [,
+	{cmd:textboxopts(}{it:textoptions}{cmd:)}
+	{it:twoway_options}
+	]
+
+{p 4 4 2}where {it:varlist} is one of the {it:indepvars} or {it:label} 
+variables from the preceding {cmd:simex} call. If no varlist is specified
+then all variables are plotted.
+
+{title:Description}
+
+{p 4 4 2} 
+{cmd:simexplot} 
+will plot the effect of measurement error on parameter estimate. It
+gives a visual representation on how the parameter estimates are
+derived. The line shows the extrapolation back to -1. Note that if the
+rational extrapolant was used no extrapolant line is drawn.
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:textboxopts()} specifies options that affect how the labeled points are
+rendered; see option descriptions in {it:{help added_text_options}}.
+
+{p 4 8 2}
+{it:twoway_options} are any of the options documented in help
+{it:{help twoway_options}} excluding {cmd:by()}.  These include options for
+titling the graph (see help {it:{help title_options}}) and options for saving
+the graph to disk (see help {it:{help saving_option}}).
+
+{title:Examples}
+
+{p 4 13 2}
+See {cmd: simex} for examples.
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {help qvf}, {help simex}, {help qvf}

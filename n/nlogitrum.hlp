@@ -1,0 +1,216 @@
+{smcl}
+{* 18dec2001}{...}
+{hline}
+help for {hi:nlogitrum} {right:(SJ2-3: st0017)}
+{hline}
+
+{title:Nested logit estimation, consistent with random utility maximization}
+
+    Estimate model
+
+{p 8 15 2}{cmd:nlogitrum} {it:depvar indepvars} [{it:weight}] [{cmd:if} {it:exp}] [{cmd:in} {it:range}]
+{bind:{cmd:,} {cmd:group(}{it:varname}{cmd:)}} {cmd:nests(}{it:altsetvarB} [ {it:... altsetvar2 altsetvar1}]{cmd:)}
+{bind:[ {cmdab:notr:ee}} {cmdab:nolab:el} {cmdab:clo:git}
+{cmdab:l:evel}{cmd:(}{it:#}{cmd:)} {cmdab:nolo:g} {cmdab:r:obust}
+{cmdab:ivc:onstraints}{cmd:(}{it:string}{cmd:)}
+{cmdab:const:raints}{cmd:(}{it:numlist}{cmd:)}
+{it:maximize_options} ]
+
+{p 4 4 2}{cmd:by} {it:...} {cmd::} may be used with {cmd:nlogitrum}; see help
+{help by}.
+
+{p 4 4 2}{cmd:fweight}s and {cmd:iweight}s are allowed; see help {help
+weights}, but they are interpreted to apply to groups as a whole and not to
+individual observations.
+
+{p 4 4 2}{cmd:nlogitrum} shares the features of all estimation commands; see
+help {help est}.
+
+{p 4 4 2}
+where
+
+{p 4 15 2}{it:depvar} {space 3} is a dichotomous variable coded as 0 for not
+selected alternatives and 1 for the selected alternative.{p_end}
+{p 4 15 2}{it:indepvars} {space 1}are the attributes of the bottom-level
+alternatives (absolute or perceived) and possibly interactions of individual
+attributes with the bottom-level alternatives.{p_end}
+{p 4 15 2}{it:altsetvarB} is a categorical variable that identifies the
+bottom, or final, set of all alternatives.{p_end}
+{p 4 15 2}{it:altsetvar2} is a categorical variable that identifies the
+second-level set of alternatives -- these must be mutually exclusive groups of
+the third-level alternatives.{p_end}
+{p 4 15 2}{it:altsetvar1} is a categorical variable that identifies the
+top- or first-level set of alternatives -- these alternatives must be mutually
+exclusive groups of the second-level alternatives.{p_end}
+
+
+{title:Syntax for predict}
+
+{p 8 16 2}{cmd:predict} [{it:type}] {it:newvarname} [{cmd:if} {it:exp}]
+	[{cmd:in} {it:range}] [{cmd:,} {it:statistic} ]
+
+
+{p 4 4 2}where {it:statistic} is
+
+{p 4 16 2}{cmd:pb} {space 5} predicted probability of choosing bottom-level, or
+        choice-set, alternatives -- each alternative identified by
+        {it:altsetvarB}; the default.{p_end}
+{p 4 16 2}{cmd:p1} {space 5} predicted probability of choosing first-level
+        alternatives -- each alternative identified by {it:altsetvar1}.{p_end}
+{p 4 16 2}{cmd:p2} {space 5} predicted probability of choosing second-level
+	alternatives -- each choice identified by {it:altsetvar2}.{p_end}
+{p 4}...{p_end}
+{p 4 16 2}{cmd:p}{it:#} {space 5} predicted probability of choosing {it:#}-level
+	alternatives -- each alternative identified by {it:altsetvar#}.{p_end}
+{p 4 16 2}{cmd:xb} {space 5} linear prediction for the bottom-level
+	alternatives.{p_end}
+{p 4 15 2}{cmd:condpb} {space 1} Pr(each bottom alternative | alternative is
+	available after all earlier choices).{p_end}
+{p 4 15 2}{cmd:condp1} {space 1} Pr(each level 1 alternative) = p1.{p_end}
+{p 4 15 2}{cmd:condp2} {space 1} Pr(each level 2 alternative | alternative is
+	available after level 1 decision).{p_end}
+{p 4 15 2}{cmd:condp3} {space 1} Pr(each level 3 alternative | alternative is
+	available after stage 1 and stage 2 decisions).{p_end}
+{p 4}...{p_end}
+{p 4 15 2}{cmd:condp}{it:#} {space 1} Pr(each level {it:#} alternative |
+	alternative is available after all previous stage decisions).{p_end}
+{p 4 15 2}{cmd:ivb} {space 4} inclusive value for the bottom-level
+	alternatives.{p_end}
+{p 4 15 2}{cmd:iv1} {space 4} inclusive value for the first-level
+	alternatives.{p_end}
+{p 4 15 2}{cmd:iv2} {space 4} inclusive value for the second-level
+	alternatives.{p_end}
+{p 4}...{p_end}
+{p 4 15 2}{cmd:iv}{it:#} {space 4} inclusive value for the {it:#}-level alternatives.
+
+{p 4 4 2}The inclusive value for the first-level alternatives is not used in
+the estimation of the model, therefore, it is not calculated.
+
+{p 4 4 2}These statistics are available both in and out of sample; type
+"{cmd:predict} {it:...} {cmd:if e(sample)} {it:...}" if wanted only for the
+estimation sample.
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:nlogitrum} estimates a nested logit model using full
+maximum likelihood.  The model may contain one or more levels.  For a
+single-level model, {cmd:nlogitrum} estimates the same model as {cmd:clogit};
+see help {help clogit}. {cmd:nlogitrum} differs from {cmd:nlogit} in the
+specification of the choice probabilities; see help {help nlogit}.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:group(}{it:varname}{cmd:)} is not optional; it specifies the
+identifier variable for the groups.
+
+{p 4 8 2}{cmd:nests(}{it:altsetvarB} [ {it:... altsetvar2 altsetvar1}]{cmd:)} is not optional; it specifies the
+nesting structure.
+
+{p 4 8 2}{cmd:notree} specifies that the tree structure of the nested logit
+model is not to be displayed.
+
+{p 4 8 2}{cmd:nolabel} causes the numeric codes rather than the label values to
+be displayed in the tree structure of the nested logit model.
+
+{p 4 8 2}{cmd:clogit} specifies that the initial values obtained from
+{cmd:clogit} are to be displayed.
+
+{p 4 8 2}{cmd:level(}{it:#}{cmd:)} specifies the confidence level, in percent,
+for confidence intervals of the coefficients; see help {help level}.
+
+{p 4 8 2}{cmd:nolog} suppresses the iteration log.
+
+{p 4 8 2}{cmd:robust} specifies that the Huber/White/sandwich estimator of
+variance is to be used in place of the traditional calculation;
+see {hi:[U] 23.11 Obtaining robust variance estimates}.
+
+{p 4 8 2}{cmd:ivconstraints(}{it:string}{cmd:)} specifies the linear constraints
+of the inclusive value parameters. One can constrain inclusive value
+parameters to be equal to each other, equal to fixed values, etc.  Inclusive
+value parameters are referred to by the corresponding level labels; for
+instance, {cmd:ivconstraints(fast = family)} or {cmd:ivconstraints(fast=1)}.
+
+{p 4 8 2}{cmd:constraints(}{it:numlist}{cmd:)} specifies the linear constraints
+to be applied during estimation.  Constraints are defined using the
+{cmd:constraint} command and are numbered; see help {help constraint}.  The
+default is to perform unconstrained estimation.
+
+{p 4 8 2}{it:maximize_options} control the maximization process; see help
+{help maximize}.  You will likely never need to specify any of the maximize
+options except for {cmd:iterate(0)} and possibly {cmd:difficult}.  If the
+iteration log shows many "not concave" messages and is taking many iterations
+to converge, you may want to use the {cmd:difficult} option to help it
+converge in fewer steps.
+
+
+{title:Options for predict}
+
+{p 4 4 2}Consider a nested logit model with 3 levels: P(ijk) =
+P(k|ij)*P(j|i)*P(i).
+
+{p 4 8 2}{cmd:pb}, the default, calculates the probability of choosing
+bottom-level alternatives, pb = P(ijk).
+
+{p 4 8 2}{cmd:p1}, calculates the probability of choosing first-level
+alternatives, p1 = P(i).
+
+{p 4 8 2}{cmd:p2}, calculates the probability of choosing second-level
+alternatives, p2 = P(ij) = P(j|i)*P(i).
+
+{p 4 8 2}{cmd:xbb}, calculates the linear prediction for the bottom-level
+alternatives.
+
+{p 4 8 2}{cmd:xb1}, calculates the linear prediction for the first-level
+alternatives.
+
+{p 4 8 2}{cmd:xb2}, calculates the linear prediction for the second-level
+alternatives.
+
+{p 4 8 2}{cmd:condpb}, condpb = P(k|ij).
+
+{p 4 8 2}{cmd:condp1}, condp1 = P(i).
+
+{p 4 8 2}{cmd:condp2}, condp2 = P(j|i).
+
+{p 4 8 2}{cmd:ivb}, calculates the inclusive value for the bottom-level
+alternatives:  ivb = ln(sum(exp(xbb))), where xbb is the linear prediction
+for the bottom-level alternatives.
+
+{p 4 8 2}{cmd:iv2}, calculates the inclusive value for the second-level
+alternatives:  iv2 = ln(sum(exp(xb2 + tau_j*ivb))), where xb2 is the linear
+prediction for the second-level alternatives, ivb is the inclusive value for
+the bottom-level alternatives, and tau_j are the parameters for the inclusive
+value.
+
+
+{title:Examples}
+
+{p 4 4 2}Generate a new categorical variable named "{hi:type}" that identifies
+the first-level set of alternatives based on the variable named
+"{hi:restaurant}".
+
+{p 4 8 2}{cmd:. nlogitgen type = restaurant(fast: Freebirds | MamasPizza, family:  CafeEccell | LosNortenos | WingsNmore, fancy: Christophers | MadCows)}
+
+{p 4 4 2}The tree structure implied by these two variables can be examined
+using {cmd:nlogittree}.
+
+{p 4 8 2}{cmd:. nlogittree restaurant type}
+
+{p 4 4 2}Estimate the nested logit model.
+
+{p 4 8 2}{cmd:. nlogitrum chosen cost rating distance incFast incFancy kidFast kidFancy, group(family_id) nests(restaurant type)}
+
+{p 4 8 2}{cmd:. nlogitrum chosen cost rating distance incFast incFancy kidFast kidFancy, group(family_id) nests(restaurant type) ivc(fast=1, family=1, fancy=1)}
+
+
+{title:Also see}
+
+{p 5 14 2}Manual:  {hi:[U] 23 Estimation and post-estimation commands},{p_end}
+{p 14 14 2}{hi:[U] 29 Overview of model estimation in Stata},{p_end}
+{p 14 14 2}{hi:[R] nlogit}
+{p 4 19 2}On-line:  help for {help nlogit}, {help est}, {help postest}, 
+{help clogit}, {help constraint}, {help glogit}, {help logistic}, {help logit},
+{help ml}, {help mlogit}, {help ologit}, {help oprobit}, {help probit}, 
+{help xtgee}, {help xtprobit}

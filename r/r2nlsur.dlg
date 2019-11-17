@@ -1,0 +1,29 @@
+/*
+r2nlsur
+VERSION 1.0 28/06/2012
+*/
+VERSION 10.0
+INCLUDE _std_small
+INCLUDE _ht150
+INCLUDE header
+HELP hlp1, view("help r2reg3")
+RESET res1
+
+DIALOG main, label("r2nlsur- Overall NL-SUR System R2/Adj R2/F-Test/Chi2-Test") /*
+	*/ tabtitle("Main")
+BEGIN
+  TEXT     tx_message1  _lft      _top      _iwd      .,	/*
+*/ label("r2nlsur computes Overall System R2, Adjusted System R2")
+  TEXT     tx_message2  @         _ms      @         .,	/*
+*/ label("and Overall Significance for F-Test and Chi2-Test")
+  TEXT     tx_message3  @         _ms      @         .,	/*
+*/ label("after nlsur Regression.")
+  TEXT     tx_message4  @         _ls       @         .,	/*
+*/ label("Press OK to compute r2nlsur")
+END
+
+PROGRAM command
+BEGIN
+put "r2nlsur "
+END
+

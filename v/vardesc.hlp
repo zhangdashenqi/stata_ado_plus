@@ -1,0 +1,164 @@
+{smcl}
+{* 24Aug2006}{...}
+{cmd:help vardesc}
+{hline}
+
+{title:Title}
+
+{p2colset 5 18 20 2}{...}
+{p2col :{hi:vardesc} {hline 2}}Create a table with variable descriptions.
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{phang}
+Construct a table with variable names, labels and descrptive statistics.
+
+{p 8 14 2}
+{cmd:by} {it:by_variables}{cmd::} {cmd:vardesc}
+     [{varlist}]
+    {ifin}
+    [{cmd:,} {it:options}]
+
+{synoptset 17 tabbed}{...}
+{synopthdr}
+{synoptline}
+
+{syntab:Choice of Statistics}
+{synopt :{opt o:rder(items)}}selection and order of items to print. Items are:{p_end}
+{p 23 23 2}{opt nam:e}: name of variable (synonym: nm).{p_end}
+{p 23 23 2}{opt lab:el}: variable label (synonym: lbl).{p_end}
+{p 23 23 2}{opt mean}: mean(synonym: mn).{p_end}
+{p 23 23 2}{opt med:ian}: median (synonym: pct50).{p_end}
+{p 23 23 2}{opt var:iance}: variance.{p_end}
+{p 23 23 2}{opt stddev}: standard deviation (synonym: sd).{p_end}
+{p 23 23 2}{opt min:imum}: minimum.{p_end}
+{p 23 23 2}{opt max:imum}: maximum.{p_end}
+{p 23 23 2}{opt mode}: mode; missing if multiple modes.{p_end}
+{p 23 23 2}{opt n:obs}: number of nonmissing cases for variable.{p_end}
+{p 23 23 2}{opt nmiss}: number of missing cases for variable.{p_end}
+{p 23 23 2}{opt p:ct}{it:#}: percentile for #=1 5 10 25 50 75 90 95 99.{p_end}
+{p 23 23 2}{opt val:ues}: percent of cases with values specified with {it:values()}.{p_end}
+{synopt :{opt v:alues(string)}}values at which % of cases with that value are listed.{p_end}
+{synopt :{opt oth:ervalues}}include % of cases with values not listed in {it:values()}.{p_end}
+{synopt :{opt r:ange(string)}}range of values for computing % of cases with those values.{p_end}
+
+{syntab:Styles of Output}
+{synopt :{opt s:tyle(type)}}select style for output. Styles are:{p_end}
+{p 23 23 2}{opt basic}: standard output.{p_end}
+{p 23 23 2}{opt check}: check the data during cleaning.{p_end}
+{p 23 23 2}{opt missing}: look for missing data.{p_end}
+{p 23 23 2}{opt names}: just names and labels; this option is equivalent to
+the option {opt n:ame} used without the {opt style( )} option (e.g., vardesc, names).{p_end}
+{p 23 23 2}{opt outliers}: percentiles to check for outliers.{p_end}
+{p 23 23 2}{opt range}: name, N, values and labels.{p_end}
+
+{syntab:Compressing Output and Removing Spaces}
+{synopt :{opt sq:ueeze}}removes extra space; if a column size, truncates, it is not changed.{p_end}
+{synopt :{opt sq:min(#)}}is the minimum size of column after squeezing; default 6.{p_end}
+{synopt :{opt op:timize}}prints the specified statistics in a minimum of space, with each
+column being no smaller than the {cmd:optmin} size.{p_end}
+{synopt :{opt optm:in(#)}}is the minimum size of column after optimizing; default 6.{p_end}
+{synopt :{opt sp:acer(#)}}spacing added between statistics when using {cmd:squeeze}
+and {cmd:optimize}, default 1.{p_end}
+{synopt :{opt maxl:ength(#)}}is the maximum line size allowed before length of
+label is reduced.{p_end}
+{synopt :{opt oclab:el(#)}}override columns used for variable label.{p_end}
+{synopt :{opt ocma:x(#)}}override columns used for maximum.{p_end}
+{synopt :{opt ocmode(#)}}override columns used for mode.{p_end}
+{synopt :{opt ocme:an(#)}}override columns used for mean.{p_end}
+{synopt :{opt ocmi:n(#)}}override columns used for minimum.{p_end}
+{synopt :{opt ocn:obs(#)}}override columns used for # of observations.{p_end}
+{synopt :{opt ocna:me(#)}}override columns used for variable name.{p_end}
+{synopt :{opt ocpct:ile(#)}}override columns used for percentiles.{p_end}
+{synopt :{opt ocs:d(#)}}override columns used for standard deviation.{p_end}
+{synopt :{opt ocv:ar(#)}}override columns used for variance.{p_end}
+{synopt :{opt ocval:ues(#)}}override columns used for percent with given value.{p_end}
+
+{syntab:Main}
+{synopt :{opt aorder}}alphabetizes order of variables.{p_end}
+{synopt :{opt f:irst(var_name)}}prints this as the first variable.{p_end}
+{synopt :{opt forcen}}force printing of nobs for each variable even if same value.{p_end}
+{synopt :{opt noh:eader}}surpresses printing of column headings.{p_end}
+{synopt :{opt nom:iss}}uses listwise deletion to remove missing data for variables in {it:varlist}.{p_end}
+{synopt :{opt num:ber}}number each variables.{p_end}
+{synopt :{opt v:erbose}}to print extra information.{p_end}
+
+{syntab:Alignment of variable name and label}
+{synopt :{opt left:label}}left justify printing of the variable label.{p_end}
+{synopt :{opt leftn:ame}}left justify printing of the variable name.{p_end}
+{synopt :{opt rightl:abel}}right justify printing of the variable label.{p_end}
+{synopt :{opt rightn:ame}}right justify printing of the variable name.{p_end}
+
+{syntab:Column size and decimal digits}
+{synopt :{opt c:olumn(#)}}sets default column width used by mean, minimum, maximum, standard deviation and variance.{p_end}
+{synopt :{opt clab:el(#)}}sets # columns used for variable label; default 20.{p_end}
+{synopt :{opt cma:x(#)}}sets # columns used for maximum; default 10.{p_end}
+{synopt :{opt cmode(#)}}sets # columns used for mode; default 10.{p_end}
+{synopt :{opt cme:an(#)}}sets # columns used for mean; default 10.{p_end}
+{synopt :{opt cmi:n(#)}}sets # columns used for minimum; default 10.{p_end}
+{synopt :{opt cn:obs(#)}}sets # columns used for # of observations; default 6.{p_end}
+{synopt :{opt cna:me(#)}}sets # columns used for variable name; default 12.{p_end}
+{synopt :{opt cpct:ile(#)}}sets # columns used for percentiles; default 10.{p_end}
+{synopt :{opt cs:d(#)}}sets # columns used for standard deviation; default 10.{p_end}
+{synopt :{opt cv:ar(#)}}sets # columns used for variance; default 10.{p_end}
+{synopt :{opt cval:ues(#)}}sets # columns used for percent with given value; default 6.{p_end}
+{synopt :{opt d:ecimal(#)}}sets default # if decimal digits used by mean, minimum, maximum, standard deviation and variance.{p_end}
+{synopt :{opt dma:x(#)}}sets # decimals used for maximum; default 2.{p_end}
+{synopt :{opt dmode(#)}}sets # decimals used for mode; default 2.{p_end}
+{synopt :{opt dme:an(#)}}sets # decimals used for mean; default 2.{p_end}
+{synopt :{opt dmi:n(#)}}sets # decimals used for minimum; default 2.{p_end}
+{synopt :{opt dn:obs(#)}}sets # decimals used for # of observations; default 0.{p_end}
+{synopt :{opt dpct:ile(#)}}sets # decimals used for percentiles; default 10.{p_end}
+{synopt :{opt ds:d(#)}}sets # decimals used for standard deviation; default 2.{p_end}
+{synopt :{opt dval:ues(#)}}sets # of decimals for percent with given value; default 1.{p_end}
+{synopt :{opt dv:ar(#)}}sets # decimals used for variance; default 2.{p_end}
+{synopt :{opt minl:abel}}minimize column size for label.{p_end}
+{synopt :{opt minn:ame}}minimize column size for name.{p_end}
+{synoptline}
+{p 4 6 2}
+
+{title:Description}
+
+{pstd}
+{opt vardesc} creates a table to describe a set of specified variables. You can change
+the order in which items are listed, column widths for each item, and the number
+of decimal digits used..
+
+{title:Options}
+
+{dlgtab:Main}
+
+{phang}
+{opt xxx} By default :
+
+{p 8 16 2}
+aaa{p_end}
+{p 8 16 2}
+bbb{p_end}
+{p 8 16 2}
+xxx{p_end}
+{title:Acknowledgements}
+
+{title:Notes:}
+
+{p 8 16 2}If {it:values} note in {it:order()} but values are listed with {it:values()},
+values are listed as last statistics in table.{p_end}
+{p 8 16 2}If all variables have the same number of valid observations, a column with the
+sample size is not listed even if you specified {it:nobs} as an options for {it:order};
+to force the printing of the sample size, use option {it:forcen}.
+
+{title:Examples:}
+
+{phang}{cmd:. vardesc}
+
+{title:Author}
+
+{p 5 5}
+J. Scott Long{break}
+Indiana University{break}
+Departments of Sociology & Statistics{break}
+jslong{@}indiana.edu{break}
+{browse "http://www.indiana.edu/~jslong/"}{p_end}
+

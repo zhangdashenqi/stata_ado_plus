@@ -1,0 +1,72 @@
+Find optimal lag length                                           (STB-7: sts2)
+-----------------------
+
+    ^findlag^ yvar [xvars] [weight] [^, l^ags^(^#^) d^etail ^z^ero regress-options ]
+
+
+Description
+-----------
+
+^findlag^ reports four statistics that help determine the optimal lag length of
+the dependent variable yvar in a regression.  The four statistics are the root
+mean squared error of the regression (RMSE), Akaike's Information Criterion
+(AIC), Amemiya's Prediction Criterion (PC), and Schwarz's Information Criterion
+(SC).  Each statistic is calculated for regressions containing containing 1 to
+^lags()^ lags of yvar; if ^zero^ is specified, each statistic is calculated for
+regressions containint 0 to ^lags()^ lags of yvar.
+
+For each statistic, the apparent optimal number of lags is reported.  If 
+^detail^ is specified, the values of the statistics along with the p-values
+of the F test test on excluding all the lags and the t-test on excluding
+the last lag of yvar are reported for each regression.
+
+
+Options
+-------
+
+^lags(^#^)^ specifies the number of lags to attempt and defaults to 4 if not
+    specified.
+
+^detail^ requests that detailed output of results be presented.
+
+^zero^ requests that lag 0 be included in the search.
+
+regress_options refers to any of the options of the regress command; see ^help^
+    ^regress^.
+
+
+
+(Examples follow.)
+
+
+
+
+
+
+
+Examples
+--------
+
+ . ^findlag gnp^                 estimates the optimal # of lags in a
+                               univariate regression of GNP; 1 to 4 lags
+                               considered.
+
+ . ^findlag gnp, lags(6)^       same as above; 1 to 6 lags considered.
+
+ . ^findlag gnp, lags(6) zero^  same as above, 0 to 6 lags considered.
+
+ . ^findlag consump gnp^         estimates optimal # of lags in a regression
+                               of consumption on GNP.
+
+
+Author
+------
+ 
+Sean Becketti, Federal Reserve Bank of Kansas City.
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7)
+On-line:  ^help^ for ^dickey^, ^lag^

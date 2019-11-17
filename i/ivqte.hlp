@@ -1,0 +1,463 @@
+{smcl}
+{* 12February2010}{...}
+{cmd:help ivqte}{right: ({browse "http://www.stata-journal.com/article.html?article=st0203":SJ10-3: st0203})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 14 16 2}{...}
+{p2col :{hi:ivqte} {hline 2}}Instrumental-variable quantile treatment effects{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:ivqte} {depvar} [{it:varlist}] {cmd:(}{it:treatment} [{cmd:=} {it:instrument}]{cmd:)} {ifin} [{cmd:,} {it:options}]
+
+
+{synoptset 35 tabbed}{...}
+{synopthdr :options}
+{synoptline}
+{syntab :Model}
+{synopt:{opth q:uantiles(numlist)}}set the quantiles at which the effects will be estimated{p_end}
+{synopt:{opth c:ontinuous(varlist)}}names of the continuous and ordered discrete covariates{p_end}
+{synopt:{opth d:ummy(varlist)}}names of the binary covariates{p_end}
+{synopt:{opth u:nordered(varlist)}}names of the discrete unordered covariates{p_end}
+{synopt:{opt aai}}select the Abadie, Angrist, and Imbens (2002) estimator{p_end}
+
+{syntab:Estimation of the (instrument) propensity score}
+{synopt:{opt li:near}}use a local linear instead of local logit estimator{p_end}
+{synopt:{opt mata_opt}}use the official Mata function {helpb mata optimize():optimize()}{p_end}
+{synopt:{opt k:ernel(kernel)}}type of kernel function used to calculate the propensity score, where {it:kernel} is
+  {opt epan2} (Epanechnikov, the default),
+  {opt b:iweight},
+  {opt triw:eight},
+  {opt c:osine},
+  {opt g:aussian},
+  {opt p:arzen},
+  {opt r:ectangle},
+  {opt t:riangle},
+  {opt epanechnikov_o4},
+  {opt epanechnikov_o6},
+  {opt gaussian_o4},
+  {opt gaussian_o6},
+  or {opt gaussian_o8}
+  {p_end}
+{synopt:{opt b:andwidth(#)}}bandwidth used to calculate the propensity score; default is infinity{p_end}
+{synopt:{opt l:ambda(#)}}parameter lambda used to calculate the propensity score; default is {cmd:lambda(1)}{p_end}
+
+{syntab:Estimation of the weights}
+{synopt:{opt trim(#)}}trimming level for very small and large estimated propensity scores; default is {cmd:trim(0.001)}{p_end}
+{synopt:{opt p:ositive}}estimates positive weights for the two-step estimator of endogenous unconditional QTE{p_end}
+{synopt:{opt pb:andwidth(#)}}bandwidth used to calculate the positive weights{p_end}
+{synopt:{opt pl:ambda(#)}}parameter lambda used to calculate the positive weights{p_end}
+{synopt:{opt pk:ernel(kernel)}}type of kernel function used to calculate the positive weights{p_end}
+
+{syntab:Inference}
+{synopt:{opt v:ariance}}provide an analytical estimate of the variance{p_end}
+{synopt:{opt vb:andwidth(#)}}bandwidth used to calculate the variance{p_end}
+{synopt:{opt vl:ambda(#)}}parameter lambda used to calculate the variance{p_end}
+{synopt:{opt vk:ernel(kernel)}}type of kernel function used to calculate the variance{p_end}
+{synopt:{opt le:vel(#)}}set confidence level; default is {cmd:level(95)}{p_end}
+
+{syntab:Saved propensity scores and weights}
+{synopt:{cmd:generate_p(}{it:newvarname}[{cmd:, replace}]{cmd:)}}create {it:newvarname} containing the estimated propensity score{p_end}
+{synopt:{cmd:generate_w(}{it:newvarname}[{cmd:, replace}]{cmd:)}}create {it:newvarname} containing the estimated weights{p_end}
+{synopt:{opt phat(varname)}}name of an existing variable containing the propensity score{p_end}
+{synopt:{opt what(varname)}}name of an existing variable containing the weights{p_end}
+{synoptline}
+
+
+{title:Description}
+
+{pstd}
+{cmd:ivqte} computes the quantile treatment effects (QTEs) of a binary
+variable using a weighting strategy.  This command can estimate both
+conditional and unconditional QTEs under either exogeneity or endogeneity.
+The estimator proposed by Fr{c o:}lich and Melly (2008) is used if
+unconditional QTEs under endogeneity are estimated.  The estimator proposed by
+Abadie, Angrist, and Imbens (2002) is used if conditional QTEs under
+endogeneity are estimated.  The estimator proposed by Firpo (2007) is used if
+unconditional QTEs under exogeneity are estimated.  The estimator proposed by
+Koenker and Bassett Jr. (1978) is used if conditional QTEs under exogeneity
+are estimated.  We use the term exogeneity to mean exogenous conditional on
+the control variables X.  This is also often called a selection on observables
+assumption or a matching assumption.
+
+{pstd} The estimator used by {cmd:ivqte} is determined as follows:  1) If an
+{it:instrument} is provided and {opt aai} is not activated, the estimator
+proposed by Fr{c o:}lich and Melly (2008) is used.  2) If an {it:instrument}
+is provided and {opt aai} is activated, the estimator proposed by Abadie,
+Angrist, and Imbens (2002) is used.  3) If there is no {it:instrument} and
+{it:varlist} is empty, the estimator proposed by Firpo (2007) is used.  4) If
+there is no {it:instrument} and {it:varlist} contains variables, the estimator
+proposed by Koenker and Bassett Jr. (1978) is used.
+
+{pstd} The {it:instrument} is assumed to satisfy the exclusion restriction
+conditionally on the covariates given in {opt dummy()}, {cmd:unordered()}, and
+{cmd:continuous()}.  If the same variable is given as {it:treatment} and as
+{it:instrument}, then conditional exogeneity of the treatment variable is
+assumed.  If these two variables are different, then {it:instrument} is used
+as an instrumental variable (IV) to estimate the effects of the endogenous
+treatment variable.
+
+{pstd} Variables should be given in {it:varlist} only if you want to use the
+Koenker and Bassett Jr. (1978) estimator.  For all other estimators,
+{it:varlist} should be empty and covariates should be given in {opt dummy()},
+{cmd:unordered()}, and {cmd:continuous()}.
+
+{pstd} The endogenous variable {it:treatment} must be a binary 0/1 variable.
+This implementation of the estimator also requires the IV, {it:instrument}, to
+be binary.  Fr{c o:}lich and Melly (2008, section 2) explain how several IVs
+or a nonbinary IV can be transformed into a binary instrument.
+
+{pstd} We can distinguish between four types of covariates: continuous,
+ordered discrete, binary, and unordered discrete.  The first two types of
+variables are treated similarly by the kernel function, and they must be given
+in the {cmd:continuous()} option.  Binary variables must be given in
+{cmd:dummy()}.  Unordered discrete variables are treated similarly to the
+dummy variable in the kernel function, but a set of dummies is then used in
+the local regression plane.  To give an example, the variables
+{cmd:experience} and {cmd:education} should be given in {cmd:continuous()},
+{cmd:female} in {cmd:dummy()}, and {cmd:region} in {cmd:unordered()}.  For
+more details on the local estimator, see the {cmd:locreg} command.
+
+{pstd} In a first step, the instrument propensity score, defined as
+Pr(instrument = 1 | continuous, dummy, unordered), is estimated.  A mixed
+kernel suggested by Racine and Li (2004) is used to smooth over the continuous
+and categorical data.  The more conventional approach, consisting of
+estimating the regression plane inside each cell defined by the discrete
+variables, can be obtained by setting {cmd:lambda()} to 0.  A local linear
+estimator is used if the {cmd:linear} option is selected.  Otherwise, a local
+logit estimator is used.  Two algorithms are available to maximize the local
+logistic likelihood function.  The default is a simple Gauss-Newton algorithm
+written for this purpose.  If you select the {opt mata_opt} option, the
+official Stata 10 optimizer, {helpb mata optimize():optimize()}, is used.  We
+expect the official estimator to be more stable in difficult situations;
+however, it can only be used if you have Stata 10 or newer.  In all cases, the
+kernel is determined by the value of the options {opt kernel()}, 
+{opt bandwidth()}, and {opt lambda()}.  The cross-validation procedure
+implemented in {cmd:locreg} can be used to guide the choice of the bandwidth.
+
+{pstd} In the unconditional endogenous case, the {cmd:positive} option may be
+activated.  In this case, the estimated weights are first projected onto the
+space defined by the treatment variable and the dependent variable.  These
+weights are asymptotically positive.  Negative estimated weights are set to
+zero.  This allows us to use standard quantile regression algorithms to
+directly estimate the QTEs.  The projection is estimated by a local linear
+regression separately for the treated and the nontreated.  The nonparameric
+regression is determined by the values of the options {cmd:pkernel()} and
+{cmd:pbandwidth()}.  Negative estimated weights are set to zero.
+
+{pstd} In the conditional endogenous case (that is, when the {cmd:aai} option
+is activated), positive weights are always estimated by the projection of the
+first weights onto the space defined by the treatment variable, the dependent
+variable, and all covariates.  These weights are also asymptotically positive.
+The projection is estimated by a local linear regression separately for the
+treated and the nontreated.  The nonparametric regression is determined by the
+values of the options {opt pkernel()}, {opt pbandwidth()}, and {cmd:lambda()}.
+
+{pstd} The QTEs are estimated at each of the quantiles defined by the
+{cmd:quantiles()} option.  The conditional QTE can only be estimated at one
+quantile each time.  However, the {cmd:generate_w()} option allows the user to
+save the estimated weights.  These weights will then be used for other
+quantiles if they are given in {cmd:what()}.  The same can be done for the
+estimated propensity score with the {cmd:generate_p()} option and
+{cmd:phat()}.  This also allows the user to use methods other than the local
+linear or local logit estimators to estimate the propensity score.  For
+instance, the series estimators proposed by Abadie, Angrist, and Imbens (2002)
+and Firpo (2007) can be used in a first step.
+
+{pstd} By default, no standard errors are reported because the estimation of
+the variance is computationally intensive if all functions are estimated
+nonparametrically (even more than the estimation of the QTEs).  Analytical
+standard errors can be obtained by selecting the {opt variance} option.  In
+the conditional exogenous case, the kernel estimator proposed by Powell (1986)
+has been implemented.  This estimator is consistent in the presence of
+heteroskedasticity, in contrast to the estimator of the variance of the
+official {helpb qreg} command.  In the other cases, the variance estimators
+suggested by Abadie, Angrist, and Imbens (2002), Firpo (2007), and 
+Fr{c o:}lich and Melly (2008) have been implemented.
+
+{pstd} With the exception of standard quantile regression, the estimation of
+the variance of all estimators requires the estimation of additional
+nonparametric functions that are different at each quantile.  Therefore, in
+contrast to the estimation of the QTE, when estimating the variance, the
+computation time increases proportionally to the number of quantiles at which
+the effects are estimated.  The options {cmd:vkernel()}, {cmd:vbandwidth()},
+and {cmd:vlambda()} determine the specification of the nonparametric
+estimation for the variance.  The estimation of the covariance between
+different QTEs is currently not implemented. To avoid an error message, all
+covariances have been set to 0.  Do NOT use these covariances to test
+hypotheses concerning several quantiles.  The bootstrap can also be used to
+estimate the variance (and the covariances between the QTEs).  Do NOT activate
+the {cmd:variance} option when you estimate the variance by bootstrapping the
+results.
+
+
+{title:Options}
+
+{dlgtab:Model}
+
+{phang} {opt quantiles(numlist)} specifies the quantiles at which the effects
+are estimated and should contain numbers between 0 and 1.  The computational
+time needed to estimate an additional quantile is very short compared with the
+time needed to estimate the preliminary nonparametric regressions.  Also, when
+conditional QTEs are estimated, only one quantile may be specified.  If one is
+interested in several QTEs, then one can save the estimated weights for later
+use by using the {cmd:generate_w()} option.  By default, {cmd:quantiles()} is
+set to 0.5 when conditional QTEs are estimated and {cmd:quantiles()} contains
+the nine deciles from 0.1 to 0.9 when unconditional QTEs are estimated.
+
+{phang} {opt continuous(varlist)}, {opt dummy(varlist)}, and 
+{opt unordered(varlist)} specify the names of the covariates depending on
+their type.  Ordered discrete variables should be treated as continuous.
+
+{phang}
+{opt aai} selects the Abadie, Angrist, and Imbens (2002) estimator.  If this
+option is selected, all the variables given in {opt continuous(varlist)}, 
+{opt dummy(varlist)}, and {opt unordered(varlist)} are taken as covariates.
+
+{dlgtab:Estimation of the propensity score}
+
+{phang}
+{opt linear} selects the method used to estimate the (instrument) propensity
+score.  If this option is not activated, the local logit estimator is used.  If
+{cmd:linear} is activated, the local linear estimator is used.
+
+{phang}
+{opt mata_opt} selects the official optimizer introduced in Stata 10 to
+estimate the local logit, Mata's {helpb mata optimize():optimize()}.  The
+default is a simple Gauss-Newton algorithm written for this purpose.  This
+option is only relevant when the {cmd:linear} option has not been selected.
+
+{phang}
+{opt kernel(kernel)} specifies the kernel function used to estimate the
+propensity score.  {it:kernel} may
+be  any of the following second-order kernels: {opt epan2} (Epanechnikov kernel function; the default),
+{opt biweight} (biweight kernel function),
+{opt triweight} (triweight kernel function),
+{opt cosine} (cosine trace),
+{opt gaussian} (Gaussian kernel function),
+{opt parzen} (Parzen kernel function),
+{opt rectangle} (rectangle kernel function),
+or {opt triangle} (triangle kernel function).  In addition to these
+second-order kernels, there are also several higher-order kernels: 
+{opt epanechnikov_o4} (Epanechnikov order 4),
+{opt epanechnikov_o6} (order 6),
+{opt gaussian_o4} (Gaussian order 4),
+{opt gaussian_o6} (order 6),
+{opt gaussian_o8} (order 8).  By default, {opt epan2}, which specifies the Epanechnikov kernel, is used.
+
+{phang}
+{opt bandwidth(#)} sets the bandwidth used to smooth over the continuous
+variables in the estimation of the propensity score.  Note that the continuous
+regressors are first orthogonalized such that their covariance matrix is the
+identity matrix.  The bandwidth must be strictly positive.  If the bandwidth
+is set to the missing value, ".", an infinite bandwidth is used.  The default
+value is infinity.  If the bandwidth is infinity and lambda is one, a global
+(linear or logit) model is estimated without any local smoothing.  The
+cross-validation procedure implemented in {cmd:locreg} can be used to guide
+the choice of the bandwidth.
+
+{phang}
+{opt lambda(#)} sets the lambda used to smooth over the dummy and unordered
+discrete variables in the estimation of the propensity score.  It must be
+between 0 and 1.  A value of 0 implies that only observations within the cell
+defined by all discrete regressors are used to estimate the conditional mean.
+The default is {cmd:lambda(1)}, which corresponds to global smoothing.  If the
+bandwidth h is infinity and lambda is one, a global (linear or logit) model is
+estimated without any local smoothing.  The cross-validation procedure
+implemented in {cmd:locreg} can be used to guide the choice of lambda.  Again,
+the robustness of the results with respect to a smaller bandwidth should be
+examined.
+
+{dlgtab:Estimation of the weights}
+
+{phang}
+{opt trim(#)} controls the amount of trimming.  All observations with
+estimated propensity score lower than {opt trim()} or above 1-{opt trim()} are
+trimmed and not used further by the procedure.  This prevents giving very high
+weights to single observations.  The default is {cmd:trim(0.001)}.
+
+{phang}
+{opt positive} can be used only with the estimator suggested by Fr{c o:}lich
+and Melly (2008).  If it is activated, positive weights are estimated by the
+projection of the first weights on the dependent and treatment variables.
+Negative estimated weights are set to zero.
+
+{phang}
+{opt pbandwidth(#)}, {opt plambda(#)}, and {opt pkernel(kernel)} are used to
+calculate the positive weights if the {opt aai} option has been selected.
+{opt pkernel(kernel)} and {opt pbandwidth(#)} are used to calculate the
+positive weights if the {opt positive} option has been selected.  They are
+defined similarly to {opt kernel(kernel)}, {opt bandwidth(#)}, and 
+{opt lambda(#)}.  If {opt pkernel(kernel)}, {opt pbandwidth(#)}, or 
+{opt plambda(#)} is not specified, the values given in {opt kernel(kernel)},
+{opt bandwidth(#)}, and {opt lambda(#)} are used.
+
+{dlgtab:Inference}
+
+{phang}
+{opt variance} activates the estimation of the variance. By default,
+no standard errors are estimated because the estimation of the variance can be
+computationally demanding. Except for the classical linear quantile regression
+estimator, it requires the estimation of many nonparametric functions. This
+option should not be activated if you bootstrap the results unless you
+bootstrap t-values to exploit possible asymptotic refinements.
+
+{phang} {opt vbandwidth(#)}, {opt vlambda(#)}, and {opt vkernel(kernel)} are
+used to calculate the variance of the estimated QTEs if
+the {opt variance} option has been selected.  They are defined similarly to
+{opt bandwidth(#)}, {opt lambda(#)}, and {opt kernel(kernel)}.  If
+{opt variance} is used without the options {opt vkernel(kernel)},
+{opt vbandwidth(#)}, or {opt vlambda(#)}, the values given in
+{opt kernel(kernel)}, {opt bandwidth(#)}, and {opt lambda(#)} are used.
+
+{phang}{opt level(#)} specifies the confidence level, as a percentage, for
+confidence intervals. The default is {cmd:level(95)} or as set by
+{cmd:set level}.
+
+{dlgtab:Saved propensity scores and weights}
+
+{phang} {cmd:generate_p(}{it:newvarname}[{cmd:, replace}]{cmd:)} creates
+{it:newvarname} containing the estimated propensity score.  This may be useful
+if you want to compare the results with and without the projection of the
+weights.  You can first estimate the QTEs without the projection and save the
+propensity score in {it:newvarname}.  In the second step, you can use the
+estimated propensity score as an input in the {cmd:phat()} option.  The 
+{opt replace} option allows {cmd:ivqte} to overwrite a potentially existing
+variable.
+
+{phang} 
+{cmd:generate_w(}{it:newvarname}[{cmd:, replace}]{cmd:)} creates
+{it:newvarname} containing the estimated weights.  This may be useful if you
+want to estimate several conditional QTEs.  The weights must be estimated only
+once and then be given as input in the {cmd:what()} option.  The {cmd:replace}
+option allows {cmd:ivqte} to overwrite an existing variable or to create a new
+one where none exists.
+
+{phang} 
+{opt phat(varname)} gives the name of an existing variable containing the
+estimated instrument propensity score.  The propensity score may have been
+estimated using {cmd:ivqte} or any other command such as a series estimator.
+
+{phang} 
+{opt what(varname)} gives the name of an existing variable containing the
+estimated weights.  The weights may have been estimated using {cmd:ivqte} or
+with any other command such as a series estimator.
+
+
+{title:Saved results}
+
+{phang}{cmd:ivqte} saves the following in {cmd:e()}:
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Scalars}{p_end}
+{synopt:{cmd:e(N)}}number of observations{p_end}
+{synopt:{cmd:e(bandwidth)}}bandwidth{p_end}
+{synopt:{cmd:e(lambda)}}lambda{p_end}
+{synopt:{cmd:e(pbandwidth)}}pbandwidth{p_end}
+{synopt:{cmd:e(plambda)}}plambda{p_end}
+{synopt:{cmd:e(vbandwidth)}}vbandwidth{p_end}
+{synopt:{cmd:e(vlambda)}}vlambda{p_end}
+{synopt:{cmd:e(pseudo_r2)}}pseudo-R^2 of the quantile regression{p_end}
+{synopt:{cmd:e(compliers)}}proportion of compliers{p_end}
+{synopt:{cmd:e(trimmed)}}number of observations trimmed{p_end}
+
+{phang}Macros{p_end}
+{synopt:{cmd:e(command)}}{cmd:ivqte}{p_end}
+{synopt:{cmd:e(depvar)}}name of dependent variable{p_end}
+{synopt:{cmd:e(treatment)}}name of treatment variable{p_end}
+{synopt:{cmd:e(instrument)}}name of IV{p_end}
+{synopt:{cmd:e(continuous)}}name of continuous covariates{p_end}
+{synopt:{cmd:e(dummy)}}name of binary covariates{p_end}
+{synopt:{cmd:e(regressors)}}name of regessors (conditional QTEs){p_end}
+{synopt:{cmd:e(unordered)}}name of unordered covariates{p_end}
+{synopt:{cmd:e(estimator)}}name of estimator{p_end}
+{synopt:{cmd:e(ps_method)}}linear or logistic model{p_end}
+{synopt:{cmd:e(optimization)}}algorithm used{p_end}
+{synopt:{cmd:e(kernel)}}kernel function{p_end}
+{synopt:{cmd:e(pkernel)}}kernel function for positive weights{p_end}
+{synopt:{cmd:e(vkernel)}}kernel function for variance estimation{p_end}
+
+{phang}Matrices{p_end}
+{synopt:{cmd:e(b)}}row vector containing the QTEs{p_end}
+{synopt:{cmd:e(quantiles)}}row vector containing the quantiles at which the QTEs have been estimated{p_end}
+{synopt:{cmd:e(V)}}matrix containing the variances of the estimated QTEs in the diagonal and 0 otherwise{p_end}
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Functions}{p_end}
+{synopt:{cmd:e(sample)}}marks the estimation sample{p_end}
+
+
+{title:Version requirements}
+
+{pstd}This command requires Stata 9.2 or later.  Stata 10 is required to use
+the {opt mata_opt} option.  In addition, {cmd:locreg} is required, which
+itself requires the packages {cmd:moremata} (see Jann [2005b]) and {cmd:kdens}
+(see Jann [2005a]).  Type {cmd:ssc describe moremata} and 
+{cmd:ssc describe kdens}.
+
+
+{title:Methods and formulas}
+
+{pstd} See Fr{c o:}lich and Melly (2010).
+
+
+{title:References}
+
+{phang} Abadie, A., J. Angrist, and G. Imbens. 2002. Instrumental variable
+estimates of the effect of subsidized training on the quantiles of trainee
+earnings. {it:Econometrica} 70: 91-117.
+
+{phang} Firpo, S. 2007. Efficient semiparametric estimation of quantile
+treatment effects. {it:Econometrica} 75: 259-276.
+
+{phang} Fr{c o:}lich, M., and B. Melly. 2008. Unconditional quantile treatment
+effects under endogeneity. Discussion Paper No. 3288, Institute for
+the Study of Labor (IZA). http://ideas.repec.org/p/iza/izadps/dp3288.html.
+
+{phang} Fr{c o:}lich, M., and B. Melly. 2010. {browse "http://www.stata-journal.com/article.html?article=st0203":Estimation of quantile treatment effects with Stata.} {it:Stata Journal} 10: 423-457.
+
+{phang} Jann, B. 2005a. kdens: Stata module for univariate kernel density
+estimation. Statistical Software Components S456410, Department of Economics,
+Boston College. {browse "http://ideas.repec.org/c/boc/bocode/s456410.html":http://ideas.repec.org/c/boc/bocode/s456410.html}.
+
+{phang} Jann, B. 2005b. moremata: Stata module (Mata) to provide various 
+functions. Statistical Software Components S455001, Department of Economics, 
+Boston College. {browse "http://ideas.repec.org/c/boc/bocode/s455001.html":http://ideas.repec.org/c/boc/bocode/s455001.html}.
+
+{phang} Koenker, R., and G. Bassett Jr. 1978. Regression quantiles.
+{it:Econometrica} 46: 33-50.
+
+{phang}Powell, J. L. 1986 Censored regression quantiles. {it:Journal of Econometrics} 32: 143-155.
+
+{phang} Racine, J., and Q. Li. 2004. Nonparametric estimation of regression functions with both 
+categorical and continuous data. {it:Journal of Econometrics} 119: 99-130.
+
+
+{title:Authors}
+
+{pstd}Markus Fr{c o:}lich{p_end}
+{pstd}Universit{c a:}t Mannheim and{p_end}
+{pstd}Institute for the Study of Labor{p_end}
+{pstd}Bonn, Germany{p_end}
+
+{pstd}Blaise Melly{p_end}
+{pstd}Department of Economics{p_end}
+{pstd}Brown University{p_end}
+{pstd}Providence, RI{p_end}
+{pstd}blaise_melly@brown.edu{p_end}
+
+{pstd}Please feel free to share your comments,
+report bugs, and propose extensions.
+
+{pstd}If you use this command in your work, please cite Fr{c o:}lich and Melly
+(2008) and Fr{c o:}lich and Melly (2010).
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 10, number 3: {browse "http://www.stata-journal.com/article.html?article=st0203":st0203}{p_end}

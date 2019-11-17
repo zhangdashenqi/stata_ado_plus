@@ -1,0 +1,244 @@
+.-
+help for ^sampsurv^                                      Version: 14-3-01                          
+.-
+
+^Sample size and power determination for survival analysis^
+^---------------------------------------------------------^
+
+  ^sampsurv  p1(^string^)^ [^p2(^string^)^ | ^h^r^(^#^)^]
+            [^a^lpha^(^#^) p^ower^(^#^) n1(^#^) n2(^#^) r^atio^(^#^)^
+              ^ap^(^#^) f^u^(^#^) ^onesid^ed ^eq^uiv [^t^u^(^string^)^]
+	     [^prev(^string^)^ [^s^trhr^(^string^) na^mes^(^string^)^] ^nr^at^(^numlist asc >0^)^ ]
+
+
+^Description^
+^-----------^
+
+^sampsurv^ estimates required sample size or power of tests for comparisons
+of survival curves/functions.  If ^n1()^ or ^n2()^ is specified, ^sampsurv^ 
+computes power; otherwise, it computes sample size.  ^sampsurv^ is an 
+immediate command. Sample size calculation is in two steps. First, the 
+required number of events are calculated. From this,  together with the in-
+formation about the length of the accrual period, the length of the 
+additional follow up period and the expected survival functions in both arms
+the number of patients required to enter to produce this number of events
+is calculated.
+
+Survival functions S1(t) and S2(t) are the expected survival functions in 
+both treatment groups. The time unit is assumed to be years, but this is 
+irrelevant.
+
+^Options^
+^-------^
+^p1(^string^)^	specifies the survival function of the control or reference group.
+		In case of more than 1 stratum, it is the S1 of the first 
+		stratum. The string may be any of the following forms
+a. ^t1:p1^			p1=S1(t1); t1 and p1 numbers, t1>0, 0<p1<1.	
+b. [^t1:p1^[^t2:p2^[...]]	pi=S1(ti); ti and pi numbers, 
+       0<t1<t2<...; 1>=p1>=p2>=p3>=p4....	
+       The sections ^ti:pi^ must be separated by blanks or a comma 
+c. ^p1^				equivalent to 5:p1; thus p1=S1(5); t1=5.
+		S1(t) is assumed to be a (piecewise) exponential survival
+		function, with hazardrate after the last specified timepoint
+		tn equal to the hazardrate in the interval tn-1,tn. 
+
+^p2(^string^)^	specifies the survival function S2 of the other group.
+		In case of more than 1 stratum, it is the S2 of the first 
+		stratum. The string may be any of the following forms
+a. ^p1^		p1=S2(t1), t1 derived from p1.
+b. ^t:p^	p=S2(t); t and p numbers, t>0, 0<p<1.
+		t should be equal to one of the timepoints specified in p1.
+		Assumption: S2(t)=S1(t)^^hr. The hazard rate hr is derived 
+		from the specifications of p1 and p2.
+
+^hr(^#^)^	Alternative specification of S2(t) by the hazardrate. The 
+		number must be positive and not equal to 1.
+ 
+^alpha(^#^)^ specifies the significance level of the test; the default is 
+    ^alpha(.05)^.  (More correctly, the default is 1-level/100 from ^set level^,
+    see help @level@.)
+
+^power(^#^)^ is power of the test.  Default is ^power(.90)^.
+
+^n1(^#^)^ specifies the size of the first (or only) sample and ^n2(^#^)^ specifies
+    the size of the second sample.  If specified, ^sampsurv^ reports the power
+    calculation.  If not specified, ^sampsurv^ computes sample size.
+
+^ratio(^#^)^ is an alternative way to specify ^n2()^. If ^n2()^ is not specified,
+    ^n2()^ is assumed to be ^n1()^*^ratio()^.  That is, ^ratio()^ = ^n2()^/^n1()^.
+    The default is  ^ratio(1)^.
+
+^onesided^ indicates a one-sided test.  The default is a two-sided test.
+
+^equiv^ implies an equivalence or non-inferiority design. 
+  This design implies a onesided test, which needs not be specified. Group 1 
+  is considered the Control arm, and group 2 the Experimental arm. In this design
+  the role of null hypothesis and alternative hypothesis are interchanged.
+  Sample size formula are (almost) identical.
+     
+^ap(^#^)^ specifies the length of the accrual period (in years). The rate
+    of accrual is assumed to be constant. Default 0.01 year (as if all
+    patients would enter all together at once).	 
+
+^fu(^#^)^ specifies the follow up period (in years) after the accrual period
+    before the analysis will be done. Default 1 year.
+
+^tu()^ specifies the unit of time. Default: yrs. One may specify other units
+	as mon, wks etc. Only the first 3 characters of the string will be used.
+
+^prev(^string^)^ specifies the prevalence of strata, in case of different 
+    survival functions in the control group in different strata. The string
+    consists of positive numbers adding up to 1. The number of elements of
+    the string determine the number of strata. Default ^prev(1)^.
+
+^strhr(^string^)^ The differences in survival between the strata are assumed
+    to be described by proportional hazard rates. The elements of the string
+    are positive numbers indicating the proportional hazard rates for strata
+    2,3,.. with respect to stratum 1. The number of elements must be equal
+    to the number of strata minus 1.
+ 
+^names(^string^)^ are names to label the strata. Separator: blank. Each
+    substring (without blanks) is the name of a stratum. Strata without 
+    a name are labelled in the output as "Stratum i".
+
+^nrat()^ specifies a numlist of timepoints at which the expected number of
+  patients entered and number of events will be calculated and displayed.
+  See ^help nrat^ for more information.
+
+^Examples:^
+^---------^
+
+ 1. Two-sample comparison.  Compute sample sizes with 3 strata and power=.80.
+
+ . ^sampsurv p1(1:.75,2:.37,3:.30,10:.20,11:.20)  al(.05) po(.80) ap(4) fu(3)
+    hr(.75) oneside strhr(.58 .30) prev(.60 .25 .15)  nam(>1cm <1cm micr)^
+
+^Output:^
+
+Estimated sample size for two-sample comparison of survival curves
+
+Test Ho: S1 = S2, where S1 is the Survival function in population 1
+                    and S2 is the Survival function in population 2
+Assumptions:
+         Proportional hazard rate =    0.750
+             Accrual period [yrs] =      4.0
+             Additional FU  [yrs] =      3.0
+                            alpha =   0.0500  (one-sided)
+                            power =   0.8000
+
+Survival probabilities [%]:  Time    Arm 1  Arm 2    Total
+ >1cm, Prevalence:0.60
+                                1     75.0   80.6
+                                2     37.0   47.4
+                                3     30.0   40.5
+                               10     20.0   29.9
+                               11     20.0   29.9
+           Minimum FU [yrs]:    3     30.0   40.5
+           Maximum FU [yrs]:    7     23.8   34.1
+
+ <1cm, Prevalence:0.25                                RHR vs >1cm:  0.58
+           Minimum FU [yrs]:    3     49.7   59.2
+           Maximum FU [yrs]:    7     43.5   53.6
+
+ micr, Prevalence:0.15                                RHR vs >1cm:  0.30
+           Minimum FU [yrs]:    3     69.7   76.3
+           Maximum FU [yrs]:    7     65.0   72.4
+
+Required number of subjects  :         265    265      530
+Required/exp number of events:       164.4  138.6    302.9  (Freedman/Peto)
+Events by Schoenfeld formula:                        298.8
+
+Numbers per stratum
+>1cm               Subjects:         158.6  158.6    317.1
+                   Events  :         116.1   99.6    215.7
+<1cm               Subjects:          66.1   66.1    132.1
+                   Events  :          35.3   28.8     64.2
+micr               Subjects:          39.6   39.6     79.3
+                   Events  :          13.0   10.2     23.1
+
+ 2. Two-sample comparison.  Compute power with 3 strata and n1=n2=200.
+
+ . ^sampsurv p1(1:.75,2:.37,3:.30,10:.20,11:.20)  al(.05) n1(200) ap(4) fu(3) 
+    hr(.75) oneside strhr(.58 .30) prev(.60 .25 .15)  nam(>1cm <1cm micr)^
+
+
+Estimated power for two-sample comparison of survival curves
+
+Test Ho: S1 = S2, where S1 is the Survival function in population 1
+                    and S2 is the Survival function in population 2
+Assumptions:
+         Proportional hazard rate =    0.750
+             Accrual period [yrs] =      4.0
+             Additional FU  [yrs] =      3.0
+                            alpha =   0.0500  (one-sided)
+Survival probabilities [%]:  Time    Arm 1  Arm 2    Total
+ >1cm, Prevalence:0.60
+                                1     75.0   80.6
+                                2     37.0   47.4
+                                3     30.0   40.5
+                               10     20.0   29.9
+                               11     20.0   29.9
+           Minimum FU [yrs]:    3     30.0   40.5
+           Maximum FU [yrs]:    7     23.8   34.1
+
+ <1cm, Prevalence:0.25                                RHR vs >1cm:  0.58
+           Minimum FU [yrs]:    3     49.7   59.2
+           Maximum FU [yrs]:    7     43.5   53.6
+
+ micr, Prevalence:0.15                                RHR vs >1cm:  0.30
+           Minimum FU [yrs]:    3     69.7   76.3
+           Maximum FU [yrs]:    7     65.0   72.4
+
+Number of subjects  :                  200    200      400
+Expected number of events:           124.4  104.9    229.3
+
+Numbers per stratum
+>1cm               Subjects:         120.0  120.0    240.0
+                   Events  :          87.9   75.3    163.2
+<1cm               Subjects:          50.0   50.0    100.0
+                   Events  :          26.7   21.8     48.6
+micr               Subjects:          30.0   30.0     60.0
+                   Events  :           9.8    7.7     17.5
+
+                            Power =   0.6979
+
+^Literature:^
+^-----------^
+
+The required number of events are calculated by formulas found in:
+
+Freedman, Stat in Med Vol 1, 121-129, 1982; formula 4 on page 127.
+ The modified version is found by not using the approximation in the 
+ formulas after formula (2) with the phi[i] (ratio of number of patients
+ at risk) assumed to be constant but not equal to 1. Formulas (2) and (4)
+ are according to Freedman an approximation of what I call the modified 
+ version.
+ More references may be found in this paper on page 129.
+ 
+Schoenfeld, Biometrics 39, 499-503.
+
+The calculation of the number of subjects required is based on unpublished
+formulas. It is in fact rather straightforward given the assumption of 
+piecewise exponential survival distributions with proportional hazards 
+between arms and strata, a uniform accrual rate, and the required number 
+of events.
+
+^Note:^ The differences between numbers required according to the different formulas
+are in general small if ^ratio^=1. However, with a ratio of numbers of 
+patients between the arms away from 1, there may be considerable 
+differences. And adjustment for changing ratios of the number at risk over 
+time may become relevant. More work is required here.
+
+For a sample size formula for non-inferiority design see Donner, SiM 1984, 199-214. 
+See also Makuch and Simon, Cancer Treat Rep 62, 1037-1040, 1978.
+
+^Author:^
+^-------^ 
+Wim van Putten
+Erasmus MC - Daniel den Hoed Cancer Center
+Department of Statistics
+Rotterdam
+The Netherlands
+e-mail:	w.vanputten@@erasmusmc.nl 
+  
+

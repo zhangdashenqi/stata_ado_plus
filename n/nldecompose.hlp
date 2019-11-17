@@ -1,0 +1,273 @@
+{smcl}
+{* 16oct2006}{...}
+{cmd:help nldecompose}{right: ({browse "http://www.stata-journal.com/article.html?article=st0152":SJ8-4: st0152})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 20 22 2}{...}
+{p2col :{hi:nldecompose} {hline 2}}Blinder-Oaxaca decomposition for linear and nonlinear models{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 19 2}
+{cmd:nldecompose}{cmd:,}
+{cmd:by(}{it:varname}{cmd:)}
+[{cmdab:three:fold}
+{cmd:omega(}{it:#}[,{it:#,...}]|{it:omega_option}{cmd:)}
+{cmdab:regout:put}
+{cmd:bootstrap}
+{cmd:bs} 
+{cmd:bsoptions(}{it:bootstrap_options}{cmd:)}
+{cmd:ll(}{it:#}|{it:varname}{cmd:)}
+{cmd:ul(}{it:#}|{it:varname}{cmd:)}]{cmd::} {it:regcmd}
+{p_end}
+
+{pstd} where {it:regcmd} is the command of the regression model to be
+decomposed.
+
+
+{title:Description}
+
+{pstd} {cmd:nldecompose} performs a Blinder-Oaxaca decomposition of the
+mean outcome differential of linear and nonlinear regression models, as
+described by Bauer and Sinning (2008). {helpb regress}, {helpb logit}, 
+{helpb probit}, {helpb ologit}, {helpb oprobit}, {helpb tobit}, {helpb intreg},
+{helpb truncreg}, {helpb poisson}, {helpb nbreg}, {helpb zip}, {helpb zinb}, 
+{helpb ztp}, and {helpb ztnb} are supported. {cmd:nldecompose} calculates
+different variants of the decomposition equation. If desired, the {helpb svy}
+prefix can be used.
+
+{pstd} {cmd:nldecompose} requires Stata 10 or higher. Other available
+decomposition packages are {helpb decompose}, {helpb fairlie}, and 
+{helpb oaxaca}, by Ben Jann; {helpb decomp}, by Ian Watson; and 
+{helpb gdecomp}, by Tam{c a'}s Bartus.
+
+
+{title:Options}
+
+{phang} {cmd:by(}{it:varname}{cmd:)} specifies the sample of the high group
+(A) and the low group (B). {it:varname} should be defined as a dummy variable
+that takes on a value of 1 for the group with the higher outcome and a value
+of 0 for the group with the lower outcome. {opt by()} is required. {p_end}
+
+{phang} {cmd:threefold} performs a decomposition into three components as
+described in Daymont and Andrisani (1984). {p_end}
+
+{phang} {cmd:omega(}{it:#}[{it:,#,...}]|{it:omega_option}{cmd:)} represents
+the general weighting matrix as specified by Oaxaca and Ransom (1994).  
+{opt omega()} can either contain a scalar weight or a vector including the
+weights {it:w1,...,wk} on the diagonal of the weighting matrix, where {it:k}
+corresponds to the number of coefficients in the model. {it:omega_option} can
+be {cmd:reimers}, {cmd:cotton}, or {cmd:neumark}, referring to the
+corresponding weighting schemes proposed by Reimers (1983), Cotton (1988), and
+Neumark (1988). {p_end}
+
+{phang} {opt regoutput} displays the respective outputs of the two regressions. {p_end}
+
+{phang} {opt bootstrap} calculates bootstrap standard errors and confidence
+intervals. {p_end}
+
+{phang} {opt bs} is an alias for {opt bootstrap}. {p_end}
+
+{phang} {cmd:bsoptions(}{it:bootstrap_options}{cmd:)} specifies options of the
+internal {opt bootstrap} routine.  {cmd:bsoptions()} shares all the options of
+the {helpb bootstrap} command.  It can be used only in combination with the
+internal {opt bootstrap} option of {opt nldecompose}.
+
+{phang} {opt ll(#|varname)} specifies the lower limit of the outcome variable. 
+This option can include either a scalar or a variable. {opt ll()} can be used
+only with {helpb intreg}. {opt ll()} or {opt ul()} (or both) is required if
+{helpb intreg} is used. {p_end}
+
+{phang} {opt ul(#|varname)} specifies the upper limit of the outcome variable. 
+This option can include either a scalar or a variable. {opt ul()} can be used
+only with {helpb intreg}. {opt ul()} or {opt ll()} (or both) is required if
+{helpb intreg} is used. {p_end}
+
+
+{title:Examples}
+
+{pstd}{cmd:. nldecompose, by(male) regoutput: regress lnwage educ age agesq west occ*, vce(cluster id)}{p_end}
+
+{pstd}{cmd:. nldecompose, by(male) ll(0): intreg y1 y2 educ age agesq west occ* [pweight=weight]}{p_end}
+
+{pstd}{cmd:. nldecompose, by(group) ll(minimum) ul(1000): svy: intreg y1 y2 educ age agesq west occ*}{p_end}
+
+{pstd}{cmd:. nldecompose, by(select): zip count educ age agesq west occ*, inflate(west)}{p_end}
+
+{pstd}{cmd:. nldecompose, by(male) omega(.4): ologit y educ age agesq west occ*}{p_end}
+
+{pstd}{cmd:. nldecompose, by(group) omega(neumark): truncreg dep educ age agesq west occ*, ll(0)}{p_end}
+
+{pstd}{cmd:. nldecompose, by(select) bs bsoptions(reps(100)) omega(.2,.1,.4): nbreg y x1 x2}{p_end}
+
+
+{title:Methods and formulas}
+
+    {title:Two components}
+
+{pstd}The conventional Blinder-Oaxaca decomposition is based on two linear
+regression models that are fitted separately for the groups A and B:{p_end}
+
+{p 8 8 2}YA = {bf:X}A bA + eA{p_end} 
+{p 8 8 2}YB = {bf:X}B bB + eB{p_end} 
+
+{p 4 4 2}For these models, Blinder (1973) and Oaxaca (1973) propose
+the decomposition equations{p_end} 
+
+{p 8 8 2}yA - yB = ({bf:x}A - {bf:x}B) bA + {bf:x}B (bA - bB) 
+
+{p 4 4 2}and 
+
+{p 8 8 2}yA - yB = ({bf:x}A - {bf:x}B) bB + {bf:x}A (bA - bB){p_end}
+
+{p 4 4 2}where yA - yB is the mean outcome difference, and {bf:x}A and {bf:x}B
+are mean vectors of the estimated coefficient vectors bA and bB for the two
+groups. In both equations, the first term on the right-hand side displays the
+difference in the outcome variable between the two groups due to differences
+in observable characteristics, whereas the second term shows the differential
+that is due to differences in coefficient estimates. A decomposition similar
+to these equations is not appropriate in the nonlinear case, because the
+conditional expectations, E(Y|{bf:X}), can differ from {bf:X}*b. For that
+reason, the decomposition of the conditional mean difference of Y between the
+two groups has to be considered:{p_end}
+
+{p 8 8 2}yA - yB = {EbA(YA|{bf:X}A) - EbA(YB|{bf:X}B)} + {EbA(YB|{bf:X}B) - EbB(YB|{bf:X}B)}
+
+{p 4 4 2}and
+
+{p 8 8 2}yA - yB = {EbB(YA|{bf:X}A) - EbB(YB|{bf:X}B)} + {EbA(YA|{bf:X}A) - EbB(YA|{bf:X}A)}{p_end} 
+
+{p 4 4 2}In both equations, the first term on the right-hand side again
+displays the part of the differential in the outcome variable between the two
+groups that is due to differences in the covariates {bf:X}, and the second
+term displays the part of the differential in Y that is due to differences in
+coefficients.{p_end}
+
+{p 4 4 2}Oaxaca and Ransom (1994) give an overview of the application of the
+following generalized linear decomposition:{p_end}
+
+{p 8 8 2}yA - yB = ({bf:x}A - {bf:x}B) b* + {bf:x}A (bA - b*) + {bf:x}B (b* - bB){p_end}
+
+{p 4 4 2}b* is defined as a weighted average of the coefficient vectors, bA and
+bB:{p_end} 
+
+{p 8 8 2}b* = {bf:Omega} bA + ({bf:I} - {bf:Omega}) bB{p_end}
+
+{p 4 4 2}where {bf:Omega} is a weighting matrix and {bf:I} is an identity
+matrix. The decomposition equations proposed by Blinder (1973) and Oaxaca
+(1973) represent special cases of the generalized equation in which {bf:Omega}
+is a null matrix or is equal to {bf:I}, respectively. In the nonlinear case,
+the generalized decomposition equation can be written as
+
+{p 8 8 2}yA - yB = {Eb*(YA|{bf:X}A) - Eb*(YB|{bf:X}B)}
+
+{p 16 8 2}       + {EbA(YA|{bf:X}A) - Eb*(YA|{bf:X}A)}
+
+{p 16 8 2}       + {Eb*(YB|{bf:X}B) - EbB(YB|{bf:X}B)}
+
+{p 4 4 2}Different assumptions about the form of {bf:Omega} can be considered.
+Reimers (1983) and Cotton (1988) treat {bf:Omega} as a scalar matrix. Reimers
+(1983) proposes the weighting matrix {bf:Omega} = (0.5){bf:I}, whereas Cotton
+(1988) chooses the weighting matrix {bf:Omega} = s{bf:I}, where s denotes the
+relative sample size of the majority group. Use the {bf:omega()} option with a
+scalar weight to treat the weighting matrix as a scalar matrix. The
+{cmd:omega()} suboptions {opt reimers} and {opt cotton} calculate the
+decomposition equation by using the weighting matrices proposed by Reimers
+(1983) and Cotton (1988), respectively.
+
+{p 4 4 2}In the context of a linear regression model, Neumark (1988) and
+Oaxaca and Ransom (1994) propose to fit a pooled model to derive the
+counterfactual coefficient vector, b*. Use the {cmd:omega()} suboption 
+{opt neumark} to estimate b* by a pooled regression model.{p_end}
+
+    {title:Three components}
+
+{p 4 4 2}Daymont and Andrisani (1984) proposed the following extention of the 
+Blinder-Oaxaca decomposition:{p_end}
+
+{p 8 8 2} yA-yB = ({bf:x}A-{bf:x}B) bB + {bf:x}B (bA-bB) +
+({bf:x}A-{bf:x}B) (bA-bB) = E + C + CE{p_end}
+
+{p 4 4 2} where E is the part of the raw differential that is due to
+differences in endowments, C reflects the part attributable to differences
+in coefficients, and CE represents the part that can be explained by
+the interaction between C and E. In the nonlinear case, these components
+are given by the following:
+
+{p 8 8 2}E = {EbB(YA|{bf:X}A) - EbB(YB|{bf:X}B)}
+
+{p 8 8 2}C = {EbA(YB|{bf:X}B) - EbB(YB|{bf:X}B)}
+
+{p 8 8 2}CE = {EbA(YA|{bf:X}A) - EbB(YA|{bf:X}A)} + {EbA(YB|{bf:X}B) - EbB(YB|{bf:X}B)}
+
+{p 4 4 2} The Blinder-Oaxaca decomposition for the tobit model has been
+applied empirically by Bauer and Sinning (2005, Forthcoming).  Bauer, 
+G{c o:}hlmann, and Sinning (2007) provide an application of the Blinder-Oaxaca
+decomposition to count-data models.
+
+
+{title:References}
+
+{p 4 8 2}Bauer, T., S. G{c o:}hlmann, and M. Sinning. 2007. Gender differences in smoking behavior. {it:Health Economics} 16: 895-909.{p_end}
+
+{p 4 8 2}Bauer, T. K., and M. Sinning. 2005. The savings behavior of temporary
+and permanent migrants in Germany. RWI Discussion Papers No. 29. Downloadable
+from http://ideas.repec.org/p/iza/izadps/dp1632.html.{p_end}
+
+{p 4 8 2}------. 2008. An extension of the Blinder-Oaxaca decomposition to
+nonlinear models. {it:Advances in Statistical Analysis} 92: 197-206.{p_end}
+
+{p 4 8 2}------. Forthcoming. Blinder-Oaxaca decomposition for tobit models.
+{it:Applied Economics}.{p_end}
+
+{p 4 8 2}Blinder, A. S. 1973. Wage discrimination: Reduced form and structural
+estimates. {it:Journal of Human Resources} 8: 436-455.{p_end}
+
+{p 4 8 2}Cotton, J. 1988. On the decomposition of wage differentials.
+{it:Review of Economics and Statistics} 70: 236-243.{p_end}
+
+{p 4 8 2}Daymont, T. N., and P. J. Andrisani. 1984. Job preferences, college
+major, and the gender gap in earnings. {it:Journal of Human Resources} 19:
+408-428.{p_end}
+
+{p 4 8 2}Neumark, D. 1988. Employers' discriminatory behavior and the
+estimation of wage discrimination. {it:Journal of Human Resources} 23:
+279-295.{p_end}
+
+{p 4 8 2}Oaxaca, R. 1973. Male-female wage differentials in urban labor
+markets.  {it:International Economic Review} 14: 693-709.{p_end}
+
+{p 4 8 2}Oaxaca, R. L., and M. R. Ransom. 1994. On discrimination and the
+decomposition of wage differentials. {it:Journal of Econometrics} 61:
+5-21.{p_end}
+
+{p 4 8 2}Reimers, C. W. 1983. Labor market discrimination against Hispanic and
+black men. {it:Review of Economics and Statistics} 65: 570-579.{p_end}
+
+
+{title:Authors}
+
+{p 4}Mathias Sinning{p_end}
+{p 4}RSSS at the Australian National University, and IZA{p_end}
+{p 4}Canberra, Australia{p_end}
+{p 4}{browse "mailto:mathias.sinning@anu.edu.au?subject=NLDECOMPOSE":mathias.sinning@anu.edu.au}{p_end}
+
+{p 4}Markus Hahn{p_end}
+{p 4}Melbourne Institute of Applied Economic and Social Research{p_end}
+{p 4}The University of Melbourne{p_end}
+{p 4}Melbourne, Australia{p_end}
+
+{p 4}Thomas K. Bauer{p_end}
+{p 4}RWI Essen, Ruhr-Universit{c a:}t Bochum, and IZA{p_end}
+{p 4}Bochum, Germany{p_end}
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 8, number 4: {browse "http://www.stata-journal.com/article.html?article=st0152":st0152}
+{p_end}

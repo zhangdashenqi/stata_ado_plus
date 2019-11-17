@@ -1,0 +1,49 @@
+Set period of time-series data                     (STB-7: sts2; STB-15: sts4)
+------------------------------
+
+	^period^ [ # | word | # word ]
+
+where word is {^a^nnual | ^s^emiannual | ^q^uarterly | ^m^onthly | ^w^eekly | ^d^aily }
+corresponding
+to the numbers    ^1         2            3         12        52      365^
+
+
+Remarks
+-------
+
+^period^ sets the period (frequency) of the time-series data.  The period is 
+used by commands such as ^growth^.  ^period^ without argument displays the per-
+iod currently in use.  If the period is not set, each observation is assumed
+to represent annual data, known as ^period 1 annual^.
+
+The period # records the number of observations per year in the data.  Thus,
+^period 1^ means annual data and ^period 12^ means monthly data.  
+
+By specifying "^period^ # word", you can create your own correspondence of 
+number of observations "per year" and words.  For instance, "^period 1 hourly^"
+or "^period 24 daily^".  The idea is that a 1-unit change in # should be a
+meaningful period for normalization of, for instance, growth rates.
+
+	
+Examples
+--------
+
+ . ^period 1^
+ . ^period annual^
+
+ . ^period m^
+
+ . ^period 24 daily^
+ 
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7), sts4 (STB-15)
+On-line:  ^help^ for ^datevars^, ^findsmpl^, and ^growth^

@@ -1,0 +1,44 @@
+Merge a raw or dictionary file into the current data set        [STB-20: dm19]
+--------------------------------------------------------
+
+        ^mergedct^ [varlist] ^using^ filename [^, a^utomatic ^b^yvariable(#) 
+			        ^nol^abel ^u2^(filename2) ^v^list(varlist)]
+
+merges a raw or dictionary file into the current data set.  Stata's ^merge^
+command merges a dta file, but not raw data. 
+
+
+
+
+Options
+-------
+^a^utomatic, ^b^yvariable(#), and ^u2^(filename2) have the same effects as the
+    ^infile^ options ^a^utomatic, ^b^yvariable(#), and ^using^(), respectively.
+
+^nol^abel has the same effect as the ^merge^ command's ^nol^abel option.
+
+
+
+
+Options, continued
+------------------
+^v^list(varlist) specifies the variable names for a raw data file, that is,
+    a non-dictionary file.  The command
+
+            ^mergedct using rawfile, vlist(x y z)^
+
+    indicates that the raw data can be ^infile^d by the command
+
+            ^infile x y z using rawfile^
+
+
+Author
+------
+          Jonathan Nash, CS First Boston
+          212-318-0748 (FAX)
+
+Also see
+--------
+    STB:  dm19 (STB-20)
+ Manual:  [3d] infile, [3d] merge
+On-line:  help for ^infile^ and ^merge^

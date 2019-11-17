@@ -1,0 +1,42 @@
+.-
+help for ^filldate^                                           [sts7.6: STB-24]
+.-
+
+Fill in missing values in date variables
+----------------------------------------
+
+        ^filldate^ [, ^b^egin^(^date values^)^ ^d^atevars^(^varlist^)^ ^p^eriod^(^#^)^ ]
+
+fills in the missing values in date variables (e.g., ^year^ and ^month^).  When
+a data set is extended to calculate a forecast, the date variables contain
+missing values in the new observations.  ^filldate^ fills in these missing
+values
+
+
+Options
+-------
+
+^b^egin^(^date values^)^ overrides the current projection date, i.e., the first
+        date for which values need to be supplied.  The date values are
+	specified according to the current ^period^ and ^datevars^ settings.
+
+^d^atevars^()^ overrides the current ^datevars^.
+
+^p^eriod^()^ overrides the current ^period^.
+
+
+
+
+Author
+------
+
+        Sean Becketti, Stata Technical Bulletin
+        EMAIL   stb@stata.com
+
+
+Also see
+--------
+
+ Manual:  [4] dates
+    STB:  sts7.6 (STB-24)
+On-line:  ^help^ for ^datevars^, ^period^, and ^ts^

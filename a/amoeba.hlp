@@ -1,0 +1,78 @@
+.-
+help for ^amoeba^, ^quasi^                                     (STB-38: sg71) 
+.-
+
+Maximization of Function 
+------------------------
+
+
+Syntax
+------
+
+   ^amoeba^ [ obj xin yout xout [stepsize itmax toler ] ]
+
+   ^quasi^  [ obj xin yout xout [g h stepsize itmax toler ^bhhh^] ]
+
+
+where obj is the name of a program written by the user to evaluate the 
+objective function to be maximized, xin is a row vector containing starting 
+values, yout is a scalar to receive the maximum value of the objective 
+function, and xout is a row vector to receive the value of the vector that 
+maximizes the objective function.
+
+Unless using the ^bhhh^ option under ^quasi^, a call to obj must be of the 
+form ^obj x y^ where ^x^ is a row vector at which the function is to be 
+evaluated, and ^y^ is a scalar to receive the value of the function. When using
+the ^bhhh^ option the call to the user-written objective function must take the
+form ^obj x y objvar^, ^objvar^ is a variable name (see above).
+
+
+Options
+-------
+
+Under ^amoeba^, stepsize is the percentage change in each parameter used to set
+up a simplex in the parameter space.  Under ^quasi^, it is the percentage step 
+taken to compute the numerical gradient.  
+
+itmax is the maximum number of iterative steps that should be done.  
+
+
+toler is how "tight" the simplex (^amoeba^) or how small the gradients (^quasi^)
+must be before the algorithm quits.
+
+g is a row vector to receive the final gradient in ^quasi^.
+
+h is a matrix to receive final inverse of hessian in ^quasi^.
+
+^bhhh^ tells ^quasi^ to use the BHHH algorithm rather than BFGS in ^quasi^.
+
+Note that options are ordered and a period can be used to skip optional 
+arguments. In addition, invoking ^amoeba^ or ^quasi^ with no arguments will 
+display information about them, a la Unix.
+
+
+Examples
+--------
+
+  . ^amoeba obj x f z^
+  . ^aomeba obj x f z 0.1^
+  . ^aomeba tsls bols sse bhat . . 1E-6^ 
+  . ^quasi ols bstart yout bfinal^
+  . ^quasi ols bstart yout bfinal . h^
+  . ^quasi mylk b0 fout b1 . . . . bhhh^  
+
+
+Author
+------
+
+     Christopher Ferrall
+     Queen's University
+     Kingston, Ontario
+     FAX 613-545-6668
+     email: ferrallc@@post.queensu.ca
+
+
+Also See
+--------
+
+    STB:  sg71 (STB-38)

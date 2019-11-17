@@ -1,0 +1,73 @@
+{smcl}
+{...}
+{hline}
+help for {hi:showmarkers}
+{hline}
+
+{title:Show graph markers varying marker options}
+
+{cmd:showmarkers, over(overoption) [marker_options sheme(scheme)] }  
+
+{p 8 8}
+The {it:over()} option is required and is one of msymbol, msize, 
+mcolor, mfcolor, mlcolor, mlwidth, mlpattern.  This shows the symbols
+varying the option that you have selected.  In addition, you can
+specify any of the following marker options (listed below) or the scheme
+via the scheme() option.
+
+{p 4 4 2}
+The {it:marker_options} are
+
+	{it:marker_options}{col 38}description
+	{hline 70}
+	{cmdab:m:symbol:(}{it:{help symbolstyle}}{cmd:)}{...}
+{col 38}shape of marker
+	{cmdab:mc:olor:(}{it:{help colorstyle}}{cmd:)}{...}
+{col 38}color of marker, inside and out
+	{cmdab:msiz:e:(}{it:{help markersizestyle}}{cmd:)}{...}
+{col 38}size of marker
+
+	{cmdab:mfc:olor:(}{it:{help colorstyle}}{cmd:)}{...}
+{col 38}inside or "fill" color
+
+	{cmdab:mlp:attern:(}{it:{help linepatternstyle}}{cmd:)}{...}
+{col 38}whether line is solid, dashed, ...
+	{cmdab:mlw:idth:(}{it:{help linewidthstyle}}{cmd:)}{...}
+{col 38}thickness of line
+	{cmdab:mlc:olor:(}{it:{help colorstyle}}{cmd:)}{...}
+{col 38}color of line
+	{hline 70}
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:showmarkers} allows you to create a graph varying attributes of the
+markers, for example choosing {it:over(msymbol)} would show you the
+different possible symbols, or {it:over(mcolor)} would show the
+different possible colors.  Each symbol is shown with a label 
+next to it showing the value which produced that symbol.
+
+{title:Examples}
+
+{cmd:. showmarkers , over(msymbol)} 
+{cmd:. showmarkers , over(msize) }
+{cmd:. showmarkers , over(mcolor) }
+{cmd:. showmarkers , over(mfcolor) }
+{cmd:. showmarkers , over(mlcolor) mfcolor(gray) msize(large) mlwidth(medthick) }
+{cmd:. showmarkers , over(mlwidth) mfcolor(gray) msize(large) mlcolor(navy)  }
+{cmd:. showmarkers , over(mlpattern) }
+{cmd:. showmarkers , over(msymbol) scheme(s1mono)}
+{cmd:. showmarkers , over(msymbol) msize(large) scheme(s1mono)}
+
+{p 4 4 2}If you have comments or suggestions, please email 
+Michael Mitchell at mnm@ucla.edu .
+
+{title:Author}
+
+     Statistical Consulting Group
+     Institute for Digital Research and Education, UCLA
+     idrestat@ucla.edu 
+
+{title:Acknowledgements}
+
+{p 4 4 2}This is based on the Stata command {it:palette}.

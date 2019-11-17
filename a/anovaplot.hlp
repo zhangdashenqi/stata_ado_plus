@@ -1,0 +1,166 @@
+{smcl}
+{* 10sep2001/3nov2004/5oct2007/18dec2009}{...}
+{hline}
+{cmd:help anovaplot}{right:({browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0027":SJ10-1: gr0009_1})}
+{hline}
+
+{title:Title}
+
+{p 4 4 2}{hi:anovaplot} {hline 2} Plots of ANOVA fit, including interaction plots
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:anovaplot} 
+[{cmd:,} 
+{cmd:scatter(}{it:scatter_options}{cmd:)} 
+{it:connected_options} 
+{c -(}
+{cmd:addplot(}{it:plot}{cmd:)} 
+{c |}
+{cmd:plot(}{it:plot}{cmd:)} 
+{c )-}] 
+
+{p 8 17 2}
+{cmd:anovaplot} 
+{it:varlist} 
+[{cmd:,} 
+{cmd:scatter(}{it:scatter_options}{cmd:)} 
+{it:connected_options} 
+{c -(}
+{cmd:addplot(}{it:plot}{cmd:)}  
+{c |}
+{cmd:plot(}{it:plot}{cmd:)} 
+{c )-}]    
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:anovaplot} plots fitted or predicted values from an immediately
+previous one-, two-, or three-way {cmd:anova}. By default, the data for the
+response are also plotted. In particular, {cmd:anovaplot} can show interaction
+plots. 
+
+
+{title:Remarks} 
+
+{p 4 4 2}With the first syntax, no {it:varlist} is specified.  {cmd:anovaplot}
+shows the response and predicted values on the y axis, the predictor named
+first in the {cmd:anova} command on the x axis, any predictor named second
+in the {cmd:anova} command by separate groups within a two-way plot,
+and any predictor named third in the {cmd:anova} command by separate panels
+using a {cmd:by()} option. Thus with this syntax, the appearance of the plot
+(though not the values shown) is sensitive to the order in which predictors
+are specified in the {cmd:anova} command. 
+
+{p 4 4 2}With the second syntax, a {it:varlist} is supplied. The {it:varlist} must be a
+permutation of the predictors previously used. The order of the predictors in
+{it:varlist} is used to determine the form of the graph, as above. This permits
+changing graphs without reissuing the {cmd:anova} command. 
+
+{p 4 4 2}Note especially that the graph format produced by {cmd:anovaplot} is
+appropriate for models with at most one continuous predictor, which should
+always be the predictor named first. With that caveat, {cmd:anovaplot} offers a
+way of showing parallel and diverging regression lines for models with one
+continuous predictor.
+
+
+{title:Options}
+
+{p 4 8 2}
+{opt scatter(scatter_options)} specifies options for {helpb scatter} that
+control plotting of fitted values. 
+
+{p 8 8 2} 
+To suppress plotting of response data, specify {cmd:scatter(ms(i))}.
+
+{p 8 8 2} 
+To separate tied values of response, specify {cmd:scatter(jitter(1))}. 
+
+{p 4 8 2} 
+{it:connected_options} are options for {helpb twoway connected} that 
+control plotting of fitted values. 
+
+{p 4 8 2}
+{opth "addplot(addplot_option:plot)"} (Stata 9 and later) or
+{opth "plot(plot_option:plot)"} (Stata 8 only)
+provides a way to add other plots to the generated graph.
+
+
+{title:Examples}
+
+{p 4 4 2}Examples here use syntax introduced for {cmd:anova} in Stata 11. 
+If you are using an earlier Stata, details may differ for your version. 
+
+{p 4 8 2}{cmd:. webuse systolic} 
+
+{p 4 4 2}One-way anova: {cmd:systolic} as response on y axis, {cmd:drug} as
+factor on x axis:
+
+{p 4 8 2}{cmd:. anova systolic drug}{p_end}
+{p 4 8 2}{cmd:. anovaplot}
+
+{p 4 4 2}
+Two-way anova, no interaction term: {cmd:systolic} as response on y axis, 
+{cmd:disease} and {cmd:drug} as factors, with {cmd:disease} on x axis, 
+and levels of {cmd:drug} defining separate profiles: 
+
+{p 4 8 2}{cmd:. anova systolic disease drug}{p_end}
+{p 4 8 2}{cmd:. anovaplot}
+
+{p 4 4 2}Better to reverse order of predictors: 
+
+{p 4 8 2}{cmd:. anovaplot drug disease}
+
+{p 4 4 2}Example of interaction term: 
+
+{p 4 8 2}{cmd:. anova systolic drug disease drug#disease}{p_end}
+{p 4 8 2}{cmd:. anovaplot}
+
+{p 4 4 2}
+As above, but no plotting of data: 
+
+{p 4 8 2}{cmd:. anovaplot, scatter(ms(i))}
+
+{p 4 4 2}Example with one continuous predictor: 
+
+{p 4 8 2}{cmd:. sysuse auto}{p_end}
+{p 4 8 2}{cmd:. decode foreign, gen(Foreign)}{p_end}
+{p 4 8 2}{cmd:. gen F = substr(Foreign,1,1)}
+
+{p 4 4 2}The continuous predictor is named just after the response: 
+
+{p 4 8 2}{cmd:. anova price c.weight foreign} 
+
+{p 4 4 2}(note the parallel regression lines) 
+
+{p 4 8 2}{cmd:. anovaplot, scatter(ms(i) mla(F) mlabpos(0))}
+
+{p 4 8 2}{cmd:. anova price c.weight foreign c.weight*foreign}
+
+{p 4 4 2}(note the diverging regression lines) 
+
+{p 4 8 2}{cmd:. anovaplot, scatter(ms(i) mla(F) mlabpos(0))}
+
+
+{title:Acknowledgment} 
+
+{p 4 4 2}Ken Higbee provided very helpful comments. 
+
+
+{title:Author}
+
+{p 4 4 2}Nicholas J. Cox{break}
+Durham University, U.K.{break} 
+n.j.cox@durham.ac.uk
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 10, number 1: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0027":gr0009_1},{break}
+         {it:Stata Journal}, volume 4, number 4: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=gr0009":gr0009}
+
+{psee}
+{space 2}Help:  {manhelp anova R}, {manhelp dotplot R}, {helpb modeldiag}

@@ -1,0 +1,73 @@
+{smcl}
+{* 06oct2003}{...}
+{hline}
+help for {hi:fintplot}{right:(SJ6-3: gr0024)}
+{hline}
+
+{title:Produce forest plot and table for interactions}
+
+{p 8 17 2}
+{cmdab:fintplot}
+{varlist}
+{ifin}
+[{cmd:,}
+    {opth by(varname)}
+    {opth strata(varname)}
+    {opt logistic(#)}
+    {opt logscale(#)}]
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:fintplot} calculates a table containing hazard or odds ratios and the
+ratio of hazard ratios or ratio of odds ratios of an interaction for the
+variables specified in {it:varlist} and produces a forest plot. Several
+variables at once (at least two) may be specified in {it:varlist} or two
+variables only if the {cmd:by()} option is used.
+
+{p 4 4 2}
+By default, {cmd:fintplot} calculates hazard ratios by using the Cox
+proportional hazards model.  Logistic regression can be used for the
+calculations by changing {cmd:logistic(0)} to {cmd:logistic(1)}.
+
+
+{title:Options}
+
+{phang}
+{opth by(varname)} specifies that {cmd:fintplot} split the data by 
+{it:varname}.
+
+{phang}
+{opth strata(varname)} is for use only with the Cox model and allows
+the user to stratify the analysis by {it:varname}.
+
+{phang}
+{opt logistic(#)} specifies the method by which {cmd:fintplot} calculates
+hazard ratios.  The default is set at {cmd:logistic(0)}, which uses the Cox
+proportional hazards model, and needs to be changed to {cmd:logistic(1)} 
+to use logistic regression.
+
+{phang}
+{cmd:logscale(}{it:#}{cmd:)} can be used with either Cox proportional
+hazards models or logistic regression models and allows the
+user to transfer the forest plot onto a log scale. The table output remains
+the same. The default is set at {cmd:logscale(0)}, which uses the Cox
+proportional hazards model, and needs to be changed to
+{cmd:logscale(1)} to use the log scale. 
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. forestplot treat factor1, logistic(0) logscale(0)}
+
+{p 4 8 2}{cmd:. forestplot treat factor1 if factor2==1, by(factor3) logistic(1) logscale(0)}
+
+
+{title:Authors}
+
+{p 4 4 2}
+Friederike Barthel and Patrick Royston, MRC Clinical Trials Unit, London, UK.
+Email {browse "mailto:friederikeb@ctu.mrc.ac.uk":friederikeb@ctu.mrc.ac.uk}
+if you observe any problems.
+{p_end}

@@ -1,0 +1,90 @@
+.-
+help for ^archlist^, ^archtype^, ^archcopy^                            [STB-52: ip29]
+.-
+
+Work with packages or files in Statistical Software Components archive
+----------------------------------------------------------------------
+
+    ^archlist^ [^using^ filename] [^, replace^ ]
+    
+    ^archlist^ letter 
+    
+    ^archtype^ filename 
+  
+    ^archcopy^ filename [^,^ copy_options ] 
+   
+
+Description
+-----------
+
+These commands work with files or packages from the Statistical Software
+Components (SSC) archive (often called the Boston College archive). They 
+require a net-aware variant of Stata 6.0. 
+
+^archlist^ lists packages downloadable from the SSC archive.
+
+If no letter is specified, it also logs what it displays, by default 
+in ^ssc-ideas.lst^. Therefore, it may not be run ^quietly^ without 
+suppressing its useful output. Any logging previously started will be 
+suspended while it is operating.
+
+If a single letter is specified, ^archlist^ lists packages 
+whose names begin with that letter, but only on the screen.
+
+^archtype^ filename types filename from the SSC archive. 
+This is appropriate for individual .ado or .hlp files. 
+
+^archcopy^ filename copies filename from the SSC archive to the 
+appropriate directory or folder within STBPLUS, determined 
+automatically. (If curious, type ^sysdir^ to see where this is.) 
+This is appropriate for individual .ado or .hlp files.
+
+In the case of ^archtype^ and ^archcopy^ the filename should 
+be typed as if you were in the same directory or folder, for 
+example as foo.ado or foo.hlp. The full path should not be 
+given. 
+
+
+Options
+-------
+
+^replace^ specifies that filename is to be overwritten. 
+
+copy_options are options of ^copy^. See help on @copy@. 
+
+
+Examples
+--------
+    
+    . ^archlist using ssc.txt, replace^
+    
+    . ^archlist a^
+    
+    . ^archtype whitetst.hlp^ 
+
+    . ^archcopy whitetst.ado^
+    . ^archcopy whitetst.hlp^ 
+
+
+Acknowledgements
+----------------
+
+	Helpful advice was received from Bill Gould, Thomas Krichel, Jens
+        Lauritsen, and Vince Wiggins.  
+
+
+Authors
+-------
+
+         Christopher F. Baum, Boston College
+         baum@@bc.edu
+
+	 Nicholas J. Cox, University of Durham
+	 n.j.cox@@durham.ac.uk 
+
+
+Also see
+--------
+
+On-line:  help for @copy@, @net@, @sysdir@, @type@ 
+

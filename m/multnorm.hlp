@@ -1,0 +1,187 @@
+Graphical 'Test' of Multivariate Normality
+------------------------------------------
+
+AUTHOR:   Richard Goldstein, Qualitas
+SUPPORT:  Written communication only, EMAIL goldst@@harvarda.bitnet
+	  or 37 Kirkwood Road, Brighton MA 02135.
+
+               ^multnorm^ varlist [^in^ range] [^if^ exp]
+
+^multnorm^ is a graphical procedure for examining multivariate normality, via
+diagnostics from a standard linear regression.  Thus, you must enter at least 
+2 variables; do not enter any options other than ^in^ and/or ^if^.  Cases with 
+missing values on any variable in varlist are dropped prior to producing the 
+new variables and the graph.
+
+'Test' of multivariate normality (actually a graph); taken from Stevens, J
+(1986) ^Applied Multivariate Statistics for the Social Sciences^, Hillsdale:
+L Erlbaum Assoc., Publishers, pp. 207-212, and from Thompson, B (1990),
+"MULTINOR:  A Fortran Program that Assists in Evaluating Multi-variate
+Normality", ^Educational and Psychological Measurement^, 50:845-8.  Note that
+Stevens contains some typo's and approximations; although Thompson does not
+mention any problem with Stevens' calculation of Mahalanobis Distance,
+Thompson's graph agrees with that calculated here for Stevens' data and NOT
+with Stevens' calculations or his graph.  Note also that the formula for
+Mahalanobis Distance used here is considered 'inappropriate' for use as a
+measure of leverage by Velleman PF and Welsch RE (1981), "Efficient Computing
+of Regression Diagnostics", ^The American Statistician^, 35:  234-242; the
+variable MD2 used and reported here, and used by Thompson and, apparently,
+Stevens, appears as equation 29 in Velleman & Welsch.
+
+If the variables are multivariate normal, then the graph will approximate
+a 45-degree line.
+
+Note that the calculations are relatively slow.
+
+In the two examples below, the graphs are not shown; the first example is
+the Stevens data, and the data are shown first.  The second example is the
+Stata auto.dta provided with Stata to all users.
+
+Example One-Stevens Data:
+-------------------------
+
+	. ^use stevens^
+
+	. ^list^
+
+	            wi         wc         pc
+	  1.       5.8        9.7        8.9
+	  2.      10.6       10.9         11
+	  3.       8.6        7.2        8.7
+	  4.       4.8        4.6        6.2
+	  5.       8.3       10.6        7.8
+	  6.       4.6        3.3        4.7
+	  7.       4.8        3.7        6.4
+	  8.       6.7          6        7.2
+	  9.       7.1        8.4        8.4
+	 10.       6.2          3        4.3
+	 11.       4.2        5.3        4.2
+	 12.       6.9        9.7        7.2
+	 13.       5.6        4.1        4.3
+	 14.       4.8        3.8        5.3
+	 15.       2.9        3.7        4.2
+	 16.       6.1        7.1        8.1
+	 17.      12.5       11.2        8.9
+	 18.       5.2        9.3        6.2
+	 19.       5.7       10.3        5.5
+	 20.         6        5.7        5.4
+	 21.       5.2        7.7        6.9
+	 22.       7.2        5.8        6.7
+	 23.       8.1        7.1        8.1
+	 24.       3.3          3        4.9
+	 25.       7.6        7.7        6.2
+	 26.       7.7        9.7        8.9
+
+	. ^multnorm wi wc pc^
+
+	           MD2       chi2
+	  1.  .6940832   .1798865
+	  2.  .8292803    .389966
+	  3.  .9431213   .5674309
+	  4.  1.194305   .7331322
+	  5.  1.280711   .8938028
+	  6.  1.306861   1.052871
+	  7.  1.406288   1.212533
+	  8.  1.423692   1.374434
+	  9.  1.727728   1.539968
+	 10.  1.770294   1.710439
+	 11.  1.787973   1.887161
+	 12.  1.795986   2.071538
+	 13.   2.00243   2.265146
+	 14.  2.381555   2.469824
+	 15.  2.413529   2.687782
+	 16.  2.671461    2.92176
+	 17.  2.716661   3.175261
+	 18.  2.751626   3.452895
+	 19.  2.758187   3.760947
+	 20.  2.808616   4.108345
+	 21.  3.925842   4.508442
+	 22.   4.90097   4.982584
+	 23.  5.404338    5.56821
+	 24.  5.893517   6.340872
+	 25.  7.680526   7.494797
+	 26.  10.53042   9.923156
+
+Example Two--STATA auto data:
+-----------------------------
+
+	. ^use auto^
+	(1978 Automobile Data)
+
+	. ^multnorm price mpg weight^
+
+	           MD2       chi2
+	  1.  .4823955   .0879764
+	  2.  .4881752   .1865578
+	  3.  .4927304   .2664138
+	  4.  .5064312   .3381441
+	  5.  .5876299   .4050903
+	  6.   .589836   .4688687 
+	  7.  .6252201   .5304068 
+	  8.  .6869202    .590303 
+	  9.  .7496714   .6489731
+	 10.  .8043185   .7067225
+	 11.  .8366966   .7637849
+	 12.  .8725201   .8203464
+	 13.  .9046813   .8765573
+	 14.   .991994   .9325455
+	 15.  1.024452   .9884196
+	 16.  1.033603   1.044274
+	 17.  1.064712   1.100195
+	 18.  1.132212   1.156258
+	 19.  1.140015   1.212533
+	 20.  1.183668   1.269087
+	 21.  1.190048   1.325981
+	 22.  1.232133   1.383276
+	 23.  1.240343    1.44103
+	 24.  1.281489   1.499298
+	 25.  1.301269   1.558136
+	 26.  1.314231   1.617602
+	 27.  1.328227   1.677749
+	 28.   1.38066   1.738637
+	 29.  1.387493   1.800322
+	 30.  1.401482   1.862865
+	 31.  1.430728   1.926327
+	 32.  1.465629   1.990772
+	 33.  1.569834   2.056267
+	 34.  1.571902   2.122884
+	 35.  1.620626   2.190695
+	 36.  1.674173   2.259777
+	 37.  1.785907   2.330218
+	 38.  1.898156   2.402103
+	 39.  1.903607   2.475529
+	 40.  1.929491   2.550598
+	 41.  2.197038    2.62742
+	 42.  2.277208   2.706115
+	 43.   2.30725   2.786811
+	 44.  2.367661   2.869651
+	 45.  2.514124   2.954788
+	 46.  2.571822   3.042392
+	 47.  2.699493   3.132652
+	 48.  2.720322   3.225772
+	 49.  2.812051   3.321984
+	 50.  2.836437   3.421544
+	 51.  2.854816    3.52474
+	 52.  3.111239   3.631898
+	 53.  3.316182   3.743385
+	 54.  3.316417   3.859622
+	 55.  3.436041   3.981088
+	 56.  3.439405   4.108345
+	 57.  3.561527    4.24204
+	 58.  3.946049   4.382935
+	 59.  4.056426   4.531934
+	 60.  4.751401   4.690122
+	 61.  4.832843   4.858812
+	 62.  4.941287   5.039619
+	 63.  5.107936   5.234561
+	 64.  5.687628   5.446204
+	 65.  6.183751   5.677877
+	 66.  6.207568   5.934019
+	 67.  6.556265   6.220731
+	 68.  6.850253   6.546726
+	 69.  6.876239   6.925084
+	 70.  7.460886   7.376768
+	 71.  7.720632   7.938627
+	 72.  8.366157   8.685135
+ 	 73.  16.45519    9.80805
+	 74.  18.55515   12.19098

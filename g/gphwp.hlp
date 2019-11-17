@@ -1,0 +1,18 @@
+Printing graphs and creating WordPerfect graph files
+----------------------------------------------------
+by Thomas R. Saving & Jeff Montgomery, Dept. of Economics, Texas A&M University
+
+
+                        ^gphwp^ graphfilename
+
+writes a HP Graphics Language (Hp-GL) file from a Stata ^.gph^ file for
+importation into WordPerfect. The full path name of the graph file is
+required.
+
+Note that the file extension need not be included if you have used the
+stata default extension ^.gph^.
+
+^gphwp^ creates a file in your WordPerfect file directory called ^graph.hgl^.
+This file can be directly imported into WordPerfect.
+
+Example:  ^. gphwp c:\stata\files\mygraph^

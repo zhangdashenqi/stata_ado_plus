@@ -1,0 +1,337 @@
+.-
+help for ^stpm^                                                   (TSJ-1: st0001)
+.-
+
+Flexible parametric models for survival-time data
+-------------------------------------------------
+
+
+^stpm^ [varlist] [^if^ exp] [^in^ range] ^,^ model_complexity ^sc^ale^(h^azard|^n^ormal|^o^dds^)^
+    [ ^le^ft^(^leftvar^)^ ^st^ratify^(^strat_varlist^)^ ^nocons^tant ^nolo^g ^off^set^(^offsetvar^)^
+      ^sp^line^(^splinevar derivativevar^)^ ^th^eta^(est^|#^)^ ]
+
+where model_complexity is ^df(^#^)^ or ^k^nots^(^[^l^|^%^]knotlist^)^ or ^k^nots^(u^#1 #2 #3^)^.
+
+
+^stpm^ is for use with survival-time data; see help @st@.  You must have ^stset^
+your data before using this command; see help @stset@.
+
+
+The syntax of @predict@ following ^stpm^ is
+
+    ^predict^ [type] newvarname [^if^ exp] [^in^ range] [^,^ statistic
+	^a^t^(^varname #|vn [varname #|vn ...]^)^ ^stdp^ ^t^ime^(^#|vn^)^
+	^nocons^tant ^nooff^set ^z^ero]
+
+where statistic is
+
+	^xb^            index (linear predictor for equation ^[xb]^)
+	^cumo^dds       log cumulative odds function
+	^cumh^azard     log cumulative hazard function
+	^n^ormal        Normal deviate function
+	^sp^line	fitted spline function
+	^dz^dy		derivative of fitted spline function w.r.t. ln(^_t^)
+	^d^ensity       density function
+	^h^azard        hazard function
+	^s^urvival      survival function
+	^ce^ntile^(^#^)^    #th centile of survival time distribution
+	^tv^c^(^varname^)^  time-varying coefficient for varname (see Options)
+
+All statistics are available both in and out of sample; type "^predict^ ...
+^if e(sample)^ ..." if wanted only for the estimation sample. The default is
+linear prediction of the covariate part of the model, i.e. for statistic ^xb^.
+
+Not all of the options for ^predict^ are available with every statistic. The
+SE (^stdp^ option of ^predict^) is not available for every statistic.
+
+
+Description
+-----------
+
+^stpm^ fits spline-based distributional models to right- or interval-censored
+data. varlist is a set of covariates.
+
+
+Options for ^stpm^
+----------------
+
+Note that the complexity of the spline part of the model is defined by either
+^df()^ or ^knots()^, so one (but not both) of these options must be specified.
+
+^df(^#^)^ specifies the degrees of freedom for the natural spline function. # must
+    be between 1 and 6. The ^knots()^ option is not applicable and the knots are
+    placed at the following centiles of the distribution of the uncensored log
+    times:
+    
+     df |  Centile positions
+    ----+-------------------
+      1 | (no knots)
+      2 | ^50^
+      3 | ^33 67^
+      4 | ^25 50 75^
+      5 | ^20 40 60 80^
+      6 | ^17 33 50 67 83^
+     >6 | (not allowed)
+    ----+-------------------
+
+^knots(^[^l^|^%^]knotlist^)^ defines the internal knot positions for the spline. 
+    If you specify ^knots(^knotlist^)^ then knotlist should consist of values of
+    log time. If you specify ^knots(l^knotlist^)^, then the values in knotlist are
+    taken to be times and are automatically log transformed by ^stpm^. (This
+    is a convenience feature; it is easier to enter times than log times). If
+    you specify ^knots(%^knotlist^)^ then the values in knotlist are taken to be
+    centile positions in the distribution of the uncensored log times.
+    
+^knots(u^#1 #2 #3^)^ also defines the internal knots for the spline. #1 knots are
+    assigned at random uniformly distributed positions between #2 and #3,
+    where #2 is the lowest centile position of the uncensored log times you
+    wish to entertain and #3 is the highest. A suggested choice is #2=10,
+    #3=90; knots are to be placed at random positions between the 10th and
+    90th centiles of the uncensored log times.
+
+^scale(h^azard|^n^ormal|^o^dds^)^ is not optional and specifies the scale of the
+    model. The ^hazard^, ^normal^ and ^odds^ options fit models on the scale of the
+    log cumulative hazard, normal equivalent deviate or log cumulative odds of
+    failure respectively.
+
+^left(^leftvar^)^ specifies that some or all of the survival-time observations
+    are interval-censored. The rules for specifying values of leftvar and their
+    meanings in terms of interval censoring are as follows:
+
+    Leftvar    _d  	Meaning
+    ---------------------------------------------------------------
+    . or _t	0	Right censored at ^_t^
+    . or _t	1	Event at ^_t^
+    0		0	Right censored at ^_t^
+    0		1	Interval censored, event in (0,^_t^]
+    <_t		0	Late entry at leftvar, right censored at ^_t^
+    <_t		1	Interval censored, event in [leftvar,^_t^]
+    ---------------------------------------------------------------
+    
+    Note that ^stpm^ does not support datasets with late entry (specified via
+    the ^enter()^ option of ^stset^ and generating positive values of the variable
+    ^_t0^) and interval censoring together, except when the late entry is
+    specified by way of leftvar and ^_d^ as in the above table.
+
+^stratify(^strat_varlist^)^ stratifies the spline functions according to the
+    variables in strat_varlist. It will rarely make sense for the variables in
+    strat_varlist not to be among those in varlist, but this is not checked.
+    
+^noconstant^ suppresses the constant term in the ^[xb]^ equation.
+
+^nolog^ suppresses the iteration log while the model is fit.
+
+^offset(^offsetvar^)^ defines the offset for the ^[xb]^ equation. offsetvar is
+    added to the linear predictor.
+
+^spline(^splinevar derivativevar^)^ allows you to specify the baseline spline
+    function and its derivative with respect to log(^_t^). For a given model
+    where the spline function has been estimated, splinevar can be created by
+    using for example
+
+	. ^predict^ <splinevar>^, zero^ <scale_option>
+
+    where <scale_option> is ^cumodds^, ^cumhazard^ or ^normal^. derivativevar
+    can be created by using for example
+
+	. ^predict^ <derivativevar>^, dzdy^
+
+^theta(est^|#^)^ only applies with ^scale(odds)^ and estimates the transformation
+    parameter (theta) or performs estimation with theta set to #. The
+    transformation of the (baseline) survival function S_0(t) is then
+    
+    g_theta(S_0(t)) = ln(S_0(t)^^(-theta)-1)/theta)
+    
+    theta = 0 corresponds to the cumulative hazards model. With ^theta(est)^,
+    theta is estimated and presented on a log scale, i.e. ln(theta). With
+    ^theta(^#^)^, # must be positive.
+
+
+Options for @predict@
+-------------------
+
+^at(^varname #|vn ...^)^ computes the various statistics at value(s) (# or vn)...
+    of model covariates varname..., where vn means "variable name". The ^at()^
+    option is a convenient way of specifying out-of-sample prediction for some
+    or all of the covariates in the model. Covariates in ^stpm^'s varlist but
+    NOT listed in ^at()^ are used in computing predicted values, unless the ^zero^
+    option is specified, in which case adjustment is to value 0 of such
+    predictors.
+
+^noconstant^ is relevant only if you specified ^predict, xb^. It removes the
+    constant (if any) in equation ^[xb]^.
+
+^nooffset^ is relevant only if you specified ^offset()^ for ^stpm^.  It modifies
+    the calculations made by ^predict, xb^ so that they ignore the offset
+    variable; the linear prediction for equation ^[xb]^ is treated as x*b
+    rather than x*b + offset.
+
+^stdp^ computes the standard error of statistics ^xb^, ^cumhazard^, ^cumodds^ or
+    ^normal^, or of the log (note: log) survival time for ^centile()^. ^stdp^ is
+    not implemented for other statistics, but note that confidence intervals
+    for the survival function may be found by back-transformation of
+    confidence intervals for the cumulative hazard or odds or normal function.
+
+^time(^#|vn^)^ predicts at time # or at the time values in vn. If ^time()^ is not
+    specified, prediction is at time ^_t^.
+
+^tvc(^varname^)^ stands for "time-varying coefficient" and computes the estimated
+    coefficient for varname, a covariate in ^stpm^'s varlist. If varname is
+    time-fixed, then newvarname will be a constant, namely ^[xb]_b[^varname^]^.
+    if varname is included in strat_varlist, then newvarname will depend on ^_t^
+    and may be interpreted as the time-varying effect of varname on the chosen
+    scale of the model (proportional hazards, proportional odds or probit).
+    For example, in a hazards-scale model (^scale(hazard)^), newvarname
+    multiplied by varname will give an estimate of the time-varying log
+    cumulative hazard ratio for varname (compared with varname=0) at every
+    observed value of varname. newvarname alone will give the log cumulative
+    hazard ratio for a one-unit change in varname. Note that the time-varying
+    log cumulative hazard ratio for varname will NOT be identical to the time-
+    varying log hazard ratio for varname.
+
+^zero^ predicts at zero values of covariates in varlist and similarly for
+    strat_varlist, if ^stratify()^ is specified. See also option ^at()^.
+
+
+Remarks
+-------
+
+Let t denote time. ^stpm^ works by first calculating the survival function
+S(t) non-parametrically by using the Kaplan-Meier estimator. The procedure is
+illustrated for proportional hazards models, specified by option
+^scale(hazard)^. S(t) is converted to an estimate of the log cumulative hazard
+function Z(t) by the formula
+
+	Z(t) = ln(-ln S(t))
+
+This Z(t) is then smoothed on ln(t) using regression splines with knots placed
+at certain quantiles of the distribution of t. The knot positions are chosen
+automatically if the spline complexity is specified by the ^df()^ option, or
+manually by way of the ^knots()^ option. (Note that the knots are values of
+ln(t), not t.) Denote the predicted values of the log cumulative hazard
+function by Zhat(t). The density function f(t) is
+
+	f(t) = -dS(t)/dt = dS/dZhat dZhat/dt = S(t) exp(Zhat) dZhat(t)/dt
+
+dZhat(t)/dt is computed from the regression coefficients of the fitted spline
+function. A smoothed survival function is calculated as
+
+	Shat(t) = exp(-exp Zhat(t)).
+
+The hazard function is calculated as f(t)/Shat(t).
+
+If varlist is specified, the baseline survival function (i.e. at zero values
+of the covariates) is used instead of the survival function of the raw obs-
+ervations. With ^df(1)^ a Weibull model is fitted.
+
+With ^scale(normal)^, smoothing is of the Normal quantile function
+invnorm(1-S(t)) instead of the log cumulative hazard function. With ^df(1)^
+a lognormal model is fitted.
+
+With ^scale(odds)^, smoothing is of the log odds of failure function
+ln((1-S(t))/S(t)) instead of the log cumulative hazard function. With ^df(1)^
+a log-logistic model is fitted.
+
+Estimation is performed by maximum likelihood.
+
+As an example of output from ^stpm^, consider the following. A stratifying
+variable ^nn^ has two levels, 0 and 1:
+
+ . ^stpm x5a x5b nn, stratify(nn) scale(odds) df(2)^
+
+initial:       log likelihood = -1124.6562
+rescale:       log likelihood = -1124.6562
+rescale eq:    log likelihood = -1124.6562
+Iteration 0:   log likelihood = -1124.6562  
+Iteration 1:   log likelihood =  -1112.096  
+Iteration 2:   log likelihood = -1111.5188  
+Iteration 3:   log likelihood = -1111.5173  
+Iteration 4:   log likelihood = -1111.5173  
+
+                                                  Number of obs   =       1289
+                                                  Wald chi2(1)    =      10.48
+Log likelihood = -1111.5173                       Prob > chi2     =     0.0012
+
+------------------------------------------------------------------------------
+      _t |      Coef.   Std. Err.       z     P>|z|       [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+s0       |
+      nn |  -1.735629   .5360622     -3.238   0.001      -2.786292   -.6849664
+   _cons |   3.416165   .4057033      8.420   0.000       2.621001    4.211329
+---------+--------------------------------------------------------------------
+s1       |
+      nn |  -.1167243    .046288     -2.522   0.012      -.2074471   -.0260015
+   _cons |   .1590071   .0349978      4.543   0.000       .0904127    .2276016
+---------+--------------------------------------------------------------------
+xb       |
+     x5a |   .9971947   .1749101      5.701   0.000       .6543773    1.340012
+     x5b |   1.844591   .2142359      8.610   0.000       1.424696    2.264486
+      nn |  -.5830707   .3702606     -1.575   0.115      -1.308768    .1426267
+   _cons |  -2.039426   .2662178     -7.661   0.000      -2.561203   -1.517649
+------------------------------------------------------------------------------
+Deviance =  2223.035 (1289 observations.)
+
+
+Notes on the output
+===================
+
+1. The equations: ^s0^ and ^s1^ represent the first and second spline basis
+   functions, with ^[s0]_cons^ and ^[s1]_cons^ being the coefficients for value 0
+   of the stratifying variable ^nn^, and ^[s0]_cons^+^[s0]_b[nn]^ and ^[s1]_cons^+
+   ^[s1]_b[nn]^ the coefficients for value 1 of ^nn^.
+
+2. If you wanted to test for the need to stratify by ^nn^ you could type
+   ^test [s0]nn [s1]nn^. This would give a 2 degree of freedom Wald test of any
+   difference between the spline functions for ^nn^.
+
+3. The value of "Wald chi2(1)" should be ignored.
+
+
+Stored results
+--------------
+
+^stpm^ returns the deviance (minus twice the maximised log likelihood) and
+the Akaike Information Criterion (AIC) in scalars ^e(dev)^ and ^e(aic)^
+respectively. Additional quantities are stored in ^e()^ functions.
+
+
+Examples
+--------
+
+ . ^stpm, scale(hazard) df(1)^
+ . ^stpm, df(3) scale(normal)^
+ . ^stpm, df(3) scale(odds)^
+ . ^stpm, df(3) scale(odds) theta(2)^
+ . ^stpm, df(3) scale(odds) theta(est)^
+ . ^stpm treatmnt, scale(odds) knots(%10 90)^
+ . ^xi: stpm x1 x2 x3 i.pop, df(2) scale(o) stratify(i.pop)^
+ . ^stpm x1 x2 x3, df(3) scale(h) left(left)^
+
+ . ^predict s0, survival zero^			[baseline survival function]
+ . ^predict surv3, survival time(3)^		[survival probs at time 3]
+ . ^predict median, centile(50)^		[median survival, given covars]
+ . ^predict semedian, centile(50) stdp^
+ . ^predict h0, hazard zero^			[baseline hazard function]
+ . ^predict h1, hazard zero at(z 1)^
+ . ^gen hr = h1/h0^				[hr is defined for all obs.]
+ . ^predict bz, tvc(z)^				[time-varying coeff for z]
+ . ^predict sbz, tvc(z) stdp^			[SE of bz]
+
+
+Auxiliary ado-files
+-------------------
+
+frac_spl, frac_s3b, mlsurvlf, stpm_p.
+
+
+Author
+------
+
+Patrick Royston, MRC Clinical Trials Unit, London.
+patrick.royston@@ctu.mrc.ac.uk
+
+
+Also see
+--------
+
+On-line:  help for @stpmhaz@, @stsctest@, @predict@.

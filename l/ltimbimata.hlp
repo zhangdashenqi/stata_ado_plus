@@ -1,0 +1,59 @@
+{smcl}
+{* 25aug2008}{...}
+{cmd:help ltimbimata}
+{hline}
+
+{title:Title}
+
+{p 4 4 2}
+{bf:ltimbimata -- Six Mata functions}
+
+
+{title:Contents}
+
+{col 5}{bf:Online}
+{col 5}{bf:help entry}
+{col 5}{bf:for Function{col 27}Purpose}
+{col 5}{hline}
+
+
+{col 5}{bf:{help mf_mz_decalen:mz_decalen()}}{...}
+{col 27}Lags a matrix a number of times
+
+{col 5}{bf:{help mf_mz_pancolshape:mz_pancolshape()}}{...}
+{col 27}Reorganizes, in columns, a panel data matrix for
+{col 27}which the panels are presented by lines
+
+{col 5}{bf:{help mf_mz_panrowshape:mz_panrowshape()}}{...}
+{col 27}Reorganizes, in rows, a panel data matrix for which
+{col 27}the panels are presented by columns
+
+{col 5}{bf:{help mf_mz_reshape:mz_reshape()}}{...}
+{col 27}Remodels a matrix according both to specified rows
+{col 27}and columns
+
+{col 5}{bf:{help mf_mz_stdc:mz_stdc()}}{...}
+{col 27}Calculates column standard deviations of a matrix
+
+{col 5}{bf:{help mf_mz_trimrows:mz_trimrows()}}{...}
+{col 27}Trims rows of a matrix
+
+
+{title:Description}
+
+{pstd}
+These six functions are general-purpose add-ons to Mata.
+More functions will be added to this library in the futur.
+All comments are welcome.
+
+
+{title:Author}
+
+{p 4 4 2} Diallo Ibrahima Amadou, {browse "mailto:zavren@gmail.com":zavren@gmail.com}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {bf:{help mata}}, {bf:{help moremata}}
+{p_end}

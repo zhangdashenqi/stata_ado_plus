@@ -1,0 +1,134 @@
+.-
+help for ^probpred^                                       (STB-42: sg42.2)
+.-
+
+Displaying predicted probabilities from probit or logit regression
+------------------------------------------------------------------
+
+      { ^probpred^ } yvar xvar [^if^ exp]^,^ ^f^rom^(^#^)^ ^t^o^(^#^)^ [^i^nc^(^#^)^
+              ^a^djust^(^covlist^)^ ^o^ne^(^varlist^)^ ^z^ero^(^varlist^)^ ^l^ogit
+              ^lev^el^(^#^)^ ^p^oly^(^#^)^ ^nom^odel ^nol^ist ^nop^lot graph_options ] 
+
+
+Description
+-----------
+
+^probpred^ is an extension of ^logpred^ published by Joanne Garrett in STB-26.
+^probpred^ first estimates a probit or logit regression of a dichotomous (or
+binary) dependent variable on a set of independent variables. The purpose of
+^probpred^ is to compute and graph the estimated relationship between the 
+predicted probability from this regression and one of the independent 
+variables, holding the others constant. By default, both ^probpred^ and ^logpred^ 
+display the regression estimates and a graph and listing of the requested 
+predictions and the forecast interval. ^probpred^ contains four additional 
+options not included in the original ^logpred^ program: ^logit^, ^one^, ^zero^ 
+and ^level^. The default is to estimate a probit regression using the Stata 
+command ^dprobit^, but the ^logit^ option instead estimates a logit model using 
+the ^logistic^ command. The ^one^ and ^zero^ options allow the user to specify 
+that some of the covariates listed in option ^adjust^ are to be set equal to one 
+or zero instead of to their means. The ^level^ option allows forecast intervals 
+to be set to confidence levels determined by the user rather than only to 95% 
+confidence levels. (^probpred^ also implements standard Stata usage by allowing 
+the global macro S_level to determine the default confidence level for the 
+command.) 
+
+
+Options
+-------
+
+^from(^#^)^ specifies the lowest value of ^xvar^ for which a prediction is to be
+    calculated.  This option is required.
+
+^to(^#^)^ specifies the highest value of ^xvar^ for which a prediction is to be
+    calculated.  This option is required.
+
+^inc(^#^)^ specifies the increment between adjacent values of ^xvar^.  The default
+    increment is 1.   
+
+^adjust(^covlist^)^ specifies the other covariates in the model all of which are
+    set to their sample means in computing the predicted values unless the ^one^
+    or ^zero^ options are specified as described below.
+
+^one(^varlist^)^ specifies a subset of ^covlist^ to be set to one instead of
+    to their mean values in the data.
+
+^zero(^varlist^)^ specifies a subset of ^covlist^ to be set to zero instead of
+    to their mean values in the data.  
+
+^logit^ specifies that a logit model will be used.  The default is probit.
+
+^level(^#^)^ specifies the confidence level to be used in computing and 
+    displaying the forecast interval.
+
+^poly(^#^)^ indicates that ^xvar^ enters the model as a polynomial.  Quadratic
+    and cubic models are allowed.  They are indicated by ^poly(2)^ and ^poly(3)^,
+    respectively. The polynomial terms are created and entered in the 
+    regression automatically.
+
+^nomodel^ suppresses the display of the estimated regression.
+
+^nolist^ suppresses the list of predicted values.
+
+^noplot^ suppresses the graph of predicted values.
+
+graph_options allowed include ^xlabel^, ^ylabel^, ^saving(^filename^)^, and ^titles^.
+
+
+Examples
+--------
+
+   . ^probpred chd age, from(20) to(80) inc(5) adj(fat smk race) noplot^
+
+        Calculates the predicted probability of coronary heart disease (chd) 
+        for 5 year increments of age from 20 years to 80 years (i.e., 
+        age=20,25,30,...,80) adjusted for fat in the diet, smoking status, 
+        and race; displays model and predicted values but does not display
+        graph.
+
+
+   . ^probpred chd age, from(20) to(80) inc(5) adj(fat smk race) zero(race)^
+
+        Same as above example, except predictions are for the race 
+        corresponding to ^race^ == 0 instead of for the sample average of
+        race.  Graph and predictions are displayed.
+
+
+   . ^probpred chd age, from(20) to(80) inc(5) adj(fat smk race)^
+               ^zero(race) logit^
+
+        Same as above, except the logit rather than the probit model is used.
+
+
+   . ^probpred chd age, from(20) to(80) inc(5) adj(fat smk race)^
+               ^ylab(0,.2,.4,.6,.8,1)^
+
+        Same as above, with the addition of the ylab option to label the
+        y-axis appropriately for predicted probabilities.  Note that any
+        other option which works on the ^graph^ command will also work here.
+
+
+   . ^probpred chd age, f(40) t(80) poly(3) adj(sys) xlab ylab nolist^
+
+        Calculates the predicted probability of coronary heart disease 
+        for 1 year increments of age between 40 and 80;  terms for 
+        age-squared and age-cubed are included in model using the poly(3) 
+        option; also adjusted for systolic blood pressure; displays model 
+        and graph; does not list predictions or 95% CIs.
+
+
+Author
+------
+
+        Mead Over
+        World Bank
+        FAX: 202-522-3230
+
+
+Also see
+--------
+
+    STB:  STB-42 sg42.2, STB-26 sg42, STB-24 sg33
+ Manual:  [R] logit, logistic, probit
+On-line:  help for @logit@, @logistic@, @probit@, @level@, @regpred2@ (if installed), 
+          @logpred@ (if installed), @adjmean@ (if installed), 
+          @adjprop@ (if installed)

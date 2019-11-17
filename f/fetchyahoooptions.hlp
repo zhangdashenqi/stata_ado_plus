@@ -1,0 +1,83 @@
+{smcl}
+{* 10dec2011}{...}
+{cmd:help fetchyahoooptions}{right: ({browse "http://www.stata-journal.com/article.html?article=dm0070":SJ13-3: dm0070})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 26 28 2}{...}
+{p2col:{hi: fetchyahoooptions} {hline 2}}Download most recent option prices 
+for a list of symbols from Yahoo! Finance by parsing Yahoo! Finance webpage{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 18 2}
+{cmd:fetchyahoooptions} {it:namelist}{cmd:,} {opt m(string)} [{opt iv(real)}]
+
+{phang}
+{it:namelist} is a list of ticker symbols for which the options
+are parsed and downloaded from Yahoo! Finance's webpage.  Ticker symbols
+are separated by spaces.
+
+
+{title:Description}
+
+{pstd}
+{cmd:fetchyahoooptions} fetches Yahoo! Finance options page, to
+parse the page and to process its contents to make them usable as Stata
+data.  {cmd:fetchyahoooptions} also calculates implied volatility for
+downloaded options.
+
+
+{title:Options}
+
+{phang}
+{opt m(string)} is the month in which the options expire (that
+is, {cmd:2011-12}).  Multiple maturity months can be included (that is,
+{cmd:2011-12 2012-01}).  {cmd:m()} is required.
+
+{phang}
+{opt iv(real)} is the calculated implied volatility using Black
+and Scholes's (1973) option pricing formula.  It uses a trial-and-error
+method to loop through levels of volatilities to calculate a call or put
+option price that matches the ask price.  User-supplied increment is
+used for the loop.  As the increment gets smaller, the loop will take
+longer.  Implied volatility is calculated separately for each strike
+price.
+
+
+{title:Examples}
+
+{pstd}
+Please note that there are no historic option prices available
+through Yahoo! Finance website.  Users need to change the option
+maturity dates in the examples to current maturity dates.{p_end}
+{phang2}
+{cmd:. fetchyahoooptions IBM GOOG, m(2013-04 2013-05 2013-06)}{p_end}
+{phang2}
+{cmd:. fetchyahoooptions IBM GOOG, m(2013-04 2013-05 2013-06) iv(0.0001)}{p_end}
+{phang2}
+{cmd:. twoway (line IV Strike) if Type=="Call"}
+
+
+{title:Reference}
+
+{phang}
+Black, F., and M. Scholes.  1973.  The pricing of options and corporate
+liabilities.  {it:Journal of Political Economy} 81: 637-654.
+
+
+{title:Author}
+
+{pstd}Mehmet F. Dicle{p_end}
+{pstd}Loyola University New Orleans{p_end}
+{pstd}New Orleans, LA{p_end}
+{pstd}mfdicle@loyno.edu
+
+
+{title:Also see}
+
+{p 4 14 2}
+Article:  {it:Stata Journal}, volume 13, number 3: {browse "http://www.stata-journal.com/article.html?article=dm0070":dm0070}{p_end}

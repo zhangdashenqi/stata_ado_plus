@@ -1,0 +1,160 @@
+{smcl}
+{hline}
+help for {hi:vibligraph}{right:(SJ5-1: st0081)}
+{hline}
+
+{title:Visualizing binary logit models for interactions graphing tool}
+
+{p 8 14 2}{cmd: vibligraph}, [b0({it:#}) b1({it:#}) b2({it:#}) b12({it:#}) 
+           xmin({it:#}) xmax({it:#}) 
+           ccat({it:numlist}) ccmin({it:#}) ccmax({it:#}) 
+           type({it:#})  
+           omitint({it:#}) abcd logit v7 nodraw notable nopreserve {it:graph options}]
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:vibligraph} accepts parameters from a logistic mmodel and allows you
+to visualize the interaction. 
+For additional information, we recommend seeing 
+our {browse www.ats.ucla.edu/stat/seminars:Seminar Page}
+and then seeing the Stata seminar on 
+{it:Visualizing Main Effects and Interactions for Binary Logit Models in Stata}.
+
+{p 4 4 2}
+The logistic model is assumed to be of a form
+
+{p 8 12 2}
+Yhat = B0 + B1*x1 + B2*x2 + B12*x1x2 + B3*x3 + B4*x4 + B5*x5 etc...
+
+{p 4 4 2}
+Where {it:x1} is a dummy variable or continuous variable and {it:x2} is a dummy 
+variable, and {it:B12} represents the coefficient for the interaction of
+{it:x1} and {it:x2}. The variables {it:x3}, {it:x4} and so forth are
+covariates in the model. 
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:b0({it:#})} permits you to specify the intercept term.
+
+{p 4 8 2}
+{cmd:b1({it:#})} permits you to specify the coefficient for {it:x1}.
+
+{p 4 8 2}
+{cmd:b2({it:#})} permits you to specify the coefficient for {it:x2}.
+
+{p 4 8 2}
+{cmd:b12({it:#})} permits you to specify the coefficient for the interaction
+of {it:x1} and {it:x2}.
+
+{p 4 8 2}
+{cmd:xmin({it:#})} is specified if {it:x1} is a continuous variable, and it
+specifies the lowest value {it:x1} can assume.  For example, if {it:x1} was
+age, you might specify {cmd:xmin({it:18})} to indicate 18 is the lowest value.
+
+{p 4 8 2}
+{cmd:xmax({it:#})} is specified if {it:x1} is a continuous variable, and it
+specifies the highest value {it:x1} can assume.  For example, if {it:x1} was
+age, you might specify {cmd:xmin({it:65})} to indicate 65 is the lowest value.
+
+{p 4 8 2}
+{cmd:ccat({it:numlist})} indicates the values for the covariate contribution.
+If a type 1 graph is requested, this determines the values of the predicted
+values, incorporating the covariate contribution.  
+If a type 2, 3, or 4 graph is requested, then vertical lines are drawn 
+at all of the values specified.
+
+{p 4 8 2}
+{cmd:ccmin({it:#})} specifies the minimum cc value shown on the
+{it:x} axis for graph types 2, 3, or 4.
+
+{p 4 8 2}
+{cmd:ccmax({it:#})} specifies the maximum cc value shown on the
+{it:x} axis for graph types 2, 3, or 4.
+
+{p 4 8 2}
+{cmd:type({it:#})} specifies the type of graph to show.  
+A type 1 graph shows the predicted values as a function of {it:x1} and {it:x2}.
+A type 2 graph shows the predicted values for all four groups as a 
+function of the covariate contribution.
+A type 3 graph shows the predicted values for groups (D-C) and (B-A)
+as a function of the covariate contribution.
+A type 4 graph shows the predicted values for groups (D-C) minus (B-A)
+as a function of the covariate contribution.
+
+{p 4 8 2}
+{cmd:omitint({it:#})}. If 1, then the graph is shown with 
+the interaction term {it:b12} included and excluded, so you 
+can assess the impact of the inclusion of the interaction term.
+
+{p 4 8 2}
+{cmd:abcd}. Specifying this makes the letters A B C D appear as
+labels for graph type 1. 
+
+{p 4 8 2}
+{cmd:logit}. Indicates to show the Y values in a logit scale.
+Otherwise, a probability scale is used.
+
+{p 4 8 2}
+{cmd:v7}. Indicates to display graphs using version 7 graphics, 
+instead of version 8 style graphics. Version 7 graphics
+are extremely fast and permit quick animations, while version 8
+graphics are high quality but not as fast.
+
+{p 4 8 2}
+{cmd:nodraw}. Indicates that the graph should not be
+drawn on the screen, and would be used by programmers
+who are combining multiple graphs but do not want the 
+intermediate graphs to be shown.
+
+{p 4 8 2}
+{cmd:notable}. When {it:x1} is a dummy variable
+(i.e., ranges from 0 to 1), a table is shown in the
+results window showing the predicted values (probabilities
+or logits) for the two by two table. Including
+the {it:notable} option suppresses the display of this table.
+
+{p 4 8 2}
+{cmd:nopreserve}. By default, a {it:preserve} command is
+issued at the start of the command and the data is
+restored to its original state afterwards.  If you
+wish to suppress this, you can specify the {it:nopreserve}
+option.
+
+{p 4 8 2}
+{it:graph options} can be specified, and these are passed
+along, allowing you to customize the graphs, especially
+version 8 graphs.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. vibligraph, b0(.1) b1(.2) b2(.3) b12(.4) ccat(0)}{p_end}
+
+{p 4 8 2}{cmd:. vibligraph, b0(.1) b1(.2) b2(.3) b12(.4) ccat(1)}{p_end}
+
+{p 4 8 2}{cmd:. vibligraph, b0(.1) b1(.2) b2(.3) b12(.4) ccat(1) v7 ylabel(.6 .7 to 1)}{p_end}
+
+{p 4 8 2}{cmd:. vibligraph, b0(.1) b1(.2) b2(.3) b12(.4) ccat(1) logit}{p_end}
+
+     {cmd:. vibligraph, b0(.1) b1(.2) b2(.3) b12(.4) ccat(0) v7 abcd ylabel(.5 .6 to .8) ///}
+           {cmd:xtitle("Academic (yes/no)") legend(label(1 Public) label(2 Private)) ///}
+           {cmd:title(Predicted Probabilities by Public and Academic) ///}
+           {cmd:note(Contribution of Covariates at average)}}
+
+{p 4 8 2}{cmd:. vibligraph, b0(.1) b1(.2) b2(.3) b12(.4) ccat(0) type(2)}{p_end}
+
+{p 4 8 2}{cmd:. vibligraph, b0(.1) b1(.2) b2(.3) b12(.4) ccat(0) type(3)}{p_end}
+
+{p 4 8 2}{cmd:. vibligraph, b0(.1) b1(.2) b2(.3) b12(.4) ccat(0) type(4)}{p_end}
+
+
+{title:Authors}
+
+        Michael Mitchell & Xiao Chen
+        UCLA Academic Technology Services
+        mnm@ucla.edu & jingy1@ucla.edu
+{p_end}

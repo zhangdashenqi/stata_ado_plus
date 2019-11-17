@@ -1,0 +1,42 @@
+
+
+.-
+help for ^cidemo^
+.-
+
+Chi-square distribution demonstration
+--------------------------------------
+
+ ^chidemo^ [ df alpha ]
+ 
+
+Description
+-----------
+
+^chidemo^ displays a chi-square distribution with degrees 
+        of freedom equal to ^df^.   ^df^ is best between 
+        1 and 50.   
+
+Options
+-------
+
+ ^df^ sets the degrees of freedom for the distribution.  The default is ^df^ = 1.
+ 
+ ^alpha^ sets the alpha level for the rejection region.  The default is ^alpha^ = .05.
+
+     
+Examples
+---------
+
+ . ^chidemo 2^
+ . ^chidemo 10 .01^
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+

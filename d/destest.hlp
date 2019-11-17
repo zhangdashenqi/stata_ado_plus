@@ -1,0 +1,113 @@
+.-
+help for ^dest     (STB-52: dm73; STB-54: dm73.1; STB-59: dm73.2; STB-61: dm73.3)
+.-
+
+Perform Wald test after desmat
+------------------------------
+
+^destest^ is a companion program for @desmat@. It is used after estimating
+a model to perform a Wald test on model terms. The syntax is:
+
+
+Syntax
+------
+
+^destest^ [termlist] [^using^ filename] [^,^ ^j^oint ^e^qual ^outraw^ ^replace^
+    ^ndec(^#^)^ ^sigcut(^numlist^)^ ^sigsym(^list^)^ ^sigsep(^#^)^
+
+The ^termlist^ consists of one or more terms as specified in @desmat@. A
+^term^ can consist of a single variable, or two or more variables separated
+by either asterisks or periods. If asterisks are used, they will be
+changed into periods by ^destest^, i.e. only the highest order
+interaction will be tested. If no arguments are specified, all terms
+from the last @desmat@ model will be tested.
+
+The default is to test whether the effects of each separate term are
+equal to zero. If the option "^joint^" is specified, ^destest^ will test
+instead whether all the effects in all the terms are jointly equal to
+zero. If the option "^equal^" is specified, ^destest^ will test whether
+the effects of each separate term are equal. The "^joint^" and "^equal^"
+options may be combined to test whether all effects are jointly equal,
+although this would be a somewhat peculiar hypothesis. Only the first
+letter of the "^joint^" and "^equal^" option is sigificant.
+
+If "^using^ filename" is specified then the results are written to a tab-
+delimited ascii file. The default extension for ^filename^ is ".out" (cf.
+@outsheet@). If ^filename^ already exists, ^desrep^ will attmept to find a
+valid ^filename^ by appending a number (see @outshee2@). The ^replace^ option
+can be used to overwrite an existing file.
+
+Options
+-------
+
+The options ^ndec()^, ^sigcut()^, ^sigsym()^, ^sigsep()^ have the same
+usage as in @desrep@.
+
+^ndec(^#^)^  Specifies the number of decimal places. Default=3.
+
+^sigcut(^numlist^)^  ^Destest^ places a symbol next to the Chi-square or
+F statistics to indicate whether these are significant at a certain level.
+The ^sigcut^ option is used to specify these levels of significance.
+The numlist should contain a list of values in descending order
+with the same number of elements as the string list in ^sigsym^. For
+example, ^sigcut(.1 .05 .01 .001)^ together with ^sigsym(# * ** ***)^
+will use the symbols "#" for p < .1, "*" for p < .05, "**" for p < .01,
+and "***" for p < .001. The default is (.05 .01)
+
+^sigsym(^list^)^  A set of symbols corresponding with the levels of
+significance given by ^sigcut^. Default=(* **).
+
+^sigsep(^#^)^  The number of spaces between coefficients and symbols
+indicating significance. Default=0.
+
+The following two options apply only if "^using^" has been specified to write
+the data to a tab-delimited ascii file:
+
+^outraw^  If ^outraw^ is specified then the results are written with their
+default formats, e.g. %9.0g for floats. In addition, a tab will be inserted
+between statistics and significance symbols. Otherwise, the variables are
+written with a fixed number of decimal places as specified by the ^ndec^
+option (default 3) and significance symbols are appended to statistics if
+^sigsep^=0. Default=^nooutraw^.
+
+^replace^  Overwrite any existing output file. If not specified, ^destest^
+appends a number to the filename if it already exists. If no valid name has
+been found after appending 1 to 20, the process stops and the output is not
+saved. Default=^noreplace^.
+
+^Macro variables to control layout^
+
+Global macro variables can be used to specify different defaults for
+these options, either for the session or for all Stata sessions, by
+placing the global variables in the users profile.do.
+
+^$D_NDEC^
+^$D_SIGCUT^
+^$D_SIGSYM^
+^$D_SIGSEP^
+^$D_RAW^
+^$D_REPL^
+
+Options specified in the ^destest^ command string will override these
+global variables.
+
+@Desmat@ creates global macro variables "$term1", "$term2", etc.
+containing a varlist for each term in the model. ^Destest^ runs through
+these terms, finds the terms corresponding with the termlist, and runs
+@termpar@ with the varlist. If these global variables have not been
+defined, ^destest^ will only print header information. These global
+variables can of course also be used separately in @testparm@, @sw@, or
+related programs.
+
+
+Author
+------
+
+John Hendrickx <J.Hendrickx@@mailbox.kun.nl>
+Nijmegen Business School
+University of Nijmegen
+P.O. Box 9108
+6500 HK Nijmegen
+The Netherlands 
+
+

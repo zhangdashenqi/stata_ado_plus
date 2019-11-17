@@ -1,0 +1,46 @@
+.-
+help for ^_perhs^ - 1.6.2 - 2/20/00
+.-
+
+Utility to determine names and number of right hand size variables
+in regression models
+------------------------------------------------------------------
+
+    ^_perhs^
+
+Description
+-----------
+
+^_perhs^ returns the number of right hand side variables and their names
+    for regression models.
+
+Works with regress, logit, probit, ologit, oprobit, mlogit, tobit,
+    zip, zinb, poisson, nbreg.
+
+Returns
+-------
+
+r(nrhs)  : local with number of rhs variables, excluding intercept.
+
+r(rhsnms): local with names of rhs variables.
+
+Examples within a program
+-------------------------
+
+    ...
+    _perhs
+    local nvars = `r(nrhs)' + 1
+    local varnms "`e(depvar)' `r(rhsnms)'"
+
+    local i = 1
+    while `i'<=`nvars' {
+        local nmtoget : word `i' of `varnms'
+        :::
+        local i=`i'+1
+    }
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu
+         

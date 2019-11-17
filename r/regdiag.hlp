@@ -1,0 +1,78 @@
+Regression diagnostics                                           (STB-15: sts4)
+----------------------
+
+	^regdiag^ [^if^ exp] [^in^ range], {all | list-of-diagnostics}
+
+                [^lags(^#^)^] [^mdf(^#^)^] [^residual(^varname^)^]
+
+displays a variety of regression diagnostics and model selection
+criteria for the most recent ^regress^, ^fit^, ^tsfit^, or ^tsreg^
+command.  Any statistics calculated are stored in system estimation
+(^S_E_^) macros.
+
+
+Primary options
+---------------
+
+^all^ specifies that all available statistics are to be calculated and
+  displayed.
+
+^lags(^#^)^ indicates the number of lags to use in the ARCH, LM, and Q tests.
+  If this option is omitted, the ^period^ of the data is used.
+
+^mdf(^#^)^ specifies the model degrees of freedom.  Normally, the model
+  degrees of freedom in the most recent regression are used.
+
+^residual(^varname^)^ indicates a variable to use in place of the regression
+  residuals.
+
+
+Diagnostic options
+------------------
+
+^aic^ (^S_E_AIC^): Akaike's information criterion.
+
+^aicc^ (^S_E_AICC^): Akaike's information criterion corrected for bias.
+
+^arch^ (^S_E_arch^): the p-value of a test for ARCH residuals.
+
+^ar2^ (^S_E_aR2^): adjusted R-squared.
+
+^dw^ (^S_E_DW^): Durbin-Watson statistic.  If the frequency of observation 
+  is higher than annual, a seasonal Durbin-Watson statistic is also
+  displayed and stored in ^S_E_sDW^.
+
+^fpe^ (^S_E_FPE^): Akaike's full prediction error criterion.
+
+^h^ (^S_E_H^): the p-value from Harvey's test for heterscedasticity.
+
+^hq^ (^S_E_HQ^): the Hannan-Quinn criterion.
+
+^lm^ (^S_E_lm^): the p-value from the LM test for serial correlation.
+
+^mdl^ (^S_E_MDL^): Rissanen's minimum description length criterion.
+
+^normal^ (^S_E_norm^): the p-value from the Shapiro-Francia test for normality.
+
+^pc^ (^S_E_PC^): Amemiya's prediction criterion.
+
+^q^ (^S_E_Q^): the p-value from the Q test for serial correlation.
+
+^rbar2^: a synonym for ^ar2^.
+
+^r2^ (^S_E_R2^): R-squared.
+
+^sc^ (^S_E_SC^): Schwarz's criterion.
+
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts4 (STB-15)
+On-line:  ^help^ for ^tsreg^

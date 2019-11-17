@@ -1,0 +1,317 @@
+{smcl}
+{* *! version 1.0 01sep2008}{...}
+{cmd:help chernoff}{right: ({browse "http://www.stata-journal.com/article.html?article=gr0038":SJ9-3: gr0038})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 19 2}{...}
+{p2col :{hi:chernoff} {hline 2}}Draw Chernoff faces{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:chernoff}
+   [{opt ,} {it:options}]
+   
+{synoptset 30 tabbed}{...}
+{marker options}{...}
+{synopthdr}
+{synoptline}
+{syntab :Face feature}
+{col 7}{cmdab:is:ize(}{help chernoff##exp:exp}{bf:)}{col 37}eye size
+{col 7}{cmdab:ia:ngle(}{help chernoff##exp:exp}{cmd:)}{col 37}eye angle
+{col 7}{cmdab:ih:or(}{help chernoff##exp:exp}{cmd:)}{col 37}eye horizontal position
+{col 7}{cmdab:iv:ert(}{help chernoff##exp:exp}{cmd:)}{col 37}eye vertical position
+{col 7}{cmdab:ps:ize(}{help chernoff##exp:exp}{cmd:)}{col 37}pupil size
+{col 7}{cmdab:pp:os(}{help chernoff##exp:exp}{cmd:)}{col 37}pupil position
+{col 7}{cmdab:bc:urv(}{help chernoff##exp:exp}{cmd:)}{col 37}brow curvature
+{col 7}{cmdab:bd:ens(}{help chernoff##exp:exp}{cmd:)}{col 37}brow density
+{col 7}{cmdab:bh:or(}{help chernoff##exp:exp}{cmd:)}{col 37}brow horizontal position
+{col 7}{cmdab:bv:ert(}{help chernoff##exp:exp}{cmd:)}{col 37}brow vertical position
+{col 7}{cmdab:fl:ine(}{help chernoff##exp:exp}{cmd:)}{col 37}face line
+{col 7}{cmdab:hu:pper(}{help chernoff##exp:exp}{cmd:)}{col 37}hair upper line
+{col 7}{cmdab:hl:ower(}{help chernoff##exp:exp}{cmd:)}{col 37}hair lower line
+{col 7}{cmdab:hd:ark(}{help chernoff##exp:exp}{cmd:)}{col 37}hair darkness
+{col 7}{cmdab:hs:lant(}{help chernoff##exp:exp}{cmd:)}{col 37}hair shading slant
+{col 7}{cmdab:no:se(}{help chernoff##exp:exp}{cmd:)}{col 37}nose line
+{col 7}{cmdab:ms:ize(}{help chernoff##exp:exp}{cmd:)}{col 37}mouth size
+{col 7}{cmdab:mc:urv(}{help chernoff##exp:exp}{cmd:)}{col 37}mouth curvature
+
+{syntab :Individual face graph}
+{p2coldent :* {opt gmin(#)}}set global minimum for all face features to {it:#}{p_end}
+{p2coldent :* {opt gmax(#)}}set global maximum for all face features to {it:#}{p_end}
+{synopt :{cmdab:lh:alf}|{cmdab:rh:alf}}draw only the left/right half of the face{p_end}
+{synopt :{cmdab:hsp:ace(}{it:#}{cmd:)}}column spacing between half-face
+graphs; min is 0.50, max is 1, default is {cmd:hspace(0.75)}{p_end}
+{synopt :{cmdab:it:itle(}{it:varname}{cmd:)}}specify face graph title;
+{it:varname} may be string or numeric{p_end}
+{synopt :{cmdab:in:ote(}{it:varname}{cmd:)}}specify face graph note;
+{it:varname} may be string or numeric{p_end}
+{synopt :{cmdab:il:abel(}{it:varname}{cmd:)}}specify face graph label;
+{it:varname} may be string or numeric{p_end}
+{synopt :{cmdab:ls:ize(}{it:textsizestyle}{cmd:)}}size of label; default is  {cmd:lsize(large)}{p_end}
+{synopt :{opt xl:abel(#)}}place label at x coordinate; default is
+{cmd:xlabel(10)} for full faces, {cmd:xlabel(-8)} for left faces, {cmd:xlabel(8)} for right faces{p_end}
+{synopt :{opt yl:abel(#)}}place label at y coordinate; default is {cmd:ylabel(-10)}{p_end}
+{synopt :{opt pl:acement(clockdirstyle)}}position label relative to
+({cmd:xlabel()}, {cmd:ylabel()}); default is {cmd:placement(9)}{p_end}
+{synopt :{opt ju:stification(jstyle)}}make label {cmd:left}-, {cmd:center}-,
+or {cmd:right}-justified; default is {cmd:justification(left)} for full and right
+faces, {cmd:justification(right)} for left faces{p_end}
+{synopt :{opt is:cale(varname)}}specify a multiplier that affects the size of
+{cmd:ititle()}, {cmd:inote()}, and {cmd:ilabel()}.{p_end}
+{synopt :{cmdab:im:argin(}{it:{help marginstyle}}{cmd:)}}margin between the
+plot area and the outside area of face graph; default is {cmd:imargin(zero)}{p_end}
+{synopt :{cmdab:ir:egion(}{it:{help marginstyle}}{cmd:)}}offset from the
+contents of the plot; default is {cmd:iregion(medsmall)}{p_end}
+{synopt :{opt xf:ace(#)}}x size of face graph; default is {cmd:xface(5.00)}{p_end}
+{synopt :{opt yf:ace(#)}}y size of face graph; default is {cmd:yface(6.00)}{p_end}
+{synopt :{opt sh:ow}}draw individual face graphs{p_end}
+{synopt :{opt saveall}}save all face graphs as {cmd:FACE1.gph}, ...,
+{cmd:FACE}{it:n}{cmd:.gph} in current directory; a blank {cmd:FACE0.gph} is also saved{p_end}
+{synopt :{opt re:scale(#)}}restrict the range of plotted variables; default is
+{cmd:rescale(1)}; use with caution{p_end}
+
+{syntab :Combined graph}
+{synopt :{opt le:gend}{cmd:(}{{hi:2}|{cmd:3}} [{cmd:nolabel}]{cmd:)}}display
+legend in two or
+three columns; {bf:nolabel} forces legend to be based on variable names only{p_end}
+{synopt :{opt or:der(varlist)}}draw face graphs sorted by {it:varlist}{p_end}
+{synopt :{opt ro:ws(#)}}display in {it:#} rows{p_end}
+{synopt :{opt co:ls(#)}}display in {it:#} columns{p_end}
+{synopt :{opt colf:irst}}display down columns{p_end}
+{synopt :{opt xc:ombined(#)}}x size of combined graph{p_end}
+{synopt :{opt yc:ombined(#)}}y size of combined graph{p_end}
+{synopt :{opt nocombine}}do not construct the final combined graph{p_end}
+{synopt :{opt ti:tle(tinfo)}}title for combined graph{p_end}
+{synopt :{opt su:btitle(tinfo)}}subtitle for combined graph{p_end}
+{p2coldent :+ {opt note(tinfo)}}note for combined graph{p_end}
+{synopt :{opt nodraw}}suppress display of combined graph{p_end}
+{synopt :{cmdab:sa:ving(}{it:filename}{cmd:, replace)}}save combined graph; {bf:replace} is allowed{p_end}
+
+{syntab :Utility}
+{synopt :{opt timer}}report the time it took to construct face graphs (timer 1) and combined graph (timer 2){p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}* {opt gmin()} and {opt gmax()} override the min and max set in face
+features.{p_end}
+{p 4 6 2}+ {opt legend()} overrides the {bf:note()} option.{p_end}
+
+
+{title:Description}
+
+{pstd}{cmd:chernoff} draws Chernoff faces using the method proposed by Flury (1980), Sch{c u:}pbach
+(1987), and Friendly (1991).  Up to 18 variables may be specified.
+
+
+{title:Options}
+
+{dlgtab:Face feature}
+
+{phang}{opt isize(exp)} through {opt mcurv(exp)} represent face features and
+are described in the options table, above.
+
+{dlgtab:Individual face graph}
+
+{phang}{cmd:gmin(}{it:#}{cmd:)} and {cmd:gmax(}{it:#}{cmd:)} stand for a
+global minimum and maximum.  These options override the "local" minimums and
+maximums specified within face features.
+
+{phang} {cmd:lhalf}|{cmd:rhalf} tells Stata to draw only the left side or the
+right side of the face, respectively.  Only one option may be specified.
+
+{phang} {cmd:hspace(}{it:#}{cmd:)} controls the column spacing between
+half-face graphs. The range of {cmd:hspace()} is (0.50,1), with the default
+being {cmd:hspace(0.75)}.  Specifying a lower value will bring the faces
+closer, and specifying a higher value will spread them apart.
+
+{phang} {cmd:ititle(}{it:varname}{cmd:)} specifies
+titles for individual face graphs.  The variable may be string or numeric.
+
+{phang} {cmd:inote(}{it:varname}{cmd:)} specifies notes for individual face
+graphs.  The variable may be string or numeric.
+
+{phang} {cmd:ilabel(}{it:varname}{cmd:)} tells Stata to label faces with
+the values of {it:varname}.  The variable may be string or numeric.
+
+{phang} {cmd:lsize(}{it:textsizestyle}{cmd:)} specifies the size of the label.
+The default is {cmd:lsize(large)}.  See {manhelpi textsizestyle G} for a list
+of available styles.
+
+{phang} {opt xlabel(#)} and {opt ylabel(#)} denote the (x,y) coordinates of
+the face label. The default position is (10,-10) for full faces, (-8,-10)
+for left faces, and (8,-10) for right faces.
+
+{phang} {cmd:placement(}{it:clockdirstyle}{cmd:)} specifies the position of
+the face label relative to ({cmd:xlabel()}, {cmd:ylabel()}) coordinates. Possible
+values are 0, 1, 2, ..., 12.  The default value is {cmd:placement(9)},
+or {cmd:placement(3)} if {cmd:lhalf} is specified.
+
+{phang} {cmd:justification(}{it:jstyle}{cmd:)} specifies text
+justification of the face label.  Possible values are {cmd:left}, {cmd:right}, and
+{cmd:center}.  The default value is {cmd:justification(left)}, or
+{cmd:justification(right)} if {cmd:lhalf} is specified.
+
+{phang} {cmd:iscale(}{it:varname}{cmd:)} specifies a multiplier
+that affects the size of {cmd:ititle()}, {cmd:inote()}, and {cmd:ilabel()}. A {it:varname} is required, which allows for different scales for different faces.
+
+{phang} {cmd:imargin(}{it:marginstyle}{cmd:)} specifies the margins between the
+plot area and the outside area of a face graph.  This option is equivalent to
+{cmd:graphregion(margin(}{it:marginstyle}{cmd:))}; see 
+{manhelpi marginstyle G}.  The default margin is {cmd:imargin(zero)}.
+
+{phang} {cmd:iregion(}{it:marginstyle}{cmd:)} specifies the axes offset from the
+contents of the plot.  This option is equivalent to
+{cmd:plotregion(margin(}{it:marginstyle}{cmd:))}; see 
+{manhelpi region_options G}.  The default margin is {cmd:iregion(medsmall)}.
+
+{phang} {cmd:xface(}{it:#}{cmd:)} and {cmd:yface(}{it:#}{cmd:)} denote
+the size of the individual face graph. The default size is {cmd:xface(5.00)} and
+{cmd:yface(6.00)}.
+
+{phang}
+{cmd:show} tells Stata to draw individual face graphs.  The default is to draw
+only the final combined graph.
+
+{phang} {cmd:saveall} tells Stata to save all individual face graphs.  This
+is useful if the user later wants to combine individual face graphs manually.
+Graphs are saved in the current directory as {cmd:FACE1.gph}, {cmd:FACE2.gph},
+....  Also, a blank graph, {cmd:FACE0.gph}, is saved.
+
+{phang} {cmd:rescale(}{it:#}{cmd:)} restricts the range of all variables to an interval narrower than
+(0,1); use this option only in the rare cases when some features of the face
+intersect, producing an effect that is not aesthetically pleasing.  For example, specifying {cmd:rescale(0.95)} compresses all the
+variables to the range (0.05,0.95). It is not recommended to use values less than
+0.90 because it introduces an artificial reduction in the variation of the data.
+
+{dlgtab:Combined graph}
+
+{phang} {cmd:legend(}{{cmd:2}|{cmd:3}} [{cmd:nolabel}]{cmd:)} generates a legend based on
+variable labels or, if
+labels are missing, on variable names. The legend is displayed at the bottom
+of the combined graph.  You may specify {cmd:legend(2)} or {cmd:legend(3)} to
+display the legend in two or three columns, respectively.  If you do not want
+variable labels to be included in the legend, add the {cmd:nolabel} option.
+The {cmd:legend()} option overrides the {cmd:note()} option.
+
+{phang} {cmd:order(}{it:varlist}{cmd:)} tells Stata to draw faces sorted by
+{it:varlist}.
+
+{phang} {cmd:rows(}{it:#}{cmd:)} and {cmd:cols(}{it:#}{cmd:)} denote the
+number of rows and columns in a combined face graph.  If both options are
+specified, {cmd:cols()} takes precedence.
+
+{phang} {cmd:colfirst} tells Stata to display face graphs down columns.
+
+{phang} {cmd:xcombined(}{it:#}{cmd:)} and {cmd:ycombined(}{it:#}{cmd:)}
+specify the size of the combined graph.
+
+{phang} {cmd:nocombine} tells Stata not to construct the final combined
+graph, which is the most time-consuming part of the {cmd:chernoff} command.
+This option is most useful in conjunction with {cmd:saveall} or if the user
+wants to take a "first peek" as to whether the individual face graphs look
+"right".
+
+{phang} {cmd:title(}{it:tinfo}{cmd:)}, {cmd:subtitle(}{it:tinfo}{cmd:)},
+{cmd:note(}{it:tinfo}{cmd:)}, {cmd:nodraw}, and
+{cmd:saving(}{it:filename}{cmd:, replace)} are standard Stata graph options; see {manhelpi twoway_options G}.
+
+{dlgtab:Utility}
+
+{phang} {cmd:timer} reports the amount of time the command spent
+constructing individual face graphs (timer 1) and, once the command concludes,
+the time spent on constructing the combined graph (timer 2).  The first
+reported time should give you a rough idea of how long it will take the
+command to complete -- in testing, stage 2 took on average about 20
+percent longer than the time spent on stage 1.
+
+
+{marker exp}{title:Face feature exp}
+
+{p 4 4 2}
+{it:exp} is specified as follows:
+
+{p 8 8 2}
+{it:varname}|{bf:.}|{bf:_null_} [{bf:,} [{it:#}|{bf:.}] [{it:#}|{bf:.}]]
+
+{p 4 4 2}
+Before plotting, {it:varname} is rescaled to (0,1). If a given face feature is
+not specified or is specified as missing, it assumes the default value of
+0.50.  Missing values within {it:varname} are set to 0.50.
+
+{p 4 4 2}
+{hi:_null_} prevents a "logical" set of features from being drawn.  For example, specifying any eye feature as {hi:_null_} will result in eyes not being drawn.
+
+{p 4 4 2}
+#|{bf:.} and #|{bf:.} represent a theoretical min and max for {it:varname}.
+For example, if you want variable {hi:rep78} to be plotted relative to (0,6),
+type {it:facefeature}{hi:(rep78, 0 6)}.  If the desired range is (0,5), type
+{it:facefeature}{hi:(rep78, 0)}
+or {it:facefeature}{hi:(rep78, 0 5)}.  If the desired range is (1,6), type
+{it:facefeature}{hi:(rep78, 1 6)} or {it:facefeature}{hi:(rep78, . 6)}.
+
+{p 4 4 2}
+If all variables share the same theoretical min or max, it is easier to
+specify {hi:gmin()} and {hi:gmax()}.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+Face graphs will be saved in the current directory.  Make sure you have write
+permissions before issuing the command.
+
+{p 4 4 2}
+The maximum number of faces that may be combined in one graph is 999.  You can
+increase this number to 1,999 if you specify
+{bf:hdark(_null_)} or {bf:hslant(_null_)}.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd: . sysuse auto}
+
+{p 4 8 2}{cmd: . drop if rep78==.}
+
+{p 4 8 2}{cmd: . keep in 41/55}
+
+{p 4 8 2}{cmd: . chernoff, isize(rep78) hdark(mpg) hslant(mpg) fline(weight) order(foreign price)}
+
+{p 4 8 2}{cmd: . chernoff, isize(rep78,0) hdark(mpg) hslant(mpg) fline(weight) nose(price) legend(2 nolabel) cols(3) rhalf}
+
+{p 4 8 2}{cmd: . generate s = 1+runiform()}
+
+{p 4 8 2}{cmd: . chernoff, isize(rep78,. 6) hdark(mpg) hslant(mpg) fline(weight) bvert(_null_) inote(make) iscale(s) saving(mygraph, replace)}
+
+
+{title:References}
+
+{phang}
+Flury, B. 1980. Construction of the asymmetrical face to represent
+multivariate data graphically. Technical Report 3, Institute of Mathematical Statistics and Actuarial Science, Bern University.
+
+{phang}
+Friendly, M. 1991. Faces: Faces display of multivariate data. Department of
+Psychology, York University. {browse "http://www.math.yorku.ca/SCS/sasmac/faces.html"}.
+
+{phang}
+Sch{c u:}pbach, M. 1987. ASYMFACE asymmetrical faces in TurboPascal.
+Technical Report 25, Institute of Mathematical Statistics and Actuarial Science, Bern University.
+
+
+{title:Author}
+
+{pstd}Rafal Raciborski{p_end}
+{pstd}Department of Political Science{p_end}
+{pstd}Emory University{p_end}
+{pstd}Atlanta, GA{p_end}
+{pstd}{browse "mailto:rafal.raciborski@emory.edu":rafal.raciborski@emory.edu}{p_end}
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 9, number 3: {browse "http://www.stata-journal.com/article.html?article=gr0038":gr0038}{p_end}

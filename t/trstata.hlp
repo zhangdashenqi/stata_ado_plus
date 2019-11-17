@@ -1,0 +1,60 @@
+How to do transformations in Stata
+----------------------------------
+
+Basic first steps:
+
+- Draw a graph of the data to see how far patterns in data match the
+  simplest ideal patterns. Try @graph@ or @dotplot@.
+
+- See what range the data cover. Transformations will have little effect
+  if the range is small.
+
+- Think carefully about data sets including zero or negative values.
+  Some transformations are not defined mathematically for some values
+  (see above), and often they make little or no scientific sense. For
+  example, I would never transform temperatures in degrees Celsius or
+  Fahrenheit for these reasons (unless to Kelvin).
+
+Standard scores (mean 0 and sd 1) in a new variable are obtained by
+
+    . ^egen stdpopi = std(popi)^
+
+whereas the basic transformations can all be put in new variables by
+@generate@:
+
+    . ^gen recener = 1/energy^
+    . ^gen logeener = ln(energy)^
+    . ^gen l10ener = log10(energy)^
+    . ^gen curtener = energy^^(1/3)^
+    . ^gen sqrtener = sqrt(energy)^
+    . ^gen sqener = energy^^2^
+
+    . ^gen logitp = log(p/(1-p))^          if p is a proportion
+    . ^gen logitp = log(p/(100-p))^        if p is a percent
+    . ^gen frootp = sqrt(p) - sqrt(1-p)^   if p is a proportion
+    . ^gen frootp = sqrt(p) - sqrt(100-p)^ if p is a percent
+
+Note any messages about missing values carefully: unless you had missing
+values in the original variable, they indicate an attempt to apply a
+transformation when it is not defined. (Do you have zero or negative
+values, for example?)
+
+It is not always necessary to create a transformed variable before
+working with it. In particular, @graph@ allows the option ^log^ when
+producing a histogram and the options ^xlog^ and ^ylog^ when drawing
+a (twoway) scatter plot. The last is very useful because the graph is
+labelled using the original values, but it does not leave behind a
+log-transformed variable in memory.
+
+Also see:
+---------
+
+Review of most common transformations                     help @trreview@
+
+Reasons for using transformations                         help @trreason@
+
+Transformations for proportions and percents              help @trpropor@
+
+Psychological comments -- for the puzzled                 help @trpsych@
+
+On-line: @generate@, @egen@, @graph@

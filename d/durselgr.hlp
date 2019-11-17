@@ -1,0 +1,81 @@
+{smcl}
+{hline}
+help for {cmd:durselgr}
+{hline}
+
+{title: Hazard and Survival Plots for Duration Models With Selectivity}
+
+{p 8 12}{cmd:durselgr} {it:varname} [{cmd:if} {it:exp}], [ {cmdab:haz:ard} {cmdab:surv:ival}
+	 	{cmdab:sav:ing}({it:filename} [{cmd:, replace}]) {cmdab:nog:raph} 
+		{cmdab:grs:ave}({it:graphname} [{cmd:, replace}]) ]
+
+{title:Description}
+
+{p 0 4}{cmd:durselgr} allows the user to estimate hazard and survival functions for 
+	exponential and weibull duration models with selection estimated using {cmd:dursel}. 
+	{cmd:dursel} estimates exponential, Weibull or lognormal duration models accounting for 
+	potential non-ignorable selectivity using maximum likelihood techniques. See {help dursel} 
+	for complete details.
+
+{title:Options}
+
+{p 0 4}{cmdab:haz:ard} calculates the predicted hazard rate. This is the default.
+
+{p 0 4}{cmdab:surv:ival} calculates the predicted survival rate given that an observation is 
+	uncensored (i.e., that it selects into the duration process).
+
+{p 0 4}{cmdab:sav:ing(}{it:filename}{cmd:)} saves both the hazard and survival values in {it:filename}.
+
+{p 0 4}{cmdab:nog:raph} Supresses the display of the plotted function.
+
+{p 0 4}{cmdab:grs:ave(}{it:graphname}{cmd:)} saves the graph of the hazard or survival functions in {it:graphname}.
+
+{title:Notes}
+
+{p 0 4}1. {cmd:durselgr} uses the estimates from the most recent {cmd:dursel} model. You must
+	run the model with the time option for {cmd:durselgr} to function properly. It will
+	provide estimates if the model is run without this option, but they will be incorrect.
+
+{p 0 4}2. {it:varname} is the dependent variable from the previous model. {cmd:durselgr} will
+	use the maximum and minimum values to set the range of the predictions.
+
+{p 0 4}3. The estimated hazard or survival function is calculated at the mean value
+	of the variables in the current data set. If you want to calculate them at
+	different values, replace the data in memory with the appropriate values.
+
+{p 0 4}4. {cmd:durselgr} only works after specifying {cmd:dist}({it:exp}) or {cmd:dist}({it:weibull})
+	in {cmdab:dursel}; {cmd:dist}({it:lognormal}) is not currently supported.
+
+{title:Example}
+
+{p 4 8}{inp:. dursel warlen democ, sel(trade) rtcensor(exitsamp) dist(weibull) time}{p_end}
+{p 4 8}{inp:. durselgr warlen, hazard saving(esthaz, replace)}{p_end}
+
+{title:References}
+
+{p 0 4}If you use {cmd:durselgr}, please cite:
+
+{p 4 4}Boehmke, Frederick J. 2005. DURSEL: A Program for Duration Models with
+    Sample Selection (Stata version).  Version 2.0. Iowa City, IA: University of Iowa.
+    http://myweb.uiowa.edu/fboehmke/methods.
+
+{p 4 4}Boehmke, Frederick J., Daniel Morey and Megan Shannon. 2006. "Selection 
+    Bias and Continuous-Time Duration Models: Consequences and a 
+    Proposed Solution." American Journal of Political Science 50 (1): 192-207.
+
+
+{title:Author}
+
+    Frederick J. Boehmke
+    University of Iowa
+    Department of Political Science
+    341 Schaeffer Hall
+    Iowa City, IA 52242
+    frederick-boehmke@uiowa.edu
+    http://www.fredboehmke.net
+
+{title:Acknowledgements}
+
+{p 0 4}This program is the product of a collaborative research effort with
+    Dan Morey and Meg Shannon.  Morey and Shannon are, however, absolved
+    from any Stata programming sins committed here.{p_end}

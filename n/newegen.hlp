@@ -1,0 +1,160 @@
+Extensions to generate                                     (manual:  [5d] egen)
+----------------------
+
+	^egen^ [type] newvar ^=^ fcn^(^stuff^)^ [^if^ exp] [^in^ range] [^,^ options]
+
+
+Description
+-----------
+
+^egen^ creates newvar of the optionally specified storage type equal to 
+fcn(stuff).  Depending on fcn(), stuff refers to either an expression or a
+varlist, and the options are similarly function dependent.  The functions are:
+
+^tma(^exp^)^ [^, nom^iss ^s^pan^(^#^) not^aper] creates a #-period trailing moving average
+        of exp.  The default span is 3; any positive integer is legal.  ^tma()^
+        ignores missing values unless there are ^span()^ successive ones.  The
+        ^nomiss^ option forces ^tma()^ to return missing values whenever any
+        value of exp within the span is missing.  The first ^span()^-1 values
+        of newvar are tapered: the first value of newvar is the first value
+        of exp; the second value of newvar is the average of the first two
+        values of exp; and so on.  The ^notaper^ option sets the first ^span()^-1
+        values of newvar to missing.
+Description, continued
+----------------------
+
+^count(^exp^)^ [^, by(^varlist^)^] creates a constant (within varlist) containing the
+	number of nonmissing observations of exp.  Also see ^robs()^ and ^rmiss()^
+	below.
+
+
+^diff(^varlist^)^ creates an indicator variable equal to 1 where the variables in
+	varlist are not equal and 0 otherwise.
+
+
+^group(^varlist^)^ [^, m^issing] returns values 1, 2, ..., for the groups formed by
+	varlist.  varlist may contain string, numeric, or both string and nu-
+	meric variables.  ^missing^ indicates that missing values in varlist
+	(either ^.^ or "") are to be treated like any other number when assigning
+	groups instead of missing values be assigned to the group missing.
+	(^group()^ is not documented in the manual; see crc27 in STB-12.)
+
+
+^iqr(^exp^)^ [^, by(^varlist^)^] creates a constant (within varlist) containing the
+	interquartile range of exp.  Also see ^pctile()^.
+
+
+Description, continued
+----------------------
+
+^ma(^exp^)^ [^, t(^#^) nom^iss] creates a #-period moving average of exp.  If ^t()^ is
+	not specified, ^t(3)^ is assumed.  # must be odd and exp must not pro-
+	duce missing values.  Since moving averages are functions of lags and
+	leads, ^ma()^ produces missing where the lags and leads do not exist --
+	at the beginning and end of the series.  ^nomiss^ forces calculation of
+	shorter, uncentered moving averages for the tails.
+
+
+^max(^exp^)^ [^, by(^varlist^)^] creates a constant (within varlist) containing the
+	maximum value of exp.  Also see ^min()^.
+
+
+^mean(^exp^)^ [^, by(^varlist^)^] creates a constant (within varlist) containing the
+	mean of exp.  Also see ^sd()^.
+
+
+^median(^exp^)^ [^, by(^varlist^)^] creates a constant (within varlist) containing the
+	median of exp.  Also see ^pctile()^.
+
+
+
+Description, continued
+----------------------
+
+^min(^exp^)^ [^, by(^varlist^)^] creates a constant (within varlist) containing the
+	minimum value of exp.  Also see ^max()^.
+
+
+^pctile(^exp^)^ [^, p(^#^) by(^varlist^)^] creates a constant (within varlist) containing
+	the #-th percentile of exp.  If ^p()^ is not specified, 50 is assumed,
+	meaning medians; also see ^median()^.  # may range from 1 to 99.
+
+
+^rank(^exp^)^ creates ranks of exp, equal observations are assigned the average
+	rank.  This function changes the sort order of your data.
+
+
+^sd(^exp^)^ [^, by(^varlist^)^] creates a constant (within varlist) containing the
+	standard deviation of exp.  Also see ^mean()^.
+
+
+^std(^exp^)^ [^, m^ean^(^#^) s^td^(^#^)^] creates the standardized values of exp.  Options
+	specify the desired mean and standard deviation.  The default is
+	^mean(0) std(1)^, producing a mean 0, standard deviation 1 variable.
+
+Description, continued
+----------------------
+
+^rsum(^varlist^)^ creates the (row) sum of the variables in varlist, treating
+	missing as 0.
+
+
+^rmean(^varlist^)^ creates the (row) means of the variables in varlist, ignoring
+	missing values.  For example, if three variables are specified and,
+	in some observations, one of the variables is missing, in those obser-
+	vations newvar will contain the mean of the two variables that do
+	exist.  Other observations will contain the mean of all three var-
+	iables.  Where none of the variables exist, newvar is set to missing.
+
+
+^robs(^varlist^)^ gives the number of nonmissing variables in varlist for each
+	observation (which is the value used by ^rmean()^ for the denominator
+	of the mean calculation).
+
+
+^rmiss(^varlist^)^ gives the number of missing variables in varlist for each
+	observation.
+
+
+Description, concluded
+----------------------
+
+^sum(^exp^)^ [^, by(^varlist^)^] creates a constant (within varlist) containing the
+	sum of exp.  Also see ^mean()^.
+
+
+
+Examples
+--------
+
+ . ^egen avg = mean(chol)^
+ . ^gen dev = chol - avg^
+
+ . ^egen medgro = median(inc80-inc79)^                (exp, - means subtraction)
+
+ . ^egen avginc = rmean(inc78 inc79 inc80)^
+ . ^egen avginc = rmean(inc78 - inc80)^               (varlist, - means through)
+
+
+
+
+
+
+Examples, concluded
+-------------------
+
+ . ^egen stdscor = std(score)^
+ . ^egen stdscore= std(score), mean(100) std(10)^
+
+ . ^egen ttlsales = sum(sales), by(region)^
+
+ . ^egen racesex = group(race sex)
+ . ^ir deaths smokes pyears, by(racesex)
+
+
+Also see
+--------
+
+    STB:  dm18 (STB-19); crc27 (STB-12)
+ Manual:  [4] functions, [5d] egen
+On-line:  ^help^ for ^collapse^, ^functions^, ^generate^

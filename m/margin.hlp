@@ -1,0 +1,183 @@
+{smcl}
+{* 28 October 2004}{...}
+{hline}
+help for {hi:margin}{right:(This version: 05 October 2004)}
+{hline}
+
+{title:Average marginal effects for categorical and limited dependent variable models}
+
+{p 8 17 2}
+{cmdab:margin}
+[{cmd:,}
+    {cmdab:c:ount}
+    {cmdab:d:ummies(}{it:Varlist_1} [ \ {it:Varlist_2} \ ... \ {it:Varlist_N}]{cmd:)}
+    {cmdab:e:form}
+    {cmdab:hascons:}
+    {cmdab:mean}
+    {cmdab:m:odel(}{it:stata_cmd}{cmd:)}
+    {cmdab:p:ercent}
+    {cmdab:r:eplace}
+    {cmdab:t:able} ]
+
+{p 4 4 2} where stata_cmd is one of
+
+{col 10}[class 1:]	{col 20}{help probit}    {col 30}{help logit}    {col 40}{help logistic}  {col 50}{help cloglog}  {col 60}{help xtprobit}  {col 70}{help xtlogit}
+{col 10}[class 2:]	{col 20}{help oprobit}   {col 30}{help ologit}   {col 40}{help gologit}   {col 50}{help mlogit}   {col 60}{help biprobit}
+{col 10}[class 3:]	{col 20}{help poisson}   {col 30}{help nbreg}    {col 40}{help zip}       {col 50}{help zinb}
+{col 10}[class 4:]	{col 20}{help tobit}     {col 30}{help cnreg}    {col 40}{help intreg}    {col 50}{help heckman}  {col 60}{help heckprob}
+
+{p 4 4 2} and {it:Varlist_K} includes dummy variables where all of the dummies indicate
+  different categories of the same underlying categorical variable.
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:margin} calculates marginal effects, and standard errors for marginal effects
+using the delta method.	By default, {cmd:margin} calculates the average of partial and discrete
+changes over the observations. {cmd:margin} can also compute marginal effects at the sample means of the variables if
+the {cmd:mean} option is specified. 
+In either cases, calculations are restricted to the estimation sample.
+
+{p 4 4 2}
+By default, the marginal effects calculated are as follows:
+
+{p 8 19 4}[class 1:] changes in the probability of positive outcome {p_end}
+{p 8 19 4}[class 2:] changes in the probabilities of all possible outcomes defined by the dependent variable(s){p_end}
+{p 8 19 4}[class 3:] changes in the expected number of counts or in the incidence rate (for {cmd:zip} and {cmd:zinb}, changes in {it:E(y|y>0)} and {it:Pr(y>0)} also displayed) {p_end}
+{p 8 19 4}[class 4:] changes in the expected value of the dependent variable {it:conditional} on the dependent variable being observed (not censored)	{p_end}
+
+{p 4 4 2}
+However, if the eform option is specified, {cmd:margin} calculates the changes in the value
+of {it:exp(xb)}, where {it:xb} is the linear prediction.
+
+{p 4 4 2}
+{cmd:margin} can be also be used after commands that are not on the list above. For
+example, users may wish to obtain marginal effects after the survey version of
+{it:stata_cmd}, or after their own program. This is made possible by the {cmd:model()}
+option.
+
+{p 4 4 2}
+{cmd:margin} can be used both as an estimation command and as a post-estimation command;
+see help {help est} and {help postest}. By default, {cmd:margin} behaves as a post-estimation command,
+i.e. it does not affect the estimation results. However, option {cmd:replace} forces {cmd:margin}
+to behave as an estimation command. This enables the use of post-estimation commands like
+{cmd:lincom} or {cmd:test} after {cmd:margin}. 
+
+{p 4 4 2}
+Typed without arguments, {cmd:margin} redisplays the marginal effects.
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:count}	modifies the calculation of marginal effects for count variables, i.e.
+   variables that take more than two values and all of the values are integers.
+   By default, {cmd:margin} treates count variables as continuous variables, thus
+   marginal effects correspont to small changes in the independent variables.
+   If the count option is specified, the marginal effects are changes in
+   probabilities when the count variables increases by unity.
+
+{p 4 8 2}
+{cmd:dummies(}{it:Varlist_1} [ \ {it:Varlist_2} \ ... \ {it:Varlist_N}]{cmd:)}
+modifies the calculation of marginal effects for dummy variables. Let {it:xvar} be a categorical variables
+   with {it:K} ({it:K}>2) categories. In this case, not xvar, but ({it:K}-1) dummies are included
+   in the regression model. The estimated marginal effects for these {it:K}-1 dummies
+   may be misleading (see the example below). The correct result is obtained if
+   one specifies the dummy option by including the {it:K}-1 variables in {it:varlist_1}.
+   
+{p 4 8 2}
+{cmd:eform}	 forces {cmd:margin} to define marginal effects as changes in the value of {it:exp(xb)},
+   where {it:xb} is the linear prediction.
+
+{p 4 8 2}
+{cmd:hascons}	 forces {cmd:margin} to display the expected value that corresponds to the constant term.
+Note that this is not marginal effect (that is, change in expected value). For instance, after a {cmd:logit}
+model the {cmd:hascons} option adds a new line to the output showing the predicted probability of the event
+conditional on all explanatory variables are zero. 
+
+
+{p 4 8 2}
+{cmd:mean}	forces {cmd:margin} to compute the marginal effects at the sample means of explanatory variables.
+
+{p 4 8 2}
+{cmd:model(}{it:stata_cmd}{cmd:)}  allows one to run {cmd:margin} after any command. {it:stata_cmd} must be
+   one of the commands listed above. {cmd:margin} will produce correct results only	if 
+   the estimation commannd issued before {cmd:margin} and {it:stata_cmd} have exactly the same 
+   link functions, i.e. the function which links the linear combination of variables 
+   and parameters to the outcome under study. It is the user's responsibility to ensure 
+   that this condition holds.
+
+{p 4 8 2}
+{cmd:percent} causes {cmd:margin} to display the results in a percentage form.
+
+{p 4 8 2}
+{cmd:replace} causes {cmd:margin} to overwrite the estimation results left behind.
+
+{p 4 8 2}
+{cmd:table}  causes {cmd:margin} to display a table containing the descriptive statistics of
+   individual marginal effects.
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:margin} is a work-in-progress; comments, suggestions, bug reports are welcome!
+Please direct correspondence to the adress described at the end of the help file. {p_end}
+{p 4 4 2}
+To keep {cmd:margin} up-to-date, visit the website {browse "http://www.bkae.hu/bartus/stata"} or type {p_end}
+{p 8 4 2}		{cmd: net from http://www.bkae.hu/bartus/stata} {p_end}
+{p 8 4 2}		{cmd: net install margin}{p_end}
+
+
+{title:Warning}
+
+{p 4 4 2}
+Before using {cmd:margin}, make sure that you coded your dummy variables as 0/1 variables.
+Otherwise your dummies will be considered as being continuous variables, and you run
+the risk of obtaining misleading results.
+
+{title:Examples}
+
+{p 4 4 2}
+Illustrating the importance of the dummies( varlist_1 \ ... ) option
+{p_end}
+{p 4 4 2}Type the following commands:{p_end}
+
+{p 8 8 2}{cmd:. [save mydata, replace]}{p_end}
+{p 8 8 2}{cmd:.	tabi 60 30 10 \ 20 60 20 \ 10 10 80 , replace }{p_end}
+{p 8 8 2}{cmd:.	xi: mlogit col i.row [fw=pop] }{p_end}
+{p 8 8 2}{cmd:.	margin }{p_end}
+
+{p 4 4 2}You will see that the marginal effects do not correspond to changes in probabilities in
+the 3X3 table. Only the changes in the probabilities of the third outcome approximate the true
+changes, namely 0.1 and 0.7. The correct results are obtained after specifying the dummies(..)
+option:	{p_end}
+
+{p 8 8 2}{cmd:.	margin , dummies(_I*)}{p_end}
+
+	
+{title:Acknowledgements}
+
+{p 4 4 2}
+Some parts of the code relies on margfx (version 30 Jul 1999 for Stata 5)
+written by Jonah B. Gelbach, Dept of Economics, Univ of MD at College Park.
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {help est}, {help postest}; {help mfx}
+
+
+{title:Author}
+
+{p 4 8 2} {browse "http://www.bkae.hu/bartus":Tamas Bartus}	{p_end}
+{p 4 8 2} Department of Sociology and Social Policy,{p_end}
+{p 4 8 2} Corvinus University Budapest (former University of Economics),{p_end}
+{p 4 8 2} Budapest, Hungary {p_end}
+{p 4 8 2} URL: {browse "http://www.uni-corvinus.hu/bartus":http://www.uni-corvinus.hu/bartus}{p_end}
+{p 4 8 2} Email: {browse "mailto:tamas.bartus@uni-corvinus.hu":tamas.bartus@uni-corvinus.hu}{p_end}
+
+
+
+
+
+
+

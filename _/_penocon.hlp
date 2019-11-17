@@ -1,0 +1,41 @@
+{smcl}
+{* 01/13/05}{...}
+{hline}
+help for {hi:_penocon}{right:1/13/2005}
+{hline}
+
+{title: Utility to determine if model was run with nocon option}
+
+{p 8 15 2}{cmd:_penocon}
+
+
+{title: Description}
+
+{p 4 4 2}
+{cmd:_penocon} returns 1 if model used nocon option, else 0. Works
+with {help cloglog}, {help logistic}, {help logit}, {help probit},
+{help ologit}, {help oprobit}, {help gologit}, {help poisson},
+{help nbreg}, {help zinb}, {help zip}, {help regress}, {help tobit},
+{help cnreg}, {help fit}, {help intreg}, and {help mlogit}.
+
+{title: Returns}
+
+{p 4 8 2}
+r(nocon) : local with 1 if nocon option, else 0.
+
+{title: Examples}
+
+    ...
+    _penocon
+    local isnocon = r(nocon)
+    if `isnocon'==1 {
+        ::: case without constant :::
+    }
+    else {
+        :::
+    }
+
+{hline}
+{p 2 4 2}Authors: J. Scott Long & Jun Xu{p_end}
+{p 11 4 2}{browse www.indiana.edu/~jslsoc/spost.htm}{p_end}
+{p 11 4 2}spostsup@indiana.edu{p_end}

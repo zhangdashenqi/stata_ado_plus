@@ -1,0 +1,62 @@
+{smcl}
+{* 05nov2002}{...}
+{hline}
+help for {hi:condivreg}{right:(SJ3-1: st0033)}
+{hline}
+
+{title:2SLS and LIML estimation}
+
+{p 8 14 2}{cmd:condivreg} {it:depvar} [{it:varlist1}]
+{cmd:(}{it:endogvar}{cmd:=}{it:varlist_iv}{cmd:)} 
+[{cmd:if} {it:exp}] [{cmd:in} {it:range}]
+[{cmd:,} [{cmd:2sls} | {cmd:liml}]
+ {cmd:nocons} {cmd:noinstcons}
+ {cmd:level}{cmd:(}{it:#}{cmd:)}]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:condivreg} estimates a linear regression model using 2SLS or LIML
+estimation of {it:depvar} on {it:varlist1} and {it:endogvar} using 
+{it:varlist_iv} (along with {it:varlist1}) as instruments
+for {it:varlist2}.
+
+{p 4 4 2}After estimating the model, use {cmd:condtest} and {cmd:condgraph} to
+conduct hypothesis tests and construct confidence intervals of the parameter
+on {it:endogvar}.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:2sls} requests that the 2SLS estimator be used.  {cmd:2sls}
+is the default.
+
+{p 4 8 2}{cmd:liml} requests that the LIML estimator be used.  {cmd:2sls} and 
+{cmd:liml} are mutually exclusive.
+
+{p 4 8 2}{cmd:nocons} indicates that no constant term is to be included in
+the regression equation.  The default is to include a constant term.
+
+{p 4 8 2}{cmd:noinstcons} indicates that no constant term is to be
+included in the first-stage regression of the endogenous variable on the
+instruments and exogenous variables.  Stata's {cmd:ivreg} command
+excludes a constant from both equations if its {cmd:noconstant} option
+is specified.  Usually one will not want to specify {cmd:noinstcons}
+unless {cmd:nocons} is also specified, but we give the user the option
+to experiment.  By default a constant term is included.
+
+{p 4 8 2}{cmd:level(}{it:#}{cmd:)} specifies the nominal significance
+level to be used when displaying the results.  The default is to use the
+value stored in the global macro {cmd:$}{cmd:S_level}.  See {help
+level}.
+
+
+{title:Example}
+
+{p 8 12 2}{cmd:. condivreg y1 x1 (y2 = z1 z2 z3), liml}{p_end}
+
+
+{title:Also see}
+
+{p 4 14 2}Manual:  {hi:[R] ivreg}
+{p 4 13 2}Online:  help for {help condtest}, {help condgraph} 

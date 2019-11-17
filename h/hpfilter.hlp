@@ -1,0 +1,61 @@
+Detrending with the Hodrick-Prescott filter                      (STB-17: sts5)
+-------------------------------------------
+
+	^hpfilter^ varname [^if^ exp ^in^ range] [, ^l^ambda(#) ^s^uffix(str)]
+
+applies the Hodrick-Prescott smoothing filter to varname and stores the
+smoothed version in the new variable H_varname (or H_suffix if the
+^s^uffix() option is specified).  The Hodrick-Prescott filter minimizes the
+squared difference between the original and the filtered series subject to
+a smoothness constraint on the filtered series.
+
+
+
+
+
+
+
+
+
+
+
+
+Options
+-------
+
+^l^ambda(#) specifies the smoothing parameter.  The default is 1600, the 
+    value suggested by Prescott for quarterly data.  Higher values of lambda 
+    produce smoother results.
+
+^s^uffix(str) specifies the suffix for the filtered series.  The new series
+    have names of the form "H_varname" where "H_" indicates the application 
+    of the Hodrick-Prescott filter.  Normally the name of the original 
+    variable is used as the suffix, but the ^s^uffix option allows the user 
+    to override that default.
+
+    Note that ^hpfilter^ obeys the usual rules for applying operators to Stata
+    variable names.  Thus, for example, the result of applying ^hpfilter^ to
+    "L_x" is "HL_x", not "H_L_x".
+
+
+Note
+----
+
+^hpfilter^ uses Stata's matrix language to apply the Hodrick-Prescott filter.
+^hpfilter^ needs to create matrices with dimensions as large as the number
+of observations in the input series.
+
+
+Author
+------
+
+        Timothy J. Schmidt
+        Federal Reserve Bank of Kansas City
+        816-881-2307
+
+
+Also see
+--------
+
+    STB:  sts5 (STB-17)
+On-line:  ^help^ for ^hpfilter^

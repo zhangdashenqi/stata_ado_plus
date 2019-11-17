@@ -1,0 +1,134 @@
+{smcl}
+{* 20Sep2002}{...} 
+{hline}
+help for {hi:cdsimeq}{right:(SJ4-4: st0038_1; SJ3-2: st0038)}
+{hline}
+
+{title:cdsimeq: program to implement 2SPLS}
+
+{p 8 15 2}
+{cmd:cdsimeq}({it:continuous_endogenous_depvar}
+{it:continuous_model_exogenous_indvar(s)})
+({it:dichotomous_endogenous_depvar}
+{it:dichotomous_model_exogenous_indvar(s)})
+[{cmd:if} {it:exp}] 
+[{cmd:in} {it:range}] 
+[{cmd:,}
+{cmdab:nof:irst}
+{cmdab:nos:econd}
+{cmd:asis}
+{cmdab:ins:tpre}
+{cmdab:est:imates_hold} 
+]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:cdsimeq} implements the two-stage estimation method described in
+Maddala (1983) for simultaneous equations models in which one of the
+endogenous variables is continuous and the other endogenous variable is
+dichotomous. The {cmd:cdsimeq} command implements all the necessary procedures
+for obtaining consistent estimates for the coefficients as well as their
+corrected standard errors.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:nofirst} specifies that the displayed output from the
+{it:first stage} regressions be suppressed.
+
+{p 4 8 2}{cmd:nosecond} specifies that the displayed output from the
+{it:second stage} regressions be suppressed.
+
+{p 4 8 2}{cmd:asis} is Stata's {cmd:asis} option; see {hi:[R] probit}. 
+
+{p 4 8 2}{cmd:instpre} specifies that the created instruments in the first
+stage are not to be discarded after the program terminates. Note that if this
+option is specified and the program is re-run, an error will be issued saying
+that the variables already exist. Therefore, these variables have to be
+dropped or renamed before {cmd:cdsimeq} can be re-run.
+
+{p 4 8 2}{cmd:estimates_hold} retains the estimation results from the OLS
+estimation, with corrected standard errors, in a variable called {cmd: model_1}
+and estimation results from the probit estimation, with corrected standard
+errors, in a variable called {cmd: model_2}. Note that if this option is
+specified the above variables must be dropped before {cmd:cdsimeq} command is
+re-run again with the {cmd:estimates_hold} option. For more information on
+Stata's estimates hold, see {hi:[R] estimates}.
+The {cmd:estimates_hold} option must be specificed if users wish to 
+use any of Stata's post-estimation commands such as {cmd:mfx}, etc. The user after
+running {cmd:cdsimeq}, would unhold which ever estimates (Regression or Probit) he wishes to run 
+post-estimation commands on and then invoke any of the post-estimation commands available in Stata.
+See example below. 
+
+
+{title:Postestimation commands}
+
+{p 4 4 2}{cmd:cdsimeq} has been updated to allow all of Stata's post estimation
+commands except {cmd: lrtest} and {cmd: suest}. For how to obtain post estimation results
+in general, see {hi:[R] postest}. For post estimation results in {cmd: cdsimeq} see option {cmd:estimates_hold}
+below. 
+
+{p 4 4 2}Users are warned of the old adage "Garbage in, Garbage out". That is, the user should make sure
+that the options requested are appropriate given the command just implemented. Determining ahead of time
+all the  possible combinations of options that can and cannot be performed is impossible. 
+So it is left to the user to decide. 
+
+
+{title:Examples}
+(note the examples that follow are for illustrative purposes only)
+
+{p 8 12 2}{cmd:. sysuse auto, replace}
+
+{p 8 12 2}{cmd:. cdsimeq (price mpg rep78 weight length) (foreign gear_ratio displacement turn length)}
+
+{p 8 12 2}{cmd:. cdsimeq (price mpg rep78 weight length) (foreign gear_ratio displacement turn length), nof ins}
+
+{p 8 12 2}{cmd:. cdsimeq (price mpg rep78 weight length) (foreign gear_ratio displacement turn length), est}
+
+{p 8 12 2}{cmd:. cdsimeq (price mpg rep78 weight length) (foreign gear_ratio displacement turn length), nof nos asis est}
+
+{p 8 12 2}{cmd:. cdsimeq (price mpg rep78 weight length) (foreign gear_ratio displacement turn length), est}{p_end}
+{p 8 12 2}{cmd:. version 7}{p_end}
+{p 8 12 2}{cmd:. estimates unhold model_2}{p_end}
+{p 8 12 2}{cmd:. testnl _b[gear_ratio]/_b[turn] = _b[length]}{p_end}
+{p 8 12 2}{cmd:. mfx, eyex at(median) varlist(displacement turn)}{p_end}
+{p 8 12 2}{cmd:. predictnl exb = exp(xb()), se(exb_se)}{p_end}
+{p 8 12 2}{cmd:. estimates unhold model_1}{p_end}
+{p 8 12 2}{cmd:. test  mpg = rep78}{p_end}
+{p 8 12 2}{cmd:. lincom  weight- length}{p_end}
+
+
+
+
+
+{title:References}
+
+{p 4 8 2}Amemiya, T. 1978. The Estimation of a Simultaneous Equation
+Generalized Probit Model. {it:Econometrica} 46(5): 1193--1205.
+
+{p 4 8 2} Cox, N. J. uniqlist.ado (available from Stata by typing:
+{cmd:findit} {cmd:uniqlist}).
+
+{p 4 8 2} Kim, S. Y. 1998. Ties that Bind: The Role of Trade in International
+Conflict Processes, 1950-1992. Ph.D. Dissertation, Department of Political
+Science, Yale University, 223--227.
+
+{p 4 8 2} Maddla, G. S. 1983. {it:Limited-Dependent and Qualitative Variables}
+{it:in Econometrics}. Cambridge: University Press}.
+
+{p 4 8 2} Harkness, J. ivprob.ado (available from STATA by typing: 
+{cmd:findit} {cmd:ivprob}).
+
+{p 4 8 2} Gelbach, J. probitiv.ado (available from STATA by typing: 
+{cmd:findit} {cmd:probitiv}).
+
+{title:Thanks} 
+Special thanks to Sunila Claire Wainwright from the University of Edinburgh, School of Economics, 
+for beta testing many of the post estimation commands. 
+
+
+{title:Author}
+
+{p 8 8 2}Omar M.G. Keshk {break}
+keshk.1@osu.edu 

@@ -1,0 +1,326 @@
+.-
+help for ^rcheck^                                       (Kenneth L. Simons)
+.-
+
+Check sensitivity of results under alternative model specifications
+------------------------------------------------------------------
+
+        ^rcheck^ ^,^ ^co^mmand^(^command string^)^ ^ch^eck^(^checks string^)^
+                       [^a^ddvars^(^added variables string^)^
+                       ^v1(^variations string^)^ ... ^v9(^variations string^)^
+                       ^d^isplay^(^verbose|all|0|1|errors|none^)^ ^p^valtype^(^#^)^]
+
+
+Description
+-----------
+
+Suppose you run a statistical analysis and find that the coefficient of x7 is
+significantly greater than 0.  Then you want to check, is it still
+significantly greater than 0 no matter whether or not you include any
+combination of ten control variables.  This requires that you run 1024 total
+regressions (2^10 including the one you started with), and inspect results for
+each.  Or perhaps you want to control for age, income, and other variables
+but it is unclear which of several measures and transformations is ideal, so
+you want to check whether your results are robust to these alternative
+specifications.  This program can save you the pain of such a process, by
+running all the regressions and checking whether your original finding is
+robust to all possible combinations of control variables.
+
+More generally, ^rcheck^ (a) works for any one-line statistical command;
+(b) can add sets of variables at a time and choose between alternative sets and
+can add both dependent and independent variables; and (c) can check any
+expression regarding coefficients, standard errors, p-values, and any other
+statistical results such as R-squared values.
+
+The philosophy is a test-test-test approach.  Usually when a statistical model
+is constructed there is no a priori reason to think it is the perfect model.
+What if the model were constructed differently to start with; would this have
+led to totally different conclusions?  Careful statistical research demands
+that the researcher check the conclusions don't come out one way merely because
+the researcher chose one of several possible models, all of which seem
+reasonable.  Ideally the researcher can conclude something like, exposure to
+lead paint is associated with a significant decrease in children's learning
+rates, regardless whether family income is controlled via square root of
+income or logarithm of income, and regardless whether certain controls are
+added.
+
+To use ^rcheck^, you must specify a command and one or more formulae to check.
+You also may specify possible added variables or other variations.  After
+statistical analyses have been carried out for every permutation of the
+added variables and variations you specified, ^rcheck^ reports the following
+information for each formula checked:
+  minimum - Lowest value across all the statistical analyses
+  maximum - Highest value across all the statistical analyses
+  mean    - Mean value across all the statistical analyses
+  #0      - Number of statistical analyses for which the formula equaled 0
+  #1      - Number of statistical analyses for which the formula equaled 1
+  #.      - Number of analyses for which the formula yielded a missing value
+  #noncomputable - Number of analyses for which the formula could not be
+                     computed because of dropped variables or an error in
+                     the formula
+Information reported about #0 and #1 is especially useful for true-false
+conditions.
+
+
+Options
+-------
+
+^co^mmand^(^command string^)^ is the command to be executed, such as "regress y %X".
+    Any added independent variables will be substituted in place of every
+    occurence of "%X".  Any added dependent variables will be substituted in
+    place of every occurence of "%Y".  Any variations specified in v1(), v2(),
+    ..., v9() will be substituted in place of every occurrence of "%V1", "%V2",
+    ..., "%V9".
+
+^ch^eck^(^checks string^)^ specifies what expressions should be checked.
+    Multiple expressions may be included with semicolons in between.
+    Expressions may involve estimated coefficients of variables, _b[varname].
+    If variable names are entered by themselves, it is assumed that you mean
+    coefficient estimates.  Also expressions may involve:
+        standard error of varname        se[varname]
+        p-value (2-tailed) of varname    %p[varname]
+    In addition, expressions may involve any constants returned after the
+    statistical analysis.  Type "estimates list" after a statistical analysis
+    to see what constants are available.  With OLS regression, for example,
+    some of the available constants are:
+        e(F)      F-statistic for the full model (vs. no explanatory variables)
+        e(r2)     R-squared
+        e(r2_a)   adjusted R-squared
+        e(N)      number of data points used
+        e(df_m)   degrees of freedom of the model
+        e(df_r)   degrees of freedom of the regression
+    For each expression you specify, ^rcheck^ will check the value of the
+    expression and summarize findings across all specifications of added
+    variables.
+        To determine which of several variables was included in the statistical
+    analysis, and refer to whichever one was included, put the variable names
+    in {} brackets separated by the | character: {varname1|varname2|...}.  For
+    example if you added "x1|x2|x3" to the statistical analysis, then you could
+    check "%p[{x1|x2|x3}]".  If multiple variables from the list were in the
+    statistical analysis, the first listed will be used; no error message will
+    be given so be careful to avoid mistakes.
+        The checks string must not include double-quotation marks (").
+
+^a^ddvars^(^added variables string^)^ specifies what variables to add.  Separate
+    each variable or group with a space.  A group may use the | (or)
+    symbol to indicate that one or another variable or set of variables
+    should be added at a time.  For a set of variables to be added, use
+    the & (and) symbol between variable names.  For a dependent variable,
+    place a ^ symbol before each dependent variable name.  (It is up to you
+    to ensure that the correct number of dependent variables will always be
+    added to the model; if in doubt use the display() option to check.)  Also,
+    "%none" may be used in place of a variable name to indicate that no
+    variable should be added.  Where only one variable is specified without
+    an | symbol, it is assumed that %none is also meant.
+        For example "x7" is the same as "x7|%none".  "x7|x8" adds either x7
+    or x8, not both, and not none.  "x5&x7|x6&x8" adds either x5 and x7
+    together, or x6 and x8 together.  "x5&x7|x6&x8|%none" adds either x5 and x7
+    together, or x6 and x8 together, or no variables at all.  To change the
+    y-variable and x-variables, you could use "^^y&x5&x7|^^lny&x6&x8", thus
+    causing y to be used for the dependent variable when x5 and x7 are used,
+    and lny to be used for the dependent variable when x6 and x8 are used.
+    "x5 x6 x7" is the same as "x5|%none x6|%none x7|%none", and causes every
+    combination of x5, x6, and x7 (or none of them) to be added.  Similarly you
+    could specify "x4|x5|x6 ^^y1&x7|^^y2&x8 x9 x10" to add one of x4 or x5 or
+    x6 (but never neither of them), one of (y1 and x7) or (y2 and x8) but never
+    neither, x9 or none, and x10 or none.
+    
+^v1(^variations string^)^, ..., ^v9(^variations string^)^ allow variations in
+    the command other than added variables.  For example you might wish to
+    try restricting the sample to consider particular subgroups or to exclude
+    outliers, or you might wish to check whether a result is statistically
+    significant regardless whether you use standard or robust standard errors.
+    Within a variations string, separate the variations with the | (or) symbol,
+    and use "%none" for no variation.  If you include only one variation, the
+    alternative "%none" will be assumed; for example "robust" is the same as
+    "robust|%none".
+        For example use v1("%none|if age>50|if age>60") for a possible if
+    statement, or v2("robust") to compute standard and robust standard errors.
+        Variations strings must not include double-quotation marks ("). 
+
+^d^isplay^(^verbose|all|0|1|errors|none^)^ causes information to be displayed for
+    each statistical analysis executed.  The "verbose" option causes the
+    executed command to be displayed, followed by the full Stata output from
+    the command and then the results of all checks.  The "all", "0", "1", and
+    "errors" options display the executed command, along with the results of
+    checks, anytime the relevant condition is met.  "all" does so for all
+    statistical analyses and all checks, "0" for checks that evaluate to zero,
+    "1" for checks that evaluate to one, and "errors" for checks that cannot be
+    evaluated numerically.  The default is "none", so that no information is
+    displayed except the final results after all statistical analyses and
+    checks have been carried out.
+    
+^p^valtype^(^#^)^ is sometimes needed if your checks involve p-values.  ^rcheck^
+    knows how to compute p-values from t-tests as in OLS regression, and
+    from the normal probability distribution as in asymptotic maximum
+    likelihood estimation.  The program tries to figure out which kind of
+    p-values are necessary for your statistical command.  But if ^rcheck^
+    does not know the statistical command, it will ask you to tell it how
+    to compute p-values.  Use pvaltype(1) for p-values computed by t-test
+    as in OLS regression, and use pvaltype(2) for p-values computed using
+    the asymptotic normal distribution.
+
+
+Remarks
+-------
+
+If you are not sure you have correctly entered the list of variables to
+include, be sure to use the display(verbose) option (or all instead of
+verbose) and make sure that the correct statistical commands are being
+carried out.  The program has considerable power to add multiple x-variables
+and even multiple y-variables and differing numbers of y-variables, etc.  This
+makes the program very flexible, but it also means that ^rcheck^ will not notice
+if you do something silly like try to include 2 or 0 dependent variables in an
+OLS regression.
+
+p-values are computed as:
+    t-test method:      2 * ttail( e(df_r), abs(_b[varname]/_se[varname]) )
+    asymptotic method:  2 * (1 - normprob( abs(_b[varname]/_se[varname]) ))
+
+Limitations of ^rcheck^ include:
+1. Computation method for p-values has been entered for only some statistical
+   methods.
+2. Not programmed to handle multi-equation models easily.
+3. Does not automatically compute p-values for linear combinations (but you can
+   write your own program that returns both estimates and linear combinations,
+   and refer to your program in command()).
+4. Error checking is very limited.
+
+
+Examples
+--------
+
+ . ^rcheck, command("regress y x1 %X") addvars("x2") check("x1>0")^
+       Regress y on x1, and y on x1 and x2, and check whether the coefficient
+       of x1 is greater than 0 both times.
+ . ^rcheck, command("regress y x1 %X") addvars("x2|x3") check("x1")^
+       Regress y on x1 and x2, and y on x1 and x3, and examine the range of
+       values of the coefficient of x1 from the two regressions.
+ . ^rcheck, command("regress y x1 %X") addvars("x2|x3 x4") check("x1>0")^
+       Regress y on x1,x2; y on x1,x3; y on x1,x2,x4; and y on x1,x3,x4; and
+       check whether the coefficient of x1 is greater than 0 all four times.
+ . ^rcheck, command("regress y x1 %X") addvars("x2") check("%p[x1]<.05")^
+       Like the first command above, but check whether x1 is significant at the
+       .05 level.
+ . ^rcheck, command("regress %Y x1") addvars("^^y|^^lny") check("%p[x1]")^
+       Regress y on x1 and lny on x1, and examine the range of significance
+       levels of x1.
+ . ^rcheck, command("logit y x1 %X") addvars("x2") check("x1>0")^
+       Like the first example above, but carry out logits instead of OLS
+       regressions.
+ . ^rcheck, command("nbreg y x1 x2 %X, exposure(gdp)") addvars("x3 x4 x5")^
+    ^check("x1 > 0; x2 > x1")^
+       Carry out 8 negative binomial regressions of y on x1 and x2, with every
+       possible combination of x3,x4,x5 (or none of them), and check whether in
+       in each case the coefficient of x1 is positive and the coefficient of x2
+       is greater than the coefficient of x1.
+ . ^rcheck, command("regress y %X") addvars("x1|x2") check("{x1|x2};^
+    ^%p[{x1|x2}]")^
+       Regress y on x1, and y on x2, and examine the ranges of estimates and
+       p-values for x1 and x2, each time using whichever of x1 or x2 was
+       included in the regression.
+ . ^rcheck, command("regress y x %X") addvars("lnage|age1&age2&age3&age4")^
+    ^check("x>0; %p[x]<.05")^
+       Regress y on x with controls for age, either lnage or four dummy
+       variables named age1, age2, age3, and age4.  Check whether x has a
+       consistently positive and significant effect on y.
+ . ^rcheck, command("regress y x %X %V1") addvars("lnage|age1&age2&age3&age4")^
+    ^v1("%none|if male==0|if male==1") check("x>0; %p[x]<.05")^
+       Regress y on x with controls for age, either lnage or four dummy
+       variables named age1, age2, age3, and age4.  Do the same for men and
+       women combined, women only, and men only.  Check whether x has a
+       consistently positive and significant effect on y.
+
+
+Extended Example
+----------------
+
+Using data on companies, I analyzed how they fared following the advent of the
+internet.  Popular business ideas suggested that the rise of the internet would
+help new companies take over business markets from old companies.
+
+One analysis used a logistic regression of firm failure: failure = 1 if the
+firm left the market by the next year, failure = 0 if the firm did not leave
+the market.  Recent entrants had a dummy variable entry = 1, while older firms
+had entry = 0.  Also, firms applying the internet to their areas of business
+had a dummy int1995=1, while firms that did not apply the internet to their
+business had int1995=0.  An alternative indicator -- in case of problems with
+the internet data -- measured business applications related to networking, in
+the dummy variable net1995.
+
+I wanted to check whether (a) recent entrants had reduced chances of exit
+relative to incumbent firms (at comparable age and size), and whether (b) firms
+applying the internet (or networks) to their areas of business had reduced
+chances of exit.
+
+I consistently controlled for firm age and size, using variables named lnage,
+logteNM, and noDataSize.  (The latter was a dummy variable equal to 1 for the
+few firms that had no data on size, in which case logteNM -- meaning log total
+employment in non-missing cases -- was set to the mean of the nonmissing
+values; otherwise noDataSize=0.)
+
+I wanted also to try controlling for one of two price measures (a median or
+mean index of prices over time), to see if adding either of them made any
+difference to the conclusions.  I also wanted to try controlling for two
+measures of growth in national GDP (overall or in the service sector), to see
+if adding either of them made any difference.
+
+I used the following command:
+
+^rcheck , command("logit failed entry lnage logteNM noDataSize %X if^
+ ^thereIn95 & year>=1995") addvars("int1995|net1995 medfcai100|meanfcai100|%none^
+ ^gdpgrow|gdpgrowS|%none") check("entry<0; %p[entry]<.05; entry<0 &^
+ ^%p[entry]<.05; {int1995|net1995}<0; %p[{int1995|net1995}]<.05;^
+ ^{int1995|net1995}<0 & %p[{int1995|net1995}]<.05") display(errors)^
+
+The results were:
+
+Summary of checks (from 18 statistical analyses)
+________________________________________________
+entry<0:
+  min=0, max=1, mean=.33333333, #0=12, #1=6, #.=0, #noncomputable=0
+%p[entry]<.05:
+  min=0, max=1, mean=.66666667, #0=6, #1=12, #.=0, #noncomputable=0
+entry<0 & %p[entry]<.05:
+  min=0, max=0, mean=0, #0=18, #1=0, #.=0, #noncomputable=0
+{int1995|net1995}<0:
+  min=0, max=1, mean=.38888889, #0=11, #1=7, #.=0, #noncomputable=0
+%p[{int1995|net1995}]<.05:
+  min=0, max=0, mean=0, #0=18, #1=0, #.=0, #noncomputable=0
+{int1995|net1995}<0 & %p[{int1995|net1995}]<.05:
+  min=0, max=0, mean=0, #0=18, #1=0, #.=0, #noncomputable=0
+
+The program carried out 18 logistic regressions.  In the command, the check()
+listed six conditions to check.  Each checked condition evaluates to 1 for
+true or false.  Therefore I looked at the results to see how often each
+condition was true or false.
+ 
+The entry variable had a negative estimated coefficient in only 6 of the 18
+regressions (see the line following "entry<0:"), since #1=6 and #0=12.  The
+entry variable was significant at the .05 level in 12 of 18 regressions (see
+the line following "%p[entry]<.05:"), since #1=12 and #0=6.  However, in the
+few cases where entry had a negative coefficient estimate, it was always
+insignificant at the .05 level (see the line following "entry<0 &
+%p[entry]<.05:"), since #1=0 and #0=18.  Thus recent entrants did not have
+significantly reduced chances of exit, compared to incumbent firms at
+comparable ages and sizes.
+
+Similarly, results can be read from the last three checks.  The int1995 or
+net1995 variable, whichever was included in the analyses, had a negative
+coefficient estimate in only 7 of 18 of the logistic regressions, and was
+never significant at the .05 level.
+
+These findings demonstrate that the often-suggested effects of the internet
+in fact had not shown up (as of 2001) in the sample of firms studied, and
+moreover, that this finding is robust to the alternative treatments of
+control variables and to the use of the int1995 versus net1995 measures.
+
+In practice, many further checks were carried out.  The use of ^rcheck^ thus
+considerably simplified the work involved.
+
+
+Author
+------
+
+Kenneth L. Simons (2002)
+

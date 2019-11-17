@@ -1,0 +1,81 @@
+{smcl}
+{hline}
+help for {hi:viblicc}{right:(SJ5-1: st0081)}
+{hline}
+
+{title:Visualizing binary logit models for interactions compute covariate contribution}
+
+{p 8 14 2}{cmd: viblicc} {it:yvar} {it:x1} {it:x2} {it:x12} {it:additional covariates}, 
+        [generate({it:varname}) graph db]
+
+
+{title:Description}
+
+{p 4 4 2}
+The {cmd:viblicc} is for helping you understand the nature of 
+the covariate contribution for a logit model for a given data file.
+For additional information, we recommend seeing 
+our {browse www.ats.ucla.edu/stat/seminars:Seminar Page}
+and then seeing the Stata seminar on 
+{it:Visualizing Main Effects and Interactions for Binary Logit Models in Stata}.
+
+{p 4 4 2}
+You issue the {cmd:viblicc} command much like the 
+{cmd:logit} command (except for the options). The first
+three predictors are the main effect of variable 1 {it:x1}, the main
+effect of variable 2 {it:x2}, and the interaction of variable 1 and 2
+{it:x12} and the rest of the predictors are considered covariates.
+
+{p 4 4 2}
+With no options, the covariate contribution is computed
+and percentiles ranging from the 10th to 90th percentile are displayed.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:generate({it:varname})} allows you to save 
+the covariate contribution for each observation in the
+variable that you specify. You could then further describe
+and analyze that variable.
+
+{p 4 8 2}
+{cmd:graph} this option displays and issues the 
+{cmd:viblmgraph} command with the appropriate
+coefficient values and covariate contribution values
+and displays a graph of the predicted probabilities
+by {it:x1} (see the help for {help viblmgraph} for more details).
+Because the command is displayed before it is executed,
+you could copy the command and tailor it to your liking,
+using it as a starting point for building up a graph.
+
+{p 4 8 2}
+{cmd:db} this option starts the {cmd:viblmdb} program 
+with the appropriate coefficients
+and covariate contributions.  You can then use
+the interactive point and click interface of 
+{cmd:viblmdb} to further explore your data
+(see the help for {help viblmdb} for more details).
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. use meps_norton}{p_end}
+
+{p 4 8 2}{cmd:. logit opvisits male ins_uni male_uni age educ}{p_end}
+
+{p 4 8 2}{cmd:. viblicc opvisits male ins_uni male_uni age educ}{p_end}
+
+{p 4 8 2}{cmd:. viblicc opvisits male ins_uni male_uni age educ, generate(mycc)}{p_end}
+
+{p 4 8 2}{cmd:. viblicc opvisits male ins_uni male_uni age educ, graph}{p_end}
+
+{p 4 8 2}{cmd:. viblicc opvisits male ins_uni male_uni age educ, db}{p_end}
+
+
+{title:Authors}
+
+       Michael Mitchell & Xiao Chen 
+       UCLA Academic Technology Services
+       mnm@ucla.edu & jingy1@ucla.edu 
+{p_end}

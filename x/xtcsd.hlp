@@ -1,0 +1,126 @@
+{smcl}
+{* 19May06}{...}
+{hline}
+help for {hi:xtcsd}{right:(SJ6-4: st0113)}
+{hline}
+
+{title:Test for cross-sectional dependence in panel-data models}
+
+{p 8 16 2}
+{cmd: xtcsd} {cmd:,} [{cmdab:pes:aran} {cmdab:fri:edman} {cmdab:fre:es}
+                      {cmdab:abs} {cmdab:show}]  
+
+
+{p 4 8 2} {cmd:xtcsd} is a postestimation command for use with cross-section
+time-series data following {cmd:fe} or {cmd:re} models.  You must
+{helpb tsset} your data before using {cmd:xtcsd}.
+
+
+{title:Description}
+
+{p 4 4 2} {cmd:xtcsd} tests for cross-sectional dependence in fixed-effects or
+random-effects panel-data models.  One of the command's options, {cmd:pesaran},
+{cmd:friedman}, or {cmd:frees}, must be specified. 
+	
+{p 4 4 2} A standard assumption in panel-data models ({helpb xtreg}) is that
+the error terms are independent across cross sections.  This assumption is
+used for identification purposes rather than descriptive accuracy. In the
+context of large T and small N, the Lagrange multiplier test statistic
+proposed by Breusch and Pagan (1980) can be used to test for cross-sectional
+dependence (see {helpb xttest2}).  However, cross-sectional
+time-series datasets usually come in the form of small T and large N. In this
+case, the Breusch-Pagan test is not valid. 
+
+{p 4 4 2} {cmd:xtcsd} test the hypothesis of cross-sectional independence in
+panel-data models with small T and large N by implementing two semiparametric
+tests proposed by Friedman (1937) and Frees (1995, 2004), as well as the
+parametric testing procedure proposed by Pesaran (2004).  {cmd:xtcsd} with
+option {cmd:pesaran} can handle balanced as well as unbalanced panels.   
+
+
+{title:Options}
+
+{p 4 8 2} {cmd:pesaran} tests for cross-sectional dependence following the
+methods shown in Pesaran (2004). Pesaran's statistic follows a standard normal
+distribution and can handle balanced and unbalanced panels.  
+			 
+{p 4 8 2} {cmd:friedman} tests for cross-sectional dependence by using
+Friedman's chi-squared distributed statistic.  For unbalanced panels,
+Friedman's test uses only the observations available for all cross-sectional
+units.
+
+{p 4 8 2} {cmd:frees} tests for cross-sectional dependence by using Frees' Q
+distribution (T-asymptotically distributed).  For unbalanced panels, Frees'
+test uses only the observations available for all cross-sectional units.    
+	
+{p 4 8 2} {cmd:abs} computes the average absolute value of the off-diagonal
+elements of the cross-sectional correlation matrix of residuals.
+
+{p 4 8 2} {cmd:show} shows the cross-sectional correlation matrix of
+residuals. 
+	
+
+{title:Notes}
+
+{p 4 8 2} The small-sample comparative performance of these tests under
+various model specifications is examined in Sarafidis and De Hoyos (2006). 
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. use "http://www.econ.cam.ac.uk/phd/red29/xtcsd_baltagi.dta"}
+{p_end}
+{p 4 8 2}{cmd:. xtreg  lngsp lnpcap lnpc lnemp unemp, fe}{p_end}
+{p 4 8 2}{cmd:. xtcsd, frees}{p_end}
+{p 4 8 2}{cmd:. xtcsd, pesaran show}{p_end}
+{p 4 8 2}{cmd:. xtreg  lngsp lnpcap lnpc lnemp unemp, re}{p_end}
+{p 4 8 2}{cmd:. xtcsd, friedman show abs}{p_end}
+
+
+{title:References}
+
+{p 4 8 2}Frees, E. W. 1995. Assessing cross-sectional correlations in panel
+data. {it:Journal of Econometrics} 69: 393-414.
+
+{p 4 8 2}------. 2004. {it:Longitudinal and Panel Data: Analysis and}
+{it:Applications in the Social Sciences}. Cambridge: Cambridge University
+Press. 
+
+{p 4 8 2}Friedman, M. 1937. The use of ranks to avoid the assumption of
+normality implicit in the analysis of variance.
+{it:Journal of the American Statistical Association} 32: 675-701.
+
+{p 4 8 2}Pesaran, M. H. 2004. General diagnostic tests for cross section
+dependence in panels. University of Cambridge, Faculty of Economics, Cambridge
+Working Papers in Economics No. 0435.
+
+{p 4 8 2}Sarafidis, V., and R. E. De Hoyos. 2006. On testing for cross
+sectional dependence in panel data models. Mimeo, University of
+Cambridge.
+
+
+{title:Acknowledgments}
+
+{p 4 8 2} Our code benefited greatly from Christopher F. Baum's
+{helpb xttest2}. We thank David Drukker for useful suggestions. 
+
+
+{title:Authors}
+
+    Rafael E. De Hoyos
+    Development Prospects Group, The World Bank
+    {browse "mailto:rdehoyos@worldbank.org":rdehoyos@worldbank.org} 
+
+    {browse "http://www.econ.usyd.edu.au/15583.html":Vasilis Sarafidis}
+    Discipline of Econometrics and Business Statistics, University of Sydney
+    {browse "mailto:V.Sarafidis@econ.usyd.edu.au":V.Sarafidis@econ.usyd.edu.au}
+
+
+{title:Also see}
+
+{psee}Manual:	{hi:[U] 23 Estimation and postestimation commands}{break}
+	{hi:[XT] xtreg}
+
+{psee}Online:	{helpb xttest2} (if installed), {helpb bpagan} (if installed),
+          {helpb ivreg2} (if installed)
+{p_end}

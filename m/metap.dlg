@@ -1,0 +1,55 @@
+/* 
+
+*! metap dialog version 1.0.0, 13 May 2003, T. J. Steichen, steichen@triad.rr.com 
+*!    for metap version 2.0.0,    Mar 2000, Aurelio Tobias, atobias@isciii.es 
+
+Meta-analysis of p-values
+-------------------------
+
+Syntax: metap pvar [if exp] [in range] [ , method(#) ]
+
+To install in User Statistics menu via Stata commands:
+  . window menu append item "stUserStatistics" "Meta-analysis of p-values (meta&p)" "db metap"
+  . window menu refresh
+To permanently install, place the commands in your -profile.do- file.
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help metap")
+RESET res1, label("Reset")
+
+DIALOG main, label("metap 2.0.0 - Meta-analysis of p-values") tabtitle("Main")
+BEGIN
+  TEXT     tx_p         10   10  145      .,            ///
+     label("Variable for p-values:")
+  VARNAME  vn_p        150    @  190      .,            ///
+     label("Variable for p-values")
+     
+  GROUPBOX gb_method    10   40  330  _ht5h,            ///
+     label("Method:")
+  RADIO    r_f          15   55  200      .,            ///
+     label("Fisher's")                   first          ///
+     option(NONE)
+  RADIO    r_ea         15   75  200      .,            ///
+     label("Edgington's additive")       middle         ///
+     option("method(ea)")
+  RADIO    r_en         15   95  200      .,            ///
+     label("Edgington's normal curve")   last           ///
+     option("method(en)")
+END
+ 
+INCLUDE ifin
+
+PROGRAM command
+BEGIN
+  put "metap "
+  varlist main.vn_p 
+  INCLUDE _ifin_pr
+  beginoptions
+    option radio(main r_f r_ea r_en)
+  endoptions
+END

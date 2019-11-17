@@ -1,0 +1,23 @@
+3-D Contour Plot Command
+------------------------
+
+AUTHOR:   Gerard van de Kuilen
+	  Oasis Decision Support Systems
+	  The Netherlands
+SUPPORT:  FAX, +31-3402-65844
+	  
+                     ^plot3d^ function(x,y)
+          Example:   ^plot3d^ sin(x)^^2 - cos(y)^^2^
+
+where function is a valid Stata expression. There should be no data in memory 
+when calling the command.  ^plot3d^ creates a 3-d contour plot; but since 
+contour plots necessitate overlaying, you must have Stage in the current or 
+path directory.
+
+Three programs are involved in contour plot production: ^plot3d.ado^,
+^plot3d.prf^, and ^stage.ado^. These should be in the current directory
+or in an ado-directory; however, the prf-file must be in the current
+directory. If it is not, ^plot3d^ will not work.
+
+The z-axis is vertical, the y-axis is horizontal, and the x-axis
+is "coming out of the paper." 

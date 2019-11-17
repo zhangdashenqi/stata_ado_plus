@@ -1,0 +1,48 @@
+{smcl}
+{* 29sep2001}{...}
+{hline}
+help for {hi:daoneway}
+{hline}
+
+{title:One-way discriminant function analysis}
+
+{p 8 14}{cmd:daoneway} {it:varlist} [{cmd:if} {it:exp}] [{cmd:in}
+{it:range}]{cmd:,} {cmd:by(}{it:groupvar}{cmd:)} [ {cmdab:g:en(}{it:varname}{cmd:)} ]
+
+{p 8 14}{cmd:daclass} {it:varlist} [, {cmdab:p:riors}  ]
+
+
+{title:Description}
+
+{p}{cmd:daoneway} performs a one-way discriminant function analysis. {cmd:by(}{it:groupvar}{cmd:)} 
+specifies the variable identifying the groups and is not optional.
+
+{p}{cmd:daclass} classifies obsevation into groups, saving the classification 
+into the variable _daclass. To use {cmd:daoneway} you must use the {cmd:gen}
+option in {cmd:daoneway}.  The {it:varlist} in {cmd:daclass} uses the discriminant
+function score variables created in {cmd:daoneway}.
+
+{title:daoneway Options}
+
+{p 0 4}{cmdab:g:en} saves the discriminant function scores beginning with the stub {it:varname}.
+
+{title:daclass Options}
+
+{p 0 4}{cmdab:p:riors} uses prior probabilities in computing group classification.
+
+
+{title:Examples}
+
+{p 1 5}{inp:. daoneway y1 y2 y3, by(group)}{p_end}
+{p 1 5}{inp:. daoneway y1 y2 y3, by(group) gen(d)}{p_end}
+
+{p 1 5}{inp:. daclass d1 d2}{p_end}
+
+{title:Author}
+
+{p 5 5}
+Philip B. Ender{break}
+UCLA Depatment of Education{break}
+UCLA Academic Technology Services{break}
+ender@ucla.edu 
+{p_end}

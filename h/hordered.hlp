@@ -1,0 +1,58 @@
+.-
+help for ^hordered^                                           [jw]  Mar 24, 1999
+.-
+
+Hausman's test in ordinal response model
+----------------------------------------
+
+	^hordered, ^ { join(numlist) | drop(numlist) }
+
+
+Description
+-----------
+
+^hordered^ performs a Hausman-type specification tests for ordinal response
+models (^ologit^, ^oprobit^) for the assumption that consecutive categories
+cannot be joined or that the model does not pertains to a subset of
+categories.
+
+
+Options
+-------
+
+^join(^numlist^)^
+
+
+^drop(^numlist^)^
+
+
+
+Example
+-------
+
+	. ologit rep78 price foreign mpg
+	. hordered, join(2 3)
+	. hordered, drop(4 5)
+
+
+Author
+------
+
+   Jeroen Weesie
+   Dept of Sociology/ICS
+   Utrecht University
+   J.Weesie @@ fss.uu.nl
+
+This project was supported by grant PGS 50-370 of the Netherlands Organization
+for Scientific Research.
+
+
+Also See
+--------
+
+ Manual: [R] ologit
+         [R] oprobit
+         [R] hausman
+
+On-line: help for @hausman@; @iia@; @ologit@; @oprobit@.
+

@@ -1,0 +1,250 @@
+{smcl}
+{hline}
+help for {cmd:descsave} {right:(SJ3-3: st0043; SJ4-3: st0043_1)}
+{hline}
+
+
+{title:Save descriptive attributes of variables to a do-file and/or a Stata dataset}
+
+{p 8 15 2}{cmd:descsave} [{it:varlist}] [ {cmd:,}
+ {cmdab:sa:ving}{cmd:(}{it:datafilename} [{cmd:, replace}]{cmd:)}
+ {cmdab:do:file}{cmd:(}{it:dofilename} [{cmd:, replace}]{cmd:)}
+ {cmdab:ch:arlist}{cmd:(}{it:characteristic_list}{cmd:)}
+ {cmdab:idn:um}{cmd:(}{it:#}{cmd:)} {cmdab:ids:tr}{cmd:(}{it:string}{cmd:)}
+ {break}
+ {cmdab:ren:ame}{cmd:(}{it:oldvarname_1 newvarname1 ... oldvarname_n newvarname_n}{cmd:)}
+ {cmdab:gs:ort}{cmd:(}{it:gsort_list}{cmd:)} {cmdab:ke:ep}{cmd:(}{it:varlist}{cmd:)}
+ {it:describe_options} ]
+
+{p 4 4 2}
+where {it:characteristic_list} is a list of {it:characteristic_name}s
+separated by spaces, {it:gsort_list} is a list of one or more elements of the
+form
+
+{p 8 15 2}[{cmd:+}|{cmd:-}]{it:varname}
+
+{p 4 4 2}
+(as used by the {help gsort} command), and {it:describe_options} is a list of options used by {cmd:describe}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:descsave} is an extension of {help describe}, which lists descriptive
+attributes for the variables given by {it:varlist} or for all variables in
+the current dataset if {it:varlist} is not specified. {cmd:descsave} also
+creates two output files, specified by the {cmd:saving()} and {cmd:dofile()}
+options.  The descriptive attributes are variable names, storage types, value
+labels, and variable labels (as output by {help describe}), and also
+(optionally) a list of characteristics specified by the {cmd:charlist()}
+option.  The file specified by {cmd:saving()} is a Stata dataset with one
+observation per variable and data on the descriptive attributes of these
+variables.  The file specified by {cmd:dofile()} is a {help do:do-file},
+containing commands that can be run to reconstruct the descriptive attributes
+of the variables, assuming that variables of the same names have been created
+and are numeric or character as appropriate.  {cmd:descsave} can be used
+together with {help outsheet} to create a definitive generic spreadsheet
+version of the current dataset, together with a {help do:Stata do-file} to
+reconstruct the descriptive attributes of the variables after the spreadsheet
+has been input using {help insheet}.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:saving(}{it:datafilename} [{cmd:, replace}]{cmd:)} specifies an
+output Stata dataset with one observation per variable and data on the
+descriptive attributes of the variable. If {cmd:replace} is specified, any
+existing file of the same name is overwritten. 
+
+{p 4 8 2}{cmd:dofile(}{it:dofilename} [{cmd:, replace}]{cmd:)} specifies an
+output {help do:Stata do-file}, with commands to reconstruct the variable
+descriptive attributes (storage types, display formats, value labels, variable
+labels, and selected characteristics), assuming that variables with those
+names already exist and are numeric or string-valued as appropriate.  If
+{cmd:replace} is specified, any existing file of the same name is overwritten. 
+
+{p 4 8 2}{cmd:charlist(}{it:characteristic_list}{cmd:)} specifies a list of
+characteristic names, separated by spaces.  The characteristics specified will
+be reconstructed by the do-file specified by {cmd:dofile()} (if specified)
+and will be written to variables in the dataset specified by {cmd:saving()} (if
+specified).  If a characteristic has length greater than the maximum length
+for a string variable (80 characters for Small and Intercooled Stata or 244
+characters for {help specialedition:Stata SE}), it will be truncated to
+that maximum length in the output files.  (This is not expected to cause
+problems very often.)
+
+{p 4 8 2}{cmd:idnum(}{it:#}{cmd:)} specifies an ID number for the output
+dataset specified by {cmd:saving()}.  It is used to create a numeric variable
+{cmd:idnum} in the output dataset, with that value for all observations. This
+is useful if the output dataset is concatenated with other {cmd:descsave}
+output datasets using {help append}.
+
+{p 4 8 2}{cmd:idstr(}{it:#}{cmd:)} specifies an ID string for the output
+dataset specified by {cmd:saving()}.  It is used to create a string variable
+{cmd:idstr()} in the output dataset, with that value for all observations. (A
+{cmd:saving()} output dataset may have {cmd:idnum}, {cmd:idstr}, both, or
+neither.)
+
+{p 4 8 2}{cmd:rename(}{it:oldvarname_1 newvarname1 ... oldvarname_n newvarname_n}{cmd:)} specifies a list of pairs of variable names. The first
+variable name of each pair specifies a variable in the output dataset
+specified by {cmd:saving()}, which is renamed to the second variable name of
+the pair.
+
+{p 4 8 2}{cmd:gsort(}{it:gsort_list}{cmd:)} specifies a generalized sorting
+order (as recognized by {help gsort}) for the observations in the output
+dataset specified by {cmd:saving()}.  If {cmd:gsort()} is not specified,
+the output dataset will be sorted by the single variable {cmd:order}.  If
+{cmd:rename()} is specified, {cmd:gsort()} must use the new names.
+
+{p 4 8 2}{cmd:keep(}{it:varlist}{cmd:)} specifies a list of variables to be
+kept in the output dataset specified by {cmd:saving()}. If {cmd:keep()} is
+not specified, the output dataset contains all the variables listed in
+the next section.  If {cmd:rename()} is specified, {cmd:keep()} must use
+the new names.
+
+
+{title:Output dataset specified by {cmd:saving()}}
+
+{p 4 4 2}
+The data file specified by {cmd:saving()} has one observation per variable. If
+the {cmd:rename} option is not specified, it contains the following
+variables:
+
+{p2colset 5 30 32 2}{...}
+{p2col :{title:Default name}}{title:Description}{p_end}
+{p2line 0 38}
+{p2col :{cmd:idnum}}Numeric ID{p_end}
+{p2col :{cmd:idstr}}String ID{p_end}
+{p2col :{cmd:order}}Variable order{p_end}
+{p2col :{cmd:name}}Variable name{p_end}
+{p2col :{cmd:type}}Storage type{p_end}
+{p2col :{cmd:format}}Display format{p_end}
+{p2col :{cmd:vallab}}Value label{p_end}
+{p2col :{cmd:varlab}}Variable label{p_end}
+{p2col :{cmd:char}{it:n}}char[{it:characteristic_name}]{p_end}
+{p2colreset}{...}
+
+{p 4 4 2}
+The variable {cmd:order} contains the sequential order of the variable in the
+input {it:varlist} specified for {cmd:descsave} or the {help order} of that
+variable in the dataset, if the user does not specify an input {it:varlist}.
+The variables {cmd:idnum} or {cmd:idstr} are only present if requested in the
+options of the same names.  There is one {cmd:char}{it:n} variable for each
+{it:characteristic_name} in the list specified by the {cmd:charlist()} option.
+The variable {cmd:char}{it:n} specifies the {it:n}th characteristic specified
+in the {cmd:charlist()} option (truncated if necessary to the maximum length
+for a string variable under the current edition of Stata). All of these
+variables can be renamed using the {cmd:rename()} option or used by the
+{cmd:gsort()} option to specify the sorting order.  If the {cmd:keep()} option
+is used, the output dataset will contain only the specified subset of
+these variables.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:descsave} can be used together with {help outsheet} and {help insheet} to
+construct a definitive generic spreadsheet version of the data (in case the
+user needs to return to the data decades into the future, when all proprietary
+software has evolved beyond recognition). The do-file specified by
+{cmd:dofile()} can be used to reconstruct variable attributes after inputting
+the definitive version of the data using {help insheet}, assuming that the
+variables are still numeric or string-valued, as specified in the original
+Stata data.  (The user may need to use {help destring} after using 
+{help insheet}, if some of the numeric variables in the definitive generic
+spreadsheet are formatted in nonstandard ways.) The output do-file can also be
+translated manually into other software languages if the user wants to use the
+data under other software platforms. However, {cmd:descsave} can also be used
+with the {help parmest} and {help factext} packages (see help for 
+{help parmby}, {help parmest}, or {help factext} if installed). Typically, the
+user uses {cmd:descsave} to save to a do-file the attributes of variables
+representing categorical factors, generates dummy variables for these
+categorical factors using {help tabulate} or {help xi}, enters these dummy
+variables into a regression analysis, saves the results of the regression to a
+dataset using {help parmby} or {help parmest}, and reconstructs the
+categorical factors from the variable {cmd:label} in the {help parmest} output
+dataset using the {help factext} package.
+
+
+{title:Examples}
+
+{p 8 16 2}{cmd:. descsave, do(auto.do, replace)}{p_end}
+
+{p 8 16 2}{cmd:. descsave, saving(autodesc.dta, replace)}{p_end}
+
+{p 8 16 2}{cmd:. descsave, do(auto.do, replace) saving(autodesc.dta, replace) rename(varlab variable_label format variable_format)}{p_end}
+
+{p 4 4 2}
+The following example will work in the {cmd:auto} data. The first part creates
+a generic text spreadsheet in {cmd:auto.txt}, with a program to reconstruct the
+variable attributes in {cmd:auto.do}. The second part reconstructs the
+{cmd:auto} data from {cmd:auto.txt}, using {cmd:auto.do}.
+
+{p 8 16 2}{cmd:. descsave, do(auto.do, replace) sa(autodesc.dta, replace) charlist(omit)}{p_end}
+{p 8 16 2}{cmd:. outsheet using auto.txt, nolabel replace}{p_end}
+
+{p 8 16 2}{cmd:. insheet using auto.txt, clear}{p_end}
+{p 8 16 2}{cmd:. run auto.do}{p_end}
+{p 8 16 2}{cmd:. describe}{p_end}
+
+{p 4 4 2}
+The following example will work in the {cmd:auto} data if the packages 
+{help parmest} and {help factext} are installed. Both packages can be
+downloaded from {help ssc:SSC}.
+
+{p 8 16 2}{cmd:. tab foreign, gene(type_) nolabel}{p_end}
+{p 8 16 2}{cmd:. qui descsave foreign, do(foreign.do, replace)}{p_end}
+{p 8 16 2}{cmd:. parmby "regress mpg type_*, noconst robust", label norestore}{p_end}
+{p 8 16 2}{cmd:. factext foreign, do(foreign.do)}{p_end}
+{p 8 16 2}{cmd:. version 7: grap estimate min95 max95 foreign, s(O..) c(.II) xlab(0 1) xscal(-0.5 1.5) ylab}{p_end}
+
+{p 4 4 2}
+The following advanced example will work under Stata 8 or above in the
+{cmd:auto} data if the {help dsconcat} and {help xcollapse} packages are
+installed. Both packages can be downloaded from {help ssc:SSC}.  The example
+creates a dataset with 1 observation for each of a list of variables and data
+on their names and median values, using {help xcollapse} and {help dsconcat},
+and uses {help merge} to merge in a dataset created by {cmd:descsave}
+with 1 observation per variable and data on the variable names, variable
+labels, and display formats.
+
+{p 8 16 2}{cmd:. tempfile tf0}{p_end}
+{p 8 16 2}{cmd:. descsave price mpg headroom trunk weight length turn displacement gear_ratio, saving(`tf0', replace) gsort(name) keep(order name varlab format)}{p_end}
+{p 8 16 2}{cmd:. global tflist ""}{p_end}
+{p 8 16 2}{cmd:. local i1=0}{p_end}
+{p 8 16 2}{cmd:. foreach X of var price mpg headroom trunk weight length turn displacement gear_ratio {c -(}}{p_end}
+{p 8 16 2}{cmd:.   local i1=`i1'+1}{p_end}
+{p 8 16 2}{cmd:.   tempfile tf`i1'}{p_end}
+{p 8 16 2}{cmd:.   xcollapse (median) med=`X', idstr("`X'") nidstr(name) saving(`tf`i1'', replace) flist(tflist)}{p_end}
+{p 8 16 2}{cmd:. {c )-}}{p_end}
+{p 8 16 2}{cmd:. dsconcat {c S|}tflist}{p_end}
+{p 8 16 2}{cmd:. sort name}{p_end}
+{p 8 16 2}{cmd:. lab var med "Median value"}{p_end}
+{p 8 16 2}{cmd:. merge name using `tf0'}{p_end}
+{p 8 16 2}{cmd:. sort order}{p_end}
+{p 8 16 2}{cmd:. list order name varlab med}{p_end}
+
+
+{title:Author}
+
+{p 4 4 2}
+Roger Newson, King's College, London, UK.{break}
+Email: {browse "mailto:roger.newson@kcl.ac.uk":roger.newson@kcl.ac.uk}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Manual:  {hi:[U] 15.8 Characteristics},{break}
+          {hi:[R] describe}, {hi:[R] destring}, {hi: [R] gsort}, 
+          {hi:[R] insheet}, {hi:[R] label}, {hi:[R] outsheet},
+          {hi:[R] tabulate}, {hi:[R] xi},{break}
+          {hi:[P] char}
+
+{p 4 13 2}
+Online:   help for {help describe}, {help destring}, {help gsort}, 
+                   {help insheet}, {help label}, {help outsheet}, 
+		   {help tabulate}, {help char}, {help xi}{break}
+         help for {help dsconcat}, {help factext}, {help parmby}, 
+	 {help parmest}, {help xcollapse} if installed
+{p_end}

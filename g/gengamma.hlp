@@ -1,0 +1,40 @@
+{smcl}
+{* 23 aug 2002}{...}
+{hline}
+help for {hi:gengamma}
+{hline}
+
+{title:Generate random deviates from a gamma distribution}
+
+{p 8 14}{cmd:gengamma} {it:newvar} 
+	[{cmd:if} {it:exp}] [{cmd:in} {it:range}] [{cmd:,}
+	{cmd:alpha(}{it:#}|{it:varname}{cmd:)}
+	{cmd:beta(}{it:#}|{it:varname}{cmd:)}
+	{cmd:gamma(}{it:#}|{it:varname}{cmd:)}
+
+{title:Description}
+
+{p}{cmd:gengamma} generates data {it:newvar} from a two parameter 
+gamma distribution such that the mean is {cmd:alpha}*{cmd:beta} and the 
+variance is {cmd:alpha}*{cmd:beta}^2.  If the third parameter, 
+{cmd:gamma}, is specified then {it:newvar} is transformed into a 
+set of random deviates from the generalized gamma distribution.  
+That is, if y is two parameter Gamma(a,b), then z = b(y/b)^(1/g)
+is three paramater Gamma(a,b,g).
+
+{title:Options}
+
+{p 0 4}{cmd:alpha(}{it:#}|{it:varname}{cmd:)} specifies the first parameter, 
+alpha, either constant or a variable.
+
+{p 0 4}{cmd:beta(}{it:#}|{it:varname}{cmd:)} specifies the second parameter, 
+beta, either constant or a variable.
+
+{p 0 4}{cmd:gamma(}{it:#}|{it:varname}{cmd:)} specifies the third parameter, 
+gamma, either constant or a variable.
+
+{title:Example}
+
+{p 8 12}{inp:. gengamma x, alpha(2) beta(3)}{p_end}
+{p 8 12}{inp:. summarize x}{p_end}
+

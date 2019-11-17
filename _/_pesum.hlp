@@ -1,0 +1,66 @@
+.-
+help for ^_pesum^ - 1.6.1 - 1/20/00
+.-
+
+Utility to get descriptive statistics for variables in a regression model
+-------------------------------------------------------------------------
+
+    ^_pesum^ [^if^ exp] [^in^ range] [,^m^edian ^d^ummy ^t^wo]
+
+
+Description
+-----------
+
+^_pesum^ gets the mean, standard deviation, minimum and maximum for the
+    variables in a regression. Optionally, it determines the medians and
+    whether the variables are 0|1|. . Matrices are returned with the first
+    column containing statistics for the dependent variables, with the
+    remaining columns containing information for the independent variables.
+
+Note: ^_pesum^ assumes that ^_peife^ has been applied to the ^if^
+    condition.
+
+Options
+-------
+
+^median^ Return ^r(Smedian)^ with medians for the variables.
+
+^dummy^ Return ^r(Sdummy)^ with medians for the variables.
+
+^two^ Return summary statistics for the second equation in for ^zip^ and
+    ^zinb^ models.
+
+Returned Results
+----------------
+
+Matrices: Colums are in the order dependent variable, independent variables.
+
+    ^r(Smean)^          - means
+    ^r(Ssd)^            - standard deviations
+    ^r(Smin)^ & ^r(Smax)^ - minimums and maximums
+    ^r(Sdummy)^         - 1 if dummy variable, else 0; if ^dummy^ option
+                        is specified.
+    ^r(Smedian)^        - medians if ^median^ option is specified.
+
+Scalars:  ^r(SN)             - sample size
+
+Example with a Program
+-----------------------
+
+    if "`opt'"=="mean"|"`opt'"=="min"|"`opt'"=="max" {
+        _pesum `if' `in',`all'
+        mat pe_base = r(S`opt')
+    }
+    else if "`opt'"=="median" {
+        _pesum `if' `in',median `all'
+        mat pe_base = r(Smedian)
+    }
+
+Also see
+--------
+On-line: help for ^_peife^, ^_perhs^
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu

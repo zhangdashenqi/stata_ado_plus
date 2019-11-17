@@ -1,0 +1,62 @@
+{smcl}
+{* 05nov2002}{...}
+{hline}
+help for {hi:condtest}{right:(SJ3-1: st0033)}
+{hline}
+
+{title:Size-correct hypothesis tests after IV regression based on Moreira's (2002) conditional approach}
+
+{p 8 14 2}{cmd:condtest} {cmd:,} 
+  [{cmd:beta(}{it:#}{cmd:)}
+   {cmd:reps(}{it:#}{cmd:)}
+   {cmd:level(}{it:#}{cmd:)} ]
+   
+
+{title:Description}
+
+{p 4 4 2}{cmd:condtest} conducts Anderson-Rubin, Lagrange multiplier (score),
+likelihood ratio, and Wald tests using the conditional approach
+developed in Moreira (2001a, 2001b, and 2002).  These conditional tests
+yield correct rejection probabilities even if the instruments are
+arbitrarily weak.  
+
+{p 4 4 2}In order to use {cmd:condtest}, you must first estimate your model
+using {cmd:condivreg}.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:beta(}{it:#}{cmd:)} contains the hypothesized value beta_0
+of the parameter on the endogenous variable.  If this option is not
+specified, a default value of zero is used.
+
+{p 4 8 2}{cmd:reps(}{it:#}{cmd:)} specifies the number of simulations to
+perform to compute the critical values of the test statistics.  The
+default is 200.
+
+{p 4 8 2}{cmd:level(}{it:#}{cmd:)} specifies the nominal significance
+level to be used when displaying the results.  The default is to use the
+value stored in the global macro {cmd:$}{cmd:S_level}.  See {help level}
+
+
+{title:Example}
+
+{p 8 12 2}{cmd:. condtest, beta(3) reps(1000)}
+
+
+{title:References}
+
+{p 4 8 2}Moreira, M. 2001a. Tests with correct size when instruments can 
+be arbitrarily weak. Center for Labor Economics Working Paper 37, 
+UC Berkeley.
+
+{p 4 8 2}Moreira, M. 2001b. A conditional likelihood ratio test for
+structural models. Manuscript, UC Berkeley.
+
+{p 4 8 2}Moreira, M. 2002. {it: Tests with Correct Size in the }
+{it:Simultaneous Equations Model.} PhD Thesis, UC Berkeley.
+
+
+{title:Also see}
+
+{p 4 14 2}Online:  help for {help condivreg}, {help condgraph}

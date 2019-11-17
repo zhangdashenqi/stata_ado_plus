@@ -1,0 +1,110 @@
+{smcl}
+{* 20Jun2003}{...}
+{hline}
+help for {hi:vkdensity}{right:(SJ4-2: st0064)}
+{hline}
+
+{title:Kernel density with possibility of choice for 3 bandwidths and for undersmoothing}
+
+{p 8 17 2}{cmd:vkdensity} {it:varname} [{it:weight}]
+[{cmd:if} {it:exp}] [{cmd:in} {it:range}]
+{bind:[{cmd:,} {cmdab:nogr:aph}}
+{cmdab:g:enerate}{cmd:(}{it:newvarx} {it:newvard} {it:newvarv}{cmd:)} 
+{cmd:at(}{it:varx}{cmd:)} 
+{cmdab:usm:ooth(}{it:#}{cmd:)} 
+[{cmdab:ep:an} | {cmdab:gau:ss}]
+[{cmdab:sc:ott}|{cmdab:ha:rdle}|{cmdab:si:lver}]
+{cmdab:mb:andw}{cmd:(}{it:#}{cmd:)} 
+{cmd:n(}{it:#}{cmd:)} {it:graph_options} ]
+
+{p 4 4 2}{cmd:fweight}s and {cmd:aweight}s are allowed; see help {help weights}.
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:vkdensity} computes kernel density estimation as {cmd:kdensity} 
+allowing two additional features: (a) it is possible to choose between 
+three optimal bandwidth, proposed by Scott (1992), H{c a:}rdle (1991), and
+Silverman (1986); (b) it is possible to produce undersmoothed (or
+oversmoothed) estimates, which are necessary to compute confidence intervals
+of kdensity estimates (see {help bsciker} and {help asciker}).
+
+{p 4 4 2}The syntax of {cmd:vkdensity} partly mimics the syntax of the official 
+{cmd:kdensity}, which uses fixed kernel estimation methods.
+
+
+{title:Options}
+
+{p 4 4 2}Most options for {cmd:vkdensity} are the same as for {cmd:kdensity};
+see {hi:[R] kdensity}. The specific options are the following:
+
+{p 4 8 2}{cmdab:g:enerate}{cmd:(}{it:newvarx} {it:newvard} {it:newvarv}{cmd:)} 
+creates three new variables: {it:newvarx} will contain the point of
+estimation, {it:newvard} will contain the density estimation, and {it:newvarv}
+will contain the variance of pointwise estimation.
+
+{p 4 8 2}{cmd:usmooth(}{it:#}{cmd:)} chooses the degree of undersmoothing
+confidence interval estimation. The default value is 1/4.  Increasing this
+number will result in a smaller bandwidth, i.e., a more variable and less
+biased estimation, and vice versa.
+
+{p 4 8 2}{cmd:scott}, {cmd:hardle}, and {cmd:silver} allows you to choose
+between three different optimal bandwidths, i.e., those proposed by Scott
+(1992), H{c a:}rdle (1991), and Silverman (1986).  See also {cmd:bandw} 
+(Salgado-Ugarte, Shimizu, and Taniuchi 1995b; 1995a; 1993).
+
+{p 4 8 2}{cmd:mbandw}{cmd:(}{it:#}{cmd:)} specifies the bandwidth 
+manually. It conflicts with {cmd:at()}; hence, they cannot be specified 
+at the same time.
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. vkdensity maker, g(points density var) scott usm(.3)}
+
+
+{title:References}
+
+{p 4 8 2}
+H{c a:}rdle, W. 1991. {it: Smoothing Techniques. With implementation in S}.  
+New York: Springer.
+
+{p 4 8 2}
+Salgado-Ugarte, I. H., M. Shimizu, and T. Taniuchi. 1993. snp6: Exploring the
+shape of univariate data using kernel density estimators: 
+{it:Stata Technical Bulletin} 16: 8-19.  In 
+{it: Stata Technical Bulletin Reprints}, vol. 3, 155-173. College Station, TX: 
+Stata Press.
+
+{p 4 8 2}
+------. 1995a.  snp6.1: ASH, WARPing, and kernel density estimation for
+univariate data. 
+{it:Stata Technical Bulletin 26: 23-31.  In 
+{it:Stata Technical Bulletin Reprints}, vol. 5, 161-172.  College Station, TX:
+Stata Press.
+
+{p 4 8 2}
+------. 199b. snp6.2: Practical rules for bandwidth selection in univariate
+density estimation.
+{it:Stata Technical Bulletin} 27: 5-19. In
+{it:Stata Technical Bulletin Reprints}, vol. 5, 172-190. College Station, TX:
+Stata Press.
+
+{p 4 8 2}
+Scott, D. W. 1992.  {it:Multivariate Density Estimation}.  New York: John
+Wiley & Sons.
+
+{p 4 8 2}
+Silverman, B. W.  1986. {it:Density Estimation for Statistics and Data Analysis}.  London: Chapman & Hall.
+
+
+{title:Also see}
+
+{p 4 14 2}
+    STB:{space 5}{hi:snp6 (STB-16)}
+
+{p 4 14 2}
+ Manual:  {hi:[R] kdensity}{break}
+
+ {p 4 14 2}Online:  help for {help kdensity}, {help graph} and {help hist}, and help for 
+{help adgakern}, {help adgaker2}, {help bandw}, and {help varwike2} if installed {p_end}

@@ -1,0 +1,88 @@
+.-
+help for ^sepov^                                                  [STB-51: sg117]
+.-
+.
+Robust standard errors for the FGT poverty indices
+--------------------------------------------------
+.
+^sepov^ varlist [weight] [^if^ exp] [^in^ range]^,^ ^p^ovline^(^varname|#^)^
+              [ ^a^lfa^(^#^) str^ata^(^varname^) psu(^varname^) fpc(^varname^)^
+                ^by(^varlist^)^ {^com^plete|^av^ailable} ^sub^pop^(^varname^)^
+                ^srs^subpop ^nolab^el ^l^evel^(^#^) ci deff deft meff meft obs size^ ]
+.
+^sepov^ allows ^pweight^s and ^iweight^s; see help @weights@.
+.
+Warning:  Use of ^if^ or ^in^ restrictions will not produce correct variance
+          estimates for subpopulations in many cases.  To compare estimates
+          for subpopulations, use the ^by()^ or ^subpop()^ options.
+.
+.
+Description
+-----------
+.
+^sepov^ provides estimates of the Foster-Greer-Thorbecke (FGT)
+class of poverty indices, as well as estimates of the sampling
+variance of these indices. The FGT indices are:
+.
+Palpha    = 1/n SUM I( y < z)[(z-y)/z]
+.
+where n is the sample size, z is the poverty line, y is some measure
+of individual or household welfare, I is the indicator function
+which takes the value of one if the condition is true and zero
+otherwise, and subscripts have been dropped for simplicity.
+By default sepov reports the headcount (P0), poverty-gap (P1),
+and squared poverty-gap indices (P2), but the user may request
+any variant of the FGT by specifying alpha.
+.
+If no sample design information is specified, the reported standard
+errors are accurate if the design is simple random. For other
+designs it is necessary to specify the strata and primary sampling
+units.
+.
+.
+Options
+-------
+.
+^povline(^varname|#^)^ specifies the poverty line, which can be either a scalar
+    or a variable. By accepting variables, ^sepov^ allows for spatial variation
+    in the poverty line.
+.
+^strata()^, ^psu()^, and ^fpc()^ are described in ^stset^; see help @stset@.
+.
+^by(^varlist^)^, ^subpop(^varname^)^, ^nolabel^, {^complete^|^available^}, ^level(^#^)^,
+^ci^, ^deff^, ^meff^, ^obs^ and ^size^ are described in ^svymean^; see help @svymean@.
+.
+^alfa(^#^)^ specifies the type of poverty index. If alfa is not specified then,
+    by default, sepov reports the headcount, poverty-gap and squared
+    poverty-gap indices.
+.
+.
+Examples
+--------
+.
+        . ^sepov pcexp, p(100)^
+        . ^sepov pcexp, p(z) psu(clust) strata(strata)^
+        . ^sepov pcexp [w=weight], p(z) a(3) by(race) psu(clust) strata(strata)^
+.
+.
+Authors
+-------
+.  
+  Dean Jolliffe
+  Center for Economic Research and Graduate Education
+  Czech Republic
+  dean.jolliffe@@cerge.cuni.cz  
+.
+  Anastassia Semykina
+  Center for Economic Research and Graduate Education
+  Czech Republic 
+  anastassia.semykina@@cerge.cuni.cz
+.
+. 
+Also see
+--------
+.
+ Manual:  ^[R] svymean^
+On-line:  help for @ci@, @svy@, @svymean@ @svydes@, @svylc@, @svyreg@, @svyset@, @svytest@
+.
+.

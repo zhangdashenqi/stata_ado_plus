@@ -1,0 +1,97 @@
+{smcl}
+{* 18apr2005}{...}
+{hline}
+help for {hi:labeldup}{right:(SJ5-2: dm0012)}
+{hline}
+
+{title:Duplicate value labels}
+
+{p 8 24 2}
+{cmd:labeldup} [{it:labellist1}] [{cmd:,}
+    {cmdab:s:elect}
+    {cmdab:n:ames:(}{it:labellist2}{cmd:)}
+    {cmdab:nod:rop}]
+
+
+{title:Description}
+
+{pstd}
+{cmd:labeldup} reports, and optionally removes, duplicate value labels
+among the value labels in {it:labellist1} or in all value labels if no
+{it:labellist1} is specified.  Duplicate value labels consists of
+identical value-to-text mappings, e.g., two value labels A and B that
+both map 0 to "no" and 1 to "yes" (and nothing else).  {cmd:labeldup}
+reports such duplicate value labels.  It can also compress the dataset,
+using one value label rather than multiple among duplicate value labels.  
+Links between variables and value labels will, of course, be preserved, 
+even in languages that are inactive (see {helpb label language} and 
+{helpb mlanguage} [if installed]).
+
+{pstd}
+We advise to remove duplication.  If you do not, your dataset would be
+larger than necessary, wasting memory and hard disk space.  More
+importantly, duplication makes the data less comprehensible, makes 
+editing value labels more difficult and error prone (and so maybe 
+inconsistent), makes {helpb labelbook} produce redundant information, 
+and makes it harder to produce and maintain multilingual datsets 
+(see {helpb mlanguage}).
+
+{pstd}
+One common application of {cmd:labeldup} is the cleanup of datasets
+imported into Stata via Stat/Transfer.  Many other statistical databases,
+such as SPSS, do not treat value labels as separate objects that can be
+attached to more than one variable; value label information is repeated
+for each variable.  Stat/Transfer generates value labels for each value
+labeled variable.  {cmd:labeldup} helps you create a more Stata-ish
+dataset.
+
+
+{title:Options}
+
+{phang}{cmd:select}
+specifies that duplicate value labels be removed, using the value
+label names that come first alphabetically.  For instance, if value 
+labels {cmd:B}, {cmd:C}, and {cmd:D} are duplicates, the name {cmd:B} 
+is selected.  Among the duplicate value labels {cmd:V101}, {cmd:V102}, 
+and {cmd:V103}, the label {cmd:V101} is selected.  See option 
+{cmd:names()} to overrule this behavior.
+
+{phang}{cmd:names(}{it:labellist2}{cmd:)}
+specifies a list {it:labellist2} of value labels that you prefer to
+retain as value label names; in each list of duplicate value labels,
+at most one of the preferred names may occur.  If no preferred name
+is found among a set of duplicates, {cmd:labeldup} again takes the 
+first alphabetically.
+
+{phang}{cmd:nodrop}
+suppresses dropping value labels that are no longer used, i.e., that are not 
+attached to a variable.  In the case of multilingual datasets, a 
+value label is not used if it is not attached to a variable either in 
+active language or in one of the dormant languages. 
+
+
+{title:Examples}
+
+    {cmd:. labeldup}
+    {cmd:. labeldup, select}
+    {cmd:. labeldup, select names(yesno agree3 agree5)}
+
+
+{title:Author}
+
+    Jeroen Weesie
+    Department of Sociology/ICS
+    Utrecht University - The Netherlands
+    J.Weesie @ fss.uu.nl
+
+
+{title:Also see}
+
+{psee}
+Manual:  {bf:[R] label}{break}
+{bf:[R] labelbook}
+
+{psee}
+Online:  {helpb label}, {helpb labelbook}, {helpb labelrename},
+{helpb numlabel}, {helpb uselabel};{break}
+{helpb label language}, {helpb mlanguage} (if installed)

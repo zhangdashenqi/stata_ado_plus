@@ -1,0 +1,45 @@
+{smcl}
+{* $Date: 2001/08/15 05:39:28 $}{...}
+{hline}
+help for {hi:jonter}
+{hline}
+
+{title:Jonckheere-Terpstra Test}
+
+{p 4 11} {cmd:jonter}
+ {it:varname}
+ ,
+ {cmdab:by(}{it:groupvar}{cmd:)}
+
+{title:Description}
+
+{p}{cmd:jonter} calculates the nonparametric trend statistic {it:J}
+and its asymptotic {it:p}-value, based upon the normal-deviate
+standardization
+({it:z}-score transformation}, {it:J*}.  {cmd:jonter} provides an
+alternative
+nonparametric trend test to {cmd:nptrend}, which is Stata's manifestation of
+the Cuzick test.  {cmd:jonter} provides the same statistic as Kendall's
+tau-a
+({cmd:ktau}) for large samples, when the resulting {it:p}-value of the
+latter
+is halved to account for the ordered (one-sided) alternative hypothesis.
+
+{title:Options}
+
+{p}Note that the {cmd:by()} is mandatory.  Also, the grouping variable must
+be
+sorted in order of the alternative hypothesis (usually in ascending order).
+
+{title:Examples}
+
+{p 4}{inp:. jonter latency, by(dose)}
+
+{title:Author}
+
+Joseph Coveney, Cobridge Co., Ltd., 2001.
+
+{title:Also see}
+
+ Manual:  {hi:[R] nptrend} {hi:[R] spearman}
+{p 0 19}On-line:  help for {help nptrend}, {help ktau}

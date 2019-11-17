@@ -1,0 +1,33 @@
+Potential versus Residul Diagnostic Plot
+----------------------------------------
+
+	^hadiplot^
+
+(for use after ^regress^; see ^help regress^)
+
+
+Description
+-----------
+
+Used to plot Hadi's potential function versus a residual function. 
+
+
+Example
+-------
+
+	. ^regress mpg weight displ^
+
+	. ^hadiplot^
+
+
+References
+----------
+
+Chatterjee, S, Hadi, A. S., & Price, B.  2000.  Regression Analysis By Example.
+     New York, Wiley.
+
+
+Also see
+--------
+
+On-line:  ^help^ for ^regdiag^ 

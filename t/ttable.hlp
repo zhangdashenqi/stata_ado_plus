@@ -1,0 +1,40 @@
+.-
+help for ^ttable^
+.-
+
+Table of Student's t
+--------------------
+ 
+	^ttable^ [ ^df^ ]
+
+
+
+
+Description
+-----------
+
+^ttable^ display a table of the critical values of Student's
+    t for selected degrees of freedom from 1 to 200.
+
+ 
+ Options
+ -------
+ 
+ ^df^  critical values of t for a specific df.
+
+
+Examples
+--------
+
+ . ^ttable^
+ . ^ttable 43^
+
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA Academic Technology Services
+      ender@@ucla.edu 

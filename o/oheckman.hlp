@@ -1,0 +1,188 @@
+{smcl}
+{hline}
+help for {hi:oheckman}{right:(SJ7-2: st0123)}
+{hline}
+
+{title:Maximum likelihood estimation of ordered-probit selection model}
+
+{p 8 16 2} {cmd:oheckman} {depvar} [{cmd:=}] [{indepvars}] {ifin} {weight}
+{cmd:,} {opt sel:ect}{cmd:(}{it:categoryvar} [{cmd:=}] {it:indepvars_sel}{cmd:)}
+[{opt two:step} {opt r:obust} {opt cl:uster}{cmd:(}{varname}{cmd:)}
+{opt l:evel(#)} {it:{help oheckman##maximize_options:maximize_options}}]
+
+{p 4 6 2}{opt pweight}s, {opt fweight}s, and {opt iweight}s
+are allowed, but only if {cmd:twostep} is not specified; see {help weight}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:oheckman} fits regression models with an ordered-probit sample-selection
+process by using either a two-step consistent estimator or full-information
+maximum likelihood (FIML).
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:select(}{it:categoryvar} [{cmd:=}] {it:indepvars_sel}{cmd:)} is required
+and specifies the categorical dependent variable and the independent variables
+in the selection equation.
+
+{p 4 8 2}
+{cmd:twostep} implements the two-step estimation procedure.  The default is
+FIML.
+
+{p 4 8 2}
+{cmd:robust} specifies that the Huber/White/sandwich estimator of the
+variance is to be used in place of the conventional MLE variance estimator.
+{cmd:robust} may not be used with {cmd:twostep}.
+
+{p 8 8 2}
+If you specify {cmd:pweight}s, {cmd:robust} is implied.
+See {hi:[U] 23.14 Obtaining robust variance estimates}.
+
+{p 4 8 2}
+{cmd:cluster(}{varname}{cmd:)} specifies that the observations are
+independent across groups (clusters) but not necessarily within groups.
+{varname} specifies to which group each observation belongs, e.g.,
+{cmd:cluster(personid)} in data with repeated observations on individuals.
+{cmd:cluster()} affects the estimated standard errors and variance-covariance
+matrix of the estimators (VCE) but not the estimated coefficients.
+{cmd:cluster()} can be used with {help pweight}s to produce estimates for
+unstratified cluster-sampled data.  Specifying {cmd:cluster()} implies
+{cmd:robust}.
+
+{p 4 8 2}
+{cmd:level(#)} sets the level for confidence intervals, as a percentage.  The 
+default is {cmd:level(95)} or as set by {helpb level:set level}.
+
+{p 4 8 2}
+{marker maximize_options}{...}
+{it:maximize_options} control the maximization process; see
+{help maximize}.  You should have to specify them only if the model is unstable.
+
+
+{title:Syntax for predict}
+
+{p 8 25 2}
+{cmd:predict}
+[{it:type}]
+{it:newvar}
+{ifin}
+[{cmd:,} {opt xbs:el} {opt xbif(j)} {opt mills} {opt ps:el(j)}
+         {opt millsif(j)} {opt yif(j)}]
+
+
+{title:Options for predict}
+
+{p 4 8 2}{cmd:xbsel} computes the linear prediction for the selection
+equation.
+
+{p 4 8 2}{cmd:xbif(}{it:j}{cmd:)} calculates x*b_{it:j}.  This is not a 
+prediction of y because it ignores the influence of the expected
+error u in the selection equation; use {cmd:yif()} instead.
+
+{p 4 8 2}{cmd:mills} computes the expected value of the error u in the
+selection equation given z and w (refer to the
+{help oheckman##model:model description}).  This approach is the
+generalization of the Mills' ratio computed by {help heckman}.  However,
+unlike {cmd:heckman}, {cmd:oheckman} computes the expected value of u for the
+actual value of the categorical variable z, not as if z were equal to 1.  To
+get behavior similar to that of the {cmd:mills} statistic for {cmd:heckman},
+use {cmd:millsif()}.
+
+{p 4 8 2}{cmd:psel(}{it:j}{cmd:)} estimates the probability that the
+categorical variable {it:categoryvar} would take on the value {it:j}, given
+the values of {it:indepvars_sel}.
+
+{p 4 8 2}{cmd:millsif(}{it:j}{cmd:)} estimates the expected value of u
+for each observation by using {it:indepvars_sel}, under the assumption that
+{it:categoryvar} is equal to {it:j} for every observation.
+
+{p 4 8 2}{cmd:yif(}{it:j}{cmd:)} predicts the counterfactual y for the given
+equation {it:j}, if all observations were to switch to category {it:j},
+but taking into account the category that each was actually chosen.  This
+differs from the {cmd:ycond} postestimation statistic for {cmd:heckman}, which
+predicts y under the assumption that all obesrvations actually chose category
+{it:j}.
+
+
+{marker model}{...}
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:oheckman} estimates all the parameters in the model:
+
+{p 8 8 2}(ordered-probit selection equation: z is {it:categoryvar}, w is {it:indepvars_sel}){p_end}
+{p 16}z = 0 if        w*a + u <= mu_1{p_end}
+{p 16}z = 1 if mu_1 < w*a + u <= mu_2{p_end}
+{p 16}...{p_end}
+{p 16}z = J if mu_J < w*a + u{p_end}
+
+{p 8 8 2}(regression equations: y is {it:depvar}, x is {it:varlist}){p_end}
+{p 16}y = x*b_0 + e_0 if z = 0{p_end}
+{p 16}y = x*b_1 + e_1 if z = 1{p_end}
+{p 16}...{p_end}
+{p 16}y = x*b_J + e_J if z = J{p_end}
+
+{p 8}where{p_end}
+{p 16}u   ~ N(0, 1){p_end}
+{p 16}e_j ~ N(0, sigma_j) for all j{p_end}
+{p 16}corr(u, e_j) = rho_j for all j.{p_end}
+
+{p 4 4 2}In the syntax for {cmd:oheckman}, {depvar} and {varlist} are the
+dependent variable and regressors for the underlying regression model (y =
+x*b_j), {it:categoryvar} is the category z of each observation, and
+{it:indepvars_sel} are the variables (w) thought to determine z through an
+ordered probit.
+
+{p 4 4 2}The categories of {it:categoryvar} may be any ordered set of numbers;
+they need not be 0, 1, ..., J.
+
+{p 4 4 2}If {it:depvar} is always missing (see {help missing}) for a
+particular category j of {it:categoryvar}, then b_j, sigma_j, and rho_j are
+not estimated.
+
+{p 4 4 2}The set of mus is reported as "cutoffs" by the two-step procedure.
+The maximum-likelihood procedure reports cutoff1 = mu_1 and 
+deltaj = mu_j - mu_{j-1} for j > 1.
+
+{p 4 4 2}
+The maximum likelihood is implemented as {cmd:d2} evaluator that calculates
+the overall log likelihood along with its first and second derivatives.
+
+
+{title:Examples}
+
+{p 4 4 2}The following examples show how to obtain FIML estimates.
+
+{p 6}Using instruments:
+
+{p 8 12 2}{cmd:. oheckman wage = age educ, select(sector = age educ hhsize married)}
+
+{p 6}Model is identified only through nonlinearities (not recommended):
+
+{p 8 12 2}{cmd:. oheckman wage = age educ, select(sector = age educ)}
+
+{p 4}To obtain two-step estimates:
+
+{p 8 12 2}{cmd:. oheckman wage = age educ, select(sector = age educ hhsize married) twostep}
+
+{p 4}Prediction:
+
+{p 8 8 2}{cmd:. oheckman wage = age educ, select(sector = age educ hhsize married)}{break}
+{cmd: . predict sector1pr, psel(1)}{break}
+{cmd: . predict sector1wage, yif(1)}
+
+
+{p 4}Example from the Stata Journal:
+
+{p 8 12 2}{bf:{stata `"do  http://siteresources.worldbank.org/INTPOVRES/Resources/oheckman_example.do"': . oheckman log_realwage `indvar' [pw=weight] if sex==1, select(inf_prv_pub `selvar' `indvar')}}
+
+
+{title:Also see}
+
+{psee}
+Online:  {helpb heckman}, {helpb oprobit}, {helpb ssm}, {helpb ml}
+{p_end}

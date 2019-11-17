@@ -1,0 +1,19 @@
+Storing variables in vectors and matrices        	      [STB-20: ip6]
+-----------------------------------------
+
+	^mkmat^ varlist [^if^ exp ^in^ range, ^mat^rix(matname)]
+
+^mkmat^ loads the specified variables into column vectors (N by 1 matrices)
+of the same name.  If the ^mat^rix() option is specified, these column vectors
+are also combined in a matrix in the order they are named in the varlist.
+
+
+Author 
+------
+	Ken Heinecke, Federal Reserve Bank of Kansas City
+	816-881-2199 (FAX)
+
+Also see
+--------
+
+    STB:  ip6 (STB-20)

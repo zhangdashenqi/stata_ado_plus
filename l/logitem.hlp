@@ -1,0 +1,116 @@
+.-
+help for ^logitem^                               (SJ5-3: sg139_1; STB-55: sg139)
+.-
+
+Logitistic regression when binary outcome is measured with uncertainty 
+----------------------------------------------------------------------
+
+	^logitem^ depvar [indepvars] [^if^ exp] [^in^ range]^, sens(^sensvar | #^)^
+                 ^spec(^specvar | #^)^ [ ^l^evel^(^#^)^ ^r^obust ^nolog noor ite^rare^(^#^)^ 
+				     ^tol^erance^(^#^) ltol^erance^(^#^)^]
+
+The syntax of @predict@ following ^logitem^ is
+
+	^predict^ [type] newvarname [^if^ exp] [^in^ range] [^,^ statistic]
+
+where statistic is
+
+	^p^            predicted probability of a positive outcome; the default
+	^xb^           linear prediction
+	^stdp^         standard error of the linear prediction
+    (*) ^n^umber       sequential number of the covariate pattern
+							covariate pattern)
+
+Unstarred statistics are available both in and out of sample; type "^predict^ ...
+^if e(sample)^ ..." if wanted only for the estimation sample.  Starred statistics
+are calculated for the estimation sample even when "^if e(sample)^" is not
+specified.
+
+
+Description
+-----------
+
+^logitem^ uses an EM algorithm to estimates a maximum-likelihood logit
+regression model when the outcome variable is measured with an imperfect test
+of known sensitivity and specificity.
+
+The method allows the sensitivity and specificity to vary across observations.
+
+Options
+-------
+
+^sens(^varname | #^)^ especifies the value or the sensitivity variable.
+
+^spec(^varname | #^)^ especifies the value or the specificity variable.
+
+^noor^ reports the estimated coefficients instead of odds ratios.  This option
+    affects how results are displayed, not how they are estimated.  ^noor^ may be
+    specified at estimation or when redisplaying previously estimated results.
+
+^nolog^ supresses the output of the iteration log.
+
+^level(^#^)^ specifies the confidence level, in percent, for calculation of
+    confidence intervals of the odds ratios; see help @level@.
+
+^robust^ specifies the Huber/White/sandwich estimator of variance is to be used
+    in place of the traditional calculation; see ^[U] 23.11 Obtaining robust^
+    ^variance estimates^.  ^robust^ combined with ^cluster()^ allows observations
+    which are not independent within cluster (although they must be independent
+    between clusters).
+
+^iterate(^#^)^, ^ltolerance(^#^)^, and ^tolerance(^#^)^ specify the definition of
+    convergence.  ^iterate(16000) tolerance(1e-6) ltolerance(0)^ is the default.
+
+	Convergence is declared when
+
+                ^mreldif(^b_i+1, b_i^)^ <= ^tolerance()^
+           or   ^reldif(^lnL(b_i+1), lnL(b_i)^)^ <= ^ltolerance()^
+
+    (See help functions for information on the ^reldif()^ and ^mreldif()^
+    functions.)  In addition, iteration stops when i = ^iterate()^; in that
+    case, results along with the message "convergence not achieved" are
+    presented.  The return code is still set to 0.
+
+
+Options for @predict@
+-------------------
+
+^p^, the default, calculates the probability of a positive outcome.
+
+^xb^ calculates the linear prediction.
+
+^stdp^ calculates the standard error of the linear prediction.
+
+^number^ creates newvar containing the sequential number of the covariate
+    pattern.  Observations with the same covariate pattern have the same
+    ^number^.  Observations not used in estimation have the prediction set
+    to missing.  This calculation is automatically restricted to the
+    estimation sample.
+
+Examples
+--------
+	. ^logitem testres exposure, sens(.8) spec(.9)^
+	. ^logitem low age lwt, sens(.8) spec(.9) nlog^
+	. ^logitem low age lwt, sens(.8) spec(.9) nolog noor^
+	. ^logitem , nolog noor^
+
+
+Authors
+-------
+
+         Mario Cleves
+         Stata Corporation
+         email: mcleves@@stata.com
+
+         Alberto Tosetto
+         S. Bortolo Hospital, Vicenza, Italy
+         email: tosetto@@hemato.ven.it
+
+        
+Also see
+--------
+    STB:  STB-55 sg139
+ Manual:  ^[U] 23 Estimation and post-estimation commands^,
+	  ^[U] 29 Overview of model estimation in Stata^,
+	  ^[R] logistic^
+On-line:  help for @est@, @postest@, @logit@

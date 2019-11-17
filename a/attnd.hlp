@@ -1,0 +1,292 @@
+{smcl}
+{* 28oct2003}{...}
+{hline}
+help for {hi:attnd}
+{hline}
+
+{title:Estimation ofthe average treatment effect on the treated using nearest neighbor matching}
+
+{p 8 27}
+{cmd:attnd}
+{it:outcome treatment [varlist]}
+[{it:weight}]
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+[ ,
+{cmd:pscore}{cmd:(}{it:scorevar}{cmd:)}
+{cmdab:logit }
+{cmdab:index }
+{cmdab:comsup}
+{cmdab:det:ail}
+{it:match_options}
+{cmdab:boot:strap }
+{it:bs_options}
+]
+
+{p}{cmd:fweight}s, {cmd:iweight}s, and {cmd:pweight}s are allowed;
+see help {help weights}.
+
+
+{p}where {it:match_options} are
+
+{p 8 27}
+{cmd:matchvar}{cmd:(}{it:newvarname}{cmd:)}
+{cmd:matchdta}{cmd:(}{it:newfilename}{cmd:)}
+{cmd:id}{cmd:(}{it:varname}{cmd:)}{p_end}
+
+{p 8 8}In nearest neighbor matching, where not all controls are 
+necessarily used in the computation of the ATT, it is often useful to identify 
+those observations which were actually used. 
+The option {cmd:matchvar}{cmd:(}{it:newvarname}{cmd:)} together with 
+{cmd:matchdta}{cmd:(}{it:newfilename}{cmd:)} allows to save a dataset containing 
+the treatment indicator, the estimated propensity score (with the variable
+name {it:pscore} or the name specified by the user with the option 
+{cmd:pscore}{cmd:(}{it:scorevar}{cmd:)}), and a dummy indicating 
+whether an observation was used in the computation of the ATT. Furthermore, 
+when a variable which identifies observations exists in the dataset,
+users can specify a variable name for this ID variable using the option
+{cmd:id}{cmd:(}{it:varname}{cmd:)} and this is saved as well. 
+In detail, the options are described below.
+
+
+{title:Description}
+
+{p}
+{cmd:attnd} estimates the average treatment effect on the treated (ATT) 
+using nearest neighbor matching; {cmd:attnd} should be run after the correct  
+propensity score specification, i.e. the one satisfying the balancing 
+property, has been found using, for example, {cmd:pscore}; 
+if users do not provide a variable name for the propensity score, the
+propensity score is estimated based on the specification in {it:varlist}; 
+note that in this case the balancing property is not tested.
+
+{p} It is left under the responsibility of the user to select the
+{cmdab:comsup} option if the user provided propensity score has been
+estimated on a common support for treated and controls.  Otherwise,
+the ATT is estimated using also the observations outside the common
+support for which the propensity score may not be balanced.
+
+{p} To save on computing time, nearest neighbors are not determined by
+comparing treated observations to every single control, but by first
+sorting all records by the estimated propensity score and then
+searching forward and backward for the closest control unit(s); if for
+a treated unit forward and backward matches happen to be equally good,
+this program randomly draws (hence the letters "nd" for {it:N}earest
+neighbor and random {it:D}raw) either the forward or backward matches;
+this approach is one of two computationally feasible options to obtain
+analytical standard errors while at the same time exploiting the very
+fast forward and backward search strategy; the second possibility is
+based on giving equal weight to the groups of forward and backward
+matches in case of equally good forward and backward matches and is
+performed by {cmd:attnw}; in practice, the case of multiple nearest
+neighbors should be very rare, in particular if the set of X's
+contains continuous variables, in which case both {cmd:attnd} and
+{cmd:attnw} should give equal results (except for bootstrapped standard
+errors); the likelihood of multiple nearest neighbors is further reduced 
+if the propensity score is estimated and saved in double precision, which
+is what {cmd:pscore} does by default.
+
+{p}
+The ATT is computed by averaging over the unit-level treatment effects 
+of the treated where the control(s) matched to a treated observation is/are those 
+observations in the control group that have the closest propensity score; 
+if there are multiple nearest neighbors, the average outcome of those controls 
+is used.
+
+
+{title:Options}
+
+{p 0 4}  
+{cmdab:pscore(}{it:varname}{cmd:)} specifies the name of the user-provided
+variable for the estimated propensity score. If no name is provided
+the propensity score is estimated based on the specification in {it:varlist}.
+
+{p 0 4}                                                      
+{cmd:logit} uses a logit model to estimate the propensity score 
+instead of the default {cmd:probit} model when the option
+{cmdab:pscore(}{it:varname}{cmd:)} is not specified by the user.
+Otherwise no effect is produced.
+
+{p 0 4}                                                      
+{cmd:index} requires the use of the linear index as the propensity score 
+when the option {cmdab:pscore(}{it:varname}{cmd:)} is not specified by the user.
+Otherwise no effect is produced.
+
+{p 0 4} 
+{cmd:comsup} restricts the computation of the ATT to the region of
+common support
+
+{p 0 4} 
+{cmdab:det:ail} displays more detailed output documenting the steps performed to
+obtain the final results.
+
+{p 0 4}{cmd:matchvar}{cmd:(}{it:newvarname}{cmd:)} allows users to specify the variable 
+name for a dummy variable indicating observations that entered the calculation of the ATT.
+
+{p 0 4}{cmd:matchdta}{cmd:(}{it:newfilename}{cmd:)} is required when specifying 
+{cmd:matchvar}{cmd:(}{it:newvarname}{cmd:)} and asks users to specify the name of 
+the dataset (without extension!) to be saved.
+
+{p 0 4}{cmd:id}{cmd:(}{it:varname}{cmd:)} allows users to specify the variable name 
+for a variable which identifies observations in the data. This variable is then
+saved as part of  {it:newfilename.dta}. 
+This option enables users to merge  {it:newfilename.dta} by {it:newvarname} 
+ to their original dataset 
+
+{p 0 4}                                                      
+{cmdab:boot:strap} bootstraps the standard error of the treatment effect.
+
+{p 0 4}
+{it:bs_options} allows the use of all options coming with Stata8's {cmdab:bootstrap} command.
+
+
+{title:Remarks}
+
+{p} Please remember to use the {cmdab:update query} command before running this 
+program to make sure you have an up-to-date version of Stata installed.
+Otherwise this program may not run properly.
+
+{p} The treatment has to be binary.
+
+{p} When users do not specify their own previously estimated
+propensity score, the bootstrap encompasses the estimation of the
+propensity score based on the specification given by {it:varlist}; this 
+procedure is actually recommended to account for the uncertainty
+associated with the estimation of the propensity score. 
+Even more so when the {cmdab:comsup} option is specified
+because in this case the region of common support changes with every 
+bootstrap sample, and bootstrapped standard errors pick up this 
+uncertainty as well. So, typically
+users would first identify a specification satisfying the balancing property -
+using e.g. {cmdab:pscore} - and then provide exactly this specification in
+{it:varlist} and use bootstrapped standard errors.
+
+{p} Stata 8 does not allow the use of weights with bootstrap because 
+with {cmd:pweight}s, when the program randomly resamples the data to create a 
+bootstrap dataset, the weight variable would not sum to the population size. 
+Similar problems would arise with {cmd:fweight} and {cmd:aweight}. 
+Arguably the parameter estimates based on the bootstrap samples would 
+therefore have no useful interpretation.
+In the current version of the program, the only possibility to use weights 
+in the estimation of the propensity score together with the bootstrap option 
+is to first estimate the pscore with weights using {cmdab:pscore} and to provide 
+the estimated propensity score to the att*.ado. However, keep in mind that 
+by doing this, bootstrapping will not re-estimate the propensity score in 
+each bootstrap data set.
+
+
+
+{title:Saved results}
+
+{p} The program stores the estimated treatment effect, its standard error and
+the t-statistic respectively in the scalars {inp:r(attnd)}, {inp:r(seattnd)} 
+and {inp:r(tsattnd)}.
+
+{p} The number of treated and the number of controls are stored 
+respectively in the scalars {inp:r(ntnd)} and {inp:r(ncnd)}.
+
+{p} The bootstrapped standard error and t-statistic are stored 
+respectively in the scalars  {inp:r(bseattnd)} and {inp:r(btsattnd)}.
+
+
+{title:Examples}
+
+      {inp:. attnd wage training age age2 exp exp2}
+      {inp:. attnd wage training age age2 exp exp2, boot reps(100) dots}
+      {inp:. attnd wage training age age2 exp exp2, logit boot reps(100)}
+      {inp:. attnd wage training age age2 exp exp2, comsup boot reps(100)}
+      {inp:. attnd wage training age age2 exp exp2, matchvar(neighbor) matchdta(match) id(id)}
+
+
+{title:Authors}
+
+	{browse "http://www.sobecker.de":Sascha O. Becker}
+	Center for Economic Studies, University of Munich
+ 
+	{browse "http://www.iue.it/Personal/Ichino":Andrea Ichino}
+	Department of Economics, European University Institute, Florence
+
+Email {browse "mailto:so.b@gmx.net":so.b@gmx.net} or {browse "mailto:andrea.ichino@iue.it":andrea.ichino@iue.it} if you observe any problems.	
+
+	
+{title:Acknowledgements}
+
+{p}
+The way to implement the propensity score estimation in the bootstrap procedure 
+has been adapted from the {cmd:psmatch} program written by  Barbara Sianesi 
+(University College London and Institute for Fiscal Studies) 
+Email: barbara_s@ifs.org.uk.
+{p_end}
+
+
+{title:Also see}
+
+{p}On-line:  help for {help pscore}, {help atts}, {help attr}, 
+{help attk}, {help attnw} if installed  and {help bs}. 
+
+{p}Further details on the analytical formulas and on the algorithms 
+used in these programs  can be found under  
+{browse "http://www.sobecker.de":http://www.sobecker.de} 
+or 
+{browse "http://www.iue.it/Personal/Ichino":http://www.iue.it/Personal/Ichino}.
+
+
+{title:Bibliography and Sources}
+
+{p 0 2}
+Cochran, W. and Rubin, D.B. (1973), "Controlling Bias in Observational Studies: A Review", 
+Sankyha, 35, 417-446.
+{p_end}
+{p 0 2}
+Dehejia, R.H and Wahba, S. (1999), "Causal Effects in Non-Experimental Studies:
+Re-Evaluating the Evaluation of Training Programmes", Journal of the American
+Statistical Association, 94, 1053-1062.
+{p_end}
+{p 0 2}
+Dehejia, R.H. and Wahba, S.(2002), "Propensity Score Matching Methods for Non-Experimental 
+Causal Studies", Review of Economics and Statistics, 84(1), 151-161.
+{p_end}
+{p 0 2}
+Imbens, G.W. (2000), "The Role of the Propensity Score in Estimating
+Dose-Response Functions", Biometrika 87(3), 706-710.
+{p_end}
+{p 0 2}
+Heckman, J.J., Ichimura, H. and Todd, P.E. (1997), "Matching As An Econometric Evaluation 
+Estimator: Evidence from Evaluating a Job Training Programme", Review of Economic Studies, 
+64, 605-654.
+{p_end}
+{p 0 2}
+Heckman, J.J., Ichimura, H. and Todd, P.E. (1998), "Matching as an Econometric Evaluation 
+Estimator", Review of Economic Studies, 65, 261-294.
+{p_end}
+{p 0 2}
+Heckman, J.J., Ichimura, H., Smith, J.A. and Todd, P. (1998), "Characterising Selection Bias 
+Using Experimental Data", Econometrica, 66(5), 1017-98.
+{p_end}
+{p 0 2}
+Heckman, J.J., LaLonde, R.J., Smith, J.A. (1999), "The Economics and Econometrics of Active 
+Labour Market Programmes", in Ashenfelter, O. and Card, D. (eds.), The Handbook of Labour 
+Economics, Volume III.{p_end}
+{p 0 2}
+Lechner, M. (2001), Identification and Estimation of Causal Effects of Multiple Treatments 
+under the Conditional Independence Assumption, in: Lechner, M., Pfeiffer, F. (eds), 
+Econometric Evaluation of Labour Market Policies, Heidelberg: Physica/Springer, p. 43-58.
+{p_end}
+{p 0 2}
+Rosenbaum, P.R. and Rubin, D.B. (1983), "The Central Role of the Propensity Score in 
+Observational Studies for Causal Effects", Biometrika, 70(1), 41-55.
+{p_end}
+{p 0 2}
+Rosenbaum, P.R., and D.B. Rubin (1984) ``Reducing Bias in
+Observational Studies using Subclassification on the Propensity Score'', 
+Journal of the American Statistical Association, 79, 516-524.
+{p_end}
+{p 0 2}
+Rubin, D.B. (1974), "Estimating Causal Effects of Treatments in Randomised and Non-Randomised 
+Studies", Journal of Educational Psychology, 66, 688-701.
+{p_end}
+{p 0 2}
+Smith, Jeffrey, and Petra Todd (2003), "Does Matching Overcome Lalonde's Critique of 
+Nonexperimental Estimators?", forthcoming: Journal of Econometrics.
+{p_end}
+

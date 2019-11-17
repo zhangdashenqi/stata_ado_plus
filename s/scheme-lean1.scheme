@@ -1,0 +1,12 @@
+//  c:\ado\personal\lean1.scheme
+//  Framed plot area; no gridlines
+//  version 1.0   11apr2003
+
+#include lean2
+
+// Framed plot area
+linestyle plotregion         foreground
+
+// y-grid on
+yesno draw_major_vgrid       no
+

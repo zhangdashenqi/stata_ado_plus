@@ -1,0 +1,92 @@
+.-
+help for ^discrim^                (STB-5: smv3; STB-34: smv3.1; STB-38: smv3.2)
+.-
+
+Dichotomous Discriminant Analysis
+---------------------------------
+
+  ^discrim^ grpvar [varlist] [^, p^redict^ a^nova^ g^raph^ d^etail^ k^eep]
+
+
+Description
+-----------
+
+^discrim^ allows the user to perform a discriminant analysis on a Bernoulli
+distributed response of grouping variable (1/0).
+
+Output includes table with the following statistics and their global
+designation for post-estimation use when applicable:
+
+    1. Observations    [S_E_obs]       2. Independent vars  [S_E_var]
+    3. Obs: group==0   [S_E_ob0]       4. Obs: group==1     [S_E_ob1]
+    5. Centroid 0      [S_E_cn0]       6. Centroid 1        [S_E_cn1]
+    7. Grand centroid  [S_E_cng]       8. R-square          [S_E_r2]
+    9. Mahalanobis     [S_E_mah]      10. Eigenvalue        [S_E_eig]
+   11. Canon. Correl   [S_E_cc]       12. Eta squared       [S_E_e2]
+   13. Wilk's lambda   [S_E_lam]      14. Chi-square        [S_E_chi]
+
+Output also includes a table displaying both the Discriminant Function and
+Unstandardized Coefficients.
+
+Cases in which a variable has a missing value are dropped from estimation.
+The ^keep^ command does not restore such cases to active memory.
+
+
+Options
+-------
+
+^predict^ provides a confusion matrix of actual vs predicted group cell
+   counts. Also included is a listing of the following percentages:
+      1. Correctly predicted         2. Model sensitivity
+      3. Model specificity           4. False Positive
+      5. False Negative
+
+^anova^ provides an ANOVA of discriminant scores vs the group variable.
+   Bartlett's test for equal variances in included.
+
+^graph^ provides a classification graph showing correctly and incorrectly
+   classified cases.
+
+^detail^ creates and lists the following for each retained case:
+      1. Group    : actual group value
+      2. PRED     : predicted group value
+      3. DIFF     : a star indicating misclassified cases
+      4. LnProb1  : logistic probability of grouyp 1 membership
+      5. DscIndex : discriminant index
+      6. DscScore : discriminant score
+
+^keep^ allows the user to keep the variables created in the Detail option.
+  The data set in memory is altered, so care must be taken when saving the
+  resultant file to disk.
+
+
+Examples
+--------
+
+        . ^discrim foreign price mpg length^
+
+        . ^discrim foreign price mpg length, p a gr d^
+
+        . ^discrim foreign price mpg length, detail keep^
+
+
+Author
+------
+
+       Joseph Hilbe
+       Dept of Sociology
+       Arizona State University
+       email: atjmh@@asuvm.inre.asu.edu
+
+
+Also see
+--------
+
+    STB:  smv3.2 (STB-38) smv3.1 (STB-34) smv3 (STB-5)
+
+
+Selvin, Steve (1995, 1996) "Practical Biostatistical Methods", Chap 6.
+  Explanation and use of the 1st version of the ^discrim^ command.
+
+
+

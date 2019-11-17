@@ -1,0 +1,63 @@
+STB-20 Date conversions						[STB-20: dm20]
+-----------------------
+
+    ^downame^  dowvar         ^, g^enerate^(^dayvar^)^
+    ^namedow^  dayvar         ^, g^enerate^(^dowvar^)^
+    ^mdytodow^ mvar dvar yvar ^, g^enerate^(^dowvar^)^
+
+    ^lastday^  mvar yvar      ^, g^enerate^(^dvar^)^
+    ^lastbday^ mvar yvar      ^, g^enerate^(^dvar^)^
+
+    ^mnthname^ mvar           ^, g^enerate^(^mthvar^)^
+    ^namemnth^ mthvar         ^, g^enerate^(^mvar^)^
+
+    ^ystrday^  mvar dvar yvar ^, g^enerate^(^mvar dvar yvar^)^
+    ^today^                   ^, g^enerate^(^mvar dvar yvar^)^
+
+
+
+
+
+
+
+where:
+
+Syntax, continued
+-----------------
+
+	mvar       variable containing month (^1^-^12^)
+	dvar       variable containing day (^1^-^31^)
+	yvar       variable containing year (e.g., ^1992^)
+	dowvar     variable containing day-of-week (^0^-^6^, ^0^=Sunday)
+	dayvar     string variable containing day (e.g., ^Saturday^)
+	mthvar     string variable containing month (e.g., ^February^)
+
+
+
+Description
+-----------
+
+These commands convert dates from one format to another.  In all cases, the 
+^generate()^ "option" is not optional unless the command is used in immediate
+form.  In immediate form, the command is used with numbers or strings where
+appropriate, and displays to the screen the desired conversion.  Results
+are saved in ^S_1^--^S_4^.
+
+
+
+Examples
+--------
+
+ . ^lastbday mon year, gen(lbday)^
+ . ^mdytodow mon lbday year, gen(dow)^
+
+ . ^ystrday 1 1 1995^
+ . ^lastday 2 1992^
+
+
+
+Also see
+--------
+
+    STB:  dm20  (STB-20)
+ Manual:  [5d] dates

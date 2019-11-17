@@ -1,0 +1,179 @@
+Help file for the command graph2tex
+-----------------------------------
+
+
+Syntax
+------
+
+^graph2tex^ , ^[^  EPSfile(string) RESet NUMber CAPtion(string) LABel(string) ht(real 3) ]
+
+^graph2tex^ does two things.  First, it takes the most recently
+created graph and exports it as a .eps file, and second it
+displays LaTeX code you could insert for displaying the figure
+in your LaTeX document.  
+
+^** You can name the file in one of four ways.^
+
+1. Accept the default.  By default the graph will be called
+defaultgraphname.eps.  This is not very useful since the
+same name is used over and over again. For example
+
+^scatter read write^
+^graph2tex^
+
+(The graph is saved as defaultgraphname.eps)
+
+2. Name the graph using the ^epsfile^ option.  
+This allows you to supply a custom name
+for each graph.  For example
+
+^scatter read write^
+^graph2tex , epsfile(readwrite)^
+
+^scatter read math^
+^graph2tex , epsfile(readmath)^
+
+(The graphs are saved as ^readwrite.eps^ and then
+^readmath.eps^ .)
+
+3. Pick a stem using ^epsfile^ and let ^graph2tex^ number
+them sequentially.  This is useful in a .do file.  The
+first time you use the ^number reset^ options to 
+number the file and to reset the counter to 1.
+The next time you just use the number option
+and the counter is set to 2.
+
+^scatter read write^
+^graph2tex , epsfile(mygraph) number reset^
+
+^scatter read math^
+^graph2tex , epsfile(mygraph) number^
+
+^scatter read science^
+^graph2tex , epsfile(mygraph) number^
+
+(The graphs are saved as ^mygraph1.eps^ ,
+^mygraph2.eps^ , and ^mygraph3.eps^ )
+
+If you are curious, the graph number is stored
+in the global macro variable graph2tex_graphnum .
+
+4. Same as option #3, but pick a stem via a 
+global macro variable.  Rather than 
+specifying ^epsfile()^ each time you call
+^graph2tex^ you can set a global macro
+variable called ^graph2tex_epsfile^ to specify
+the name of the eps file.  For example, we
+repeat the example from above but using
+this strategy.
+
+^global graph2tex_epsfile mynewgraph^
+^scatter read write^
+^graph2tex , number reset^
+
+^scatter read math^
+^graph2tex , number^
+
+^scatter read science^
+^graph2tex , number^
+
+(The graphs are saved as mynewgraph1.eps ,
+mynewgraph2.eps , and mynewgraph3.eps )
+
+** Captions and Labels
+
+You can specify a caption that would be included
+in the LaTeX code using the ^caption()^ option.
+
+^scatter read write^
+^graph2tex , epsfile(readwritecap) caption(Reading and Writing Scores)^
+
+You can indicate that you want a label for your
+LaTeX code using the ^label()^ option, for example.
+
+^scatter read write^
+^graph2tex , epsfile(readwritecaplab) ///^
+^  caption(Reading and Writing Scores) label(mylabel)^
+
+** Height
+
+You can indicate the height of the figure in
+inches that will be put into the LaTeX code with 
+the ^ht()^ option.
+
+^scatter read write^
+^graph2tex , epsfile(readwriteht) ht(3)^
+
+** A couple more examples
+
+Here are a couple more examples, and these show the
+LaTeX code that is displayed under the graph.
+
+
+^scatter read write^
+^graph2tex , epsfile(mygraph) number reset ///^
+^  caption(Reading and Writing Scores) label(readwrite)^
+
+^scatter read math^
+^graph2tex , epsfile(mygraph) number ////^
+^  caption(Reading and Math Scores) label(readmath)^
+
+^scatter read science ^
+^graph2tex , epsfile(mygraph) number ///^
+^  caption(Reading and Science Scores) label(readsci)^
+
+And here is the result shown in the results window 
+(or log file if you are logging the results).
+
+. scatter read write
+
+. graph2tex , epsfile(mygraph) number reset ///
+>   caption(Reading and Writing Scores) label(readwrite)
+% exported graph to mygraph1.eps
+% We can see in Figure \ref{fig:readwrite} that
+\begin{figure}[h]
+\begin{centering}
+  \includegraphics[height=3in]{mygraph1}
+  \caption{Reading and Writing Scores}
+  \label{fig:readwrite}
+\end{centering}
+\end{figure}
+
+. 
+. scatter read math
+
+. graph2tex , epsfile(mygraph) number ////
+>   caption(Reading and Math Scores) label(readmath)
+% exported graph to mygraph2.eps
+% We can see in Figure \ref{fig:readmath} that
+\begin{figure}[h]
+\begin{centering}
+  \includegraphics[height=3in]{mygraph2}
+  \caption{Reading and Math Scores}
+  \label{fig:readmath}
+\end{centering}
+\end{figure}
+
+. 
+. scatter read science 
+
+. graph2tex , epsfile(mygraph) number ///
+>   caption(Reading and Science Scores) label(readsci)
+% exported graph to mygraph3.eps
+% We can see in Figure \ref{fig:readsci} that
+\begin{figure}[h]
+\begin{centering}
+  \includegraphics[height=3in]{mygraph3}
+  \caption{Reading and Science Scores}
+  \label{fig:readsci}
+\end{centering}
+\end{figure}
+
+
+Author
+------
+Michael Mitchell
+Academic Technology Services
+UCLA
+mnm@@ucla.edu
+

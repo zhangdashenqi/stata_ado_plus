@@ -1,0 +1,114 @@
+{smcl}
+{* 22nov2005/28jan2009}{...}
+{cmd:help rowsort}{right: ({browse "http://www.stata-journal.com/article.html?article=pr0046":SJ9-1: pr0046})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 16 18 2}{...}
+{p2col :{hi:rowsort} {hline 2}}Row sort a set of variables{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:rowsort}
+{varlist}
+{ifin}{cmd:,}
+{opth g:enerate(newvarlist)}
+[{cmdab:d:escending}
+{cmdab:high:missing}]
+
+
+{title:Description}
+
+{p 4 4 2} 
+{cmd:rowsort} creates new variables containing the row-sorted (-ordered)
+values in each observation of {it:varlist}. {it:varlist} should contain
+either only numeric variables or only string variables. 
+
+{p 4 4 2} 
+By default, the first (second, ...) new variable contains the lowest or
+first-ordered (second-ordered, ...) value within each observation.  The
+{cmd:descending} option may be used to reverse order.  With
+strings, uppercase letters sort before lowercase. 
+
+
+{title:Options}
+
+{p 4 8 2}
+{opt generate(newvarlist)} specifies new variable names for the variables to be
+generated, one for each variable in {it:varlist}.  {it:newvarlist} may
+be specified in hyphenated form, as in {cmd:s1-s5}.  This option is
+required. 
+
+{p 4 8 2}
+{cmd:descending} specifies that {it:newvarlist} should contain
+descending values, so that ordering is from highest, or last, downward. 
+
+{p 4 8 2}
+{cmd:highmissing} specifies that missing values should be treated as
+higher than nonmissing values. This option bites for numeric values
+only when {cmd:descending} is also specified, and does not bite for
+string values if {cmd:descending} is also specified. With these two
+options, {cmd:1 . 3 . 5 . 7} would be sorted to {cmd:7 5 3 1 . . .} and
+generated as such. Note also that {cmd:1 .c 3 .b 5 .a 7} would be sorted
+to {cmd:7 5 3 1 .c .b .a} and generated as such. 
+
+
+{title:Remarks} 
+
+{p 4 4 2}
+Mata is used to sort observations. Thus Stata 9 or higher is required. 
+
+{p 4 4 2}
+Missing values are allowed. By default, numeric missing values are sorted
+to arbitrarily high values, as is standard in Stata. This may not be
+what you want with descending sort order. Thus given {cmd:1 . 3 . 5 . 7},
+{cmd:rowsort} by default sorts these to {cmd:1 3 5 7 . . .}, which is
+fine if you want to read off the lowest, next lowest, and so forth. But
+with the {cmd:descending} option, {cmd:rowsort} would sort to 
+{cmd:. . . 7 5 3 1}, which makes it difficult to read off the highest,
+next highest, and so forth. See the documentation of the 
+{cmd:highmissing} option for a way to tackle this problem. 
+Alternatively, see {manhelp mvencode D}. 
+
+{p 4 4 2}
+Conversely, by default, string missing values are sorted
+to arbitrarily low values, as is standard in Stata. This may not be
+what you want with ascending sort order. Thus given 
+{cmd:"a" "" "b" "" "c" "" "d"},
+{cmd:rowsort} by default sorts these to {cmd:"" "" "" "a" "b" "c" "d"}, 
+which makes it difficult to read off the alphanumeric first,
+second, and so forth, whenever you want to ignore the empty strings. 
+See the documentation of the 
+{cmd:highmissing} option for a way to tackle this problem. 
+
+
+{title:Examples} 
+
+{p 4 8 2}{cmd:. rowsort x1-x5, generate(s1-s5)}{p_end}
+{p 4 8 2}{cmd:. rowsort x1-x5, generate(s1-s5) descending}
+
+
+{title:Author}
+
+{p 4 4 2}Nicholas J. Cox, Durham University{break}
+         n.j.cox@durham.ac.uk
+
+
+{title:Acknowledgment}
+
+{p 4 4 2}The program {cmd:sortrows}, posted by Jeffrey Arnold on the SSC
+archive, was a stimulus to this version and in particular suggested what is
+here the {cmd:highmissing} option. 
+
+
+{title:Also see}
+
+{psee}Article: {it:Stata Journal}, volume 9, number 1: {browse "http://www.stata-journal.com/article.html?article=pr0046":pr0046}
+
+{psee}Online:  {manhelp sort D}, {manhelp mvencode D}, 
+{helpb rowranks} (if installed) 
+{p_end}

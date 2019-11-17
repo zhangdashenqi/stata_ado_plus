@@ -1,0 +1,154 @@
+{smcl}
+{* 2005-02-06}{...}
+{hline}
+help for {hi:_peciboot}{right:2/6/2005}
+{hline}
+
+{title: Utility to implement the bootstrap method for calculating confidence intervals}
+
+{p 8 15 2}{cmd:_peciboot} [if] [in] [{cmd:,}
+{cmd:x(}{it:variables_and_values}{cmd:)}
+{cmd:rest(}{it:stat}{cmd:)}
+{cmdab:r:eps(}{it:#}{cmd:)}
+{cmdab:si:ze(}{it:#}{cmd:)}
+{cmd:save}
+{cmd:diff}
+{cmd:all match dots}
+{cmdab:sa:ving(}{it:filename, save_options}{cmd:)}]
+
+{p 4 4 2}
+where {it:variables_and_values} is an alternating list of variables
+and either numeric values or mean, median, min, max, upper, lower,
+previous and {it:stat} is either mean, median, min, max, upper, lower,
+previous, grmean(group mean), mrmedian, grmin, grmax.
+
+{title: Description}
+
+{p 4 4 2}
+{cmd:_peciboot} is a utility command that returns prediction, discrete
+changes and their confidence intervals using {help bootstrap} method
+with resampling technique. It can calculate boostrapped confidence intervals
+using the normal approximation, percentile, and bias-corrected methods.
+It applies to {help logit}, {help probit}, {help cloglog}, {help ologit},
+{help oprobit}, {help gologit}, {help mlogit}, {help poisson}, {help nbreg},
+{help zip}, and {help zinb} models.
+
+{title: Options}
+
+{p 4 8 2}
+{cmd:x(}{it:variables_and_values}{cmd:)} sets the values of independent
+variables for calculating predicted values. The list must alternate variable
+names and either numeric values or types of {cmd:stat}.
+
+{p 4 8 2}
+{cmd:rest(}{it:stat}{cmd:)} sets the independent variables not specified
+in {cmd:x(}{it:variables_and_values}{cmd:)} to one of the types of {cmd:stat}.
+Check into {help prstar} for more details about using
+{cmd:x(}{it:variables_and_values}{cmd:)} and {cmd:rest(}{it:stat}{cmd:)}
+
+{p 4 8 2}
+{cmd:reps(}{it:#}{cmd:)} specifies the number of bootstrap replications
+to be performed.  The default is 1000.
+
+{p 4 8 2}
+{cmd: size(}{it:#}{cmd:)} specifies the size of the samples to be drawn.
+The default is _N, meaning to draw samples of the same size as the data.
+
+{p 4 8 2}
+{cmd:save} saves current values of indepenent variables and predictions
+for computing changes using the diff option.
+
+{p 4 8 2}
+{cmd:diff} computes difference between current predictions and those that
+were saved.
+
+{p 4 8 2}
+{cmd:all} specifies that any calculation of means, medians, etc., should
+use the entire sample instead of the sample used to estimate the model.
+
+{p 4 8 2}
+{cmd:match} requests {cmd:_peciboot} to resample from each category group
+of the dependent variable in proportion of the resample size to the original
+sample size.
+
+{p 4 8 2}
+{cmd:dots} requests a dot be placed on the screen at the beginning of each
+replication, thus providing entertainment when a large number of reps() are
+requested. It also prints out the percent replications finished.
+
+{p 4 8 2}
+{cmd:saving(}{it:filename, save_options}{cmd:)}  creates a Stata data file
+(.dta file) containing the bootstrap distribution for predictions and discrete
+changes.
+
+
+{title: Global Matrices}
+
+{p 4 4 2}
+The second row of the following matrices contains predicted probabilities and
+the sixth row contains differences for predicted probabilities.
+
+{p 4 8 2}
+peupper: is a global matrix containing upper end of confidence intervals.
+Default produces the percentile confidence intervals.
+
+{p 4 8 2}
+pelower: is a global matrix containing lower end of confidence intervals.
+Default produces the percentile confidence intervals.
+
+{p 4 8 2}
+peuppct: is a global matrix containing upper end of confidence intervals
+using the percentile method.
+
+{p 4 8 2}
+pelopct: is a global matrix containing lower end of confidence intervals
+using the percentile method.
+
+{p 4 8 2}
+peupnorm: is a global matrix containing lower end of confidence intervals
+using the normal approximation method.
+
+{p 4 8 2}
+pelonorm: is a global matrix containing lower end of confidence intervals
+using normal approximation method.
+
+{p 4 8 2}
+peupbias: is a global matrix containing upper end of confidence intervals
+using the bias-corrected method.
+
+{p 4 8 2}
+pelobias: is a global matrix containing lower end of confidence intervals
+using the bias-corrected method.
+
+{title: Returns}
+
+{p 4 8 2}
+r(Nrepsnomis): is a scalar return containing the factual number of replications
+used for calculating bootstraped confidence intervals, which might be smaller than
+the one requested by users.
+
+
+{title: Examples}
+
+{p 4 8 2}{cmd:._pebase `if' `in' , `x' `rest' `choices' `all'}{p_end}
+{p 4 8 2}{cmd:.mat `tobase' = r(pebase)}{p_end}
+{p 4 8 2}{cmd:._pepred, `level' `maxcnt'}{p_end}
+{p 4 8 2}{cmd:.local maxc = r(maxcount)}{p_end}
+{p 4 8 2}{cmd:.local lvl = r(level)}{p_end}
+{p 4 8 2}{cmd:.capture _return drop pepred}{p_end}
+{p 4 8 2}{cmd:._return hold pepred}{p_end}
+{p 4 8 2}{cmd:._return restore pepred, hold}{p_end}
+{p 4 8 2}{cmd:...}{p_end}
+{p 4 8 2}{cmd:...}{p_end}
+{p 4 8 2}{cmd:...}{p_end}
+{p 4 8 2}{cmd:._pecollect, inout("`io'") level(`lvl')  /// }{p_end}
+{p 4 8 2}{cmd:.     maxcount(`maxc') `diff' `reps'}{p_end}
+
+{p 4 8 2}{cmd:._peciboot, `x' `rest' `all' `save'      /// }{p_end}
+{p 4 8 2}{cmd:.        `diff' `reps' `size' `dots' `match' `saving'}{p_end}
+
+{hline}
+
+{p 2 4 2}Authors: J. Scott Long & Jun Xu{p_end}
+{p 11 4 2}{browse www.indiana.edu/~jslsoc/spost.htm}{p_end}
+{p 11 4 2}spostsup@indiana.edu{p_end}

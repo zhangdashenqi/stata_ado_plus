@@ -1,0 +1,1080 @@
+{smcl}
+{* 18jun2018}{...}
+{cmd:help colorpalette}{right: ({browse "http://www.stata-journal.com/article.html?article=gr0075":SJ18-4: gr0075})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 21 23 2}{...}
+{p2col:{cmd:colorpalette} {hline 2}}Color palettes{p_end}
+{p2colreset}{...}
+
+
+{marker syntax}{...}
+{title:Syntax}
+
+{pstd}
+Syntax 1: Retrieve and display colors from one or multiple palettes
+
+{p 8 20 2}
+{cmd:colorpalette} [{it:argument}] 
+[{cmd:,} {help colorpalette##opts:{it:palette_options}} 
+{help colorpalette##gopts:{it:graph_options}}]
+
+{pstd}
+where {it:argument} is 
+
+{p 8 15 2}
+{help colorpalette##palette:{it:palette}}
+[[{cmd:,} {help colorpalette##opts:{it:palette_options}}] {cmd:/} 
+[{help colorpalette##palette:{it:palette}} 
+[{cmd:,} {help colorpalette##opts:{it:palette_options}}] {cmd:/} ...]]
+
+{pstd}
+Syntax 2: Display an overview of multiple palettes
+
+{p 8 20 2}
+{cmd:colorpalette} [{cmd:,} {help colorpalette##opts:{it:palette_options}} 
+{help colorpalette##gopts:{it:graph_options}}]{cmd::} {it:pspec} [{cmd:/} {it:pspec} {cmd:/} ...]
+
+{pstd}
+where {it:pspec} is 
+
+{p 8 15 2}
+{help colorpalette##palette:{it:palette}} [{cmd:,} {help colorpalette##opts:{it:palette_options}}] 
+
+{pstd}
+or {cmd:.} to insert a gap.
+
+
+{synoptset 20 tabbed}{...}
+{marker palette}{synopthdr:palette}
+{synoptline}
+{syntab:Stata palettes ({stata "colorpalette, lc(black): s2 / s1 / s1r / economist / mono":view})}
+{synopt:{helpb colorpalette##s2:s2}}15 colors as in Stata's {helpb scheme s2:s2color} scheme; the default{p_end}
+{synopt:{helpb colorpalette##s1:s1}}15 colors as in Stata's {helpb scheme s1:s1color} scheme{p_end}
+{synopt:{helpb colorpalette##s1r:s1r}}15 colors as in Stata's {helpb scheme s1:s1rcolor} scheme{p_end}
+{synopt:{helpb colorpalette##economist:economist}}15 colors as in Stata's {helpb scheme economist:economist} scheme{p_end}
+{synopt:{helpb colorpalette##mono:mono}}15 gray scales as in Stata's monochrome schemes{p_end}
+
+{syntab:Other palettes ({stata "colorpalette, lc(black): cblind / plottig / 538 / mrc / tfl / burd / lean":view})}
+{synopt:{helpb colorpalette##cblind:cblind}}9 colorblind friendly by Okabe and Ito (2002){p_end}
+{synopt:{helpb colorpalette##plottig:plottig}}15 colors as in {cmd:plottig} by Bischof (2017b){p_end}
+{synopt:{helpb colorpalette##538:538}}6 plus 7 colors as in {cmd:538} by Bischof (2017a){p_end}
+{synopt:{helpb colorpalette##mrc:mrc}}7 colors as in {cmd:mrc} by Morris (2013){p_end}
+{synopt:{helpb colorpalette##tfl:tfl}}8 colors as in {cmd:tfl} by Morris (2015){p_end}
+{synopt:{helpb colorpalette##burd:burd}}9 plus 4 colors as in {cmd:burd} by Briatte (2013){p_end}
+{synopt:{helpb colorpalette##lean:lean}}15 gray scales as in {cmd:lean} by Juul (2003){p_end}
+
+{syntab:Color generators}
+{synopt:{helpb colorpalette##hue:hue}}evenly spaced HCL hues{p_end}
+{synopt:{helpb colorpalette##hcl:hcl}}HCL color generator{p_end}
+{synopt:{helpb colorpalette##hsv:hsv}}HSV color generator{p_end}
+
+{syntab:Collections}
+{synopt:{it:{help colorpalette##cbrew:colorbrewer}}}ColorBrewer palettes ({browse "http://colorbrewer2.org"}){p_end}
+{synopt:{helpb colorpalette##ptol:ptol}}color schemes from Tol (2018){p_end}
+{synopt:{helpb colorpalette##d3:d3}}categorical color schemes from {browse "http://d3js.org/":D3.js}{p_end}
+{synopt:{helpb colorpalette##lin:lin}}semantic colors schemes by Lin et al. (2013){p_end}
+{synopt:{helpb colorpalette##spmap:spmap}}color schemes from {cmd:spmap} by Pisati (2007){p_end}
+{synopt:{helpb colorpalette##sfso:sfso}}color schemes used by the Swiss Federal 
+Statistical Office{p_end}
+
+{syntab:Custom}
+{synopt:{it:{help colorpalette##colorlist:colorlist}}}custom list of colors{p_end}
+{synopt:{it:{help colorpalette##myname:myname}}}custom palette provided by program {cmd:colorpalette_}{it:myname}{p_end}
+{synoptline}
+
+
+{synoptset 20}{...}
+{marker opts}{synopthdr:palette_options}
+{synoptline}
+{synopt:{helpb colorpalette##n:n({it:#})}}specify size of palette (number of colors){p_end}
+{synopt:{helpb colorpalette##select:{ul:s}elect({it:numlist})}}select and order elements{p_end}
+{synopt:{helpb colorpalette##reverse:{ul:r}everse}}arrange palette in reverse order{p_end}
+{synopt:{helpb colorpalette##intensity:{ul:in}tensity({it:numlist})}}apply color intensity adjustment{p_end}
+{synopt:{helpb colorpalette##opacity:{ul:op}acity({it:numlist})}}set opacity, in percent{p_end}
+{synopt:{help colorpalette##other:{it:other}}}palette-specific options{p_end}
+{synoptline}
+
+
+{synoptset 25 tabbed}{...}
+{marker gopts}{synopthdr:graph_options}
+{synoptline}
+{syntab:Main}
+{synopt:{helpb colorpalette##title:{ul:ti}tle({it:string})}}custom graph title{p_end}
+{synopt:{helpb colorpalette##gropts:{ul:gr}opts({it:twoway_options})}}options to be
+passed through to the {cmd:graph} command{p_end}
+
+{syntab:Syntax 1 only}
+{synopt:{helpb colorpalette##rows:rows({it:#})}}minimum number of rows; default is {cmd:rows(5)}{p_end}
+{synopt:{helpb colorpalette##nograph:{ul:nogr}aph}}do not generate a graph{p_end}
+
+{syntab:Syntax 2 only}
+{synopt:{helpb colorpalette##horizontal:{ul:hor}izontal}}horizontal plot; the default{p_end}
+{synopt:{helpb colorpalette##vertical:{ul:vert}ical}}vertical plot{p_end}
+{synopt:{helpb colorpalette##plabels:{ul:pl}abels({it:strlist})}}custom palette labels{p_end}
+{synopt:{helpb colorpalette##lcolor:{ul:lc}olor({it:colorstyle})}}custom outline color{p_end}
+{synopt:{helpb colorpalette##lwidth:{ul:lw}idth({it:linewidthstyle})}}custom outline thickness{p_end}
+{synoptline}
+
+
+{marker description}{...}
+{title:Description}
+
+{pstd}
+{cmd:colorpalette} is a utility command to retrieve or display color palettes.
+Palette entries are returned in {helpb colorpalette##returns:r()}.
+
+{pstd}
+{cmd:colorpalette} is used by {helpb grstyle set}.
+
+
+{marker options}{...}
+{title:Options}
+
+{dlgtab:Palette options}
+
+{marker n}{...}
+{phang}
+{opt n(#)} specifies the size of the palette (the number of elements).  In
+many cases, this just selects the first {it:#} elements from the palette and
+is thus equivalent to {cmd:select(1/}{it:#}{cmd:)}.  However, some color
+schemes ({cmd:hue}, {cmd:hcl}, {cmd:hsv}, {cmd: ptol}, sequential and
+diverging ColorBrewer palettes) return colors that adjust to the size of the
+palette.
+
+{marker select}{...}
+{phang}
+{opth select(numlist)} selects and orders the elements retrieved from the
+palette.
+
+{marker reverse}{...}
+{phang}
+{opt reverse} returns the palette in reverse order.
+
+{marker intensity}{...}
+{phang}
+{opt intensity(numlist)} applies color intensity adjustment.  The values in
+{it:numlist} must be between 0 and 255.  Values below 1 make the colors
+lighter; values larger than 1 make the colors darker.  Specify multiple values
+to use different adjustments across the selected palette elements.  The list
+of adjustments will be recycled if it is shorter than the list of selected
+palette elements.  Likewise, palette elements will be recycled if the list of
+adjustments is longer than the palette.
+
+{marker opacity}{...}
+{phang}
+{opt opacity(numlist)} sets the opacity level or levels (requires Stata 15).
+Values must be between 0 (fully transparent) and 100 (fully opaque).  Specify
+multiple values to use different opacity levels across the selected colors.
+The list of opacity levels will be recycled if it is shorter than the list of
+selected colors.  Likewise, colors will be recycled if the list of opacity
+levels is longer than the palette.
+
+{marker other}{...}
+{phang}
+{it:other} are additional palette-specific options.  See the descriptions of
+the palettes below.
+
+{dlgtab:Graph options}
+
+{marker title}{...}
+{phang}
+{opt title(string)} specifies a custom title for the graph.
+
+{marker gropts}{...}
+{phang}
+{cmd:gropts(}{it:{help twoway_options}}{cmd:)} provides options to be passed
+through to the {cmd:graph} command.
+
+{marker rows}{...}
+{phang}
+{opt rows(#)} specifies the minimum number of rows in the graph (syntax 1
+only).  The default is {cmd:rows(5)}.
+
+{marker nograph}{...}
+{phang}
+{opt nograph} suppresses the graph (syntax 1 only).
+
+{marker horizontal}{...}
+{phang}
+{opt horizontal} displays the palettes horizontally (syntax 2 only).  This is
+the default.
+
+{marker vertical}{...}
+{phang}
+{opt vertical} displays the palettes vertically (syntax 2 only).
+
+{marker plabels}{...}
+{phang}
+{opt plabels(strlist)} provides custom labels for the palettes (syntax 2
+only).  Enclose labels with spaces in double quotes.
+
+{marker lcolor}{...}
+{phang}
+{opth lcolor(colorstyle)} specifies a custom outline color (syntax 2 only).
+The default is to use the same color for the outline as the fill.
+
+{marker lwidth}{...}
+{phang}
+{opth lwidth(linewidthstyle)} sets a custom outline thickness (syntax 2 only).
+The default is {cmd:lwidth(vthin)}.
+
+
+{marker palettes}{...}
+{title:Palettes}
+
+{marker s2}{...}
+{dlgtab:s2}
+
+{pstd}
+Palette {cmd:s2} ({stata colorpalette s2:view}) contains the 15 colors used
+for {cmd:p1} to {cmd:p15} in Stata's {helpb scheme s2:s2color} scheme.
+{cmd:s2} is the default palette.
+
+{marker s1}{...}
+{dlgtab:s1}
+
+{pstd}
+Palette {cmd:s1} ({stata colorpalette s1:view}) contains the colors used for
+{cmd:p1} to {cmd:p15} in Stata's {helpb scheme s1:s1color} scheme.
+
+{marker s1r}{...}
+{dlgtab:s1r}
+
+{pstd}
+Palette {cmd:s1r} ({stata colorpalette s1r:view}) contains the colors used for
+{cmd:p1} to {cmd:p15} in Stata's {helpb scheme s1:s1rcolor} scheme.
+
+{marker economist}{...}
+{dlgtab:economist}
+
+{pstd}
+Palette {cmd:economist} ({stata colorpalette economist:view}) contains the
+colors used for {cmd:p1} to {cmd:p15} in Stata's 
+{helpb scheme economist:economist} scheme.
+
+{marker mono}{...}
+{dlgtab:mono}
+
+{pstd}
+Palette {cmd:mono} ({stata colorpalette mono:view}) contains the gray scales
+used for {cmd:p1} to {cmd:p15} in Stata's monochrome schemes 
+({helpb scheme s2:s2mono}, {helpb scheme s1:s1mono}).
+
+{marker cblind}{...}
+{dlgtab:cblind}
+
+{pstd}
+The {cmd:cblind} palette ({stata colorpalette cblind:view}) contains
+colorblind-friendly colors suggested by 
+{browse "http://jfly.iam.u-tokyo.ac.jp/color/":Okabe and Ito (2002)},
+including gray as suggested at 
+{browse "http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette"}.
+The same colors are also used (in different order and using {cmd:gs10} for
+gray) in the {cmd:plotplainblind} and {cmd:plottigblind} schemes by
+{browse "http://www.stata-journal.com/article.html?article=gr0070":Bischof (2017b)}.  Type {bf:{stata colorpalette cblind, select(1 2 4 5 9 8 7 3 6)}}
+for a palette equivalent to the one used in {cmd:plotplainblind} and
+{bf:{stata colorpalette cblind, select(1 4 5 9 8 7 3 6)}} for
+{cmd:plottigblind}.
+
+{marker plottig}{...}
+{dlgtab:plottig}
+
+{pstd}
+Palette {cmd:plottig} ({stata colorpalette plottig:view}) contains the colors
+used for {cmd:p1} to {cmd:p15} in the {cmd:plottig} scheme by 
+{browse "http://www.stata-journal.com/article.html?article=gr0070":Bischof (2017b)}.
+Most of these colors are the same as the colors produced by the
+{helpb colorpalette##hue:hue} color generator with default options 
+({stata colorpalette hue:view}), although in different order.
+
+{marker 538}{...}
+{dlgtab:538}
+
+{pstd}
+Palette {cmd:538} ({stata colorpalette 538:view}) contains the colors used for
+{cmd:p1} to {cmd:p6}, background, labels, axes, etc., and confidence intervals
+in the {cmd:538} scheme by 
+{browse "http://ideas.repec.org/c/boc/bocode/s458404.html":Bischof (2017a)}.
+The palette replicates colors used at {browse "http://fivethirtyeight.com"}.
+
+{marker mrc}{...}
+{dlgtab:mrc}
+
+{pstd}
+Palette {cmd:mrc} ({stata colorpalette mrc:view}) contains the colors used for
+{cmd:p1} to {cmd:p7} in the {cmd:mrc} scheme by 
+{browse "http://ideas.repec.org/c/boc/bocode/s457703.html":Morris (2013)}.
+These are colors according to guidelines by the UK Medical Research Council.
+
+{marker tfl}{...}
+{dlgtab:tfl}
+
+{pstd}
+Palette {cmd:tfl} ({stata colorpalette tfl:view}) contains the colors
+used for {cmd:p1} to {cmd:p8} in the {cmd:tfl} scheme by 
+{browse "http://ideas.repec.org/c/boc/bocode/s458103.html":Morris (2015)}.  The
+palette replicates Transport for London's corporate colors.
+
+{marker burd}{...}
+{dlgtab:burd}
+
+{pstd}
+Palette {cmd:burd} ({stata colorpalette burd:view}) contains the colors used
+for {cmd:p1} to {cmd:p9} and for confidence intervals in the {cmd:burd} scheme
+by {browse "http://ideas.repec.org/c/boc/bocode/s457623.html":Briatte (2013)}.
+The {cmd:p1} to {cmd:p9} colors are a selection of colors from various 
+{browse "http://colorbrewer2.org/":ColorBrewer} schemes.
+
+{marker lean}{...}
+{dlgtab:lean}
+
+{pstd}
+Palette {cmd:lean} ({stata colorpalette lean:view}) contains gray scales used
+for {cmd:p1area} to {cmd:p15area} in schemes {cmd:lean1} and {cmd:lean2} by
+{browse "http://www.stata-journal.com/article.html?article=gr0002":Juul (2003)}.
+
+{marker hue}{...}
+{dlgtab:hue}
+
+{pstd}
+The {cmd:hue} palette implements an algorithm that generates HCL colors with
+evenly spaced hues.  The palette has been modeled after function {cmd:hue_pal()}
+from R's {cmd:scales} package by Hadley Wickham (see 
+{browse "http://github.com/hadley/scales"}).  This is the default color scheme
+used by R's {cmd:ggplot2} for categorical data (see 
+{browse "http://ggplot2.tidyverse.org/reference/scale_hue.html"}).  The
+{cmd:hue} palette with default options produces the same colors as the
+{cmd:intense} scheme of the {helpb colorpalette##hcl:hcl} color generator.
+
+{pstd}
+Syntax:
+
+{p 8 15 2}
+{cmd:hue} [{cmd:,} {opt h:ue(h1 h2)} {opt c:hroma(c)} {opt l:uminance(l)} 
+{opt dir:ection(#)} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+Options:
+
+{phang}
+{opt hue(h1 h2)} sets the range of hues on the 360-degree color wheel.  The
+default is {bind:{cmd:hue(15 375)}}.  If the difference between start and end
+is a multiple of 360, end will be reduced by 360/n, where n is the number of
+requested colors (so that the space between the last and the first color is
+the same as between the other colors).
+
+{phang}
+{opt chroma(c)} sets the colorfulness (color intensity), with {it:c} >= 0.
+The default is {cmd:chroma(100)}.
+
+{phang}
+{opt luminance(l)} sets the brightness (amount of gray), with {it:l} in [0,
+100].  The default is {cmd:luminance(65)}.
+
+{phang}
+{opt direction(#)} determines the direction to travel around the color wheel.
+{cmd:direction(1)}, the default, travels clockwise; {cmd:direction(-1)}
+travels counter-clockwise.
+
+{pstd}
+Examples:
+
+{phang2}
+{bf:. {stata "colorpalette: hue, n(3) / hue, n(5) / hue, n(7) / hue, n(9)"}}{p_end}
+{phang2}
+{bf:. {stata colorpalette hue, n(5) hue(90 -30) chroma(50) luminance(70)}}
+
+{marker hcl}{...}
+{dlgtab:hcl}
+
+{pstd}
+The {cmd:hcl} palette is an HCL (Hue-Chroma-Luminance) color generator.  The
+implementation is based on R's {cmd:colorspace} package by 
+{browse "http://CRAN.R-project.org/package=colorspace":Ihaka et al. (2016)}.
+Also see {browse "http://dx.doi.org/10.1016/j.csda.2008.11.033":Zeileis, Hornik, and Murrell (2009)}
+and {browse "http://hclwizard.org"}.
+
+{pstd}
+Let {it:h1} and {it:h2} be two hues on the 360-degree color wheel, {it:c1} and
+{it:c2} two chroma levels, {it:l1} and {it:l2} two luminance levels, {it:p1}
+and {it:p2} two power parameters, and i an index from 1 to {it:n}, where
+{cmd:n} is the number of requested colors.  The HCL colors are then generated
+according to the following formulas.
+
+        Qualitative:
+            H = {it:h1} + ({it:h2} - {it:h1}) * (i - 1) / (n - 1)
+            C = {it:c1}
+            L = {it:l1}
+
+        Sequential:
+            H = {it:h2} - ({it:h2} - {it:h1}) * j
+            C = {it:c2} - ({it:c2} - {it:c1}) * j^p1
+            L = {it:l2} - ({it:l2} - {it:l1}) * j^p2
+            with j = (n - i) / (n - 1)
+
+        Diverging:
+            H = cond(j > 0, {it:h1}, {it:h2})
+            C = {it:c1} * abs(j)^p1
+            L = {it:l2} - ({it:l2} - {it:l1}) * abs(j)^p2
+            with j = (n - 2*j + 1) / (n - 1)
+
+{pstd}
+Syntax:
+
+{p 8 15 2}
+{cmd:hcl} [{cmd:,} {it:scheme} {opt h:ue(h1 [h2])} 
+{opt c:hroma(c1 [c2])} {opt l:uminance(l1 [l2])} 
+{opt pow:er(p1 [p2])} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+Options:
+
+{phang}
+{it:scheme} picks the type of color formula (qualitative, sequential, or
+diverging) and sets the default parameter values.  {it:scheme} can be one of
+the following ({cmd:qualitative} is the default):
+
+            Qualitative {...}
+({stata "colorpalette, lc(white) n(9): hcl, qual / hcl, intense / hcl, dark / hcl, light / hcl, pastel":view}){...}
+{col 32} {it:h1}              {it:h2}   {it:c1}   {it:l1}
+            {stata colorpalette hcl, qualitative:{bf:{ul:qual}itative}}{col 32} 15  {it:h1}+360*(n-1)/n   60   70
+            {stata colorpalette hcl, intense:{bf:intense}}{*          }{col 32} 15  {it:h1}+360*(n-1)/n  100   65
+            {stata colorpalette hcl, dark:{bf:dark}}{*                }{col 32} 15  {it:h1}+360*(n-1)/n   80   60
+            {stata colorpalette hcl, light:{bf:light}}{*              }{col 32} 15  {it:h1}+360*(n-1)/n   50   80
+            {stata colorpalette hcl, pastel:{bf:pastel}}{*            }{col 32} 15  {it:h1}+360*(n-1)/n   35   85
+
+            Sequential {...}
+({stata "colorpalette, n(9): hcl, blues / hcl, greens / hcl, grays / hcl, oranges / hcl, purples / hcl, reds / hcl, heat / hcl, heat2 / hcl, terrain / hcl, terrain2 / hcl, viridis / hcl, plasma / hcl, redblue":view}){...}
+{col 32} {it:h1}   {it:h2}   {it:c1}   {it:c2}   {it:l1}   {it:l2}   {it:p1}   p2
+            {stata colorpalette hcl, sequential:{bf:{ul:seq}uential}}  {col 32}260   {it:h1}   80   10   25   95    1   p1
+            {stata colorpalette hcl, blues:{bf:blues}}{*              }{col 32}260   {it:h1}   80   10   25   95    1   p1
+            {stata colorpalette hcl, greens:{bf:greens}}{*            }{col 32}145  125   80   10   25   95    1   p1
+            {stata colorpalette hcl, grays:{bf:grays}}{*              }{col 32}  0   {it:h1}    0    0   15   95    1   p1
+            {stata colorpalette hcl, oranges:{bf:oranges}}{*          }{col 32} 40   {it:h1}  100   10   50   95    1   p1
+            {stata colorpalette hcl, purples:{bf:purples}}{*          }{col 32}280   {it:h1}   70   10   20   95    1   p1
+            {stata colorpalette hcl, reds:{bf:reds}}{*                }{col 32} 10   20   80   10   25   95    1   p1
+            {stata colorpalette hcl, heat:{bf:heat}}{*                }{col 32}  0   90  100   30   50   90  0.2  1.0
+            {stata colorpalette hcl, heat2:{bf:heat2}}{*              }{col 32}  0   90   80   30   30   90  0.2  2.0
+            {stata colorpalette hcl, terrain:{bf:{ul:ter}rain}}{*     }{col 32}130    0   80    0   60   95  0.1  1.0
+            {stata colorpalette hcl, terrain2:{bf:terrain2}}{*        }{col 32}130   30   65    0   45   90  0.5  1.5
+            {stata colorpalette hcl, viridis:{bf:viridis}}{*          }{col 32}300   75   35   95   15   90  0.8  1.2
+            {stata colorpalette hcl, plasma:{bf:plasma}}{*            }{col 32}100   {it:h1}   60  100   15   95  2.0  0.9
+            {stata colorpalette hcl, redblue:{bf:redblue}}{*          }{col 32}  0 -100   80   40   40   75  1.0  1.0
+
+            Diverging {...}
+({stata "colorpalette, n(9): hcl, bluered / hcl, bluered2 / hcl, bluered3 / hcl, greenorange / hcl, browngreen / hcl, pinkgreen / hcl, purplegreen":view}){...}
+{col 32} {it:h1}   {it:h2}   {it:c1}   {it:l1}   {it:l2}   {it:p1}   p2
+            {stata colorpalette hcl, diverging:{bf:{ul:div}erging}}    {col 32}260    0   80   30   95    1   p1
+            {stata colorpalette hcl, bluered:{bf:bluered}}{*          }{col 32}260    0   80   30   95    1   p1
+            {stata colorpalette hcl, bluered2:{bf:bluered2}}{*        }{col 32}260    0  100   50   95    1   p1
+            {stata colorpalette hcl, bluered3:{bf:bluered3}}{*        }{col 32}180  330   60   75   95    1   p1
+            {stata colorpalette hcl, greenorange:{bf:greenorange}}{*  }{col 32}130   45  100   70   95    1   p1
+            {stata colorpalette hcl, browngreen:{bf:browngreen}}{*    }{col 32} 55  160   60   35   95    1   p1
+            {stata colorpalette hcl, pinkgreen:{bf:pinkgreen}}{*      }{col 32}340  128   90   35   95    1   p1
+            {stata colorpalette hcl, purplegreen:{bf:purplegreen}}{*  }{col 32}300  128   60   30   95    1   p1
+
+{phang}
+{opt hue(h1 [h2])} overwrites the default values for {it:h1} and {it:h2} that
+determine the range of hues on the 360-degree color wheel.
+
+{phang}
+{opt chroma(c1 [c2])} overwrites the default values for {it:c1} and {it:c2},
+with {it:c#} >= 0.  {it:c1} and {it:c2} determine the colorfulness (color
+intensity).
+
+{phang}
+{opt luminance(l1 [l2])} overwrites the default values for {it:l1} and
+{it:l2}, with {it:l#} in [0, 100].  {it:l1} and {it:l2} determine the
+brightness (amount of gray).
+
+{phang}
+{opt power(p1 [p2])} overwrites the default values for {it:p1} and {it:p2},
+with {it:p#} > 0.  {it:p1} and {it:p2} determine the shape of the transition
+between chroma and luminance levels.  For linear transitions, set {it:p#}=1;
+{it:p#}>1 makes the transition faster; {it:p#}<1 makes the transition slower.
+
+{marker hsv}{...}
+{dlgtab:hsv}
+
+{pstd}
+The {cmd:hsv} palette is an HSV (Hue-Saturation-Value) color generator.  The
+implementation is partially based on R's {cmd:grDevices} package (which is
+part of the R core) and partially on {cmd:colorspace} by 
+{browse "http://CRAN.R-project.org/package=colorspace":Ihaka et al. (2016)}.
+
+{pstd}
+Let {it:h1} and {it:h2} be two hues on the 360-degree color wheel, {it:s1} and
+{it:s2} two saturation levels, {it:v1} and {it:v2} two value levels, {it:p1}
+and {it:p2} two power parameters, and i an index from 1 to {it:n}, where
+{it:n} is the number of requested colors.  The HSV colors are then generated
+according to the following formulas.
+
+        Qualitative:
+            H = {it:h1} + ({it:h2} - {it:h1}) * (i - 1) / (n - 1)
+            S = {it:s1}
+            V = {it:v1}
+
+        Sequential:
+            H = {it:h2} - ({it:h2} - {it:h1}) * j
+            S = {it:s2} - ({it:s2} - {it:s1}) * j^p1
+            V = {it:v2} - ({it:v2} - {it:v1}) * j^p2
+            with j = (n - i) / (n - 1)
+
+        Diverging:
+            H = cond(j > 0, {it:h1}, {it:h2})
+            S = {it:s1} * abs(j)^p1
+            V = {it:v2} - ({it:v2} - {it:v1}) * abs(j)^p2
+            with j = (n - 2*j + 1) / (n - 1)
+
+{pstd}
+Syntax:
+
+{p 8 15 2}
+{cmd:hsv} [{cmd:,} {it:scheme} {opt h:ue(h1 [h2])}
+{opt sat:uration(s1 [s2])} {opt val:ue(v1 [v2])}
+{opt pow:er(p1 [p2])} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+Options:
+
+{phang}
+{it:scheme} picks the type of color formula (qualitative, sequential, or
+diverging) and sets the default parameter values.  {it:scheme} can be one of
+the following ({cmd:qualitative} is the default):
+
+            Qualitative {...}
+({stata "colorpalette, lc(white) n(9): hsv, qual / hsv, intense / hsv, dark / hsv, light / hsv, pastel / hsv, rainbow":view}){...}
+{col 32} {it:h1}              {it:h2}   {it:s1}   {it:v1}
+            {stata colorpalette hsv, qualitative:{bf:{ul:qual}itative}}{col 32} 15  {it:h1}+360*(n-1)/n   .4  .85
+            {stata colorpalette hsv, intense:{bf:intense}}{*          }{col 32} 15  {it:h1}+360*(n-1)/n   .6  .9
+            {stata colorpalette hsv, dark:{bf:dark}}{*                }{col 32} 15  {it:h1}+360*(n-1)/n   .6  .7
+            {stata colorpalette hsv, light:{bf:light}}{*              }{col 32} 15  {it:h1}+360*(n-1)/n   .3  .9
+            {stata colorpalette hsv, pastel:{bf:pastel}}{*            }{col 32} 15  {it:h1}+360*(n-1)/n   .2  .9
+            {stata colorpalette hsv, rainbow:{bf:{ul:rain}bow}}{*     }{col 32} 15  {it:h1}+360*(n-1)/n    1   1
+
+            Sequential {...}
+({stata "colorpalette, n(9): hsv, blues / hsv, greens / hsv, grays / hsv, oranges / hsv, purples / hsv, reds / hsv, heat / hsv, terrain":view}){...}
+{col 32} {it:h1}   {it:h2}   {it:s1}   {it:s2}   {it:v1}   {it:v2}   {it:p1}   p2
+            {stata colorpalette hsv, sequential:{bf:{ul:seq}uential}}  {col 32}240   {it:h1}   .8  .05   .6   1   1.2   p1
+            {stata colorpalette hsv, blues:{bf:blues}}{*              }{col 32}240   {it:h1}   .8  .05   .6   1   1.2   p1
+            {stata colorpalette hsv, greens:{bf:greens}}{*            }{col 32}140  120   1   .1    .3   1   1.2   p1
+            {stata colorpalette hsv, grays:{bf:grays}}{*              }{col 32}  0   {it:h1}   0    0    .1  .95  1.0   p1
+            {stata colorpalette hsv, oranges:{bf:oranges}}{*          }{col 32} 30   {it:h1}   1   .1    .9   1   1.2   p1
+            {stata colorpalette hsv, purples:{bf:purples}}{*          }{col 32}270   {it:h1}   1   .1    .6   1   1.2   p1
+            {stata colorpalette hsv, reds:{bf:reds}}{*                }{col 32}  0   20   1   .1    .6   1   1.2   p1
+            {stata colorpalette hsv, heat:{bf:heat}}{*                }{col 32}  0   60   1   .2     1   1   0.3   p1
+            {stata colorpalette hsv, terrain:{bf:{ul:ter}rain}}{*     }{col 32}120    0   1    0    .65 .95  0.7  1.5
+
+            Diverging {...}
+({stata "colorpalette, n(9): hsv, bluered / hsv, bluered2 / hsv, bluered3 / hsv, greenorange / hsv, browngreen / hsv, pinkgreen / hsv, purplegreen":view}){...}
+{col 32} {it:h1}   {it:h2}   {it:s1}   {it:v1}   {it:v2}   {it:p1}   p2
+            {stata colorpalette hsv, diverging:{bf:{ul:div}erging}}    {col 32}240    0   .8   .6  .95  1.2   p1
+            {stata colorpalette hsv, bluered:{bf:bluered}}{*          }{col 32}240    0   .8   .6  .95  1.2   p1
+            {stata colorpalette hsv, bluered2:{bf:bluered2}}{*        }{col 32}240    0   .6   .8  .95  1.2   p1
+            {stata colorpalette hsv, bluered3:{bf:bluered3}}{*        }{col 32}175  320   .6   .8  .95  1.2   p1
+            {stata colorpalette hsv, greenorange:{bf:greenorange}}{*  }{col 32}130   40   1    .8  .95  1.2   p1
+            {stata colorpalette hsv, browngreen:{bf:browngreen}}{*    }{col 32} 40  150   .8   .6  .95  1.2   p1
+            {stata colorpalette hsv, pinkgreen:{bf:pinkgreen}}{*      }{col 32}330  120   .9   .6  .95  1.2   p1
+            {stata colorpalette hsv, purplegreen:{bf:purplegreen}}{*  }{col 32}290  120   .7   .5  .95  1.2   p1
+
+{phang}
+{opt hue(h1 [h2])} overwrites the default values for {it:h1} and {it:h2} that
+determine the range of hues on the 360-degree color wheel.
+
+{phang}
+{opt saturation(s1 [s2])} overwrites the default values for {it:s1} and
+{it:s2}, with {it:s#} in [0, 1].  {it:s1} and {it:s2} determine the
+colorfulness (color intensity).
+
+{phang}
+{opt value(v1 [v2])} overwrites the default values for {it:v1} and {it:v2},
+with {it:v#} in [0, 1].  {it:l1} and {it:l2} determine the brightness (amount
+of gray).
+
+{phang}
+{opt power(p1 [p2])} overwrites the default values for {it:p1} and {it:p2},
+with {it:p#} > 0.  {it:p1} and {it:p2} determine the shape of the transition
+between saturation and value levels.  For linear transitions, set {it:p#}=1;
+{it:p#}>1 makes the transition faster; {it:p#}<1 makes the transition slower.
+
+{marker cbrew}{...}
+{dlgtab:ColorBrewer}
+
+{pstd}
+ColorBrewer is a set of color schemes developed by Brewer, Hatchard, and
+Harrower ([2003]; also see Brewer [2015]).  The colors are licensed under
+Apache License Version 2.0; see the copyright notes at 
+{browse "http://www.personal.psu.edu/cab38/ColorBrewer/ColorBrewer_updates.html"}.
+For more information on ColorBrewer, also see 
+{browse "http://colorbrewer2.org"}.  The RGB values for the implementation of
+the colors in {cmd:colorpalette} have been taken from the Excel spreadsheet
+provided at 
+{browse "http://www.personal.psu.edu/cab38/ColorBrewer/ColorBrewer_RGB.html"}.
+The CMYK values have been taken from file {cmd:cb.csv} provided at 
+{browse "http://github.com/axismaps/colorbrewer/":GitHub}.  ColorBrewer
+palettes for Stata are also provided by
+{browse "http://github.com/matthieugomez/stata-colorscheme":Gomez (2015)} and
+by 
+{browse "http://ideas.repec.org/c/boc/bocode/s458050.html":Buchanan (2015)}.
+
+{pstd}The syntax for the ColorBrewer palettes is
+
+{p 8 15 2}
+{it:scheme} [{cmd:,} {cmd:cmyk} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+where {it:scheme} is one of the following:
+
+{p2colset 13 28 30 2}{...}
+{p2col:Qualitative ({stata "colorpalette, lc(black): Accent / Dark2 / Paired / Pastel1 / Pastel2 / Set1 / Set2 / Set3":view})}{p_end}
+{p2col:{stata colorpalette Accent:{bf:Accent}}}8 accented colors for qualitative data{p_end}
+{p2col:{stata colorpalette Dark2:{bf:Dark2}}}8 dark colors for qualitative data{p_end}
+{p2col:{stata colorpalette Paired:{bf:Paired}}}12 paired colors for qualitative data{p_end}
+{p2col:{stata colorpalette Pastel1:{bf:Pastel1}}}9 pastel colors for qualitative data{p_end}
+{p2col:{stata colorpalette Pastel2:{bf:Pastel2}}}8 pastel colors for qualitative data{p_end}
+{p2col:{stata colorpalette Set1:{bf:Set1}}}9 colors for qualitative data{p_end}
+{p2col:{stata colorpalette Set2:{bf:Set2}}}8 colors for qualitative data{p_end}
+{p2col:{stata colorpalette Set3:{bf:Set3}}}12 colors for qualitative data{p_end}
+
+{p2col:Sequential (single hue) ({stata "colorpalette: Blues / Greens / Greys / Oranges / Purples / Reds":view})}{p_end}
+{p2col:{stata colorpalette Blues:{bf:Blues}}}light blue to blue (3-9 colors){p_end}
+{p2col:{stata colorpalette Greens:{bf:Greens}}}light green to green (3-9 colors){p_end}
+{p2col:{stata colorpalette Greys:{bf:Greys}}}light gray to gray (3-9 colors){p_end}
+{p2col:{stata colorpalette Oranges:{bf:Oranges}}}light orange to orange (3-9 colors){p_end}
+{p2col:{stata colorpalette Purples:{bf:Purples}}}light purple to purple (3-9 colors){p_end}
+{p2col:{stata colorpalette Reds:{bf:Reds}}}light red to red (3-9 colors){p_end}
+
+{p2col:Sequential (multihue) ({stata "colorpalette: BuGn / PuBu / GnBu / OrRd / PuBu / PuBuGn / PuRd / RdPu / YlGn / YlGnBu / YlOrBr / YlOrRd":view})}{p_end}
+{p2col:{stata colorpalette BuGn:{bf:BuGn}}}light blue to green (3-9 colors){p_end}
+{p2col:{stata colorpalette BuPu:{bf:BuPu}}}light blue to purple (3-9 colors){p_end}
+{p2col:{stata colorpalette GnBu:{bf:GnBu}}}light green to blue (3-9 colors){p_end}
+{p2col:{stata colorpalette OrRd:{bf:OrRd}}}light orange to red (3-9 colors){p_end}
+{p2col:{stata colorpalette PuBu:{bf:PuBu}}}light purple to blue (3-9 colors){p_end}
+{p2col:{stata colorpalette PuBuGn:{bf:PuBuGn}}}light purple over blue to green (3-9 colors){p_end}
+{p2col:{stata colorpalette PuRd:{bf:PuRd}}}light purple to red (3-9 colors){p_end}
+{p2col:{stata colorpalette RdPu:{bf:RdPu}}}light red to purple (3-9 colors){p_end}
+{p2col:{stata colorpalette YlGn:{bf:YlGn}}}light yellow to green (3-9 colors){p_end}
+{p2col:{stata colorpalette YlGnBu:{bf:YlGnBu}}}light yellow over green to blue (3-9 colors){p_end}
+{p2col:{stata colorpalette YlOrBr:{bf:YlOrBr}}}light yellow over orange to brown (3-9 colors){p_end}
+{p2col:{stata colorpalette YlOrRd:{bf:YlOrRd}}}light yellow over orange to red (3-9 colors){p_end}
+
+{p2col:Diverging ({stata "colorpalette: BrBG / PRGn / PiYG / PuOr / RdBu / RdGy / RdYlBu / RdYlGn / Spectral":view})}{p_end}
+{p2col:{stata colorpalette BrBG:{bf:BrBG}}}brown to green, light gray mid (3-11 colors){p_end}
+{p2col:{stata colorpalette PiYG:{bf:PiYG}}}pink to green, light gray mid (3-11 colors){p_end}
+{p2col:{stata colorpalette PRGn:{bf:PRGn}}}purple to green, light gray mid (3-11 colors){p_end}
+{p2col:{stata colorpalette PuOr:{bf:PuOr}}}purple to orange, light gray mid (3-11 colors){p_end}
+{p2col:{stata colorpalette RdBu:{bf:RdBu}}}red to blue, light gray mid (3-11 colors){p_end}
+{p2col:{stata colorpalette RdGy:{bf:RdGy}}}red to gray, white mid (3-11 colors){p_end}
+{p2col:{stata colorpalette RdYlBu:{bf:RdYlBu}}}red to blue, yellow mid (3-11 colors){p_end}
+{p2col:{stata colorpalette RdYlGn:{bf:RdYlGn}}}red to green, yellow mid (3-11 colors){p_end}
+{p2col:{stata colorpalette Spectral:{bf:Spectral}}}red - orange - yellow - green - blue (3-11 colors){p_end}
+
+{phang}
+Option {cmd:cmyk} requests the CMYK variant of the scheme.  The default is to
+use the RGB variant.
+
+{marker ptol}{...}
+{dlgtab:ptol}
+
+{pstd}
+The {cmd:ptol} collection provides color schemes suggested by 
+{browse "https://personal.sron.nl/~pault/data/colourschemes.pdf":Tol (2018)}.
+The syntax is
+
+{p 8 15 2}
+{cmd:ptol} [{cmd:,} {it:scheme} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+where {it:scheme} is one of the following
+({stata "colorpalette: ptol, n(3) / ptol, n(5) / ptol, n(9) / ptol, div n(3) / ptol, div n(5) / ptol, div n(9) / ptol, rain n(4) / ptol, rain n(6) / ptol, rain n(8)":view}):
+
+{p2colset 13 28 30 2}{...}
+{p2col:{stata colorpalette ptol, qualitative:{bf:{ul:qual}itative}}}1-12 qualitative colors; the default{p_end}
+{p2col:{stata colorpalette ptol, diverging:{bf:{ul:div}erging}}}3-11 diverging colors; very similar to reverse {cmd:RdYlBu}{p_end}
+{p2col:{stata colorpalette ptol, rainbow:{bf:{ul:rain}bow}}}4-12 rainbow colors{p_end}
+
+{marker d3}{...}
+{dlgtab:d3}
+
+{pstd}
+The {cmd:d3} collection provides color schemes from 
+{browse "http://d3js.org/":D3.js}, using the color values found at
+{browse "https://github.com/d3/d3-scale/blob/master/README.md#category-scales"}.
+The syntax is
+
+{p 8 15 2}
+{cmd:d3} [{cmd:,} {it:scheme} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+where {it:scheme} is one of the following
+({stata "colorpalette: d3, 10 / d3, 20 / d3, 20b / d3, 20c":view}):
+
+{p2colset 13 20 22 2}{...}
+{p2col:{stata colorpalette d3, 10:{bf:10}}}10 categorical colors; the default; same as first 10 colors in {cmd:tableau}{p_end}
+{p2col:{stata colorpalette d3, 20:{bf:20}}}20 categorical colors in pairs; same colors as in {cmd:tableau}, but ordered differently{p_end}
+{p2col:{stata colorpalette d3, 20b:{bf:20b}}}20 categorical colors in groups
+of 4{p_end}
+{p2col:{stata colorpalette d3, 20c:{bf:20c}}}20 categorical colors in groups
+of 4{p_end}
+
+{marker lin}{...}
+{dlgtab:lin}
+
+{pstd}
+The {cmd:lin} collection provides semantic color schemes suggested by
+{browse "http://dx.doi.org/10.1111/cgf.12127":Lin et al. (2013)}.  The values
+of the semantic colors have been taken from the source code of the
+{cmd:brewscheme} package by
+{browse "http://ideas.repec.org/c/boc/bocode/s458050.html":Buchanan (2015)}
+({cmd:brewextra.ado}, 
+version 1.0.0, 21 March 2016); the values of the {cmd:tableau} palette 
+have been taken from code provided by the authors at
+{browse "http://github.com/StanfordHCI/semantic-colors":GitHub}.
+
+{pstd}The syntax is
+
+{p 8 15 2}
+{cmd:lin} [{cmd:,} {it:scheme} {opt a:lgorithm} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+where {it:scheme} is one of the following
+
+{p2colset 13 28 30 2}{...}
+{p2col:{stata colorpalette lin, tableau rows(10):{bf:{ul:tab}leau}}}20 categorical colors; the default{p_end}
+{p2col:{stata colorpalette lin, carcolor:{bf:{ul:car}color}}}6 car colors{p_end}
+{p2col:{stata colorpalette lin, food:{bf:food}}}7 food colors{p_end}
+{p2col:{stata colorpalette lin, features:{bf:{ul:feat}ures}}}5 feature colors{p_end}
+{p2col:{stata colorpalette lin, activities:{bf:{ul:act}ivities}}}5 activity colors{p_end}
+{p2col:{stata colorpalette lin, fruits:{bf:{ul:fruit}s}}}7 fruit colors{p_end}
+{p2col:{stata colorpalette lin, vegetables:{bf:{ul:veg}etables}}}7 vegetable colors{p_end}
+{p2col:{stata colorpalette lin, drinks:{bf:{ul:drink}s}}}7 drinks colors{p_end}
+{p2col:{stata colorpalette lin, brands:{bf:{ul:brand}s}}}7 brands colors{p_end}
+
+{phang}
+Option {opt algorithm} requests algorithm-selected colors.  The default is
+to return the colors selected by Turkers (in case of {cmd:carcolor},
+{cmd:food}, {cmd:features}, {cmd:activities}) or by the expert (in case of
+{cmd:fruits}, {cmd:vegetables}, {cmd:drinks}, {cmd:brands}).  {opt algorithm}
+has no effect for {cmd:tableau}.
+
+{marker spmap}{...}
+{dlgtab:spmap}
+
+{pstd}
+The {cmd:spmap} collection provides color schemes from the {cmd:spmap} package
+by {browse "http://ideas.repec.org/c/boc/bocode/s456812.html":Pisati (2007)}.
+The implementation is based on code from {cmd:spmap_color.ado} (version 1.3.0,
+13 March 2017).
+
+{pstd}
+The syntax is
+
+{p 8 15 2}
+{cmd:spmap} [{cmd:,} {it:scheme} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+where {it:scheme} is one of the following
+({stata "colorpalette, n(16) lc(white): spmap, bl / spmap, green / spmap, grey / spmap, red / spmap, rain / spmap, heat / spmap, ter / spmap, top":view}):
+
+{p2colset 13 28 30 2}{...}
+{p2col:{stata colorpalette spmap, blues:{bf:{ul:bl}ues}}}2-99 light blue to blue colors; the default{p_end}
+{p2col:{stata colorpalette spmap, greens:{bf:{ul:green}s}}}2-99 light green to green colors{p_end}
+{p2col:{stata colorpalette spmap, greys:{bf:{ul:grey}s}}}2-99 light gray to black colors{p_end}
+{p2col:{stata colorpalette spmap, reds:{bf:{ul:red}s}}}2-99 light red to red colors{p_end}
+{p2col:{stata colorpalette spmap, rainbow:{bf:{ul:rain}bow}}}2-99 rainbow colors{p_end}
+{p2col:{stata colorpalette spmap, heat:{bf:heat}}}2-16 heat colors{p_end}
+{p2col:{stata colorpalette spmap, terrain:{bf:{ul:ter}rain}}}2-16 terrain colors{p_end}
+{p2col:{stata colorpalette spmap, topological:{bf:{ul:top}ological}}}2-16 topological colors{p_end}
+
+{marker sfso}{...}
+{dlgtab:sfso}
+
+{pstd}
+The {cmd:sfso} collection provides color schemes by the Swiss Federal
+Statistical Office (using hex and CMYK codes found in Bundesamt f{c u:}r
+Statistik 2017).  The syntax is
+
+{p 8 15 2}
+{cmd:sfso} [{cmd:,} {it:scheme} {cmd:cmyk} {help colorpalette##opts:{it:palette_options}}]
+
+{pstd}
+where {it:scheme} is one of the following:
+
+{p2colset 13 28 30 2}{...}
+{p2col:Sequential ({stata "colorpalette: sfso, br / sfso, or / sfso, red / sfso, pi / sfso, pu / sfso, vi / sfso, bl / sfso, ltbl / sfso, tu / sfso, green / sfso, ol / sfso, black":view})}{p_end}
+{p2col:{stata colorpalette sfso, brown:{bf:{ul:br}own}}}dark brown to light brown (6 colors){p_end}
+{p2col:{stata colorpalette sfso, orange:{bf:{ul:or}ange}}}dark orange to light orange (6 colors){p_end}
+{p2col:{stata colorpalette sfso, red:{bf:red}}}dark red to light red (6 colors){p_end}
+{p2col:{stata colorpalette sfso, pink:{bf:{ul:pi}nk}}}dark pink to light pink (6 colors){p_end}
+{p2col:{stata colorpalette sfso, purple:{bf:{ul:pu}rple}}}dark purple to light purple (6 colors){p_end}
+{p2col:{stata colorpalette sfso, violet:{bf:{ul:vi}olet}}}dark violet to light violet (6 colors){p_end}
+{p2col:{stata colorpalette sfso, blue:{bf:{ul:bl}ue}}}dark blue to light blue (7 colors); the default{p_end}
+{p2col:{stata colorpalette sfso, ltblue:{bf:{ul:ltbl}ue}}}lighter version of {cmd:blue} (6 colors){p_end}
+{p2col:{stata colorpalette sfso, turquoise:{bf:{ul:tu}rquoise}}}dark turquoise to light turquoise (6 colors){p_end}
+{p2col:{stata colorpalette sfso, green:{bf:green}}}dark green to light green (6 colors){p_end}
+{p2col:{stata colorpalette sfso, olive:{bf:{ul:ol}ive}}}dark olive to light olive (6 colors){p_end}
+{p2col:{stata colorpalette sfso, black:{bf:black}}}dark gray to light gray (6 colors){p_end}
+
+{p2col:Semantic ({stata "colorpalette: sfso, parties / sfso, languages / sfso, votes":view})}{p_end}
+{p2col:{stata colorpalette sfso, parties:{bf:parties}}}colors used by the SFSO for Swiss parties (11 colors){p_end}
+{p2col:{stata colorpalette sfso, languages:{bf:{ul:lang}uages}}}colors used by the SFSO for languages (5 colors){p_end}
+{p2col:{stata colorpalette sfso, votes:{bf:{ul:vote}s}}}colors used by the SFSO for results from votes (10 colors){p_end}
+
+{phang}
+Option {cmd:cmyk} requests the CMYK variant of the scheme.  The default is
+to use the RGB variant.
+
+{marker colorlist}{...}
+{dlgtab:colorlist}
+
+{pstd}
+Instead of using a named color palette, you can provide a custom palette by
+specifying a list of {help colorstyle##colorstyle:{it:colorstyles}} (named
+colors, RBG colors specified as {cmd:"}{it:# # #}{cmd:"}, CMYK colors
+specified as {cmd:"}{it:# # # #}{cmd:"}, or HSV colors specified as {cmd:"hsv}
+{it:# # #}{cmd:"}).  For example (navy in four different ways),
+
+{phang2}
+{bf:. {stata colorpalette navy "26 71 111" "85 40 0 144" "hsv 209 .766 .435"}}
+
+{pstd}
+It is also possible to specify RGB colors using their six-digit hex codes 
+(or three-digit abbreviations; see
+{browse "http://en.wikipedia.org/wiki/Web_colors"}
+for background information; some websites providing collections of colors are
+{browse "http://www.w3schools.com/colors/"},
+{browse "http://htmlcolorcodes.com/"}, or
+{browse "http://www.color-hex.com/"}).  Start the color specification
+with a hash in this case.  The hex codes will be translated to RGB.  For
+example,
+
+{phang2}
+{bf:. {stata colorpalette #30C #3300cc #FFC0CB #ffc0cb}}
+
+{pstd}
+Furthermore, HCL colors can be provided as {cmd:"hcl} {it:# # #}{cmd:"}, where
+the first number specifies the hue (dominant wavelength in degrees of the
+360-degree color wheel), the second number specifies the chroma (colorfulness,
+color intensity; {it:#} >= 0), and the third number specifies the luminance
+(brightness, amount of gray; {it:#} in [0, 100]).  HCL colors will be
+translated to RGB.  For example,
+
+{phang2}
+{bf:. {stata colorpalette "hcl 0 100 70" "hcl 120 100 70" "hcl 240 100 70"}}
+
+{pstd}
+Color intensity adjustment may be requested by adding adjustment factor
+{cmd:*}{it:#} to a color.  For example (original navy and navy with 70% 
+intensity in 3 different ways),
+
+{phang2}
+{bf:. {stata colorpalette navy navy*.7 "26 71 111*.7" #1a476f*.7}}
+
+{pstd}
+Furthermore, since Stata 15, colors may be complemented by opacity specified
+as {cmd:%}{it:#}.  For example (original navy and navy with 80% opacity in 3
+different ways),
+
+{phang2}
+{bf:. {stata colorpalette navy navy%80 "26 71 111%80" #1a476f%80}}
+
+{pstd}
+Intensity and opacity can be combined:
+
+{phang2}
+{bf:. {stata colorpalette navy navy*.7 navy%80 navy*.7%80}}
+
+{marker myname}{...}
+{dlgtab:myname}
+
+{pstd}
+A personal named palette can be provided in the form of a program called
+{cmd:colorpalette_}{it:myname}, where {it:myname} is the name of the palette.
+Palette {it:myname} will then be available to {cmd:colorpalette} like any
+other palette.  Your program should return the color definitions as a
+comma-separated list in local macro {cmd:P}.  In addition, you may provide a
+comma-separated list of descriptions in local macro {cmd:I}.  For example, the
+following program provides a palette called {cmd:bootstrap3} containing the
+semantic colors used for buttons in 
+{browse "http://getbootstrap.com/docs/3.3":Bootstrap v3.3}:
+
+        {com}program colorpalette_bootstrap3
+            c_local P #ffffff,#337ab7,#5cb85c,#5bc0de,#f0ad4e,#d9534f, ///
+                      #e6e6e6,#286090,#449d44,#31b0d5,#ec971f,#c9302c
+            c_local I default,primary,success,info,warning,danger,    ///
+	        default.focus,primary.focus,success.focus,info.focus, ///
+		warning.focus,danger.focus
+        end{txt}
+
+{pstd}
+After defining the program, you can, for example, type
+
+{phang2}
+{com}. colorpalette bootstrap3, rows(6){txt}
+
+{pstd}
+to view the palette.  More complicated definitions of palettes that take
+account of options are also possible.  See the palette definitions 
+{bf:{stata viewsource colorpalette.ado:colorpalette.ado}} for examples.
+
+
+{marker examples}{...}
+{title:Example}
+
+{pstd}
+Apart from viewing color palettes, {cmd:colorpalette} is useful for retrieving
+colors that can then be passed through to a {cmd:graph} command.  Here is an
+example of a contour plot using the {cmd:terrain} scheme from the {cmd:hcl}
+palette:
+
+{phang2}
+{bf:. {stata sysuse sandstone}}{p_end}
+{phang2}
+{bf:. {stata colorpalette hcl, terrain n(10) nograph}}{p_end}
+{phang2}
+{bf:. {stata twoway contour depth northing easting, levels(`r(n)') ccolors(`r(p)')}}
+
+
+{marker returns}{...}
+{title:Stored results}
+
+{pstd}
+{cmd:colorpalette} stores the following in {cmd:r()} (syntax 1 only):
+
+{synoptset 16 tabbed}{...}
+{p2col 5 16 20 2: Scalars}{p_end}
+{synopt:{cmd:r(n)}}number of returned colors{p_end}
+
+{synoptset 16 tabbed}{...}
+{p2col 5 16 20 2: Macros}{p_end}
+{synopt:{cmd:r(ptype)}}{cmd:color}{p_end}
+{synopt:{cmd:r(pname)}}name of palette or {cmd:custom}{p_end}
+{synopt:{cmd:r(pnote)}}additional information on palette (if provided){p_end}
+{synopt:{cmd:r(p)}}space-separated list of colors{p_end}
+{synopt:{cmd:r(p}{it:#}{cmd:)}}{it:#}th color{p_end}
+{synopt:{cmd:r(p}{it:#}{cmd:info)}}information of {it:#}th color (if provided){p_end}
+
+
+{marker references}{...}
+{title:References}
+
+{phang}
+Bischof, D. 2017a. g538schemes: Stata module to provide graphics schemes for
+{browse "http://fivethirtyeight.com"}. Statistical Software Components
+S458404, Department of Economics, Boston College.
+{browse "http://ideas.repec.org/c/boc/bocode/s458404.html"}.
+
+{phang}
+------. 2017b. {browse "http://www.stata-journal.com/article.html?article=gr0070":New graphic schemes for Stata: plotplain and plottig}.
+{it:Stata Journal} 17: 748-759.
+
+{phang}
+Brewer, C. A. 2015. {it:Designing Better Maps: A Guide for GIS Users}. 2nd ed. 
+Redlands, CA: Esri Press.
+
+{phang}
+Brewer, C. A., G. W. Hatchard, and M. A. Harrower. 2003. {browse "http://doi.org/10.1559/152304003100010929":ColorBrewer in print: A catalog of color schemes for maps}.
+{it:Cartography and Geographic Information Science} 30: 5-32.
+
+{phang}
+Briatte, F. 2013. scheme-burd: Stata module to provide a ColorBrewer-inspired
+graphics scheme with qualitative and blue-to-red diverging colors.
+Statistical Software Components S457623, Department of Economics, Boston
+College. {browse "http://ideas.repec.org/c/boc/bocode/s457623.html"}.
+
+{phang}
+Buchanan, B. 2015. brewscheme: Stata module for generating customized graph
+scheme files. Statistical Software Components S458050, Department of
+Economics, Boston College.
+{browse "http://ideas.repec.org/c/boc/bocode/s458050.html"}.
+
+{phang}
+Bundesamt f{c u:}r Statistik. 2017. Layoutrichtlinien. Gestaltungs und
+redaktionsrichtlinien f{c u:}r Publikationen, Tabellen und grafische 
+Assets. Technical Report Version 1.1.1, Bundesamt f{c u:}r Statistik, 
+Neuch{c a^}tel.
+
+{phang}
+Gomez, M. 2015. Stata command to generate color schemes.
+{browse "http://github.com/matthieugomez/stata-colorscheme"}.
+
+{phang}
+Ihaka, R., P. Murrell, K. Hornik, J. C. Fisher, R. Stauffer, and A. Zeileis.
+2016. colorspace: Color Space Manipulation. R package version 1.3-2.
+{browse "http://CRAN.R-project.org/package=colorspace"}.
+
+{phang}
+Juul, S. 2003. {browse "http://www.stata-journal.com/article.html?article=gr0002":Lean mainstream schemes for Stata 8 graphics}. 
+{it:Stata Journal} 3: 295-301.
+
+{phang}
+Lin, S., J. Fortuna, C. Kulkarni, M. Stone, and J. Heer. 2013. {browse "http://dx.doi.org/10.1111/cgf.12127":Selecting semantically-resonant colors for data visualization}. 
+{it:Computer Graphics Forum} 32: 401-410.
+
+{phang}
+Morris, T. 2013. scheme-mrc: Stata module to provide graphics scheme for UK
+Medical Research Council. Statistical Software Components S457703, Department
+of Economics, Boston College.  
+{browse "http://ideas.repec.org/c/boc/bocode/s457703.html"}.
+
+{phang}
+------. 2015. scheme-tfl: Stata module to provide graph scheme, based on
+Transport for London's corporate colour pallette. Statistical Software
+Components S458103, Department of Economics, Boston College.
+{browse "http://ideas.repec.org/c/boc/bocode/s458103.html"}.
+
+{phang}
+Okabe, M., and K. Ito. 2002. Color universal design (CUD). How to make figures
+and presentations that are friendly to Colorblind people.
+{browse "http://jfly.iam.u-tokyo.ac.jp/color/"}.
+
+{phang}
+Pisati, M. 2007. spmap: Stata module to visualize spatial data.  Statistical
+Software Components S456812, Department of Economics, Boston College.
+{browse "http://ideas.repec.org/c/boc/bocode/s456812.html"}.
+
+{phang}
+Tol, P. 2018. Colour schemes. Technical Note SRON/EPS/TN/09-002, SRON. 
+{browse "https://personal.sron.nl/~pault/data/colourschemes.pdf"}.
+
+{phang}
+Zeileis, A., K. Hornik, and P. Murrell. 2009. 
+{browse "http://dx.doi.org/10.1016/j.csda.2008.11.033":Escaping RGBland: Selecting colors for statistical graphics}. 
+{it:Computational Statistics and Data Analysis} 53: 3259-3270.
+
+
+{marker citation}{...}
+{title:Citation}
+
+{pstd}
+Thanks for citing this software as follows:
+
+{pmore}
+Jann, B. 2018.
+{browse "http://www.stata-journal.com/article.html?article=gr0075":Color palettes for Stata graphics}.
+{it:Stata Journal} 18: 765-785.
+
+
+{marker author}{...}
+{title:Author}
+
+{pstd}
+Ben Jann{break}
+University of Bern{break}
+Bern, Switzerland{break}
+ben.jann@soz.unibe.ch
+
+
+{marker alsosee}{...}
+{title:Also see}
+
+{p 4 14 2}
+Article:  {it:Stata Journal}, volume 18, number 4: {browse "http://www.stata-journal.com/article.html?article=gr0075":gr0075}{p_end}
+
+{p 7 14 2}
+Help:  {helpb symbolpalette}, {helpb linepalette}, {helpb grstyle set} (if
+installed), 
+{manhelp graph G-2}, {manhelpi colorstyle G-4}{p_end}

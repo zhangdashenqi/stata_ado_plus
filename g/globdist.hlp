@@ -1,0 +1,151 @@
+{smcl}
+{* *! version march 2007}{...}
+{cmd:help globdist}
+{hline}
+
+{title:Title}
+
+{p2colset 5 17 22 2}{...}
+{p2col :{hi:globdist} {hline 2}}Determine distance between latitude & longitude coordinates, on a spherical world{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 16 2}
+{opt globdist} {help newvar} {ifin} {cmd:,} {opt lat0(# |...)} {opt lon0(# |...)} [{it:options}]
+
+{synoptset 36 tabbed}{...}
+{synopthdr}
+{synoptline}
+{syntab:Main}
+{synopt:{bf:lat0(}{it:#} | {it:scalar("name")} | {it:{help varname}}{bf:)}}reference latitude (number, scalar, or variable){p_end}
+{synopt:{bf:lon0(}{it:#} | {it:scalar("name")} | {it:{help varname}}{bf:)}}reference longitude (number, scalar, or variable){p_end}
+{synopt:{opth latv:ar(varname)}}name of variable with alternate latitudes, if not "lat"{p_end}
+{synopt:{opth lonv:ar(varname)}}name of variable with alternate longitudes, if not "lon"{p_end}
+{synopt:{opt m:iles}}compute distances in miles instead of kilometers{p_end}
+{synopt:{opt worldrad:ius(#)}}radius of spherical world in kilometers {p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd}
+{cmd:globdist} uses geographic data on latitudes and longitudes to determine the
+distance between a 'reference' coordinate and 'alternative' coordinates.  The reference
+coordinate is specified in {opt lat0()} and {opt lon0()}, and may be a constant or
+may vary across observations.  The latitudes and longitudes of the alternative
+coordinates must exist in variables lat and lon (or specify other names), and the
+resulting distances are placed in a new variable.  The observations are treated
+as being on the surface of a planet, by default the Earth, which is approximated as a perfect
+sphere.  The distance is computed in kilometers unless you use the miles option.  
+
+{pstd}
+Results depend on the world-radius assumed for Earth.  By default
+the world-radius is chosen to equal Earth's world-radius, from its center to sea level, at
+the mean latitude of (50% weight) the coordinate(s) specified in {opt lat0()} and {opt lon0()} and
+(50% weight) the data used for comparison latitudes and longitudes.  This result is returned as
+{bf:r(worldRadius)}.  Earth is thicker at the equators than at the poles, with a world-radius of 6378.135 km from
+center to equator but 6356.750 km from center to North and South Poles.  To
+keep the assumed world-radius constant across multiple calculations, use the {opt worldradius(#)}
+option to specify a radius in kilometers.  You can also use the {opt worldradius(#)} option to
+specify world-radii for planets other than Earth.  The world-radius option {it:must} be specified in
+kilometers even if the {opt miles} option is used, although {bf:r(worldRadius)} will be in miles if
+the {opt miles} option is used.
+
+{pstd}
+The program returns {bf:r(radius)} which is the radius used, and {bf:r(units)} which is
+"kilometers" or "miles".
+
+
+{title:Options}
+
+{dlgtab:Main}
+
+{phang}
+{bf:lat0(}{it:#} | {it:scalar("name")} | {it:{help varname}}{bf:)} and {bf:lon0(}{it:#} | {it:scalar("name")} | {it:{help varname}}{bf:)} specify the latitude and longitude, respectively, of the
+reference coordinate(s).  Each may be either a number, a reference to a scalar variable, or a variable.  In
+the case of a number or reference to a scalar, the reference coordinate is the same for all observations.  In
+the case of a variable, the reference coordinate may be different for each observation.
+
+{phang}
+{opth latvar(varname)} specifies the name of the variable containing the alternative latitudes.  By default the name is "lat".
+
+{phang}
+{opth lonvar(varname)} specifies the name of the variable containing the alternative longitudes.  By default the name is "lon".
+
+{phang}
+{opt miles} indicates that distances should be computed in miles.  (This does not affect the
+world-radius, which must always be specified in kilometers.)
+
+{phang}
+{opt worldradius(# |"auto")} specifies the world-radius, from the center of the sphere to its surface, on
+which distances across the globe are to be calculated.  The default option, "auto", uses the radius of Earth
+at the average latitude in the data.  The alternative is a number of kilometers.  Note that even if the {opt miles}
+option is specified, this number must still be entered in kilometers.
+
+
+{title:Remarks}
+
+{pstd}
+Use a plus sign for northern latitudes and a minus sign for southern
+latitudes.  Use a plus sign for eastern-hemisphere longitudes (as for Asia) and 
+a minus sign for western-hemisphere longitudes (as for the Americas).  All latitudes and
+longitudes are assumed to be measured in degrees, not degrees and
+minutes; decimal fractions must be out of 100 rather than out of 60.
+
+{pstd}
+Testing of this program has been limited.  Accuracy has not been checked for
+distances under 0.1 kilometer.
+
+{pstd}
+This is part of a suite of programs.  Program {helpb circnum} counts or sums across
+points within a specified circular radius on the sphere.  Program {helpb exlocs} helps
+when handling multiple locations per observation (it works somewhat like
+{helpb reshape}).
+
+
+{title:Revision History}
+
+{pstd}
+1. Version 2 (2007) added some options, including the ability to choose the world-radius,
+the automatic choice of world-radius, and the ability to use variables for {opt lat0()} and {opt lon0()}.  Version 1 (1999) assumed a world-radius of 6365 kilometers.
+
+
+{title:Examples}
+
+{phang}{cmd:. summarize lat lon} // Suppose variables lat and lon specify locations.
+
+{phang}{cmd:. globdist kmToBoston, lat0(42.37) lon0(-71.03)} // Kilometers from each location to Boston.
+
+{phang}{cmd:. globdist milesToBoston, lat0(42.37) lon0(-71.03) miles} // Miles from each location to Boston.
+
+{phang}{cmd:. summarize lat lon} // Suppose lat and lon still specify locations.
+
+{phang}{cmd:. summarize citylat citylon} // And suppose citylat and citylon give locations of various cities.
+
+{phang}{cmd:. globdist kmToCity, lat0(citylat) lon0(citylon)} // Kilometers from each location to corresponding city.
+
+{phang}{cmd:. summarize mylat mylon} // By default lat and lon specify locations; what if you have mylat and mylon?
+
+{phang}{cmd:. globdist kmToBoston, lat0(42.37) lon0(-71.03) latvar(mylat) lonvar(mylon)} // Kilometers from mylat-mylon location to Boston.
+
+{phang}{cmd:. return list} // Display world-radius assumed for perfect sphere, and its units of measurement.
+
+{phang}{cmd:. globdist kmOnMars, lat0(12.34) lon0(56.78) worldradius(3397)} // Distances on Mars.
+
+
+{title:Author}
+
+{p 4}Kenneth L. Simons{p_end}
+{p 4}Department of Economics {p_end}
+{p 4}Rensselaer Polytechnic Institute{p_end}
+{p 4}{browse "http://www.rpi.edu/~simonk"}{p_end}
+
+
+{title:Also see}
+
+{psee}
+Online:  {helpb circnum}, {helpb exlocs}  (if installed)
+

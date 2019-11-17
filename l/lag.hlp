@@ -1,0 +1,116 @@
+Generate lags, leads, and differences                           [STB-21: sts7.4]
+-------------------------------------
+
+
+	^lag^  [#] varlist [^, l^ags^(^#[^,^#[^,^...]]^) noso^rt ^s^uffix^(^str[^,^str[^,^...]]^)^]
+
+	^lead^ [#] varname [^, s^uffix^(^str^)^]
+
+	^dif^  [#] varname [^, s^uffix^(^str^)^]
+
+
+
+Description
+-----------
+
+^lag^ generates the lags of varname.  # specifies the number of lags to be gen-
+erated and 1 is assumed if # is not specified.  "^lag 2 gnp^" creates ^L.gnp^ and
+^L2.gnp^.  Alternatively, the number of lags can be specified with the ^lags()^
+option.  Only the ^lag^ command allows a varlist and the ^lags()^ option.
+
+^lead^ generates leads of varname.  # specifies the number of leads to be gen-
+erated and 1 is assumed if # is not specified.  "^lead 2 gnp^" creates ^F.gnp^ and
+^F2.gnp^.
+
+In either case, # may be specified as negative, in which case ^lag^ produces 
+leads and ^lead^ produces lags.  # may be specified as 0, in which case ^lag^
+and ^lead^ do nothing.
+
+^dif^ generates the #th difference of varname.  "^dif gnp^" creates ^D.gnp^.
+"^dif 2 gnp^" creates ^D2.gnp^, the difference in the difference, but does not
+create ^D.gnp^.  # must be greater than or equal to 0; if # is 0, ^dif^ does 
+nothing.
+
+
+Options
+-------
+
+^lags(^#[^,^#[^,^...]]^)^ is an alternative way to specify the number of lags.
+    This option is available only with the ^lag^ command.  This option 
+    permits a different lag (or lead) to be specified with each variable in
+    the varlist.  If more lags than variables are specified, the excess lags
+    are ignored.  If fewer lags than variables are specified, the last lag
+    specified is used for the unmatched variables.
+
+^noso^rt prevents ^lag^ from resorting the data.  By default, the data are 
+    sorted in the order of the date variables.
+
+^suffix(^str[^,^str[^,^...]]^)^ specifies the base part of the name to be used 
+    rather than the existing name.  E.g., "^lag 2 gnp, suffix(x)^" creates 
+    variables named ^L.x^ and ^L2.x^ rather than naming the variables ^L.gnp^ and 
+    ^L2.gnp^.  In the lag command, there must be at least as many suffixes as
+    variables in the varlist.  Any excess suffixes are ignored.
+
+
+Examples 
+--------
+
+ . ^lag gnp^
+ . ^lag 2 gnp^
+ . ^lag 4 gnp^
+ . ^lag -2 gnp^
+ . ^lag gnp m2 debt, lags(2,-1,3) suffix(g,m,d)^
+
+ . ^lead 2 gnp^
+
+ . ^dif gnp^
+ . ^dif 2 gnp^
+
+
+Remarks
+-------
+
+"^lag gnp^" creates ^L.gnp^.  "^lag 2 gnp^" creates ^L.gnp^ and ^L2.gnp^.  Therefore,
+you may reason that you cannot type "^lag 2 gnp^" after "^lag gnp^" because the
+variable ^L.gnp^ already exists.  You may, however.
+
+
+Operators may be applied to results of other operators, for instance:
+
+ . ^dif gnp^
+ . ^lag D.gnp^
+
+The resulting variable is ^LD.gnp^.  However, ^dif^ and ^lead^ are not smart about
+combining names:
+
+ . ^dif gnp^
+ . ^dif L.gnp^
+
+creates a variable named ^DD.gnp^, not ^D2.gnp^.
+
+
+Also note that
+
+ . ^lag gnp^
+ . ^lead L.gnp^
+
+produces ^FL.gnp^, which is not quite identical to ^gnp^ because the last observa-
+tion will be missing.
+
+^lag^ and ^lead^ correctly handle panel data, that is, they do not lag or lead
+across cross-sectional unit boundaries.  Use the ^csunits^ command to specify
+the variables that define cross-sectional units.
+
+
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7), sts7.1 (STB-18), sts7.4 (STB-21)
+On-line:  ^help^ for ^csunits^, ^datevars^, ^dropoper^, ^growth^

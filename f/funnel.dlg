@@ -1,0 +1,103 @@
+/* 
+
+*! funnel dialog version 1.0.0, 13 May 2003, T. J. Steichen, steichen@triad.rr.com 
+*!    for funnel version 1.04,     May 2001, M. J. Bradburn, mike.bradburn@cancer.org.uk 
+
+Metan-based Funnel Graph
+------------------------
+
+Syntax: funnel [varlist] [if exp] [in range] [, ysqrt sample overall(#)
+               graph_options ]
+
+To install in User Statistics menu via Stata commands:
+  . window menu append item "stUserStatistics" "Metan-based Funnel Graph (&funnel)" "db funnel"
+  . window menu refresh
+To permanently install, place the commands in your -profile.do- file.
+
+*/
+
+VERSION 8.0
+
+INCLUDE _std_small
+INCLUDE header
+
+HELP hlp1, view("help metan")
+RESET res1, label("Reset")
+
+DIALOG main, label("funnel 1.04 - Metan-based Funnel Graph") tabtitle("Main")
+BEGIN
+  CHECKBOX cb_effect    10    5  310   .,               ///
+     label("Enter Variables (else use _ES and _seES")   ///
+     onclickon(script vars_on)                          ///
+     onclickoff(script vars_off)
+  TEXT     tx_effect    10   25  330      .,            ///
+     label("Vars for Effect Sizes: theta, se(theta), in that order")
+  VARLIST  vl_effect     @   _ss   @      .,            ///
+     label("Effect Sizes: theta, se(theta)")
+
+/*  end vars  */
+
+  CHECKBOX cb_ysqrt     10   70  270      .,            ///
+     label("Y-axis is Square-root Scaled")              ///
+     option("ysqrt")
+
+  CHECKBOX cb_sample    10   90  270      .,            ///
+     label("Y-axis is Sample Size (not SE)")            ///
+     onclickon(main.cb_invert.disable)                  ///
+     onclickoff(main.cb_invert.enable)                  ///
+     option("sample")
+     
+  CHECKBOX cb_invert    10  110  270      .,            ///
+     label("Precision (SE) not inverted")               ///
+     option("noinvert")
+
+  CHECKBOX cb_overall   10  130  130      .,            ///
+     label("Line at Effect Size:")                      ///
+     onclickon(main.ed_overall.enable)                  ///
+     onclickoff(main.ed_overall.disable)
+  EDIT     ed_overall  145  130   50      .,            ///
+     label("overall")                                   ///
+     numonly                                            ///
+     option("overall")
+
+/*  end switches and sets  */
+
+  GROUPBOX gb_gopts7    10 155  330   _ht1h,            ///
+     label("Allowed Graph7 Options:")
+  EDIT     ed_gopts7    15 175  320       .,            ///
+     label("Graph7 Options")
+
+/*  end Graph7 opts  */
+
+END
+
+INCLUDE ifin
+INCLUDE weights_a
+
+SCRIPT vars_on
+BEGIN
+  main.tx_effect.enable
+  main.vl_effect.enable
+END
+
+SCRIPT vars_off
+BEGIN
+  main.tx_effect.disable
+  main.vl_effect.disable
+END
+
+
+PROGRAM command
+BEGIN
+  put "funnel "
+  varlist [main.vl_effect]
+  INCLUDE _weights_pr
+  INCLUDE _ifin_pr
+  beginoptions
+    option main.cb_ysqrt
+    option main.cb_sample
+    option main.cb_invert
+    optionarg main.ed_overall
+    put main.ed_gopts7
+  endoptions
+END

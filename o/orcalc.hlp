@@ -1,0 +1,53 @@
+.-
+help for ^orcalc^
+.-
+
+Compute odds ratios
+-------------------
+
+ ^orcalc^ p1 p2 [p3 p4, ^ref^group(#)]
+
+
+Description
+-----------
+
+^orcalc^ computes odds ratios based on the probabilities
+       from a categorical predictor with 2, 3 or 4 levels. 
+       You supply the probabilities of Y=1 for each of the 
+       levels of the categorical predictor, and then the odds
+       ratios are given.  
+
+       By default, the last group is the reference group 
+       (sometimes called the omitted group).  You can select
+       the reference group via the ^refgroup^ option.
+
+Example
+-------
+
+If there are 2 leves for the categorical predictor,
+and the P(y=1) is .6 for the first group, and P(y=1)
+is .5 for the second group, you can get
+the odds ratio for group 1 vs. group 2 like this.
+
+ . ^orcalc .6 .5^
+
+If you wish to treat group 1 as the reference group from
+the above example, then use the ^refgroup^ option 
+(abbreviated using ^ref^) as shown below.
+
+ . ^orcalc .6 .5, ref(1)^
+
+Below we get the odds ratios for a 3 category predictor.
+
+ . ^orcalc .6 .5 .3^
+
+
+Authors
+-------
+
+      Philip B. Ender
+      Michael Mitchell
+      Statistical Computing and Consulting
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+      mnm@@ucla.edu 

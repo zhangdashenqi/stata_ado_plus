@@ -1,0 +1,75 @@
+Display a correlogram or partial autocorrelation plot             (STB-7: sts2)
+-----------------------------------------------------
+
+
+	^ac^  varname [^, l^ags^(^#^)^ graph_options ]
+
+	^pac^ varname [^, l^ags^(^#^) noc^ons graph_options ]
+
+
+
+Description
+-----------
+
+^ac^ graphs the first ^lag()^ autocorrelations along with a one-standard-error
+band.  
+
+^pac^ graphs the first lag() partial autocorrelations along with a one-standard-
+error band.  
+
+
+
+
+Options
+-------
+
+^lags(^#^)^ specifies the number of lags.  If not specified, the first 20 auto-
+    correlations are graphed.
+
+^nocons^ suppresses the constant in the individual regressions; see Methods and
+    Formulas, below.
+
+graph_options refers to any of the options of ^graph, twoway^, with the exception
+    of ^border^, ^connect()^, ^pen()^, ^rlabel()^, ^xlabel()^, and ^yline()^.  You may
+    specify ^saving()^, ^symbol()^, and the titling options.
+
+
+Examples
+--------
+
+ . ^ac gnp^
+ . ^ac gnp, lags(24)^
+
+ . ^pac gnp^
+ . ^pac gnp, lags(24)^
+
+
+Methods and formulas
+--------------------
+
+For ^ac^, the standard error of the autocorrelations is estimated by Bartlett's
+approximation.
+
+For ^pac^, the standard error is approximated by 
+
+                                     1
+                        -----------------------------
+                         sqrt(number of observations)
+
+The partial autocorrelations are estimated from a sequence of ^lags()^ reg-
+ressions.  If ^nocons^ is specified, the regressions will be estimated without
+a constant.  Otherwise, a constant will be included in the regressions.
+
+
+
+Author
+------
+ 
+Sean Becketti, Federal Reserve Bank of Kansas City.
+
+
+Also see
+--------
+
+    STB:  sts1 (STB-5), sts2 (STB-7)
+On-line:  ^help^ for ^dickey^, ^lag^

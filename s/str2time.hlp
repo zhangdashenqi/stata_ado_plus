@@ -1,0 +1,59 @@
+{smcl}
+{* 21oct2003}{...}
+{hline}
+help for {hi:str2time}{right:(authors:  {hi:Denver Kirrane & Tony Brady})}
+{hline}
+
+{title:Convert time HH:MM:SS string variables to elapsed time variables}
+
+{p 8 17}{cmd:str2time} {it:varlist}
+		{cmd:,} {{cmdab:g:enerate(}{it:newvarlist}{cmd:)} | {cmd:replace}}
+		[{cmdab:sep:arator(}{it:string}{cmd:)} {cmd:force} {cmdab:li:st}]
+
+
+{title:Description}
+
+{p}Converts string HH:MM:SS time-of-day variables in {it:varlist} to numeric variables representing
+the fraction of the day elapsed (see Table).
+{it:varlist} is expected to list string variables of format HH:MM or HH:MM:SS, representing the time of the day
+using the 24 hour clock. The elapsed time is calculated as (HH+MM/60)/24 or (HH+MM/60+SS/3600)/24.
+
+{p}The new time variables to be created must be specified with the {cmd:generate()}
+option or {cmd:replace} can be used to force the new time variables to overwrite the
+existing variables.
+
+{p 5 12}Table: relationship between HH:MM string and elapsed time variable{p_end}
+{col 6}{dup 38:{c -}}
+{col 6}Time, HH:MM{col 20}aka{col 32}Elapsed time
+{col 6}{dup 38:{c -}}
+{col 9}00:00{col 20}Midnight{col 32}0.0
+{col 9}06:00{col 20}6 am{col 32}0.25
+{col 9}12:00{col 20}Midday{col 32}0.50
+{col 9}18:00{col 20}6 pm{col 32}0.75
+{col 6}{dup 38:{c -}}
+
+
+{title:Options}
+
+{p 5 9}{cmd:separator(}{it:string}{cmd:)} denotes the character(s) used to separate hours from minutes. Default is {cmd::}
+
+{p 5 9}{cmd:force} specifies that conversions entailing loss of information may be forced. Loss of information is
+likely to occur when invalid times are encountered (e.g. 24:17, 11:72, :18 etc) or the wrong separator is given.
+
+{p 5 9}{cmd:list} generates a list of conversions that would lead to loss of information if forced.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. str2time taicu, gen(tadmit)}{p_end}
+{p 8 12}{inp:. str2time taicu tbricu, replace}{p_end}
+
+
+{title:Authors}
+
+{p 8 12}Denver Kirrane & Tony Brady{p_end}
+
+
+{title:Also see}
+
+{p 0 19}On-line:  help for {help time2str}{p_end}

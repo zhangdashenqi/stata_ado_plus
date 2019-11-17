@@ -1,0 +1,62 @@
+{smcl}
+{* 16no2011}{...}
+{cmd:help fetchcomponents}{right: ({browse "http://www.stata-journal.com/article.html?article=dm0070":SJ13-3: dm0070})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 24 26 2}{...}
+{p2col:{hi: fetchcomponents} {hline 2}}Download the list of components for an index{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 18 2}
+{cmd:fetchcomponents}{cmd:,} {opt symbol(string)} [{opt page(#)}]
+
+
+{title:Description}
+
+{pstd}
+{cmd:fetchcomponents} downloads the list of components for an
+index.  It creates a list of symbols that make up the components of an
+index.  Some indices may have many components.  For such indices,
+components are provided by Yahoo! Finance 50 at a time.  Each page of 50
+is defined by the option page.
+
+
+{title:Options}
+
+{phang}
+{opt symbol(string)} specifies the symbol of the index for which
+the user wants to download the components (that is, {cmd:^NYA}).  There
+can only be one symbol defined, which must be an index.  {cmd:symbol()}
+is required.
+
+{phang}
+{opt page(#)} specifies the number of pages for the list of
+components (starts from zero).  Because the list of components is
+provided in batches of 50, it may take several pages to download the
+entire list (that is, for {cmd:^NYA}, there are 0 to 38 pages).
+
+
+{title:Examples}
+
+{phang}{cmd:. fetchcomponents, symbol(^DJI)}{p_end}
+{phang}{cmd:. fetchcomponents, symbol(^NYA) page(38)}
+
+
+{title:Author}
+
+{pstd}Mehmet F. Dicle{p_end}
+{pstd}Loyola University New Orleans{p_end}
+{pstd}New Orleans, LA{p_end}
+{pstd}mfdicle@loyno.edu
+
+
+{title:Also see}
+
+{p 4 14 2}
+Article:  {it:Stata Journal}, volume 13, number 3: {browse "http://www.stata-journal.com/article.html?article=dm0070":dm0070}
+{p_end}

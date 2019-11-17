@@ -1,0 +1,69 @@
+/*
+    grlopts_common_sc.idlg    
+    Scripts for grlopts_common.idlg
+    
+*!  VERSION 1.0.0  07may2004
+
+*/
+
+LIST rlopts_color_ccol
+BEGIN
+	rlopts.cl_ccol.hide
+	rlopts.cl_ccol.show
+	rlopts.cl_ccol.hide
+END
+
+SCRIPT grlopts_disable
+BEGIN
+	rlopts.gb_line.disable
+	rlopts.tx_ccol.disable
+	rlopts.cb_ccol.disable
+	rlopts.cl_ccol.disable
+	rlopts.tx_clwid.disable
+	rlopts.cb_clwid.disable
+	rlopts.tx_clpat.disable
+	rlopts.cb_clpat.disable
+	rlopts.tx_conn.disable
+	rlopts.cb_conn.disable
+END
+
+SCRIPT grlopts_enable
+BEGIN
+	rlopts.gb_line.enable
+	rlopts.tx_ccol.enable
+	rlopts.cb_ccol.enable
+	rlopts.cl_ccol.enable
+	rlopts.tx_clwid.enable
+	rlopts.cb_clwid.enable
+	rlopts.tx_clpat.enable
+	rlopts.cb_clpat.enable
+	rlopts.tx_conn.enable
+	rlopts.cb_conn.enable
+END
+
+PROGRAM lopts_output
+BEGIN
+	if H(rlopts.cl_ccol) {
+		optionarg /hidedefault rlopts.cb_ccol
+	}
+	if !H(rlopts.cl_ccol) {
+		optionarg /quoted rlopts.cl_ccol
+	}
+	optionarg /hidedefault rlopts.cb_clwid
+	optionarg /hidedefault rlopts.cb_clpat
+	optionarg /hidedefault rlopts.cb_conn
+END
+
+PROGRAM grlopts_output
+BEGIN
+	if !H(rlopts.cl_ccol)	| ///
+	   (rlopts.cb_ccol	& !H(rlopts.cb_ccol))	| ///
+	   (rlopts.cb_clwid	& !H(rlopts.cb_clwid))	| ///
+	   (rlopts.cb_clpat	& !H(rlopts.cb_clpat))	| ///
+	   (rlopts.cb_conn	& !H(rlopts.cb_conn)) 	///
+	{
+		put "rlopts("
+		put /program lopts_output
+		put ")"
+	}
+END

@@ -1,0 +1,143 @@
+{smcl}
+{* 25aug2008}{...}
+{cmd:help mata mz_decalen()}
+{hline}
+
+{title:Title}
+
+{p 4 14 2}
+{bf:mz_decalen() -- Lags a matrix a specified number of times}
+
+
+{title:Syntax}
+
+{p 4 23 2}
+{it:transmorphic matrix}
+{cmd:mz_decalen(}{it:x}{cmd:,} {it:n}{cmd:)}
+
+
+{pstd}
+where
+
+{p 12 16 2}
+{it:x}:  {it:transmorphic matrix} which is to be lagged
+
+{p 12 16 2}
+{it:n}:  {it:real scalar} containing the number of lags
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:mz_decalen()} returns a new matrix which is the matrix {it:x} lagged
+{it:n} times. If {it:n} is positive, the matrix {it:x} is lagged back {it:n}
+times, then the first {it:n} observations of the new matrix are missing. If
+{it:n} is negative, the matrix {it:x} is lagged forward {it:n} times, then
+the last {it:n} observations of the new matrix are missing.
+
+
+{title:Remarks}
+
+{pstd} Examples:
+
+        {com}: x
+        {res}       {txt}1   2   3   4
+            {c TLC}{hline 17}{c TRC}
+          1 {c |}  {res}1   3   5   6{txt}  {c |}
+          2 {c |}  {res}4   3   2   1{txt}  {c |}
+          3 {c |}  {res}7   5   3   2{txt}  {c |}
+          4 {c |}  {res}8   9   0   1{txt}  {c |}
+          5 {c |}  {res}4   6   8   9{txt}  {c |}
+          6 {c |}  {res}3   2   6   7{txt}  {c |}
+          7 {c |}  {res}1   4   5   7{txt}  {c |}
+          8 {c |}  {res}7   2   4   6{txt}  {c |}
+          9 {c |}  {res}1   4   0   3{txt}  {c |}
+          10{c |}  {res}1   4   6   7{txt}  {c |}
+            {c BLC}{hline 17}{c BRC}
+
+        {com}: mz_decalen(x, 2)
+        {res}       {txt}1   2   3   4
+            {c TLC}{hline 17}{c TRC}
+          1 {c |}  {res}.   .   .   .{txt}  {c |}
+          2 {c |}  {res}.   .   .   .{txt}  {c |}
+          3 {c |}  {res}1   3   5   6{txt}  {c |}
+          4 {c |}  {res}4   3   2   1{txt}  {c |}
+          5 {c |}  {res}7   5   3   2{txt}  {c |}
+          6 {c |}  {res}8   9   0   1{txt}  {c |}
+          7 {c |}  {res}4   6   8   9{txt}  {c |}
+          8 {c |}  {res}3   2   6   7{txt}  {c |}
+          9 {c |}  {res}1   4   5   7{txt}  {c |}
+          10{c |}  {res}7   2   4   6{txt}  {c |}
+            {c BLC}{hline 17}{c BRC}
+
+        {com}: mz_decalen(x, -2)
+        {res}       {txt}1   2   3   4
+            {c TLC}{hline 17}{c TRC}
+          1 {c |}  {res}7   5   3   2{txt}  {c |}
+          2 {c |}  {res}8   9   0   1{txt}  {c |}
+          3 {c |}  {res}4   6   8   9{txt}  {c |}
+          4 {c |}  {res}3   2   6   7{txt}  {c |}
+          5 {c |}  {res}1   4   5   7{txt}  {c |}
+          6 {c |}  {res}7   2   4   6{txt}  {c |}
+          7 {c |}  {res}1   4   0   3{txt}  {c |}
+          8 {c |}  {res}1   4   6   7{txt}  {c |}
+          9 {c |}  {res}.   .   .   .{txt}  {c |}
+          10{c |}  {res}.   .   .   .{txt}  {c |}
+            {c BLC}{hline 17}{c BRC}
+
+        {txt}  If we have a string matrix
+
+        {com}: A
+        {res}         {txt}1     2     3     4
+            {c TLC}{hline 25}{c TRC}
+          1 {c |}  {res}a11   a12   a13   a14{txt}  {c |}
+          2 {c |}  {res}a21   a22   a23   a24{txt}  {c |}
+          3 {c |}  {res}a31   a32   a33   a34{txt}  {c |}
+          4 {c |}  {res}a41   a42   a43   a44{txt}  {c |}
+          5 {c |}  {res}a51   a52   a53   a54{txt}  {c |}
+            {c BLC}{hline 25}{c BRC}
+
+        {txt}  we get
+
+        {com}: mz_decalen(A, 2)
+        {res}         {txt}1     2     3     4
+            {c TLC}{hline 25}{c TRC}
+          1 {c |}  {res}                     {txt}  {c |}
+          2 {c |}  {res}                     {txt}  {c |}
+          3 {c |}  {res}a11   a12   a13   a14{txt}  {c |}
+          4 {c |}  {res}a21   a22   a23   a24{txt}  {c |}
+          5 {c |}  {res}a31   a32   a33   a34{txt}  {c |}
+            {c BLC}{hline 25}{c BRC}
+
+
+{title:Conformability}
+
+    {cmd:mz_decalen(}{it:x}{cmd:,} {it:n}{cmd:)}
+         {it:x}:  {it:r x c}
+         {it:n}:  {it:1 x 1}
+    {it:result}:  {it:r x c}.
+
+
+{title:Diagnostics}
+
+{p 4 4 2}
+{cmd:mz_decalen()} aborts with error if {it:n} is greater or equal to the 
+number of rows of {it:x}.
+
+
+{title:Source code}
+
+{p 4 4 2}
+{help ltimbimata_source##mz_decalen:mz_decalen.mata}
+
+
+{title:Author}
+
+{p 4 4 2} Diallo Ibrahima Amadou, {browse "mailto:zavren@gmail.com":zavren@gmail.com}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {bf:{help mf_mz_trimrows:mz_trimrows()}}, {bf:{help mf_select:[M-5] select()}}, {bf:{help ltimbimata}}
+{p_end}

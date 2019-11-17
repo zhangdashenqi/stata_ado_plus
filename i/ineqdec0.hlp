@@ -1,0 +1,60 @@
+.-
+help for ^ineqdec0^                          (STB-48: sg104)
+.-
+
+Inequality indices, with decomposition by subgroup
+--------------------------------------------------
+
+^ineqdec0^ varname [weight] [^if^ exp] [^in^ range]
+		[^,^ ^by^group^(^groupvar^)^ ^w^ ^s^umm]
+
+^fweight^s and ^aweight^s are allowed; see help @weights@.
+
+^ineqdec0^ is a stripped-down version of ^ineqdeco^. Unlike the latter,
+it will provide estimates using samples containing zero or negative
+values for varname.  But as a result the portfolio of indices estimated
+is reduced to the p90:p10 ratio, GE(2) = half the squared coefficient of 
+variation, and the Gini coefficient, and Sen's welfare index. (The 
+other indices estimated by ^ineqdeco^ are not defined for zero and negative 
+values of varname.)
+
+
+
+Options
+-------
+
+^bygroup(^groupvar^)^ requests inequality decompositions by population
+	subgroup, with subgroup membership summarized by groupvar.
+^w^ requests calculation of Sen's welfare index in addition to the 
+	inequality index calculations.
+^summ^ requests presentation of ^summary, detail^ output for varname.
+
+
+Saved results
+-------------
+
+S_9010, S_7525		Percentile ratios p90/p10, p75/p25
+S_i2			GE(2)
+
+	
+Examples
+--------
+
+   . ^ineqdec0 x [w=wgtvar]^
+   . ^ineqdec0 x, by(famtype) w^
+   . ^ineqdec0 x if sex==1, w s^
+
+
+Author
+------
+
+      Stephen P. Jenkins 
+      Institute for Social and Economic Research
+      University of Essex, Colchester CO4 3SQ, U.K.
+      stephenj@@essex.ac.uk
+
+
+Also see
+--------
+
+    STB: STB-48 sg104

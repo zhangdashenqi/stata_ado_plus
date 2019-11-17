@@ -1,0 +1,35 @@
+Measures of relative dispersion                                 [sg31: STB-23]
+-------------------------------
+
+        ^rspread^ varlist [^if^ exp] [^in^ exp] [^,^ ^gr^aph ]
+
+produces several measures of relative dispersion or spread or inequality for
+each variable in the varlist.  If the ^graph^ option is specified a Lorenz
+curve will also be produced.  The Lorenz curve is automatically saved in
+^lorenz#.gph^,  where # is the order of the variable in the varlist.  There is
+a limit of 99 graphs at any one time, and, if there is already a graph with
+this name, it is replaced.
+
+^rspread^ displays the following statistics:
+
+    mean deviation about the mean (MD)
+    mean deviation about the median (AD)
+    mean difference (MeanDif)
+    Coefficient of Variation (CV)
+    Coefficient of Dispersion (CD)
+    GINI coefficient
+    Standard Error(MEAN)
+    Max. Percentage Deviation from Average
+
+
+Author
+------
+                Richard Goldstein, Qualitas, Inc.
+		richgold@@netcom.com
+
+Also see
+--------
+
+    STB:  sg31 (STB-23)
+
+

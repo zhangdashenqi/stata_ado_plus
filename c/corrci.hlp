@@ -1,0 +1,167 @@
+{smcl}
+{* 21 August 2008}{...}
+{cmd:help corrci}{right: ({browse "http://www.stata-journal.com/article.html?article=up0030":SJ10-4: pr0041_1})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 15 17 2}{...}
+{p2col :{hi:corrci} {hline 2}}Correlation with confidence intervals{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:corrci} 
+{it:varlist}
+{ifin} 
+{weight} 
+[{cmd:,} 
+{cmdab:l:evel(}{it:#}{cmd:)} 
+{cmdab:m:atrix} 
+{opth fo:rmat(%fmt)} 
+{cmdab:a:bbrev(}{it:#}{cmd:)} 
+[{cmdab:fi:sher} | {cmdab:j:effreys}]
+{cmdab:sa:ving(}{it:filename} [{cmd:,} {it:postfile_options}]{cmd:)}]
+
+{pstd}{it:varlist} may contain time-series operators; see {help tsvarlist}.{p_end} 
+{pstd}{cmd:aweight}s and {cmd:fweight}s are allowed; see {help weight}. 
+ 
+
+{title:Description}
+
+{p 4 4 2}{cmd:corrci} calculates Pearson correlations for two or more
+numeric variables specified in {it:varlist} together with confidence
+intervals calculated by using Fisher's {it:z} transform. 
+
+{p 4 4 2}For sample size {it:n}, correlation {it:r}, and confidence level
+{it:level}, the default procedure sets {it:d} = {cmd:invnormal(0.5 +}
+{it:level}{cmd:/200)/sqrt(}{it:n} {cmd:- 3)} and {it:z} =
+{cmd:atanh(}{it:r}{cmd:)} and then
+calculates limits as {cmd:tanh(}{it:z} - {it:d}{cmd:)} and
+{cmd:tanh(}{it:z} + {it:d}{cmd:)}.
+
+{p 4 4 2}{cmd:corrci} handles missing values through listwise deletion,
+meaning that the entire observation is omitted from the estimation
+sample if any of the variables in {it:varlist} is missing for that
+observation. 
+
+
+{title:Options}
+
+{phang} {opt level(#)} specifies the confidence level, as a percentage, for
+confidence intervals.  The default is {cmd:level(95)} or whatever is set by
+{helpb set level}.
+
+{p 4 8 2}{cmd:matrix} specifies that correlations and confidence
+intervals be displayed as matrices. The default is to display
+them in a list. Whether {cmd:matrix} is specified has no effect on the 
+saving of results in r-class matrices, which is automatic. 
+
+{p 4 8 2}{opt format(%fmt)} specifies a numeric format, {cmd:%}{it:fmt}, for
+the display of correlations. The default is {cmd:format(%9.3f)}. See
+{help format}.
+
+{p 4 8 2}{opt abbrev(#)} specifies that variable names be shown
+abbreviated to {it:#} characters. This option has no effect on output
+under the {cmd:matrix} option. It affects the saving of variable names under 
+{cmd:saving()}. 
+
+{p 4 8 2}{cmd:fisher} specifies that a bias correction attributed to Fisher
+(1921, 1925) be used. This sets {it:z' = z} - 2{it:r}/({it:n} - 1) and
+then calculates limits as {cmd:tanh(}{it:z' - d}{cmd:)} and
+{cmd:tanh(}{it:z'} + {it:d}{cmd:)}. There is no consequence for the display or
+saving of {it:r} itself.
+
+{p 4 8 2}{cmd:jeffreys} specifies that a procedure attributed to Jeffreys
+(1939, 1961) be used. This sets {it:d} = {cmd:invnormal(0.5 +}
+{it:level}{cmd:/200)/sqrt(}{it:n}{cmd:)} and {it:z}'' = {it:z} - 
+5{it:r}/2{it:n} and then
+calculates limits as {cmd:tanh(}{it:z'' - d}{cmd:)} and
+{cmd:tanh(}{it:z''} + {it:d}{cmd:)}.  There is no consequence for the display or
+saving of {it:r} itself.
+
+{p 8 8 2}Only one of the {cmd:fisher} and {cmd:jeffreys} options can be
+specified. 
+
+{p 4 8 2}{cmd:saving(}{it:filename} [{cmd:,} {it:postfile_options}]{cmd:)}
+specifies that results be saved to a Stata data file, {it:filename},
+using {help postfile}.  {it:postfile_options} are options of {help postfile}.
+The data file will contain the string variables {cmd:var1} and {cmd:var2} and
+the float variables {cmd:r}, {cmd:lower}, and {cmd:upper}. This is a rarely
+used option but could be useful if the correlations were to be displayed
+graphically or to be analyzed further.
+
+
+{title:Remarks}
+
+{p 4 4 2}Although {it:varlist} may contain time-series operators, no allowance
+is made for correlation structure or trend or any other time-series aspect in
+calculation, so interpretation is the user's responsibility.
+
+{p 4 4 2}{cmd:corrci} requires at least 5 nonmissing observations in
+{it:varlist}. With very small samples--or even very large ones--interpretation remains the user's responsibility.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. sysuse auto}{p_end}
+{p 4 8 2}{cmd:. corrci headroom trunk weight length displacement}{p_end}
+{p 4 8 2}{cmd:. corrci headroom trunk weight length displacement, matrix}{p_end}
+{p 4 8 2}{cmd:. corrci headroom trunk weight length displacement, abbrev(10)}{p_end}
+{p 4 8 2}{cmd:. corrci headroom trunk weight length displacement, abbrev(10) fisher}
+
+
+{title:Saved results} 
+
+{p 4}Matrices{p_end}
+{col 7}{cmd:r(corr)} {col 15}matrix of correlations 
+{col 7}{cmd:r(lb)}   {col 15}matrix of lower limits
+{col 7}{cmd:r(ub)}   {col 15}matrix of upper limits
+{col 7}{cmd:r(z)}    {col 15}matrix of {it:z} = atanh {it:r}
+
+
+{title:Author} 
+
+{p 4 4 2}Nicholas J. Cox, Durham University, U.K.{break}
+n.j.cox@durham.ac.uk
+
+
+{title:Acknowledgments} 
+
+{p 4 4 2}This project grew out of a question from Ian S. Evans. 
+Gleason's (1996) programs were an excellent source of ideas. 
+
+
+{title:References}
+
+{p 4 8 2}Fisher, R. A. 1921. On the "probable error" of a coefficient of
+correlation deduced from a small sample. {it:Metron} 1(4): 3-32. 
+
+{p 4 8 2}------. 1925. {browse "http://psychclassics.yorku.ca/Fisher/Methods/":{it:Statistical Methods for Research Workers}}.
+Edinburgh: Oliver & Boyd.
+
+{p 4 8 2}Gleason, J. R. 1996. Inference about correlations using the Fisher
+z-transform. {browse "http://www.stata.com/products/stb/journals/stb32.pdf":{it:Stata Technical Bulletin 32}}: 13-18.
+Reprinted in {browse "http://www.stata.com/bookstore/stbr.html":{it:Stata Technical Bulletin Reprints}}, vol. 6, pp. 128-129. College Station, TX: Stata Press. 
+
+{p 4 8 2}Jeffreys, H. 1939. {it:Theory of Probability.} Oxford: Oxford
+University Press.
+
+{p 4 8 2}------. 1961. {it:Theory of Probability.} 3rd ed. Oxford: Oxford
+University Press.
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 10, number 4: {browse "http://www.stata-journal.com/article.html?article=up0030":pr0041_1}{break}
+         {it:Stata Journal}, volume 8, number 3: {browse "http://www.stata-journal.com/article.html?article=pr0041":pr0041}
+
+{psee}
+Manual:  {hi:[R] correlate}
+
+{psee}
+Online:  {helpb corrcii} (if installed), {helpb correlate}, {helpb bootstrap}
+{p_end}

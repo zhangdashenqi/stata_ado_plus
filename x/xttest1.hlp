@@ -1,0 +1,114 @@
+{smcl}
+{* 2dec2007}{...}
+{hi:help xttest1}{right: ({browse "http://www.stata-journal.com/article.html?article=sg164_1":SJ8-1: sg164_1}; {browse "http://www.stata.com/products/stb/journals/stb61.pdf":STB-61: sg164})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 16 19 2}{...}
+{p2col :{hi:xttest1} {hline 2}}Specification tests for linear panel-data models{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 16 2}{cmd:xttest1}
+[{cmd:,} {cmdab:unad:justed}]
+
+{p 4 4 2}
+{cmd:xttest1} is for use after {cmd:xtreg, re}; see {manhelp xtreg XT}.{p_end}
+{p 4 4 2}
+You must {cmd:tsset} your data before using {cmd:xttest1}; see {manhelp tsset TS}.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:xttest1} offers several specification tests for error-component
+models. It includes the Breusch and Pagan (1980) Lagrange multiplier test for
+random effects; the Baltagi-Li (1995) test for first-order serial correlation;
+the Baltagi-Li (1991) joint test for serial correlation and random effects; and
+the family of robust tests in Bera, Sosa-Escudero, and Yoon (2001).
+{cmd:xttest1} is an extension of {cmd:xttest0}. The procedure
+handles unbalanced panels as long as there are no "gaps" in the series; that
+is, individual time series may differ in their start and end period but cannot
+have missing values in intermediate periods.
+
+{p 4 4 2}
+If you have not read {manhelp tsset TS}, please do so now. Consider the
+standard-error component model allowing for possible first-order serial
+correlation:
+
+		y[i,t] = a + B*x[i,t] + u[i] + e[i,t]
+
+		e[i,t] = rho e[i,t-1] + v[i,t]
+
+{p 4 4 2}
+Typically, researchers are interested in the hypothesis of no random effects
+(Var(u[i])=0), no serial correlation (rho=0), or both. After fitting a balanced
+random-effects model using {cmd:xtreg, re}, {cmd:xttest0} produces seven
+specification tests:
+
+{phang2}1) LM test for random effects, assuming no serial correlation{p_end}
+{phang2}2) Adjusted LM test for random effects, which works even under
+             serial correlation{p_end}
+{phang2}3) One-sided version of the LM test for random effects{p_end}
+{phang2}4) One-sided version of the adjusted LM test for random effects{p_end}
+{phang2}5) LM joint test for random effects and serial correlation{p_end}
+{phang2}6) LM test for first-order serial correlation, assuming no
+             random effects{p_end}
+{phang2}7) Adjusted test for first-order serial correlation, which works
+             even under random effects{p_end}
+
+{p 4 4 2}
+Tests 1, 2, 6, and 7 have asymptotic chi-squared distribution with one degree
+of freedom under the null hypothesis. Test 5 has asymptotic chi-squared
+distribution with two degrees of freedom under the null hypothesis, and tests 3
+and 4 have standard normal distribution under the null.
+
+
+{title:Option}
+
+{p 4 8 2}
+{cmd:unadjusted} shows all -- unadjusted, adjusted, and joint -- test
+statistics.  The default output shows the adjusted and joint test statistics.
+
+
+{title:References}
+
+{phang}
+Baltagi, B. H., and Q. Li. 1991. A joint test for serial correlation and random individual effects. {it:Statistics and Probability Letters} 11: 277-280.
+
+{phang}
+Baltagi, B. H., and Q. Li. 1995. Testing AR (1) against MA (1) disturbances in
+an error component model. {it:Journal of Econometrics} 68: 133-151.
+
+{phang}
+Bera, A., W. Sosa-Escudero, and M. Yoon. 2001. Tests for the error component model in the presence of local misspecification.  {it:Journal of Econometrics}
+101: 1-23.
+
+{phang}
+Breusch, T., and A. Pagan. 1980. The Lagrange multiplier test and its
+applications to model specification in econometrics.
+{it:Review of Economic Studies} 47: 239-253.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. xtreg ln_w grade age* ttl_exp tenure*, re}{p_end}
+{p 4 8 2}{cmd:. xttest1}{p_end}
+{p 4 8 2}{cmd:. xttest1, unadjusted}
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 8, number 1: {browse "http://www.stata-journal.com/article.html?article=sg164_1":sg164_1}{break}
+         {it:Stata Technical Bulletin} 61: {browse "http://www.stata.com/products/stb/journals/stb61.pdf":sg164}{break}
+
+{psee}
+Manual:	 {hi:[XT] xtreg}
+
+{psee}
+Online:  {manhelp xtreg XT}
+{p_end}

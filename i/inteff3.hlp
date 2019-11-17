@@ -1,0 +1,178 @@
+{smcl}
+{* 25jun2009}{...}
+{cmd:help inteff3}{right: ({browse "http://www.stata-journal.com/article.html?article=st0178":SJ9-4: st0178})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 16 18 2}{...}
+{p2col :{hi:inteff3} {hline 2}}Compute partial effects in a probit or logit
+model with a triple dummy-variable interaction term{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 15 2}
+{cmd:inteff3}
+{ifin}, [{cmd:average} {cmd:at(}{it:numlist}{cmd:)} {cmd:post} 
+{cmd:varx1(}{it:varname}{cmd:)} {cmd:varx2(}{it:varname}{cmd:)}
+{cmd:varx3(}{it:varname}{cmd:)} {cmd:varx1x2(}{it:varname}{cmd:)}
+{cmd:varx1x3(}{it:varname}{cmd:)} {cmd:varx2x3(}{it:varname}{cmd:)}
+{cmd:varx1x2x3(}{it:varname}{cmd:)}  
+{cmd:pex1(}{it:varname}{cmd:)} {cmd:pex2(}{it:varname}{cmd:)}
+{cmd:pex3(}{it:varname}{cmd:)} {cmd:pex1x2(}{it:varname}{cmd:)}
+{cmd:pex1x3(}{it:varname}{cmd:)} {cmd:pex2x3(}{it:varname}{cmd:)}
+{cmd:pex1x2x3(}{it:varname}{cmd:)} 
+{cmd:sx1(}{it:varname}{cmd:)} {cmd:sx2(}{it:varname}{cmd:)}
+{cmd:sx3(}{it:varname}{cmd:)} {cmd:sx1x2(}{it:varname}{cmd:)}
+{cmd:sx1x3(}{it:varname}{cmd:)} {cmd:sx2x3(}{it:varname}{cmd:)}
+{cmd:sx1x2x3(}{it:varname}{cmd:)}]
+
+{p 4 6 2}{cmd:inteff3} is for use after a probit or logit model has been
+estimated. The model must include the three single dummies, all double
+interactions, and the triple interaction term.
+
+
+{title:Description}
+
+{pstd} Norton, Wang, and Ai (2004) derived the formulas for partial
+effects of interaction terms of two variables in logit and probit models,
+implemented in the {helpb inteff} command.
+
+{pstd}Using the same logic, {cmd:inteff3} computes partial effects in a probit or logit model with a triple dummy-variable interaction term. 
+The default is to compute the partial effects at means.
+
+{pstd} The model may be applied when the effect of a binary regressor on a
+binary dependent variable is allowed to vary over combinations of two
+subgroups.  For example, one may be interested in the way a university degree
+and the presence of children affect the gender difference in labor-market
+participation. To this effect, one may run a probit model of labor-market
+participation including dummies for female, university degree, and presence of
+children, as well as their pairwise and triple interaction terms.
+
+{pstd} A difference-in-difference-in-differences estimator with a binary
+dependent variable (see, for example, Gruber and Poterba [1994]) may also seem to
+be a suitable application. However, Puhani (2008) argues that the treatment
+effect in nonlinear difference-in-differences models is not given by the
+interaction effect of Ai and Norton (2003). In fact, computing the interaction
+effect of Ai and Norton (2003) would not ensure that the
+difference-in-differences treatment effect is bound between 0 and 1.
+
+{pstd} See Cornelissen and Sonderhof (2009) for the formulas of the partial
+effects of the interaction terms in the probit model with triple dummy-variable interactions. {cmd:inteff3} uses the delta method to compute the
+standard errors of the partial effects and partly relies on the built-in Stata
+commands {helpb nlcom} and {helpb predictnl} for this purpose.
+
+
+{title:Options} 
+
+{phang}
+{cmd:average}, rather than computing the partial effect at certain values
+(e.g., means), computes the effect for each observation and then averages
+over all observations. The default is to compute the partial effects at means.
+
+{phang}
+{cmd:at(}{it:numlist}{cmd:)} specifies that partial effects be computed
+at the values passed in this option.  The first three values are those for the
+three dummy variables followed by the values for the control variables
+(excluding the double and triple dummy-variable interactions). The default is to
+compute the partial effects at means.
+
+{phang}
+{cmd:post} saves the vector of partial effects and the diagonal elements of
+the variance-covariance matrix to {cmd:e()}. Important:  {cmd:inteff3} 
+computes only the variances of the partial effects needed for simple tests on the
+partial effects.  {cmd:inteff3} does not compute the covariances. The
+covariances are posted in {cmd:e(V)} as {cmd:zero}, which are not the true
+covariances!
+
+{pmore}
+The {cmd:post} option overwrites the saved estimates of the preceding probit
+model, and {cmd:inteff3} cannot be recalled unless another probit model is
+estimated.
+
+{phang}
+{cmd:varx1(}{it:varname}{cmd:)}, {cmd:varx2(}{it:varname}{cmd:)}
+{cmd:varx3(}{it:varname}{cmd:)}, {cmd:varx1x2(}{it:varname}{cmd:)},
+{cmd:varx1x3(}{it:varname}{cmd:)}, {cmd:varx2x3(}{it:varname}{cmd:)}, and
+{cmd:varx1x2x3(}{it:varname}{cmd:)} specify the variable names
+of the three single dummies (x1, x2, x3), all double interactions (x1*x2,
+x1*x3, x2*x3), and the triple interaction term (x1*x2*x3). By default,
+{cmd:inteff3} assumes (and checks) that they are given by the first seven
+regressors in the following order: x1 x2 x3 x1*x2 x1*x3 x2*x3 x1*x2*x3.
+
+{phang}
+{cmd:pex1(}{it:varname}{cmd:)}, {cmd:pex2(}{it:varname}{cmd:)},
+{cmd:pex3(}{it:varname}{cmd:)}, {cmd:pex1x2(}{it:varname}{cmd:)},
+{cmd:pex1x3(}{it:varname}{cmd:)}, {cmd:pex2x3(}{it:varname}{cmd:)}, and
+{cmd:pex1x2x3(}{it:varname}{cmd:)} specify names of new variables in which
+the respective partial effects are to be stored. These options
+must be
+combined with the {cmd:average} option.
+
+{phang}
+{cmd:sx1(}{it:varname}{cmd:)}, {cmd:sx2(}{it:varname}{cmd:)},
+{cmd:sx3(}{it:varname}{cmd:)}, {cmd:sx1x2(}{it:varname}{cmd:)},
+{cmd:sx1x3(}{it:varname}{cmd:)}, {cmd:sx2x3(}{it:varname}{cmd:)}, and
+{cmd:sx1x2x3(}{it:varname}{cmd:)} specify names of new variables in which
+the standard errors of the partial effects are to be stored. These options
+must be
+combined with the {cmd:average} option.
+
+
+{title:Examples}
+
+{pstd}{inp:. probit y x1 x2 x3 x1x2 x1x3 x2x3 x1x2x3 z1 z2 z3 z4}{p_end}
+{pstd}{inp:. inteff3 }{p_end}
+
+{pstd}{inp:. probit y x1 x2 x3 x1x2 x1x3 x2x3 x1x2x3 z1 z2 z3 z4}{p_end}
+{pstd}{inp:. inteff3, average pex1x2x3(pe) sx1x2x3(se) }{p_end}
+
+{pstd}{inp:. probit y x1 x2 x3 x1x2 x1x3 x2x3 x1x2x3 z1 z2 z3 z4}{p_end}
+{pstd}{inp:. inteff3, at(0.5 0 1 1.2 -0.3 1 0.7 1)}{p_end}
+
+
+{title:References}
+
+{phang}Ai, C., and E. C. Norton. 2003. Interaction terms in logit and probit
+models. {it:Economics Letters} 80: 123-129.
+
+{phang}Cornelissen, T., and K. Sonderhof. 2009. INTEFF3: Stata module to
+compute partial effects in a probit or logit
+model with a triple dummy variable interaction
+term. Statistical Software Components, Boston College Department of Economics. http://ideas.repec.org/c/boc/bocode/s456903.html.
+
+{phang} Gruber, J., and J. Poterba. 1994. Tax incentives and the decision to
+purchase health insurance: 
+Evidence from the self-employed. {it:Quarterly Journal of Economics} 109: 701-733.
+
+{phang} Norton, E. C., H. Wang, and C. Ai. 2004. Computing interaction effects and standard errors in logit and probit 
+models. {it:Stata Journal} 4: 154-167.
+
+{phang}Puhani, P. A. 2008. The treatment effect, the cross difference, and the
+interaction term in nonlinear "difference-in-differences" models. Discussion
+Paper No. 3478, Institute for the Study of Labor (IZA). 
+http://ideas.repec.org/p/iza/izadps/dp3478.html.
+
+
+{title:Authors}
+
+{pstd}Thomas Corneli{c ss}en{p_end}
+{pstd}Department of Economics{p_end}
+{pstd}University College London, UK{p_end}
+{pstd}t.cornelissen@ucl.ac.uk{p_end}
+
+{pstd}Katja Sonderhof{p_end}
+{pstd}Leibniz Universit{c a:}t Hannover, Germany{p_end}
+{pstd}sonderhof@aoek.uni-hannover.de{p_end}
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 9, number 4: {browse "http://www.stata-journal.com/article.html?article=st0178":st0178}
+
+{psee}
+Online:  {helpb probit}, {helpb logit}, {helpb inteff} (if
+installed){p_end}

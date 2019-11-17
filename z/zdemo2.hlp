@@ -1,0 +1,29 @@
+
+.-
+help for ^zdemo2^
+.-
+
+Display 2 normal distributions 
+------------------------------
+
+ ^zdemo2^ mean1 sd1 mean2 sd2
+
+Description
+-----------
+
+^zdemo2^ displays two standard normal distributions each
+       with their own mean and standard deviation.
+
+Example
+-------
+
+ . ^zdemo2 50 5 60 10^
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+

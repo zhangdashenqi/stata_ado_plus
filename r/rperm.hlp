@@ -1,0 +1,31 @@
+^Random permutations^
+-------------------
+
+^rperm^  varname [^, by(^varlist^)^ ^clus^ter^(^varlist^)^ ^ord^er ^gen^erate^(^varname^)^]
+
+
+^Description^
+-----------
+
+Performs a random permutation of the values in the argument 
+variable, optionally within groups defined by the variables 
+specified  in the ^by^ option. If observations are clustered and
+the argument variable is constant within cluster, values
+of this variable are permuted between clusters.
+
+
+^Options^
+-------
+
+^by^	    A list of variables which, together define groups
+^cluster^   Variables identifying clusters 
+^order^	    Preserve the input order of the file. Without this 
+          option, the file will be reordered
+^generate^  Store the permuted values in the argument variuable in 
+           a new variable. Otherwise the permuted values replace the 
+           original values 
+
+^Author^
+------
+
+David Clayton

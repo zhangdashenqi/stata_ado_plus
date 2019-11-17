@@ -1,0 +1,243 @@
+{smcl}
+{hline}
+help for {cmd:powercal} {right:(SJ4-4: st0074)}
+{hline}
+
+{title:Generalized power calculations for generalized linear models and more}
+
+{p 8 17 2}
+{cmd:powercal} {it:newvar} [{cmd:if} {it:exp}] [{cmd:in} {it:range}]
+ [{cmd:,} {cmdab:n:unit}{cmd:(}{it:expression_1}{cmd:)} 
+    {cmdab:p:ower}{cmd:(}{it:expression_2}{cmd:)}
+    {cmdab:a:lpha}{cmd:(}{it:expression_3}{cmd:)}
+    {cmdab:d:elta}{cmd:(}{it:expression_4}{cmd:)}
+    {cmdab:s:dinf}{cmd:(}{it:expression_5}{cmd:)}
+    {cmdab:t:df}{cmd:(}{it:expression_6}{cmd:)}
+    {cmdab:noce:iling} {cmd:float} ]
+
+{p 4 8 2}
+where {it:expression} is a numeric expression. The numeric expression for each
+option must be in the form required by the {cmd:generate} command. That is to
+say, each expression must be specified so that the command
+
+{p 8 27 2}
+{cmd:generate double} {it:newvar}{cmd:=(}{it:expression}{cmd:)}
+
+{p 4 4 2}
+will work.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:powercal} performs generalized power calculations, storing the result in
+a new variable with a name specified by {it:newvar}. All except one of the
+options {cmd:nunit()}, {cmd:power()}, {cmd:alpha()}, {cmd:delta()}, and
+{cmd:sdinf()} must be specified. The single unspecified option in this list
+specifies whether the output variable is the number of sampling units, power,
+alpha (significance level), delta (difference in parameter value to be
+detected), or the standard deviation (SD) of the influence function. Any of
+these five quantities can be calculated from the other four. {cmd:powercal}
+can be used to calculate any of these quantities, assuming that we are testing
+a hypothesis that a parameter is zero, that the true value is given by
+{cmd:delta}, and that the sample statistic is distributed around the
+population parameter in such a way that the pivotal quantity
+
+{p 8 8 2}
+{hi:PQ = sqrt(nunits) {c 42} (delta/sdinf)}
+
+{p 4 4 2}
+has a standard normal distribution (if {cmd:tdf()} is not specified) or a
+{it:t}-distribution with {cmd:tdf()} degrees of freedom (if {cmd:tdf()} is
+specified). The formulas used by {cmd:powercal} define power as the
+probability of detecting a difference in the right direction, using a
+two-tailed test.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:nunit(}{it:expression_1}{cmd:)} gives an expression whose value
+is the number of independent sampling units. Sampling units are defined very
+generally. For instance, in an experiment involving equal-sized samples of
+individuals from population A and population B, a sampling unit might be a
+pair of sampled individuals, one from each population. Similarly, in a
+case-control study with four controls per case, a sampling unit might be a case
+together with four controls.
+
+{p 4 8 2}{cmd:power(}{it:expression_2}{cmd:)} gives an expression whose value
+is the power to detect a difference specified by the {cmd:delta()} option (see
+below).  The power is defined as the probability that the sample difference is
+in the correct direction and also is large enough to be significant, using a
+two-tailed test, at the level specified by the {cmd:alpha()} option (see below).
+
+{p 4 8 2}{cmd:alpha(}{it:expression_3}{cmd:)} gives an expression whose value
+is the size, or significance level, of the statistical test (in units of
+probability, not percentage).
+
+{p 4 8 2}{cmd:delta(}{it:expression_4}{cmd:)} gives an expression whose value
+is the true population difference to be detected. This difference is assumed
+to be positive.  Therefore, if you wish to detect a negative difference, 
+you should specify an expression equal to minus that difference. The
+difference may be the log of a ratio parameter, such as an odds ratio, rate
+ratio, risk ratio, or ratio of geometric means.
+
+{p 4 8 2}{cmd:sdinf(}{it:expression_5}{cmd:)} gives an expression whose value
+is the standard deviation of the influence function. That is to say, it is an
+expression equal to the expected standard error of the sample difference
+multiplied by the square root of the number of sampling units, where sampling
+units are defined generally, as specified in the option {cmd:nunit()}. In the
+simple case of a paired {it:t}-test, {cmd:sdinf()} is the standard deviation
+of the paired differences. More generally, {cmd:sdinf()} can be defined by
+calculating a standard error for a particular number of units, from a pilot
+study, a simulation, or a formula, and by multiplying this standard error by
+the square root of the number of units in the pilot study, simulation, or
+formula.
+
+{p 4 8 2}{cmd:tdf(}{it:expression_6}{cmd:)} gives an expression whose value is
+the degrees of freedom of the {it:t}-distribution to be assumed for the pivotal
+quantity {hi:PQ} specified above. The degrees of freedom expression is not
+necessarily integer-valued. If {cmd:tdf()} is absent, {hi:PQ} is assumed
+to follow a standard normal distribution.
+
+{p 4 8 2}{cmd:noceiling} specifies that, if the output variable specified by
+{it:newvar} is a number of units, it will not be rounded up to the
+lowest integer no less than itself (as calculated by the Stata 8 {cmd:ceil()}
+function). This option can be useful if the output variable is intended to
+specify an amount of exposure, such as a number of person-years, and the input
+{cmd:sdinf()} expression specifies a standard deviation of the influence
+function per unit exposure. If {cmd:noceiling} is not specified and
+{cmd:power()}, {cmd:alpha()}, {cmd:delta()}, and {cmd:sdinf()} are specified,
+{cmd:powercal} rounds up the output variable so that it contains a whole
+number of units
+
+{p 4 8 2}{cmd:float} specifies that the output variable will have a 
+{help datatypes:storage type} no higher than {hi:float}.  If {cmd:float} is
+not specified, {cmd:powercal} creates the output variable with storage
+type {hi:double}.  Whether or not {cmd:float} is specified, {cmd:powercal}
+compresses the output variable as much as possible without loss of precision.
+(See help {help compress}.)
+
+
+{title:Remarks}
+
+{p 4 4 2}
+{cmd:powercal} carries out sample-size calculations for a more general range
+of possible experimental designs than {help sampsi} and stores the result in
+a new variable, instead of reporting the result in the log. The new variable
+may be input to further calculations, plotted, or listed.
+{cmd:powercal} is intended as a low-level programming tool for users intending
+to carry out sample-size calculations for a given experimental design. It is
+the responsibility of the user to ensure that the expressions are correct and
+to choose a parameter scale on which the parameter is expected to be normally
+distributed (or {it:t}-distributed), with a variance that does not vary
+excessively with the size of the measured difference.
+
+{p 4 4 2}
+The formulas used by {cmd:powercal} define power as the probability of
+detecting a difference in the right direction, using a two-tailed test. It
+follows that, in the limit, as the difference {hi:delta} tends to zero, the
+power to detect a difference of {hi:delta} with a {it:p}-value of {hi:alpha}
+tends to a minimum of {hi:alpha/2} and not to a minimum of {hi:alpha}.
+{cmd:powercal} converts to missing the results of all input expressions for
+{cmd:power()} and {cmd:alpha()} which evaluate to a number outside the open
+interval {hi:(0,1)}, and the results of all input expressions for
+{cmd:delta()}, {cmd:sdinf()}, and {cmd:nunit()}, which evaluate to a
+nonpositive number.  {cmd:powercal} also converts to missing all values in
+the output variable for which there is not a unique maximum or minimum value
+of the output quantity. See Newson (2004) for details of the Methods and
+Formulas.
+
+
+{title:Examples}
+
+{p 4 4 2}
+The following examples are explained in detail in Newson (2004).
+They are designed to work both under Stata 7 and Stata 8.
+
+{p 4 4 2}
+This example creates figure 1, displaying power as a function of the geometric
+mean ratio between 2 treatment groups:
+
+{p 8 16 2}{cmd:. clear}{p_end}
+{p 8 16 2}{cmd:. scal cv=0.5}{p_end}
+{p 8 16 2}{cmd:. scal sdlog=sqrt(log(cv*cv + 1))}{p_end}
+{p 8 16 2}{cmd:. scal r20=exp(-2*sdlog*invnorm(0.2))}{p_end}
+{p 8 16 2}{cmd:. disp _n as text "Coefficient of variation: " as result cv _n as text "SD of logs: " as result sdlog _n as text "20% tail ratio: " as result r20}{p_end}
+{p 8 16 2}{cmd:. set obs 100}{p_end}
+{p 8 16 2}{cmd:. generate logratio=log(2)*(_n/_N)}{p_end}
+{p 8 16 2}{cmd:. lab var logratio "Log GM ratio"}{p_end}
+{p 8 16 2}{cmd:. generate gmratio=exp(logratio)}{p_end}
+{p 8 16 2}{cmd:. lab var gmratio "GM ratio"}{p_end}
+{p 8 16 2}{cmd:. powercal power, alpha(0.01) delta(logratio) sdinf(sdlog*sqrt(2)) nunit(50) tdf(98)}{p_end}
+{p 8 16 2}{cmd:. version 7:graph power gmratio, s(.) c(L) ylab(0(0.05)1) yline(0.8 0.9) xlab(1(0.1)2) xlog}{p_end}
+
+{p 4 4 2}
+This example creates figure 2, displaying detectable geometric mean ratios
+between 2 groups as a function of number per group:
+
+{p 8 16 2}{cmd:. clear}{p_end}
+{p 8 16 2}{cmd:. scal cv=0.5}{p_end}
+{p 8 16 2}{cmd:. scal sdlog=sqrt(log(cv*cv + 1))}{p_end}
+{p 8 16 2}{cmd:. scal r20=exp(-2*sdlog*invnorm(0.2))}{p_end}
+{p 8 16 2}{cmd:. disp _n as text "Coefficient of variation: " as result cv _n as text "SD of logs: " as result sdlog _n as text "20% tail ratio: " as result r20}{p_end}
+{p 8 16 2}{cmd:. set obs 100}{p_end}
+{p 8 16 2}{cmd:. generate npergp=_n}{p_end}
+{p 8 16 2}{cmd:. lab var npergp "Number per group"}{p_end}
+{p 8 16 2}{cmd:. powercal logratio, power(0.9) alpha(0.01) sdinf(sdlog*sqrt(2)) nunit(npergp) tdf(2*(npergp-1))}{p_end}
+{p 8 16 2}{cmd:. generate hiratio=exp(logratio)}{p_end}
+{p 8 16 2}{cmd:. generate loratio=exp(-logratio)}{p_end}
+{p 8 16 2}{cmd:. lab var hiratio "Detectable GM ratio >1"}{p_end}
+{p 8 16 2}{cmd:. lab var loratio "Detectable GM ratio <1"}{p_end}
+{p 8 16 2}{cmd:. version 7:graph hiratio loratio npergp if _n>=5, s(..) c(LL) yline(1) ylab xlab(0(10)100)}{p_end}
+
+
+{p 4 4 2}
+This example creates figures 3 and 4, displaying, respectively, detectable
+odds ratios in a case-control study as a function of number of cases and
+attainable significance levels as a function of odds ratio:
+
+{p 8 16 2}{cmd:. clear}{p_end}
+{p 8 16 2}{cmd:. scal conprev=0.25}{p_end}
+{p 8 16 2}{cmd:. scal conodds=conprev/(1-conprev)}{p_end}
+{p 8 16 2}{cmd:. disp _n as text "Expected control prevalence: " as result conprev _n as text "Expected control odds: " as result conodds}{p_end}
+{p 8 16 2}{cmd:. set obs 101}{p_end}
+{p 8 16 2}{cmd:. generate logor=log(1.25)+(log(5)-log(1.25))*(_n-1)/(_N-1)}{p_end}
+{p 8 16 2}{cmd:. generate or=exp(logor)}{p_end}
+{p 8 16 2}{cmd:. generate caseodds=conodds*or}{p_end}
+{p 8 16 2}{cmd:. generate caseprev=caseodds/(1+caseodds)}{p_end}
+{p 8 16 2}{cmd:. generate sdinflor=sqrt( 1/caseprev + 1/(1-caseprev) + (1/2)*( 1/conprev + 1/(1-conprev) ) )}{p_end}
+{p 8 16 2}{cmd:. lab var logor "Log odds ratio"}{p_end}
+{p 8 16 2}{cmd:. lab var or "Odds ratio"}{p_end}
+{p 8 16 2}{cmd:. lab var caseodds "Case exposure odds"}{p_end}
+{p 8 16 2}{cmd:. lab var caseprev "Case exposure prevalence"}{p_end}
+{p 8 16 2}{cmd:. lab var sdinflor "SD of influence for log OR"}{p_end}
+{p 8 16 2}{cmd:. desc}{p_end}
+{p 8 16 2}{cmd:. * Detectable OR by number of cases *}{p_end}
+{p 8 16 2}{cmd:. powercal ncases, power(0.9) alpha(0.01) delta(logor) sdinf(sdinflor)}{p_end}
+{p 8 16 2}{cmd:. version 7:graph or ncases if ncases<=2000, s(.) c(l) ylog ylab xlab}{p_end}
+{p 8 16 2}{cmd:. * Significance level by odds ratio *}{p_end}
+{p 8 16 2}{cmd:. powercal alphamin, power(0.9) delta(logor) sdinf(sdinflor) nunit(100)}{p_end}
+{p 8 16 2}{cmd:. version 7:graph alphamin or, s(.) c(l) ylog yreverse ylab(1 0.05 1e-1 1e-2 1e-3 1e-4 1e-5 1e-6 1e-7) yline(0.05 0.01) xlog xlab(1 1.25 1.5 2(1)5)}{p_end}
+
+
+{title:Reference}
+
+{p 4 8 2}
+Newson, R. 2004. Generalized power calculations for generalized linear models
+and more. {it:Stata Journal} 4(4): 379-401.
+
+
+{title:Author}
+
+{p 4 4 2}
+Roger Newson, King's College, London, UK.{break}
+Email: {browse "mailto:roger.newson@kcl.ac.uk":roger.newson@kcl.ac.uk}
+
+
+{title:Also see}
+
+{p 4 14 2}
+Manual:  {hi:[R] sampsi}
+
+{p 4 14 2}
+Online:  help for {help sampsi}{p_end}

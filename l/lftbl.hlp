@@ -1,0 +1,19 @@
+SUBJECT:  Actuarial or life-table analysis of time-to-event data
+AUTHOR:   Henry Krakauer, M.D., Ph.D., and John Stewart, Ph.D.,
+	  Health Care Financing Administration, Baltimore, MD.
+SUPPORT:  Fax Editor at STB office 602-860-1446 or write
+Actuarial or life-table analysis of time-to-event data
+---------------------------------------------------------------
+
+			      ^lftbl^
+
+^lftbl^ is menu driven, so type the command and follow instructions.  As an
+example:
+	. ^use cancer^               /* (found on Stata 2.1 disks)        */
+	. ^lftbl^
+
+Then answer the queries with:
+	^studytim^
+	^died^
+	^d^
+	^drug^

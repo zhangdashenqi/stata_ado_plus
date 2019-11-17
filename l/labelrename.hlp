@@ -1,0 +1,58 @@
+{smcl}
+{* 18apr2005}{...}
+{hline}
+help for {hi:labelrename}{right:(SJ5-2: dm0012)}
+{hline}
+
+{title:Rename value labels}
+
+        {cmd:labelrename} {it:oldname} {it:newname} [{cmd:,} {cmd:force} ]
+
+
+{title:Description}
+
+{pstd}
+{cmd:labelrename} renames a value label from {it:oldname} into {it:newname}, 
+making sure that all variables to which {it:oldname} was attached are now 
+attached to {it:newname}.
+
+{pstd}
+If a value label {it:newname} already exists, it is verified that {it:oldname} 
+and {it:newname} define the same set of value-to-text mappings.
+
+{pstd}
+{cmd:labelrename} supports multilingual datasets (see {help label_language} and
+{helpb mlanguage}); if {it:oldname} is attached to variables in other languages,
+these are redirected to {it:newname} as well.
+
+
+{title:Options}
+
+{phang}{cmd:force}
+attach name {it:newname} to all variables that currently use {it:oldname}
+even if value label {it:oldname} has not yet been defined.
+
+
+{title:Example}
+
+    {cmd:. labelrename rs029 yesno}
+
+
+{title:Author}
+
+    Jeroen Weesie
+    Department of Sociology/ICS
+    Utrecht University - The Netherlands
+    J.Weesie @ fss.uu.nl
+
+
+{title:Also see}
+
+{psee}
+Manual:  {hi:[R] label}{break}
+{hi:[R] labelbook}
+
+{psee}
+Online:  {helpb label}, {helpb labelbook}, {helpb labeldup},
+{helpb numlabel}, {helpb uselabel};{break}
+{help label_language}, {helpb mlanguage}

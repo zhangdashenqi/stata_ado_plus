@@ -1,0 +1,184 @@
+{smcl}
+{* *! 3.1.0 28aug2006}{...}
+{hline}
+help for {hi:glcurve}{right: (STB-48: sg107; STB-49: sg107_1; SJ1-1: gr0001;}
+{right:SJ4-4: gr0001_1; SJ6-4: gr0001_2)}
+{hline}
+
+{title:Derivation of generalized Lorenz curve ordinates with unit record data}
+
+{p 8 17 2}{cmd:glcurve}
+{it:varname}
+{weight}
+{ifin}
+[{cmd:,}
+{cmdab:p:var}{cmd:(}{it:newvarname}{cmd:)}
+{cmdab:gl:var}{cmd:(}{it:newvarname}{cmd:)}
+{cmdab:so:rtvar}{cmd:(}{it:varname}{cmd:)}
+{cmd:by}{cmd:(}{it:varname}{cmd:)}
+{cmdab:sp:lit}
+{cmdab:nogr:aph}
+{cmd:replace}
+{cmdab:l:orenz}
+{cmd:atip}{cmd:(}{it:string}{cmd:)}
+{cmd:rtip}{cmd:(}{it:string}{cmd:)}
+{cmd:plot}{cmd:(}{it:plot}{cmd:)}
+{it:graph_options}]
+
+{p 4 4 2}{cmd:aweight}s and {cmd:fweight}s are allowed; see {help weight}.
+
+
+{title:Description}
+
+{p 4 4 2}Given a variable {it:varname}, call it x with c.d.f. F(x),
+{cmd:glcurve} draws its generalized Lorenz curve and/or generates two new
+variables containing the generalized Lorenz ordinates for x; i.e., GL(p) at
+each p = F(x).  For a population ordered in ascending order of x, a graph of
+GL(p) against p plots the cumulative total of x divided by population size
+against cumulative population share GL(1) = mean(x). {cmd:glcurve} can also be
+used to derive many other related concepts such as Lorenz curves, concentration
+curves, and "three is of poverty" (TIP) curves, with appropriate definition of
+{it:varname}, order of cumulation (set with the {cmd:sortvar} option), and
+normalization (e.g., by means of {it:varname}). Alternatively, {cmd:glcurve}
+with the {cmd:lorenz}, {cmd:atip}, or {cmd:rtip} option can be used directly to
+draw the related Lorenz, concentration, and TIP curves.
+
+{p 4 4 2}Comparisons of pairs of distributions (and dominance checks) can be
+undertaken by using the {cmd:by()} (with or without the {cmd:split}) option.
+It can also be made manually by "stacking" the data (see {helpb stack}).
+
+{p 4 4 2}The graphs drawn by {cmd:glcurve} are relatively basic. For graphs
+with full user control over formatting and labeling, users are recommended to
+use {cmd:glcurve} to generate the ordinates of the graph required using the
+{cmd:pvar(}{it:newvarname}{cmd:)} and {cmd:glvar(}{it:newvarname}{cmd:)}
+options and then to draw the graph using {helpb graph twoway}.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:pvar(}{it:pvarname}{cmd:)} generates the variable {it:pvarname}
+containing the x coordinates of the created curve.
+
+{p 4 8 2}{cmd:glvar(}{it:glvarname}{cmd:)} generates the variable
+{it:glvarname} containing the y coordinates of the created curve.
+
+{p 4 8 2}{cmd:sortvar(}{it:sname}{cmd:)} specifies the sort variable.  By
+default, the data are sorted (and cumulated) in ascending order of
+{it:varname}. If the {cmd:sortvar} option is specified, sorting and cumulation
+is in ascending order of variable {it:sname}.
+
+{p 4 8 2}{cmd:by(}{it:groupvar}{cmd:)} specifies that the coordinates are to be
+computed separately for each subgroup defined by {it:groupvar}. {it:groupvar}
+must be an integer variable.
+
+{p 4 8 2}{cmd:split} specifies that a series of new variables be created,
+containing the coordinates for each subgroup specified by
+{cmd:by(}{it:groupvar}{cmd:)}. {cmd:split} cannot be used without {cmd:by()}.
+If {cmd:split} is specified, then the string {it:glname} in
+{cmd:glvar(}{it:glname}{cmd:)} is used as a prefix to create new variables
+{it:glname_X1}, {it:glname_X2}, ... (where X1, X2, ... are the values taken by
+{it:groupvar}).
+
+{p 4 8 2}{cmd:nograph} avoids the automatic display of a crude graph made from
+the created variables. {cmd:nograph} is assumed if {cmd:by()} is specified
+without {cmd:split}.
+
+{p 4 8 2}{cmd:replace} allows the variables specified in
+{cmd:glvar(}{it:glvarname}{cmd:)} and {cmd:pvar(}{it:pvarname}{cmd:)} to be
+overwritten if they already exist. Otherwise {it:glvarname} and
+{it:pvarname} must be new variable names.
+
+{p 4 8 2}{cmd:lorenz} requires that the ordinates of the Lorenz curve be 
+computed instead of generalized Lorenz ordinates. The Lorenz ordinates of
+variable x, L(p), are GL(p)/mean(x).
+
+{p 4 8 2}{cmd:rtip(}{it:povline}{cmd:)} and {cmd:atip(}{it:povline}{cmd:)}
+require that the ordinates of TIP curves be computed instead of generalized
+Lorenz ordinates.  {it:povline} specifies the value of the poverty line: it can
+be either a numeric value taken as the poverty line for all observations or a
+variable name containing the value of the poverty line for each observation.
+{cmd:atip()} draws "absolute" TIP curves (by cumulating max(z-x,0)) and
+{cmd:rtip()} draws "relative" TIP curves (by cumulating max(1-(x/z),0)).
+
+{p 4 8 2}{cmd:plot(}{it:plot}{cmd:)} provides a way to add other plots to the
+generated graph; see {it:{help addplot_option}}.
+
+{p 4 8 2}{it:graph_options} are standard {helpb twoway scatter} options.
+Modifications to the legend labels should be made with the
+{cmd:legend(order(}...{cmd:)} options instead of
+{cmd:legend(label(}...{cmd:)} (see {it:{help legend_option}}).
+
+
+{title:Examples}
+
+{p 4 4 2}Many {cmd:glcurve} examples are provided in the downloadable
+materials provided by
+{browse "http://econpapers.repec.org/paper/bocasug06/16.htm":Jenkins (2006)}.
+
+
+{p 4 8 2}{cmd:. glcurve x, gl(gl1) p(p1) nograph}{p_end}
+{p 4 8 2}{cmd:. twoway line gl1 p1}
+
+{p 4 8 2}{cmd:. glcurve x, lorenz plot(function equality = x)}
+
+{p 4 8 2}{cmd:. glcurve x [fw=wgt] if x > 0, gl(gl2) p(p2) lorenz}
+
+{p 4 8 2}{cmd:. glcurve x, gl(gl2) p(p2) replace sort(y) by(state) split}
+
+{p 4 8 2}{cmd:. glcurve x, gl(gl3) p(p3) atip(10000)}
+
+{p 4 8 2}{cmd:. glcurve x, gl(gl3) p(p3) atip(plinevar)}
+
+{p 4 8 2}{cmd:. glcurve x, gl(gl) p(p) lorenz nograph}{p_end}
+{p 4 8 2}{cmd:. twoway line gl p , sort || line p p ,}{p_end}
+{p}{space 8}{cmd:xlabel(0(.1)1) ylabel(0(.1)1)}{p_end}
+{p}{space 8}{cmd:xline(0(.2)1)  yline(0(.2)1)}{p_end}
+{p}{space 8}{cmd:title("Lorenz curve") subtitle("Example with custom formatting")}{p_end}
+{p}{space 8}{cmd:legend(label(1 "Lorenz curve") label(2 "Line of perfect equality")) }{p_end}
+{p}{space 8}{cmd:plotregion(margin(zero)) aspectratio(1) scheme(economist)}{p_end}
+
+
+{title:Acknowledgments}
+
+{p 4 4 2}Nicholas J. Cox helped with updating the code for our program from
+Stata 7 ({helpb glcurve7}) to Stata 8. David Demery and Owen O'Donnell made
+useful bug reports.
+
+
+{title:Authors}
+
+{p 4 4 2}Philippe Van Kerm, CEPS/INSTEAD, Differdange, G.-D. Luxembourg{break}
+philippe.vankerm@ceps.lu
+
+{p 4 4 2}Stephen P. Jenkins, ISER, University of Essex{break}
+stephenj@essex.ac.uk
+
+
+{title:References}
+
+{p 4 8 2}Cowell, F. A. 1995. {it:Measuring Inequality}. 2nd ed.
+Hemel Hempstead: Prentice-Hall/Harvester-Wheatsheaf.
+
+{p 4 8 2}Jenkins, S. P. 2006. Estimation and interpretation of measures of
+inequality, poverty, and social welfare using Stata. Presentation at
+2006 North American Stata Users Group Meeting, Boston MA.
+{browse "http://econpapers.repec.org/paper/bocasug06/16.htm"}.
+
+{p 4 8 2}Jenkins, S. P., and P. J. Lambert. 1997.
+Three 'I's of poverty curves, with an analysis of UK poverty trends.
+{it:Oxford Economic Papers} 49: 317{c -}327.
+
+{p 4 8 2}Lambert, P. J. 2001.
+{it:The Distribution and Redistribution of Income}. 3rd ed.
+Manchester: Manchester University Press.
+
+{p 4 8 2}Shorrocks, A. F. 1983. Ranking income distributions.
+{it:Economica} 197: 3{c -}17.
+
+
+{title:Also see}
+
+{psee} Manual:  {hi:[R] lorenz}{p_end}
+
+{psee}Online:  {help sumdist}, {help svylorenz} (if installed)
+{p_end}

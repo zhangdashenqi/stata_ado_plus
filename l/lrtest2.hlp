@@ -1,0 +1,132 @@
+.-
+help for ^lrtest^ and ^lr^                                    (manual:  ^[R] lrtest^)
+                                                            [jw]  Mar 08, 1999
+.-
+
+Likelihood-ratio test after model estimation
+--------------------------------------------
+
+	^lrtest^ [^, s^aving^(^name^) u^sing^(^name^) m^odel^(^name^) d^f^(^#^) switch^
+                  ^de^tail ^no^te^(^str^) li^st ^di^r ^drop(^names|^_all) clear^ ]
+
+Alterntively, a keyword syntax is available.
+
+	^lr define^ name [ note ]
+	^lr test^ name1 name2
+	^lr list^
+	^lr dir^
+	^lr drop^ names | ^_all^
+	^lr clear^
+
+
+Description
+-----------
+
+^lrtest^ saves information about and performs likelihood-ratio tests between
+pairs of maximum likelihood models such as those estimated by ^stcox^, ^logit^,
+^logistic^, ^poisson^, etc.  ^lrtest^ may be used with any estimation command that
+reports a log-likelihood value or, equivalently, displays output like that
+described in ^[R] maximize^.
+
+^lrtest^, typed without arguments, performs a likelihood-ratio test of the most
+recently estimated model against the model previously saved by "^lrtest,^
+^saving(0)^".  It is your responsibility to ensure that the most recently esti-
+mated model is nested within the previously saved model.
+
+^lrtest^ provides an important alternative to ^test^ for models estimated by
+maximum likelihood.
+
+^lr^ provides a keyword interface to ^lrtest^. ^lr define^ is equivalent to ^saving^.
+^lr test^ specifies a likelihood ratio test in which the model with the larger
+degrees of freedom is assumed to be true and nested in the model with less
+degrees of freedom. ^lr dir^ and ^lr list^ list the defined models, along with the
+information indices of Akaike (AIC) and Schwarz (SC/BIC).  ^lr drop^ eliminates
+models. ^lr clear^ eliminates all models.
+
+
+Options
+-------
+
+^saving(^name^)^ specifies that the summary statistics associated with the most
+    recently estimated model are to be saved as name.  If no other options are
+    specified, the statistics are saved and no test is performed.  The satu-
+    rated model is typically saved by typing "^lrtest, saving(0)^".
+
+^using(^name^)^ specifies the name of the saturated model against which a model is
+    to be tested.  If this option is not specified, ^using(0)^ is assumed.
+    A synonym for ^using^ is ^unrestricted^.
+
+^model(^name^)^ specifies the name of the constrained model to be tested.  If not
+    specified, the most recently estimated model is used. A synonym for ^using^
+    is ^restricted^.
+
+^note(^str^)^ specifies a note helpful in identifying the model. It may only
+    be specified while ^saving^ a model.
+
+^df(^#^)^ is seldom specified; it overrides the automatic degree-of-freedom
+    calculation.
+
+^detail^ specifies that a table is displayed about the two models involved in
+    testing.
+
+^switch^ that the roles of ^using^ and ^model^ should be interchanged if the
+    former has more degrees of freedom, assuming that you were right that one
+    model was nested in the other model, but made a mistake in identification.
+
+
+The remaining options manage the saved models, and should not be specified with
+the earlier options.
+
+^list^ specifies that a table is displayed describing the saved models. The
+    table only comprises the model selection indices proposed by Akaike (AIC)
+    and Schwarz (SC/BIC). ^dir^ is a synonym to ^list^.
+
+^drop(^names|^_all)^ specifies that models enumerated in names are dropped.
+
+^clear^ specifies that all models are dropped. This is equivalent to ^drop(_all)^.
+
+
+Remarks
+-------
+
+Definition of model selection indices
+   Akaike     -2*log-likelihood + 2 * df
+   Schwarz    -2*log-likelihood + ln(nobs) * df
+
+^lrtest^ displays warning messages if among the two model to be compared
+	(1) the dependent variable differs,
+	(2) the log-likelihood of the null-models differs,
+	(3) the number of observations differ, or
+	(4) the estimation command differs.
+
+
+Examples
+--------
+
+ . ^logit chd age age2 sex^                    estimate saturated model
+ . ^lrtest, saving(0)^                         save results
+ . ^logit chd age sex^                         estimate simpler model
+ . ^lrtest^                                    obtain test
+ . ^lrtest, saving(1)^                         save results as 1
+ . ^logit chd sex^                             estimate simplest model
+ . ^lrtest^                                    compare to saturated model
+ . ^lrtest, using(1)^                          compare to model 1
+ . ^lrtest, model(1)^                          repeat earlier test
+ . ^lrtest, list^                              list all saved models
+
+
+Author
+------
+
+        Jeroen Weesie
+        Dept of Sociology/ICS
+        Utrecht University
+        J.Weesie @@ fss.uu.nl
+
+
+Also see
+--------
+
+ Manual:  ^[U] 23 Estimation and post-estimation commands^,
+	  ^[R] lrtest^
+On-line:  help for @linktest@, @test@, @testnl@

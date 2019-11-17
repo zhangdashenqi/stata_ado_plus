@@ -1,0 +1,213 @@
+{smcl}
+{* 25aug2008}{...}
+{cmd:help mata mz_pancolshape()}
+{hline}
+
+{title:Title}
+
+{p 4 14 2}
+{bf:mz_pancolshape() -- Reorganizes, in columns, a panel data matrix for which the panels are presented by lines}
+
+
+{title:Syntax}
+
+{p 4 23 2}
+{it:transmorphic matrix}
+{cmd:mz_pancolshape(}{it:W}{cmd:,} {it:c}{cmd:,} {it:f}{cmd: )}
+
+
+{pstd}
+where
+
+{p 10 16 2}
+    {it:W}:  {it:transmorphic matrix} containing panel data
+
+{p 10 16 2}
+    {it:c}:  {it:real scalar} indicating the number of columns for the new panel data matrix
+
+{p 10 16 2}
+    {it:f}:  {it:string scalar} indicating how the user wants the panels to be presented
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:mz_pancolshape()} reshapes a {it:t x (c * K)} panel data set matrix {it:W},
+to a {it:(K * t) x c} panel data matrix if the argument {it:f} takes the value
+{it:"CK"}. {it:K} is the number of panels, {it:t} the number of observations in
+panels and {it:c} the number of columns of the new matrix. The {it:"CK"} is 
+specified to reshape a panel data matrix that was remodeled by the {bf:{help mf_mz_panrowshape:mz_panrowshape()}}
+function in which the {it:f} argument took the value {it:"CK"}. See {bf:{help mf_mz_panrowshape:mz_panrowshape()}}
+for more details on the {it:"CK"} and {it:(c * K)} specifications.
+
+{p 4 4 2}
+{cmd:mz_panrowshape()} reshapes a {it:t x (K * c)} panel data set matrix {it:W},
+to a {it:(K * t) x c} panel data matrix if the argument {it:f} takes the value
+{it:"KC"}. The {it:"KC"} is specified to reshape a panel data matrix that was
+remodeled by the {bf:{help mf_mz_panrowshape:mz_panrowshape()}} function in 
+which the {it:f} argument took the value {it:"KC"}. See {bf:{help mf_mz_panrowshape:mz_panrowshape()}}
+for more details on the {it:"KC"} and {it:(K * c)} specifications.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+Remarks are presented under the following headings:
+
+	{help mf_mz_pancolshape##remarks1:Case where {it:f} takes the value {it:"CK"}}
+	{help mf_mz_pancolshape##remarks2:Case where {it:f} takes the value {it:"KC"}}
+
+
+{marker remarks1}{...}
+{title:Case where {it:f} takes the value {it:"CK"}}
+
+        {txt}  Suppose we have a matrix {it:V}
+
+        {com}: V
+        {res}       {txt}1   2     3     4
+            {c TLC}{hline 21}{c TRC}
+          1 {c |}  {res}1   1   3.1   3.7{txt}  {c |}
+          2 {c |}  {res}1   2   9.2   4.2{txt}  {c |}
+          3 {c |}  {res}1   3   2.5   6.5{txt}  {c |}
+          4 {c |}  {res}1   4   8.4     7{txt}  {c |}
+          5 {c |}  {res}1   5   4.6   3.9{txt}  {c |}
+          6 {c |}  {res}2   1   6.2   1.5{txt}  {c |}
+          7 {c |}  {res}2   2   5     3.2{txt}  {c |}
+          8 {c |}  {res}2   3   7.8   9.6{txt}  {c |}
+          9 {c |}  {res}2   4   5.4   7.7{txt}  {c |}
+         10 {c |}  {res}2   5   3.4   9.2{txt}  {c |}
+         11 {c |}  {res}3   1   2.1   2.3{txt}  {c |}
+         12 {c |}  {res}3   2     9   1.5{txt}  {c |}
+         13 {c |}  {res}3   3   1.4   6.7{txt}  {c |}
+         14 {c |}  {res}3   4   4.8   3.3{txt}  {c |}
+         15 {c |}  {res}3   5   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 21}{c BRC}
+            
+        {txt}  We reshape it using the {bf:{help mf_mz_panrowshape:mz_panrowshape()}} function
+        {txt}  in which the argument {it:f} takes the value {it:"CK"}
+
+
+        {com}: matA = mz_panrowshape(V, 1, "CK")
+        {com}: matA
+        {res}       {txt}1   2     3     4   5   6     7     8   9   10   11    12
+            {c TLC}{hline 61}{c TRC}
+          1 {c |}  {res}1   1   3.1   3.7   2   1   6.2   1.5   3   1   2.1   2.3{txt}  {c |}
+          2 {c |}  {res}1   2   9.2   4.2   2   2     5   3.2   3   2     9   1.5{txt}  {c |}
+          3 {c |}  {res}1   3   2.5   6.5   2   3   7.8   9.6   3   3   1.4   6.7{txt}  {c |}
+          4 {c |}  {res}1   4   8.4     7   2   4   5.4   7.7   3   4   4.8   3.3{txt}  {c |}
+          5 {c |}  {res}1   5   4.6   3.9   2   5   3.4   9.2   3   5   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 61}{c BRC}
+
+        {txt}  To reshape the matrix {it:matA} to the original matrix {it:V}, we use the
+        {txt} {cmd:mz_pancolshape()} function in which the {it:f} argument takes the value
+        {txt} {it:"CK"}
+
+        {com}: matB = mz_pancolshape(matA, 4, "CK")
+        {com}: matB
+        {res}       {txt}1   2     3     4
+            {c TLC}{hline 21}{c TRC}
+          1 {c |}  {res}1   1   3.1   3.7{txt}  {c |}
+          2 {c |}  {res}1   2   9.2   4.2{txt}  {c |}
+          3 {c |}  {res}1   3   2.5   6.5{txt}  {c |}
+          4 {c |}  {res}1   4   8.4     7{txt}  {c |}
+          5 {c |}  {res}1   5   4.6   3.9{txt}  {c |}
+          6 {c |}  {res}2   1   6.2   1.5{txt}  {c |}
+          7 {c |}  {res}2   2   5     3.2{txt}  {c |}
+          8 {c |}  {res}2   3   7.8   9.6{txt}  {c |}
+          9 {c |}  {res}2   4   5.4   7.7{txt}  {c |}
+         10 {c |}  {res}2   5   3.4   9.2{txt}  {c |}
+         11 {c |}  {res}3   1   2.1   2.3{txt}  {c |}
+         12 {c |}  {res}3   2     9   1.5{txt}  {c |}
+         13 {c |}  {res}3   3   1.4   6.7{txt}  {c |}
+         14 {c |}  {res}3   4   4.8   3.3{txt}  {c |}
+         15 {c |}  {res}3   5   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 21}{c BRC}
+
+        {txt}  Which is the same matrix as {it:V}. To be sure we use the {cmd:asserteq()}
+        {txt}  function
+
+        {com}: asserteq(matB, V)
+
+        {txt}  Nothing is returned, then the two matices are the same
+        
+{marker remarks2}{...}
+{title:Case where {it:f} takes the value {it:"KC"}}
+
+        {txt}  We reshape the {it:V} matrix using the {bf:{help mf_mz_panrowshape:mz_panrowshape()}}
+        {txt}  function but the argument {it:f} takes the value {it:"KC"}
+        
+        {com}: matC = mz_panrowshape(V, 1, "KC")
+        {com}: matC
+        {res}       {txt}1   2   3   4   5   6     7     8     9    10    11    12
+            {c TLC}{hline 61}{c TRC}
+          1 {c |}  {res}1   2   3   1   1   1   3.1   6.2   2.1   3.7   1.5   2.3{txt}  {c |}
+          2 {c |}  {res}1   2   3   2   2   2   9.2     5     9   4.2   3.2   1.5{txt}  {c |}
+          3 {c |}  {res}1   2   3   3   3   3   2.5   7.8   1.4   6.5   9.6   6.7{txt}  {c |}
+          4 {c |}  {res}1   2   3   4   4   4   8.4   5.4   4.8     7   7.7   3.3{txt}  {c |}
+          5 {c |}  {res}1   2   3   5   5   5   4.6   3.4   9.5   3.9   9.2   9.7{txt}  {c |}
+            {c BLC}{hline 61}{c BRC}
+
+        {txt}  To reshape the matrix {it:matC} to the original matrix {it:V}, we use the
+        {txt}  {cmd:mz_pancolshape()} function in which the {it:f} argument takes the value
+        {txt}  {it:"KC"}
+
+        {com}: matD = mz_pancolshape(matC, 4, "KC")
+        {com}: matD
+        {res}       {txt}1   2     3     4
+            {c TLC}{hline 21}{c TRC}
+          1 {c |}  {res}1   1   3.1   3.7{txt}  {c |}
+          2 {c |}  {res}1   2   9.2   4.2{txt}  {c |}
+          3 {c |}  {res}1   3   2.5   6.5{txt}  {c |}
+          4 {c |}  {res}1   4   8.4     7{txt}  {c |}
+          5 {c |}  {res}1   5   4.6   3.9{txt}  {c |}
+          6 {c |}  {res}2   1   6.2   1.5{txt}  {c |}
+          7 {c |}  {res}2   2   5     3.2{txt}  {c |}
+          8 {c |}  {res}2   3   7.8   9.6{txt}  {c |}
+          9 {c |}  {res}2   4   5.4   7.7{txt}  {c |}
+         10 {c |}  {res}2   5   3.4   9.2{txt}  {c |}
+         11 {c |}  {res}3   1   2.1   2.3{txt}  {c |}
+         12 {c |}  {res}3   2     9   1.5{txt}  {c |}
+         13 {c |}  {res}3   3   1.4   6.7{txt}  {c |}
+         14 {c |}  {res}3   4   4.8   3.3{txt}  {c |}
+         15 {c |}  {res}3   5   9.5   9.7{txt}  {c |}
+            {c BLC}{hline 21}{c BRC}
+
+        {txt}  Which is the same matrix as {it:V}. To be sure we use the {cmd:asserteq()}
+        {txt}  function
+
+        {com}: asserteq(matD, V)
+
+        {txt}  Nothing is returned, then the two matrices are identical
+
+
+{title:Conformability}
+
+    {cmd:mz_pancolshape(}{it:W}{cmd:,} {it:c}{cmd:,} {it:f}{cmd:)}
+         {it:W}:  {it:t x (c * K)} or {it:t x (K * c)}
+         {it:c}:  {it:1 x 1}
+         {it:f}:  {it:1 x 1}
+    {it:result}:  {it:(K * t) x c}, {it:t} = number of obs. in panel, {it:K} = number of panels
+
+
+{title:Diagnostics}
+
+{p 4 4 2}
+{cmd:mz_pancolshape()} aborts with error if {it:cols(W)} is not divisible by {it:c}.
+
+
+{title:Source code}
+
+{p 4 4 2}
+{help ltimbimata_source##mz_pancolshape:mz_pancolshape.mata}
+
+
+{title:Author}
+
+{p 4 4 2} Diallo Ibrahima Amadou, {browse "mailto:zavren@gmail.com":zavren@gmail.com}
+
+
+{title:Also see}
+
+{p 4 13 2}
+Online:  help for {bf:{help mf_mz_panrowshape:mz_panrowshape()}}, {bf:{help ltimbimata}}
+{p_end}

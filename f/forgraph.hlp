@@ -1,0 +1,68 @@
+.-
+help for ^forgraph^                                 (STB-49: gr36)
+.-
+
+Variant of ^for^ for graphics commands
+--------------------------------------
+
+   ^forgraph^ list [^, ti^tle^(^str^) mar^gin^(^#^) ts^ize^(^#^) sa^ving^(^filename^)^ 
+                 for_options] ^:^ graphics_cmd
+
+The general multiple-list syntax of ^for^ is supported as well.
+
+
+Description
+-----------
+
+^forgraph^ is a variant of ^for^ that repeats stata graphics commands, 
+automatically saves the graphs, and builds a combined graph. At each 
+repetition, the members of list are substituted for ^@@^ in graphics_cmd.
+
+The graphics command should support an option ^saving()^. If the graphics 
+command does not contain options, a comma ^,^ should still be typed!
+
+See help for @for@ for additional details.  
+
+
+Options
+-------
+
+^title(^str^)^ specifies the title for the combined plot.
+
+^margin(^#^)^ specifies the margin in building the combined graph.
+
+^tsize(^#^)^ specifies the text size for the seperate plots. The text size 
+   for the combined plot is taken from the current value of ^textsize^. To 
+   obtain a readable combined plot, ^tsize^ should usually be specified at 
+   least twice the size of the ^textsize^.
+   
+^saving(^filename^,^[^replace^]^)^ saves the combined graph in a file that can 
+    be reviewed by ^graph using^ and printed.    
+
+
+Examples
+--------
+
+
+   . ^forgraph price-len: graph @@, hist normal^
+   . ^forgraph mpg-len, saving(OnePlot): hilite @@ price, hilite(foreign)^
+   . ^forgraph q6-q25, noheader: ksm @@^
+   . ^forgraph 1-10: hilite x y if z==@@, hilite(hvar)^
+
+
+Author
+------
+
+     Jeroen Weesie
+     Utrecht University
+     Netherlands
+     J.Weesie@@fss.uu.nl
+
+
+Also see
+--------
+
+    STB:  STB-49 gr36
+ Manual:  ^[R] for^
+On-line:  help for @by@, @quietly@, @while@   
+

@@ -1,0 +1,35 @@
+.-
+help for ^_pedum^ - 1.6.0 - 2/27/1999
+.-
+
+Utility to determine if a variable is 0, 1 or .
+-----------------------------------------------
+
+    ^_pedum^ varname [^if^ exp] [^in^ range]
+
+Description
+-----------
+
+^_pedum^ returns the scalar ^r(dummy)^=1 if the variable is binary, else 0.
+    Binary variables have all values equal to 0, 1, or missing.
+
+Examples within a program
+-------------------------
+
+    local i = 1
+    while `i'<=`nvars' {
+        local nmtoget : word `i' of `varnms'
+        _pedum `nmtoget' `if' `in'
+        mat `Sdummy'[1,`i'] = r(dummy)
+        local i=`i'+1
+    }
+
+Note
+----
+
+You must use ^_peife^ prior to calling ^_pedum^.
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jslsoc/spost.htm
+         spostsup@@indiana.edu

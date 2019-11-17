@@ -1,0 +1,124 @@
+{smcl}
+{* 20Jun2003}{...}
+{hline}
+help for {hi:asciker}{right:(SJ4-2: st0064)}
+{hline}
+
+{title:Asymptotic confidence intervals for kernel density estimation}
+
+
+{p 8 17 2}{cmd:asciker} {it:varname} [{it:weight}]
+[{cmd:if} {it:exp}] [{cmd:in} {it:range}] 
+{bind:[{cmd:,} {cmdab:nogr:aph}}
+{cmdab:g:enerate}{cmd:(}{it:newvarx} {it:newvard} {it:newvarb}{cmd:)} 
+{cmd:at(}{it:varx}{cmd:)} {cmdab:usm:ooth(}{it:#}{cmd:)}
+[{cmdab:ep:an} | {cmdab:gau:ss}]
+[{cmdab:sc:ott} | {cmdab:ha:rdle} | {cmdab:si:lver}]
+{cmdab:mb:andw}{cmd:(}{it:#}{cmd:)} {cmd:n(}{it:#}{cmd:)} 
+{cmdab:per:cent}{cmd:(}{it:#}{cmd:)} {cmdab:gr7} {it:graph_options} ]
+
+{p 4 4 2}{cmd:fweight}s and {cmd:aweight}s are allowed; see help {help weights}.
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:asciker} computes asymptotic confidence interval for 
+fixed-bandwidth kernel density estimation. It follows Horowitz (1999) 
+and Hall (1992) based on undersmoothing the kernel to reduce the bias. 
+{cmd:bsciker} needs the preliminary installation of {cmd:vkdensity} which 
+allows to compute the variance of the kernel estimation and allows to 
+decide the degree of undersmoothing. 
+
+{p 4 4 2}The syntax of {cmd:asciker} partly mimics the syntax of the official 
+{cmd:kdensity} that uses fixed kernel estimation methods.
+
+
+{title:Options}
+
+{p 4 4 2}Most options for {cmd:asciker} are the same as for {cmd:kdensity};
+see {hi:[R] kdensity}. The specific options are the following:
+
+{p 4 8 2}{cmdab:g:enerate}{cmd:(}{it:newvarx} {it:newvard} {it:newvarb} {cmd:)} 
+allows to create four new variables: {it:newvarx} will contain the 
+point of estimation; {it:newvard} will contain the density estimation; and 
+{it:newvarb_u} and {it:newvarb_l} will contain the upper and lower bound,
+confidence interval variable.
+
+{p 4 8 2}{cmd:usmooth(}{it:#}{cmd:)} chooses the degree of 
+undersmoothing for bootstrap confidence interval estimation. The default 
+value is 1/4. Increasing this number will result in a smaller bandwidth, 
+i.e., a more variable and less biased estimation, and vice versa.
+
+{p 4 8 2}{cmd:scott}, {cmd:hardle}, and {cmd:silver} allows you to choose
+between three different optimal bandwidth, i.e., those proposed by Scott
+(1992), H{c a:}rdle (1991), and Silverman (1986).  See also {cmd:bandw}
+(Salgado-Ugarte, Shimizu, and Taniuchi 1995b; 1995a; 1993).
+
+{p 4 8 2}{cmd:mbandw}{cmd:(}{it:#}{cmd:)} specifes the 
+bandwidth manually. It conflicts with {cmd:at()}; hence,
+they cannot be specified at the same time.
+
+{p 4 8 2}{cmdab:per:cent}{cmd:(}{it:#}{cmd:)} specifies the size of the
+significance level to be used for confidence interval. The default
+value is set at 90%, but it can be changed at will.
+
+{p 4 8 2}{cmd:gr7} creates the graph using Stata 7 instead of Stata 8 graph
+facilities.
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. asciker maker, g(points density bound) scott usm(.3)}
+
+
+{title:References}
+
+{p 4 8 2}
+Hall, P. 1992.  Effect of bias estimation on coverage accuracy of bootstrap
+confidence intervals for a probability density. {it:Annals of Statistics} 20:
+675-694.
+
+{p 4 8 2}
+H{c a:}rdle, W. 1991. {it: Smoothing Techniques. With implementation in S}.  
+New York: Springer.
+
+{p 4 8 2}
+Salgado-Ugarte, I. H., M. Shimizu, and T. Taniuchi. 1993. snp6: Exploring the
+shape of univariate data using kernel density estimators: 
+{it:Stata Technical Bulletin} 16: 8-19.  In 
+{it: Stata Technical Bulletin Reprints}, vol. 3, 155-173. College Station, TX: 
+Stata Press.
+
+{p 4 8 2}
+------. 1995a.  snp6.1: ASH, WARPing, and kernel density estimation for
+univariate data. 
+{it:Stata Technical Bulletin 26: 23-31.  In 
+{it:Stata Technical Bulletin Reprints}, vol. 5, 161-172.  College Station, TX:
+Stata Press.
+
+{p 4 8 2}
+------. 199b. snp6.2: Practical rules for bandwidth selection in univariate
+density estimation.
+{it:Stata Technical Bulletin} 27: 5-19. In
+{it:Stata Technical Bulletin Reprints}, vol. 5, 172-190. College Station, TX:
+Stata Press.
+
+{p 4 8 2}
+Scott, D. W. 1992.  {it:Multivariate Density Estimation}.  New York: John
+Wiley & Sons.
+
+{p 4 8 2}
+Silverman, B. W.  1986. {it:Density Estimation for Statistics and Data Analysis}.  London: Chapman & Hall.
+
+
+{title:Also see}
+
+{p 4 14 2}
+    STB:{space 5}{hi:snp6 (STB-16)}
+
+{p 4 13 2}
+ Manual:  {hi:[R] kdensity}
+
+{p 4 14 2}Online:  help for {help kdensity}, {help graph} and {help hist}, 
+ and help for {help adgakern}, {help adgaker2}, {help bandw}, 
+ and {help varwike2} if installed {p_end}

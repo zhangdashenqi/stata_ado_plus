@@ -1,0 +1,54 @@
+Time series regression                                           (STB-15: sts4)
+----------------------
+
+	^tsfit^ [varlist] [^weight^] [^if^ exp] [^in^ range] [^,^ ^current(^varlist^)^ 
+
+        ^lags(^#[,#,...]^)^ ^nosample^ ^static(^varlist^)^ other-regress-options ]
+
+estimates a time series regression.  Lags of the "varlist" are included in the
+regression along with any ^static^ variables.  The current values of variables
+in the ^current^ varlist are also included.
+
+
+Options
+-------
+
+^current(^varlist^)^ specifies the RHS variables whose current values are to
+  be included.  By default, no current values are included.
+
+^lags(^#[,#,...]^)^ indicates how many lags of each time series to include.  If 
+  only one number is indicated, that lag length is applied to the entire 
+  varlist.  If the ^lags^ option is omitted, ^lag(0)^ is assumed.  If several 
+  numbers separated by commas are typed, the numbers are applied to each of 
+  the variables in sequence.  For example, "lags(2,12,4)" would include two 
+  lags of the left-hand-side variable, twelve lags of the first explanatory 
+  variable, and four lags of the second explanatory variable.  If there are 
+  fewer lag lengths than variables, the last lag length listed is used for 
+  the remaining variables.  Extra lag lengths are ignored.
+
+^nos^ample suppresses the sample coverage information.  If the ^period^ and
+  ^datevars^ have been specified previously, the sample will be displayed 
+  before the regression output.
+
+^static(^varlist^)^ specifies the non-time series variables in the regression.
+
+
+Remarks
+-------
+
+^tsfit^ creates any lagged variables needed in the regression and leaves them
+in the user's data set.  These lags are needed by commands, such as ^tsmult^,
+that can follow ^tsfit^.
+
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts4 (STB-15)
+On-line:  ^help^ for ^datevars^, ^period^, ^tsmult^, and ^tsreg^

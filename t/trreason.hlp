@@ -1,0 +1,96 @@
+
+Reasons for using transformations
+---------------------------------
+
+There are many reasons for transformation. The list here is not
+comprehensive.
+
+1. Convenience
+2. Reducing skewness
+3. Equal spreads
+4. Linear relationships
+5. Additive relationships
+
+If you are looking at just one variable, 1, 2 and 3 are relevant, while
+if you are looking at two or more variables, 4 and 5 are more important.
+However, transformations that achieve 4 and 5 very often achieve 2 and
+3.
+
+1. ^Convenience^ A transformed scale may be as natural as the original
+scale and more convenient for a specific purpose (e.g. percentages
+rather than original data, sines rather than degrees).
+
+One important example is ^standardisation^, whereby values are adjusted
+for differing level and spread. In general
+
+                       value - level
+ standardised value =  -------------.
+                          spread
+
+Standardised values have level 0 and spread 1 and have no units: hence
+standardisation is useful for comparing variables expressed in different
+units. Most commonly a ^standard score^ is calculated as
+
+                       x - mean of x
+                  z =  -------------.
+                          sd of x
+
+Standardisation makes no difference to the shape of a distribution.
+
+2. ^Reducing skewness^ A transformation may be used to reduce skewness.
+A distribution that is symmetric or nearly so is often easier to handle
+and interpret than a skewed distribution.
+
+To reduce right skewness, take roots or logarithms or reciprocals (roots
+are weakest). This is the commonest problem in practice.
+
+To reduce left skewness, take squares or cubes or higher powers.
+
+3. ^Equal spreads^ A transformation may be used to produce approximately
+equal spreads, despite marked variations in level, which again makes
+data easier to handle and interpret. Each data set or subset having
+about the same spread or variability is a condition called
+^homoscedasticity^: its opposite is called ^heteroscedasticity^. (The
+spelling ^-sked-^ rather than ^-sced-^ is also used.)
+
+4.  ^Linear relationships^ When looking at relationships between
+variables, it is often far easier to think about patterns that are
+approximately linear than about patterns that are highly curved. This is
+vitally important when using linear regression, which amounts to fitting
+such patterns to data. (In Stata, @regress@ is the basic command for
+regression.)
+
+For example, a plot of logarithms of a series of values against time has
+the property that periods with ^constant rates of change^ (growth or
+decline) plot as straight lines.
+
+5. ^Additive relationships^ Relationships are often easier to analyse
+when additive rather than (say) multiplicative. So
+
+                  y = a + bx
+
+in which two terms a and bx are added is easier to deal with than
+
+                        b
+                  y = ax
+
+                          b
+in which two terms a and x  are multiplied. ^Additivity^ is a vital
+issue in ^analysis of variance^ (in Stata, @anova@, @oneway@, etc.).
+
+In practice, a transformation often works, serendipitously, to do
+several of these at once, particularly to reduce skewness, to produce
+nearly equal spreads and to produce a nearly linear or additive
+relationship.
+
+Also see:
+---------
+
+Review of most common transformations                     help @trreview@
+
+Transformations for proportions and percents              help @trpropor@
+
+Psychological comments -- for the puzzled                 help @trpsych@
+
+How to do transformations in Stata                        help @trstata@
+

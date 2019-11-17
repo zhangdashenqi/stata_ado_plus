@@ -1,0 +1,183 @@
+{smcl}
+{* 06april2006}{...}
+{hline}
+help for {hi:mdraws}{right:(SJ6-2: st0101)}
+{hline}
+
+{title:Multiple draws from the standard uniform density}
+
+{p 4 12 2}{cmd:mdraws} 	{ifin},
+	{cmdab:dr:aws(}{it:#}{cmd:)} {cmdab:n:eq(}{it:#}{cmd:)}
+	{cmdab:pre:fix(}{it:string}{cmd:)} 
+	[{cmdab:pri:mes(}{it:name}{cmd:)}
+	  {cmdab:an:tithetics}
+	{cmdab:b:urn(}{it:#}{cmd:)}
+          {cmdab:ra:ndom} {cmdab:se:ed(}{it:#}{cmd:)}
+	  {cmdab:hr:andom} {cmdab:sh:uffle}  {cmdab:replace:}]
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:mdraws} creates {it:M} x {it:D} new variables, where each 
+variable contains numbers drawn from the standard uniform density, i.e.,
+uniform over the interval [0,1). The numbers are either Halton 
+sequences (the default) or sequences of pseudorandom numbers. See
+Train (2003, ch. 9) for a description of the methods used.
+
+{p 4 4 2}The names of the variables created have a common prefix, specified
+by the option {cmdab:prefix(}{it:string}{cmd:)}, and the variable name 
+suffixes are {it:m_d} for each integer {it:m} = 1, ..., {it:M} and each
+integer {it:d} = 1, ..., {it:D}. Users may need to {cmd:set matsize} 
+and {cmd:set memory} to values above the default ones. (See help for 
+{helpb matsize} and {helpb memory}.) 
+
+{p 4 4 2}This program was designed to be used in conjunction with a
+program using the Geweke-Hajivassiliou-Keane (GHK) simulator for
+maximum simulated likelihood estimation. For an application to the
+calculation of multivariate normal probabilities, see the 
+{cmd:egen} function {helpb mvnp:mvnp()}.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:draws(}{it:#}{cmd:)} specifies the number of draws
+variables created per equation (integration dimension), {it:D*}. 
+If the {cmd:antithetics} option is not specified (the default), 
+{it:D} = {it:D*}. If the {cmd:antithetics} option is specified, 
+{it:D} = 2{it:D*}. 
+
+{p 4 8 2}{cmd:neq(}{it:#}{cmd:)} specifies {it:M}, the number of equations 
+(dimensions).
+
+{p 4 8 2}{cmd:prefix(}{it:string}{cmd:)} specifies the prefix common
+to the names of each of the variables created. 
+
+{p 4 8 2}{cmd:primes(}{it:name}{cmd:)} specifies the name of an 
+existing 1 x {it:M} or {it:M} x 1 matrix containing 
+{it:M} different prime numbers. If the option is not specified and
+as long as {it:M} <= 20, the program uses the first {it:M} prime numbers 
+in ascending order. 
+
+{p 4 8 2}{cmd:antithetics} specifies that antithetic draws also 
+be created. The antithetic draw for a vector of uniform draws, 
+{it:z}, is 1{c -}{it:z}. The variables are named in a manner consistent 
+with the system outlined above. The first {it:D*} variables per 
+dimension are the original draws variables; the second {it:D*} 
+variables are the corresponding antithetic draws.
+
+{p 4 8 2}{cmd:burn(}{it:#}{cmd:)} specifies the number of initial
+sequence elements to drop for each equation when creating Halton 
+sequences. The default is zero, and the option is ignored if 
+{cmd:random} is specified. Specification of this option helps 
+reduces the correlation between the sequences in each dimension. 
+Train (2003, 230) recommends that {it:#} should be at least as large as 
+large as the prime number used to generate the sequences.
+
+{p 4 8 2}{cmd:random} specifies that pseudorandom number sequences
+are created rather than Halton sequences (the default).
+
+{p 4 8 2}{cmd:seed(}{it:#}{cmd:)} specifies the initial value of the 
+pseudorandom number seed used by the {cmd:uniform()} function 
+if {cmd:random} is specified or if the {cmd:hrandom} or {cmd:shuffle}
+options are requested when Halton sequences are specified. Otherwise,
+it is ignored. The value should be an integer (the default value 
+is 123456789). Use this option to ensure reproducibility of results.
+
+{p 4 8 2}{cmd:hrandom} specifies that each Halton sequence should be 
+transformed by a random perturbation. For each dimension, a draw, 
+{it:u}, is taken from the standard uniform distribution.
+Each sequence element has {it:u} added to it. If the sum is greater
+than 1, the element is transformed to the sum minus 1; otherwise, the
+element is transformed to the sum. See Train (2003, 234). 
+
+{p 4 8 2}{cmd:shuffle} specifies that "shuffled" Halton draws should be
+created, as proposed by Hess and Polak (2003). Each Halton sequence in 
+each dimension is randomly shuffled before sequence elements are
+allocated to observations. Philippe Van Kerm's program {cmd: _gclsort}, 
+available via SSC, must be installed for this option to work. 
+
+{p 4 8 2}{cmd:replace} specifies that existing variables with names
+that have the prefix specified by the {cmd:prefix()} option and the 
+suffix defined by the relevant equation and draw number are replaced.
+
+
+{title:Saved Results}
+
+{p 4 8 2}{hi:Scalars}
+
+{p 8 25 2}{cmd:r(n_draws)}{space 7}scalar equal to {it:D}
+
+{p 8 25 2}{cmd:r(n_dimensions)}{space 2}scalar equal to {it:M}
+
+{p 8 25 2}{cmd:r(burn)}{space 10}number of draws dropped per dimension, if
+{cmd:burn()} option used
+
+{p 4 8 2}{hi:Macros}
+
+{p 8 25 2}{cmd:r(antithetics)}{space 3}local macro containing {cmd:"yes"} if
+{cmd:antithetics} option specified, else containing {cmd:"no"}
+
+{p 8 25 2}{cmd:r(prefix)}{space 8}local macro containing the string 
+specified by the {cmd:prefix()} option
+
+{p 8 25 2}{cmd:r(seed)}{space 10}local macro containing {cmd:c(seed)}, 
+if {cmd:seed()} option used
+
+{p 8 25 2}{cmd:r(type)}{space 10}local macro containing "halton" if 
+Halton draws created, else contains "random"
+
+{p 4 8 2}{hi:Matrices}
+
+{p 8 25 2}{cmd:r(primes)}{space 8}primes used in creating a Halton draw, if
+{cmd:primes()} option used
+
+
+{title:Examples}
+
+{p 8 12 2}{cmd:. mdraws, neq(3) draws(50) random seed(123713) prefix(z) }
+
+{p 8 12 2}{cmd:. mdraws, neq(4) draws(100) burn(10) prefix(q) antithetics }
+
+{p 8 12 2}{cmd:. matrix p = (2, 7) }
+
+{p 8 12 2}{cmd:. mdraws, neq(2) draws(55) prefix(m) primes(p) }
+
+
+{title:Acknowledgments}
+
+{p 4 4 2}Mark Stewart provided many helpful comments and suggestions.
+The code for Halton draws is a generalization of some do-file 
+code by Arne Uhlendorff (DIW Berlin), which in turn uses a program
+posted on Statalist by Nick Cox (University of Durham) in August 2004:
+see {browse "http://www.stata.com/statalist/archive/2004-08/msg00222.html"}.
+{cmd:mdraws} also calls that program, here renamed {cmd:mdraws_h} and
+modified.
+
+
+{title:References}
+
+{p 4 8 2}Hess, S. and Polak, J. 2003. An alternative method to the 
+scrambled Halton sequence for removing correlation between standard
+Halton sequences in higher dimensions. Paper presented at the 2003 
+European Regional Science Conference, Jyv{c a:}skyl{c a:}, Finland.
+{browse "http://www.jyu.fi/ersa2003/cdrom/papers/406.pdf"}
+
+{p 4 8 2}Train, K. E. 2003. {it:Discrete Choice Methods with Simulation}. 
+Cambridge: Cambridge University Press.
+
+
+{title:Authors}
+
+{p 4 4 2}Lorenzo Cappellari, Cattolica Universita di Milano, Italy{break}
+<lorenzo.cappellari@unicatt.it>
+
+{p 4 4 2}Stephen P. Jenkins, ISER, University of Essex, U.K.{break}
+<stephenj@essex.ac.uk>
+
+
+{title:Also see}
+
+{p 4 13 2}Manual:  {hi:[D] functions}
+
+{p 4 13 2}Online:  {helpb mvnp:mvnp()} (if installed)
+{p_end}

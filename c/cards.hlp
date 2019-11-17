@@ -1,0 +1,26 @@
+.-
+help for ^cards^
+.-
+
+Card playing simulation
+-----------------------
+
+^cards^
+ 
+Description
+-----------
+
+Card playing simulation using buttons to shuffle cards, draw cards 
+     without replacement, draw cards with replacement, or play
+     blackjack.  After hitting the "Blackjack" button player may
+     "Hit" or "Stand."
+
+
+Author
+------
+
+      Philip B. Ender
+      Statistical Computing and Consulting
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+

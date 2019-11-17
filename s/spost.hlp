@@ -1,0 +1,29 @@
+{smcl}
+{* 26Jun2006}{...}
+{cmd:help spost}
+{hline}
+
+{title:SPost commands}
+
+{space 2}{help asprvalue}{col 15}{lalign 25: predictions for alternative specific models}
+{space 2}{help brant}{col 15}{lalign 25: Brant test of proportional odds}
+{space 2}{help case2alt}{col 15}{lalign 25: 1 obs per row to 1 alternative per row}
+{space 2}{help countfit}{col 15}{lalign 25: assess fit in count models}
+{space 2}{help fitstat}{col 15}{lalign 25: compute fit statistics}
+{space 2}{help leastlikely}{col 15}{lalign 25: find least likely predictions}
+{space 2}{help listcoef}{col 15}{lalign 25: list estimated coefficients}
+{space 2}{help misschk}{col 15}{lalign 25: examine patterns of missing data}
+{space 2}{help mlogplot}{col 15}{lalign 25: plot results from mlogit}
+{space 2}{help mlogtest}{col 15}{lalign 25: tests for mlogit}
+{space 2}{help mlogview}{col 15}{lalign 25: dialog box for mlogplot}
+{space 2}{help praccum}{col 15}{lalign 25: accumulate predictions to plot}
+{space 2}{help prchange}{col 15}{lalign 25: compute discrete change coefficients}
+{space 2}{help prcounts}{col 15}{lalign 25: compute predictions for count models}
+{space 2}{help prgen}{col 15}{lalign 25: create predictions and CIs for plotting}
+{space 2}{help prtab}{col 15}{lalign 25: tables of predictions}
+{space 2}{help prvalue}{col 15}{lalign 25: predictions with CIs}
+{space 2}{help spex}{col 15}{lalign 25: run SPost examples or load SPost data}
+
+{space 2}{help spost_auxillary}{col 15}{lalign 25: help on auxillary commands for SPost}
+
+{hline}

@@ -1,0 +1,47 @@
+Phillips-Perron test for a unit root                             (STB-17: sts7)
+------------------------------------
+
+	^ppunit^ varname [^, l^ags^(^#^) ^t^rend regress_options]
+
+
+Description
+-----------
+
+^ppunit^ tests the null hypothesis that varname has a unit root.  The test is
+performed by regressing the first difference of varname on its lagged level.
+A time trend may also be included.  The test statistics are derived in Phillips
+and Perron.  The Phillips-Perron statistics have the same distribution as the 
+Dickey-Fuller statistic.  Type "^help dickey^ for more information.
+
+
+Options
+-------
+
+^lags(^#^)^ specifies the number of lags to be considered.   The default is 4.
+
+^trend^ includes a time trend term in the regression.
+
+regress_options refers to any of the options of ^regress^; see ^help regress^.
+
+
+References 
+----------
+
+Fuller, W. A.  1976.  ^Introduction to Statistical Time Series^.  New York:
+    John Wiley & Sons.
+
+Phillips, Peter C. B. and Pierre Perron.  1988.  "Testing for a unit root in 
+    time series regression," ^Biometrika^.  Vol. 75, pp. 335-46.
+
+
+Author
+------
+ 
+Sean Becketti, Federal Reserve Bank of Kansas City.
+
+
+Also see
+--------
+
+    STB:  sts2 (STB-7)
+On-line:  ^help^ for ^dickey^

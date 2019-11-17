@@ -1,0 +1,192 @@
+.-
+help for ^gwr^, ^gwrgrid^                          (STB-46: sg95)
+.-
+
+Geographically weighted regression
+----------------------------------
+
+   ^gwr^ depvar [varlist] [^if^ exp] [^in^ range] ^, east(^varname^)^ 
+         ^north(^varname^)^  [options]
+
+   ^gwrgrid^ depvar [varlist] [^if^ exp] [^in^ range] ^, east(^varname^)^
+         ^north(^varname^) square(^#^)^ [options]
+
+Where the allowed options are:
+
+^sav^ing^(^filename^) dots reps(^#^)  doub^le ^eform fam^ily^(^familyname^)^
+^link(^linkname^)^ [^ln^]^off^set^(^varname^) test replace nocons^tant
+^nolo^g	^scale^(^x2^|^dev^|#^) disp(^#^) it^erate^(^#^) init(^varname^)^ 
+^out^file^(^filename^) com^ma ^wide bandw^idth^(^#^) mcsave(^filename^)^
+^samp^le^(^#^)^
+	   
+where familyname is one of 
+
+	^gau^ssian |  ^ig^aussian     |  ^b^inomial [varname|#]  |
+	^p^oisson  |  ^nb^inomial [#] |  ^gam^ma
+
+and linkname is one of
+
+	^i^dentify |  ^log^     |  ^l^ogit    |  ^p^robit  |  ^c^loglog  | 
+	^opo^wer # |  ^pow^er # |  ^nb^inomial
+
+as when using ^glm^.
+For further details see help @glm@.
+
+
+Description
+-----------
+
+^gwr^ and ^gwrgrid^ fit geographically weighted regression, a method for 
+exploring spatial non-stationarity.
+
+^gwr^ fits regressions at each point at which there is an observation.
+^gwrgrid^ puts a grid over the observed data, and fits regressions at each 
+centroid of each grid square.
+
+The user specifies the form of ^glm^ to apply to the regression. The default
+being linear regression.
+
+
+Requirements
+------------
+
+The data points must be specified, using a grid-reference approach.
+
+^east(^varname^)^  should specify the name of the variable denoting the easting 
+of each point in space.
+
+^north(^varname^)^ should specify the name of the variable denoting the  
+northing of each point in space.
+
+When using ^gwrgrid^, the size of the grid square can be defined using
+^square(^#^)^, otherwise a default setting of half the bandwidth is used.
+
+
+Options for use with gwr
+------------------------
+
+^test^ requests that the significance of the bandwidth be tested. This tests 
+whether the ^gwr^ model describes the data significantly better than the 
+global regression model. A simulated bandwidth of -99.99 indicates that the 
+simulation failed to converge.
+
+^sample(^#^)^ specifies the percentage of observations to be used in the 
+bandwidth calibration process, the default being 100%. This is especially 
+useful for large datasets as a way of reducing the amount of time taken to 
+calibrate the bandwidth. If this option is specified, #% of the observations 
+will be randomly sampled and used in the calibration process.
+
+^bandwidth(^#^)^ allows the user to input a value for the bandwidth, and reduce 
+the time ^gwr^ will take to run. For example, this is useful where a previous 
+run calibrated the bandwidth and there is no reason to recalibrate it.
+
+^nolog^ suppresses the display of the bandwidth optimization iterations. 
+
+^iterate(^#^)^ specifies the maximum number of iterations allowed in estimating 
+the bandwidth. The default is ^50^.
+
+^saving(^filename^)^  creates a Stata data file containing the parameter estimates 
+from each point at which the gwr is calculated.
+
+^outfile(^filename^)^  creates a text file filename.raw containing the parameter
+estimates from each point at which the gwr is calculated. The file is set out 
+as ^easting northing independent_vars constant^.
+This is useful if the results are to be mapped. 
+The ^comma^ and ^wide^ options for ^outfile()^ are available, see help @outfile@.
+
+^replace^ indicates that the file specified by ^saving()^ and/or ^outfile()^ may 
+be overwritten. It also applies to the ^mcsave()^ option.
+
+^reps(^#^)^ specifies the number of Monte Carlo simulations to be performed.
+The default is ^1000^.
+
+^mcsave(^filename^)^ requests that the results of the Monte Carlo simulation 
+be saved rather than using a temporary file. This file will contain the
+standard  errors of the parameter estimates for each run.
+
+^dots^ requests a dot be placed on the screen at the beginning of each run of 
+the Monte Carlo simulation, showing how far the simulation has gone.
+
+^double^  specifies that the results stored in the file specified by ^saving()^ are
+stored as ^double^s meaning 8-byte reals. By default they are stored as ^float^s,
+meaning 4-byte reals. See help @datatypes@.
+ 
+
+^glm^ options
+-----------
+
+Many of the options normally used with ^glm^ can also be used with ^gwr^ :
+
+^family(^familyname^)^ specifies the distribution of depvar; ^family(gaussian)^ 
+is the default.
+
+^link(^linkname^)^ specifies the link function; the default is the canonical link
+for the ^family()^ specified.
+
+^scale(x2^|^dev^|#^)^ overrides the default scale parameter.  By default, ^scale(1)^
+is assumed for discrete distributions (binomial, Poisson, negative
+binomial) and ^scale(x2)^ for continuous distributions (Gaussian, gamma,
+inverse Gaussian).
+
+  	^scale(x2)^ specifies the scale parameter be set to the Pearson 
+	chi-squared (or generalized chi-squared) statistic divided by 
+	the residual degrees of freedom.
+
+ 	^scale(dev)^ sets the scale parameter to the deviance divided by
+	the residual degrees of freedom.  This provides an alternative to 
+	^scale(x2)^ for continuous distributions and over- or under-dispersed 
+	discrete distributions.
+
+    	^scale(^#^)^ sets the scale parameter to #.
+
+[^ln^]^offset(^varname^)^ specifies an offset to be added to the linear predictor.
+	^offset()^ specifies the values directly:     g(E(y)) = xB + varname.
+    	^lnoffset()^ specifies exponentiated values:  g(E(y)) = xB + ln(varname).
+
+^disp(^#^)^ multiplies the variance of y by # and divides the deviance by #.  The
+resulting distributions are members of the quasi-likelihood family.
+
+^noconstant^ specifies the linear predictor has no intercept term, thus forcing
+it through the origin on the scale defined by the link function.
+
+^eform^ displays the exponentiated coefficients and corresponding standard errors
+and confidence intervals as described in ^[R] maximize^.  For binomial models
+with the logit link, exponentiation results in odds ratios; for Poisson
+models with the log link, exponentiated coefficients are rate ratios.
+
+^init(^varname^)^ specifies varname containing an initial estimate for the mean of
+depvar.  This can be useful if you encounter convergence difficulties,
+especially with binomial models with power or odds-power links.
+
+
+Examples of ^gwr^
+---------------
+
+   . ^gwr cars class unemp, east(easting) north(northing) test^
+   . ^gwr flag class unemp, east(east) north(north) fam(binomial) link(logit)^
+   . ^gwrgrid y x1, east(east) north(north) fam(b) link(l) square(10) samp(25)^
+
+
+Author
+------
+
+      Mark S. Pearce
+      Department of Child Health,
+      University of Newcastle upon Tyne.
+      m.s.pearce@@ncl.ac.uk
+
+
+Reference
+---------
+
+C. Brunsdon, A.S. Fotheringham & M. Charlton,
+Geographical Analysis (1996), 28, 281-98.
+
+
+Also see
+--------
+
+    STB:  sg95 (STB-46)
+ Manual:  ^[R] glm^
+On-line:  help for @glm@
+

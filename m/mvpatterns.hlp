@@ -1,0 +1,81 @@
+{smcl}
+{hline}
+help for {cmd:mvpatterns}{right:(STB-61: dm91)}
+{hline}
+
+{title:Displays the missing value patterns}
+
+{p 8 27}
+{cmd:mvpatterns}
+[{it:varlist}]
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+[{cmd:,}
+  {cmdab:m:infreq}{cmd:(}{it:#}{cmd:)}
+  {cmdab:sk:ip}
+  {cmdab:so:rt}
+  {cmdab:not:able}
+  {cmdab:nod:rop}
+]
+
+{p}{cmd:by} {it:...} {cmd::} may be used with {cmd:mvpatterns}; see help {help by}.
+
+
+{title:Description}
+
+{p}{cmd:mvpatterns} lists the missing value patterns of the variables and
+their frequency.  In a pattern, {hi:+} denotes a nonmissing value, and
+a period ({hi:.}) denotes a missing value.  For string variables, empty
+strings are treated as missing values.  Patterns are sorted by
+frequency among the selected observations, along with the frequency and number
+of missing values in the pattern.
+
+{p}
+The allowed number of variables in {cmd:mvpatterns} is at most
+{cmd:linesize-15}, but never more than 80.
+
+
+{title:Options}
+
+{p 0 4}
+{cmd:minfreq(}{it:#}{cmd:)} specifies the minimal frequency of a missing value
+pattern for being listed.  The number of patterns and the number of associated
+observations are described after the list. {it:#} defaults to 1, i.e., all
+patterns are listed.
+
+{p 0 4}
+{cmd:skip} specifies that spaces are inserted in the missing value pattern
+after every 5 variables, and similarly, lines are inserted in the table of
+variables, both to enhance readability.
+
+{p 0 4}
+{cmd:sort} specifies that the variables are sorted into decreasing "missingness".
+
+{p 0 4}
+{cmd:notable} specifies that the header table describing the variables is
+suppressed.
+
+{p 0 4}
+{cmd:nodrop} specifies that variables with no missing values are included in
+the table and listing of missing value patterns.
+
+
+{title:Examples}
+
+{p 8 12}{inp:. mvpattern age lft sex name}{p_end}
+{p 8 12}{inp:. mvpattern age lft sex name, skip min(2)}{p_end}
+
+
+{title:Author}
+
+	Jeroen Weesie
+	Dept of Sociology
+	Utrecht University
+	J.Weesie@fss.uu.nl
+
+
+{title:Also See}
+
+ Manual:  {hi:[R] codebook}
+{p 0 21}
+On-line:  help for {help pattern}{p_end}

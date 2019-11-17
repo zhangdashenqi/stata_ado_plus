@@ -1,0 +1,64 @@
+{smcl}
+{* 01aug2001}{...}
+{hline}
+help for {hi:nnest}{right:(StataList distribution 01 August 2001)}
+{hline}
+
+{title:J and Cox-Pesaran tests for non-nested models}
+
+{p 4} Syntax
+
+{p 8 13}{cmd:nnest} {it:depvar1} {it:varlist1} {cmd:(}{it:varlist2}{cmd:)}
+
+
+
+{title:Description}
+
+{p}{cmd:nnest} computes the J test, proposed by Davidson and MacKinnon (1981), and the
+Cox test, devised by Cox (1961, 1962) and Pesaran (1974). This code works only for OLS.
+
+
+
+{title:Options}
+
+{p}This is very rudimentary. There are no options.  Not even the option {cmd:[}if{cmd:]}. Sorry. 
+However, there is a control for the equality of sample size in two model regressions.
+
+
+
+{title:Examples}
+
+{p 8 12}{inp:. nnest y1 x1 (z1)}{p_end}
+{p 8 12}{inp:. nnest y1 x1 (z1 z2)}{p_end}
+{p 8 12}{inp:. nnest y1 x1 x2 (z1 z2)}{p_end}
+
+
+
+{title:References}
+
+{p 0 4} Cox, D. 1961.
+Tests of Separate Families of Hypotheses.
+{it:Proceedings of the Fourth Berkely Symposium on Mathematical Statistics and Probability}
+ Vol. 1. Berkley: University of California Press.
+
+{p 0 4} Cox, D. 1962.
+Further Results on Tests of Separate Families of Hypotheses.
+{it:Journal of Royal Statistical Society} Series B, 24: 406-424.
+
+{p 0 4}Greene, W. H. 2000.
+{it:Econometric Analysis. Fourth Edition}.
+Prentice Hall.
+
+{p 0 4}Pesaran, H. 1974.
+On the General Problem of Model Selection.
+{it:Review of Economic Studies}. 41: 153-171.
+
+
+
+{title:Author}
+
+{p} Gregorio Impavido, Financial Sector Development Department, The World Bank, USA. {p_end}
+{p} Email {browse "mailto:gimpavido@worldbank.org":gimpavido@worldbank.org} for corrections of 
+the inevitable mistakes and suggestions.
+
+{p 0 19}On-line:  none{p_end}

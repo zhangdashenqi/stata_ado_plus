@@ -1,0 +1,133 @@
+{smcl}
+{* *! version 1.0.1 29febr2008}
+{cmd:help mapch}{right: ({browse "http://www.stata-journal.com/article.html?article=dm0041":SJ8-4: dm0041})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 14 16 2}{...}
+{p2col :{hi:mapch} {hline 2}}Map chains of events{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 13 2}
+{cmd:mapch}
+{it:begin}
+{it:end}
+[{it:time}]
+{ifin}
+
+
+{title:Description}
+
+{pstd} {cmd: mapch} maps chains of events. A "chain" consists of at least one
+event; an "event", in this context, is a change of the information contained in
+the variable {it:begin} into the information contained in the variable
+{it:end}.  Optionally, the time at which the event took place can be stored in
+the variable {it:time} and used to map the chains chronologically. It is
+assumed that both {it:begin} and {it:end} contain unique information, i.e.,
+each value in both variables can appear only once. It is also assumed that
+events in a chain cannot occur at the same time and that chains are not
+circular, i.e., the begin value of a chain must not be the same as the end
+value of that chain.
+
+{pstd}{cmd:mapch} creates a dataset called {cmd:mapping} that contains maps of
+each chain and two or three additional variables: {cmd:recent}, whose value is
+equal to the end value of the chain for each step in that chain; {cmd:date}
+(only in case real time is not available), a fictitious time when the event
+took place, allowing the user to sort the information; and {cmd:NoOfEvents},
+the number of events per chain. {cmd:mapch} also tabulates the frequency of
+n-step chains, with 1<=n<=N (N=total number of events in your dataset).
+Consider the following two examples.
+
+
+{title:Examples}
+
+{p 4}Example 1:{p_end}
+
+{col 5}{it:begin}{col 25}{it:end}
+{col 5}A{col 25}B
+{col 5}B{col 25}C
+{col 5}G{col 25}H
+{col 5}C{col 25}D
+{col 5}X{col 25}Y
+{col 5}H{col 25}I
+{col 5}Z{col 25}Z1
+{col 5}Z1{col 25}Z2
+{col 5}X2{col 25}X3
+{col 5}Z2{col 25}Z3
+
+{phang}{cmd:mapch} will map the chains and create the dataset {cmd:mapping} as follows:{p_end}
+
+{col 5}{it:begin}{col 20}{it:end}{col 35}{cmd:recent}{col 50}{cmd:date}{col 65}{cmd:NoOfEvents}
+{col 5}A{col 20}B{col 35}D{col 50}1{col 65}3
+{col 5}B{col 20}C{col 35}D{col 50}2{col 65}3
+{col 5}C{col 20}D{col 35}D{col 50}3{col 65}3
+{col 5}G{col 20}H{col 35}I{col 50}1{col 65}2
+{col 5}H{col 20}I{col 35}I{col 50}2{col 65}2
+{col 5}X{col 20}Y{col 35}Y{col 50}.{col 65}1
+{col 5}X2{col 20}X3{col 35}X3{col 50}.{col 65}1
+{col 5}Z{col 20}Z1{col 35}Z3{col 50}1{col 65}3
+{col 5}Z1{col 20}Z2{col 35}Z3{col 50}2{col 65}3
+{col 5}Z2{col 20}Z3{col 35}Z3{col 50}3{col 65}3
+
+{p 4}Example 2:{p_end}
+
+{col 5}{it:begin}{col 24}{it:end}{col 43}{it:time}
+{col 5}A{col 24}B{col 43}17004
+{col 5}B{col 24}C{col 43}17203
+{col 5}G{col 24}H{col 43}15000
+{col 5}C{col 24}D{col 43}18999
+{col 5}X{col 24}Y{col 43}17034
+{col 5}H{col 24}I{col 43}16000
+{col 5}Z{col 24}Z1{col 43}14333
+{col 5}Z1{col 24}Z2{col 43}14334
+{col 5}X2{col 24}X3{col 43}15001
+{col 5}Z2{col 24}Z3{col 43}14335
+
+{phang}{cmd:mapch} will map the chains and create the dataset {cmd:mapping} as follows:{p_end}
+
+{col 5}{it:begin}{col 20}{it:end}{col 35}{it:time}{col 50}{cmd:recent}{col 65}{cmd:NoOfEvents}
+{col 5}A{col 20}B{col 35}17004{col 50}D{col 65}3
+{col 5}B{col 20}C{col 35}17203{col 50}D{col 65}3
+{col 5}C{col 20}D{col 35}18999{col 50}D{col 65}3
+{col 5}G{col 20}H{col 35}15000{col 50}I{col 65}2
+{col 5}H{col 20}I{col 35}16000{col 50}I{col 65}2
+{col 5}X{col 20}Y{col 35}17034{col 50}Y{col 65}1
+{col 5}X2{col 20}X3{col 35}15001{col 50}X3{col 65}1
+{col 5}Z{col 20}Z1{col 35}14333{col 50}Z3{col 65}3
+{col 5}Z1{col 20}Z2{col 35}14334{col 50}Z3{col 65}3
+{col 5}Z2{col 20}Z3{col 35}14335{col 50}Z3{col 65}3
+
+
+{title:Remarks}
+
+{pstd} {cmd:mapch} was written based on a do-file that was used to overcome
+the challenge of merging datasets in which unique key identifiers,
+specifically, driver license numbers, changed over time. A substantial portion
+of the driver license numbers changed over time because this variable's format
+was alphanumeric and based on the driver's name. To capture all accident
+records when merging datasets where the updated number was used with datasets
+where the original number was used, the name changes had to be mapped to
+create a cross-reference dataset. To this end, a solution consisting of a
+combination of appending, indexing, and merging was developed, which proved to
+be considerably faster than simply looping. For example, a dataset containing
+86,000 events with chains of length of up to 5 events (i.e., drivers who
+changed their name and therefore their driver license number up to 5 times) is
+mapped in a couple of seconds with {cmd:mapch}; mapping the same dataset might
+take numerous hours if a simpler combination of looping procedures were used.
+
+
+{title:Author}
+
+{phang}Ward Vanlaar, Traffic Injury Research Foundation, Ottawa, Canada{p_end}
+{phang}Email: {browse "mailto:wardv@trafficinjuryresearch.com":wardv@trafficinjuryresearch.com}{p_end}
+
+
+{title:Also See}
+
+{psee}
+Article: {it:Stata Journal}, volume 8, number 4: {browse "http://www.stata-journal.com/article.html?article=dm0041":dm0041}
+

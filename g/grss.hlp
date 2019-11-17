@@ -1,0 +1,96 @@
+{smcl}
+{...}
+{hline}
+help for {hi:grss}
+{hline}
+
+{title:Graph Slide Show}
+
+{p 8 14 2}{cmd:grss} {graphcmd} 
+
+{p 8 14 2}{cmd:grss} 
+
+{p 8 14 2}{cmd:grss} {clear} 
+
+{p 4 4 2}
+where {it:graphcmd} is any Stata graph command.
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:grss} allows you to create a graph slide show which you can view later during
+your Stata session, also using the {cmd:grss} command.
+
+{title:Usage 1: Adding Graphs to the Graph Slide Show}
+
+{p 4 4 2}
+{cmd:. grss <graph command>}
+
+{title:Usage 2: Showing the Graph Slide Show}
+
+{p 4 4 2}
+{cmd:. grss}
+
+{title:Usage 3: Clearing the Graph Slide Show}
+
+{p 4 4 2}
+{cmd:. grss clear}
+
+{title:Using Graph Slide Show}
+
+{p 4 4 2}Graph Slide Show is a wrapper program that allows you to create graphs
+either at the command line or in a .do file and then view the graphs
+afterward using a pushbutton carousel graph viewer.
+
+{p 4 4 2}You add graphs to the carousel by typing {cmd:grss} followed by any Stata
+command that creates a graph (e.g. graph, scatter, histogram).  
+For example, below we will read in the "hsb2" data file and add
+three graphs to the carousel.
+
+{cmd:. use http://www.ats.ucla.edu/stat/stata/notes/hsb2}
+{cmd:. grss scatter read write}
+{cmd:. grss scatter read math}
+{cmd:. grss scatter read science}
+
+{p 4 4 2}We can then view them like this.
+
+{cmd:. grss}
+
+{p 4 4 2}and we are shown the first graph (scatter read write) and are shown
+a {it:next} and {it:previous} button to rotate among the graphs.
+
+{p 4 4 2}If you wish to clear out the carousel, you can type
+
+{cmd:. grss clear}
+
+{p 4 4 2}This is useful if you use {cmd:grss} in a .do file, then you may wish
+to start your .do file with the {cmd:grss clear} command.
+
+{title:Details}
+
+{p 4 4 2}By default, the graphs are stored as temporary graphs via the {cmd:graph rename}
+command.  The graphs are named {it:grss_graph1 grss_graph2} and so on.
+
+{p 4 4 2}If you have comments or suggestions, please email 
+Michael Mitchell at mnm@@ucla.edu .
+
+{title:Author}
+
+Michael N. Mitchell
+Statistical Computing Group
+UCLA, Academic Technology Services
+mnm@@ucla.edu
+
+{title:Acknowledgements}
+
+{p 4 4 2}I am grateful to Phil Ender and Nick J. Cox for comments and suggestions on 
+earlier versions of this program.
+
+
+{title:Also see}
+
+    Manual:  {hi:[R] graph}
+
+{p 4 13 2}
+Online:  help for {help graph}
+

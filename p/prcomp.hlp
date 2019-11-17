@@ -1,0 +1,139 @@
+.-
+help for ^prcomp^                                 (STB-47: sg101)
+.-
+
+pairwise comparisons of means, including the Tukey wsd method
+-------------------------------------------------------------
+
+   ^prcomp^ yvar xvar [weight] [^if^ exp] [^in^ range] [ ^, ano^va ^gr^aph ^lev^el^(^#^)^
+          ^nolab^el ^noleg^end ^nolist^ ^nome^ans ^nu(^df^)^ ^ord^er^(^ord^)^ ^ref^resh ^sig^ma^(^sig^)^
+          ^stdr^ng ^tuk^ey ^te^st ^une^qual graph_options ]
+
+^aweights^ and ^fweights^ are allowed; see help @weights@.
+
+
+Description
+-----------
+
+^prcomp^ performs pairwise comparisons of the means of ^yvar^ (Y), grouped by val-
+ues of ^xvar^ (X).  By default, the output includes a table of Y means and their
+standard errors, and a table of confidence intervals for all pairwise differ-
+ences among the Y means with individual confidence level determined by the sys-
+tem macro ^S_level^. Optionally, prcomp will switch from confidence intervals to
+significance tests, graph intervals or tests as well as table them, and set the
+simultaneous confidence (significance) level using Tukey's wsd method.
+
+By default, prcomp assumes homogeneity of variance in Y and estimates that var-
+iance from a one-way ANOVA of Y classified by X.  An external estimate of error
+variability can be supplied instead, or comparisons can be made without assum-
+ing homogeneity of variance, using the Welch-Satterthwaite approach.
+
+
+Options
+-------
+
+^anova^ displays the summary table for the one-way ANOVA used by default to esti-
+    mate the error standard deviation
+
+^graph^ displays a graphical version of the table listing the pairwise confidence
+    intervals (tests). For intervals, the graph shows horizontal error bars or-
+    dered (from top to bottom) to match the corresponding table. For tests, the
+    graph shows a triangular plot with symbols whose sizes reflect the size of
+    a difference in Y means, relative to the corresponding critical difference.
+    Non-significant differences are invisible; the axes of the plot match the
+    rows and columns of the corresponding table
+
+^level(^#^)^ controls the simultaneous confidence (significance) level if the ^tukey^
+    or ^stdrng^ option is given, otherwise the individual level. The default val-
+    ue of # is the current setting of ^S_level^. Values for # can be given either
+    as proportions (.98333) or as percentages (98.333)
+
+^nolabel^ uses numeric values of X, rather than value labels to label the output
+
+^nolegend^ suppresses the explanatory message at the top of the plot produced by
+    the graph option
+
+^nolist^ suppresses the table listing the pairwise confidence intervals (tests)
+
+^nomeans^ suppresses the table showing the Y means and their standard errors
+
+^nu(^df^)^ supplies the degrees of freedom for the estimate given in the ^sigma^ op-
+    tion, and must accompany the sigma option
+
+^order(^ord^)^ controls how levels of X are shown in listings of means and listings
+    or graphs of confidence intervals (tests). ^ord^ is one of: labels, means, or
+    natural; only the first character is significant.  ^natural^ orders levels of
+    X by their numeric values, ^labels^ by the value labels currently assigned to
+    X, and ^means^ orders X so that the means of Y are ordered.  Upper case gives
+    ascending order, lower case yields descending order
+
+^refresh^ forces recalculation of all quantities used for the tests or confidence
+    intervals: Y means, differences in means, confidence interval half-widths,
+    etc.  These quantities are saved in Stata's memory and, ordinarily, are re-
+    computed only as necessary (e.g., when the choice of Y, X, confidence level
+    etc. changes).  This option exists to insure, should doubt arise, that the
+    correct quantities are being displayed
+
+^sigma(sig)^ supplies an estimate of the error standard deviation, assumed to be
+    constant over levels of X, which is used to calculate standard errors of
+    differences in Y means.  By default, the RMSE of a one-way ANOVA is used
+
+^stdrng^ uses quantiles of the studentized range to control the simultaneous con-
+    fidence (significance) level; the default is to set individual levels with
+    student t quantiles.  This option yields the Tukey wsd method; it cannot be
+    combined with the ^unequal^ option, and it requires the @qsturng@ command
+
+^tukey^ requests the Tukey wsd method.  Identical to the ^stdrng^ option
+
+^test^ reports significance tests of no difference in Y mean between each pair of
+    X levels, rather than confidence intervals for the differences in Y mean
+
+^unequal^ requests that standard errors for differences in Y means be estimated
+    without any homogeneity of variance assumption, using the Welch standard
+    error and Satterthwaite's degrees of freedom.  [See the ^unequal^ option of
+    the @ttest@ command.]
+
+^graph_options^ includes most options available with the @graph@ ^twoway^ style.  Ex-
+    cluded options are ^yreverse^, ^ylabel^ and, for confidence intervals, ^b2title^
+    and ^xscale^
+
+
+Examples
+--------
+
+ . ^prcomp reading grade, level(.99) tukey order(M)^
+   (Comparisons of mean reading scores for all pairs of grade levels, using the
+   Tukey wsd method.  Display a table of confidence intervals with simultaneous
+   level 99%, arrange grades so that reading means are in ascending order.)
+
+ . ^prcomp reading grade, level(99) order(m)^
+   (Same as previous example, but set the individual confidence level at 99%,
+   and order the grades so reading means are in decreasing order.)
+
+ . ^prcomp reading grade, level(99) test sig(13.572) nu(41)^
+   (Same as previous example but estimate the error standard deviation to be
+   13.572; this estimate has 41 degrees of freedom.  Display results as signif-
+   icance tests, rather than confidence intervals, ordered by grade level.)
+
+ . ^prcomp reading grade, level(.99) test unequal graph xlab(1,2,4,5)^
+   (Same as last example, but make no homogeneity of variance assumption; in-
+   stead estimate standard errors for differences in reading means using the
+   Welch-Satterthwaite approach.  Graph the tests as well as table them, place
+   labels at the 1st, 2nd, 4th, and 5th positions on the abscissa.)
+
+
+Author
+------
+
+      John R. Gleason
+      Syracuse University
+      Syracuse NY, USA
+      loesljrg@@ican.net 
+
+
+Also see
+--------
+
+    STB:  STB-47 sg101
+ Manual:  [R] graph; [R] oneway; [R] ttest
+On-line:  ^help^ for @graph@, @oneway@, @ttest@ (@qsturng@, if installed)

@@ -1,0 +1,148 @@
+{smcl}
+{* *! 08Dec2009}{...}
+{cmd:help bacon}{right: ({browse "http://www.stata-journal.com/article.html?article=st0197":SJ10-3: st0197})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 14 16 2}{...}
+{p2col :{hi:bacon} {hline 2}}BACON algorithm to identify multivariate outliers{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 4 12 2}{cmd:bacon} {varlist} {ifin}{cmd:,} {cmdab:gen:erate:(}{it:newvar1}
+[{it:newvar2}]{cmd:)} [{cmd:replace} {cmdab:p:ercentile:(}{it:#}{cmd:)}
+{cmdab:v:ersion:(1}|{cmd:2)} {cmd:c(}{it:#}{cmd:)}]
+
+
+{title:Description}
+
+{pstd}
+{cmd:bacon} identifies multiple outliers in multivariate data using the
+blocked adaptive computationally efficient outlier nominators (BACON)
+algorithm proposed by Billor, Hadi, and Velleman (2000).  It creates
+{it:newvar1} equal to {cmd:1} if an observation is an outlier and equal to
+{cmd:0} otherwise.  Optionally, {it:newvar2} can also be created containing
+the distances from the basic subset.
+
+
+{title:Options}
+
+{phang}{cmd:generate(}{it:newvar1} [{it:newvar2}]{cmd:)} is required; it
+identifies the new variable(s) to be created.  Whether you specify two
+variables or one, however, is optional.  {it:newvar2}, if specified, will
+contain the distances from the final basic subset.  That is, specifying
+{cmd:generate(out)} creates a dummy variable {cmd:out} containing {cmd:1} if
+the observation is an outlier in the BACON sense and containing {cmd:0}
+otherwise.  Specifying {cmd:generate(out dist)} additionally creates a
+variable {cmd:dist} containing the distances from the final basic subset.
+
+{phang}{cmd:replace} specifies that the variables {it:newvar1} and
+{it:newvar2} be replaced if they already exist in the database.  This option
+makes it easier to run {cmd:bacon} several times on the same data.  It should
+be used cautiously because it might definitively drop some data.
+
+{phang}{cmd:percentile(}{it:#}{cmd:)} determines the 1 - {it:#} percentile of
+the chi-squared distribution to be used as a threshold to separate outliers
+from nonoutliers.  A larger # identifies a larger proportion of the sample as
+outliers.  The default is {cmd:percentile(0.15)}.  If {it:#} is specified
+greater than 1, it is interpreted as a percent; thus {cmd:percentile(15)} is
+the same as {cmd:percentile(0.15)}.
+
+{phang}{cmd:version(1}|{cmd:2)} specifies which version of the BACON
+algorithm has to be used to identify the initial basic subset in multivariate
+data.  {cmd:version(1)}, the default, identifies the initial subset selected
+based on Mahalanobis distances.  {cmd:version(2)} identifies the initial
+subset selected based on distances from the medians.  See Billor, Hadi, and
+Velleman (2000, 285-286) for the differences between the two versions.  In the
+case of {cmd:version(2)}, {it:varlist} must not contain missing values, and
+you must install the {cmd:moremata} command before running {cmd:bacon} (see
+Remarks below).
+
+{phang}{cmd:c(}{it:#}{cmd:)} is the parameter that determines the size of the
+initial basic subset, which is given by the product of {it:#} and the number
+of variables in {it:varlist}.  {it:#} must be an integer.  {cmd:c(4)} is
+used by default as proposed by Billor, Hadi, and Velleman (2000, 285).
+
+
+{title:Remarks}
+
+{pstd}
+{help Mata} is used to compute the distances.  Thus Stata 9 or later is
+required.  {cmd:bacon} uses the {cmd:mahalanobis} Mata function (and the
+{cmd:mediandist} Mata function if {cmd:version(2)} is used).  These functions
+are available in the {cmd:mahalanobis.mo} and {cmd:mediandist.mo} files.
+
+{pstd} {cmd:bacon} constitutes an improvement of {helpb hadimvo}, which also
+is used to identify multivariate outliers.  {cmd:bacon} is much less
+computationally intensive but provides similar results.
+
+{pstd} When you use {cmd:bacon} with the {cmd:version(2)} option for the first
+time, Stata may flag the error and return the message:  
+{err:3499 mm_median() not found}.  Type {cmd:ssc install moremata} into your
+Command window to load the necessary packages.  Then type 
+{cmd:mata: mata mlib index} to tell Mata where to search for the packages.
+
+
+{title:Examples}
+
+{phang2}{cmd:. webuse auto}{p_end}
+{phang2}{cmd:. bacon weight length, generate(out) percentile(15)}{p_end}
+
+{pstd}List the outliers{p_end}
+{phang2}{cmd:. list if out}{p_end}
+
+{pstd}Graph the data{p_end}
+{phang2}{cmd:. scatter weight length, ml(out)}{p_end}
+
+{pstd}Summary stats for clean data{p_end}
+{phang2}{cmd:. summarize price weight if !out}
+
+{phang2}{cmd:. bacon weight length, generate(out dist) replace percentile(15)}{p_end}
+{phang2}{cmd:. summarize dist, detail}{p_end}
+{phang2}{cmd:. sort dist}{p_end}
+{phang2}{cmd:. list make weight length dist out}{p_end}
+
+{phang2}{cmd:. bacon weight length price, generate(out2 dist2) percentile(20)}{p_end}
+{phang2}{cmd:. regress} {it:...} {cmd:if !out2}{p_end}
+
+
+{title:Saved results}
+
+{pstd}{cmd:bacon} saves the following results in {cmd:r()}:
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Scalars}{p_end}
+{synopt:{cmd:r(outlier)}}number of outliers{p_end}
+{synopt:{cmd:r(corr)}}correction factor{p_end}
+{synopt:{cmd:r(iter)}}number of iterations{p_end}
+{synopt:{cmd:r(chi2)}}percentile of the chi-squared distribution{p_end}
+{synoptset 15 tabbed}{...}
+
+
+{title:Reference}
+
+{phang}
+Billor, N., A. S. Hadi, and P. F. Velleman. 2000. BACON: Blocked adaptive
+computationally efficient outlier nominators. 
+{it:Computational Statistics & Data Analysis} 34: 279-298.
+
+
+{title:Author}
+
+{pstd}
+Sylvain Weber {break}
+University of Geneva{break}
+Department of Economics {break}
+Geneva, Switzerland{break}
+sylvain.weber@unige.ch
+
+
+{title:Also see}
+
+{p 4 14 2}
+Article:  {it:Stata Journal}, volume 10, number 3: {browse "http://www.stata-journal.com/article.html?article=st0197":st0197}
+
+{p 4 14 2}{space 3}Help:  {manhelp hadimvo R}{p_end}

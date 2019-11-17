@@ -1,0 +1,98 @@
+{smcl}
+{* *! version 10.1  02nov2012}{...}
+{cmd:help rscv}{right: ({browse "http://www.stata-journal.com/article.html?article=st0347":SJ14-3: st0347})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 13 15 2}{...}
+{p2col:{hi:rscv} {hline 2}}Calculate critical values for a quasi-likelihood-ratio test of Markov regime switching{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 17 2}
+{cmd:rscv}
+[{cmd:,} {it:options}]
+
+{synoptset 10}{...}
+{synopthdr}
+{synoptline}
+{synopt:{opt ll(#)}}specify a lower bound on the interval containing the number of standard deviations separating regime means; default is {cmd:ll(-1)}{p_end}
+{synopt:{opt ul(#)}}specify an upper bound on the interval containing the number of standard deviations separating regime means; default is {cmd:ul(1)}{p_end}
+{synopt:{opt r(#)}}number of simulation replications; default is {cmd:r(100000)}{p_end}
+{synopt:{opt q(#)}}quantile for which critical value should be calculated; default is {cmd:q(0.95)}{p_end}
+{synoptline}
+{p2colreset}{...}
+
+
+{title:Description}
+
+{pstd}
+{cmd:rscv} calculates the critical values for a quasi-log-likelihood test
+of Markov regime switching.
+
+
+{title:Options}
+
+{phang}
+{opt ll(#)} specifies a lower bound on the interval containing the number of
+standard deviations separating regime means.  The default is {cmd:ll(-1)},
+meaning that the mean of regime 1 is no more than 1 standard deviation below the mean of
+regime 2.
+
+{phang}
+{opt ul(#)}  specifies an upper bound on the interval containing the number of
+standard deviations separating regime means.  The default is {cmd:ul(1)},
+meaning that the mean of regime 1 is no more than 1 standard deviation above the mean of
+regime 2.
+
+{phang}
+{opt r(#)} specifies the number of simulation replications to be used in calculating the critical values.  The default is {cmd:r(100000)}, meaning that the simulation will be run 100,000 times.
+
+{phang}
+{opt q(#)} specifies the quantile for which a critical value should be
+calculated.  The default is {cmd:q(0.95)}, which corresponds to a
+nominal test size of 5%.
+
+
+{title:Remarks}
+
+{pstd}
+For detailed information on regime-switching critical values, see
+Bostwick and Steigerwald (2014).
+
+
+{title:Examples}
+
+{phang}{cmd:. rscv}{p_end}
+{phang}{cmd:. rscv, ll(-5) ul(5) r(10000)}
+
+
+{title:Reference}
+
+{phang}
+Bostwick, V. K., and D. G. Steigerwald. 2014.
+{browse "http://www.stata-journal.com/article.html?article=st0347":Obtaining critical values for test of Markov regime switching}.
+{it:Stata Journal} 14: 481-498.
+
+
+{title:Authors}
+
+{pstd}Valerie K. Bostwick{p_end}
+{pstd}Department of Economics{p_end}
+{pstd}University of California, Santa Barbara{p_end}
+{pstd}Santa Barbara, CA{p_end}
+{pstd}vkbostwick@gmail.com
+
+{pstd}Douglas G. Steigerwald {p_end}
+{pstd}Department of Economics{p_end}
+{pstd}University of California, Santa Barbara{p_end}
+{pstd}Santa Barbara, CA{p_end}
+{pstd}doug@econ.ucsb.edu
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 14, number 3: {browse "http://www.stata-journal.com/article.html?article=st0347":st0347}{p_end}

@@ -1,0 +1,22 @@
+Display sample coverage                                         (STB-15: sts4)
+-----------------------
+
+	^findsmpl^ [ varlist ^if in^ ]
+
+displays the observations for which all of the listed variables are 
+non-missing.  If the data set contains time series, use the ^period^
+and ^datevars^ commands before using ^findsmpl^.
+
+
+Author
+------
+
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts4 (STB-15)
+On-line:  ^help^ for ^datevars^, ^period^
+

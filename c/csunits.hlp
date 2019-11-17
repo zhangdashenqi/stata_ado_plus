@@ -1,0 +1,23 @@
+Specify cross-sectional units 					[STB-21: sts7.4]
+-----------------------------
+
+	^csunits^ [ varname [ varname [ ... ] ] ][^, c^lear
+
+specifies the variables that identify cross-sectional units.  ^csunits^ is the
+cross-sectional analog of the ^datevars^ command.  You must use ^csunits^ to insure
+that the ^lag^ and ^lead^ commands handle panel data correctly.  The ^clear^ option
+is a convenience feature; it "erases" the information stored by a previous
+^csunits^ command.
+
+
+Author
+------
+ 
+Sean Becketti, Stata Technical Bulletin
+
+
+Also see
+--------
+
+    STB:  sts4 (STB-15), sts7.4 (STB-21)
+On-line:  ^help^ for ^datevars^, ^lag^

@@ -1,0 +1,38 @@
+.-
+help for ^rsquare^
+.-
+
+All regressions
+---------------
+ 
+	^rsquare^ depvar indvars [if] [in]
+
+
+
+
+Description
+-----------
+
+^rsquare^ reports R-squared, Mallows C, SSE and MSE for all 
+        possible regressions of 1, 2, 3, 4, or 5 variables. 
+        If there are more than 5 variables the R-squared for 
+        the full model is also reported.
+
+Examples
+--------
+
+ . ^rsquare write read math science socst gender^
+
+
+Author
+------
+
+      Philip B. Ender
+      UCLA Department of Education
+      UCLA Academic Technology Services
+      ender@@ucla.edu 
+      
+      Rie von Eyben
+      UCLA Academic Technology Services
+      rie@@ucla.edu
+      

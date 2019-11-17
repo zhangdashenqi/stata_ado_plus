@@ -1,0 +1,82 @@
+{smcl}
+{* 11june2002/3nov2004/4oct2007/18dec2009}{...}
+{hline}
+{cmd:help ofrtplot}{right:({browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0027":SJ10-1: gr0009_1})}
+{hline}
+
+{title:Title}
+
+{p 4 4 2}{hi:ofrtplot} {hline 2} Plot observed, fitted, and residuals versus "time" variable
+
+
+{title:Syntax}
+
+{p 8 17 2}{cmd:ofrtplot} [{it:varname}] 
+[{cmd:,} 
+{cmd:super} 
+{cmd:ofplot(}{it:line_options}{cmd:)} 
+{cmd:rplot(}{it:spike_options}{cmd:)} 
+{cmd:combine(}{it:graph_options}{cmd:)}] 
+
+
+{title:Description}
+
+{p 4 4 2}{cmd:ofrtplot} plots observed, fitted, and residuals from the
+previous
+model against a predictor. It is primarily designed for time-series models, and
+by default, the predictor is whatever has been {cmd:tsset} as the time variable.
+However, other variables may be specified whether or not data have been
+{cmd:tsset}. 
+
+{p 4 4 2}Observed values are for the response or dependent variable from the
+previous model; fitted values are whatever {cmd:predict} produces by default; and
+residuals are whatever {cmd:predict, res} produces.
+
+{p 4 4 2}By default, the plot has two panels. In the top panel, observed and
+fitted are plotted against the predictor. In the bottom panel, residuals are
+plotted against the predictor, by default as spikes from zero.
+
+
+{title:Options}
+
+{p 4 4 2}{cmd:super} specifies that plots are to be superimposed, not separate.
+ 
+{p 4 4 2}{cmd:ofplot(}{it:line_options}{cmd:)} specifies options for
+{helpb twoway line} to tune the display of observed and fitted values.  
+
+{p 4 4 2}{cmd:rplot(}{it:spike_options}{cmd:)} specifies options for
+{helpb twoway spike} to tune the display of residuals. 
+
+{p 4 4 2}{cmd:combine(}{it:graph_options}{cmd:)} specifies options to control
+the combination of the two graphs. This has no effect with {cmd:super}. 
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. use  http://www.stata-press.com/data/r10/air2.dta}{p_end}
+{p 4 8 2}{cmd:. regress air L.air time}{p_end}
+{p 4 8 2}{cmd:. ofrtplot}{p_end}
+
+
+{title:Acknowledgments} 
+
+{p 4 4 2}Denis de Crombrugghe suggested this program originally. 
+Kit Baum made several useful suggestions.
+
+
+{title:Author}
+
+{p 4 4 2}Nicholas J. Cox{break}
+Durham University, U.K.{break} 
+n.j.cox@durham.ac.uk
+
+
+{title:Also see}
+
+{psee}
+Article: {it:Stata Journal}, volume 10, number 1: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=up0027":gr0009_1},{break}
+         {it:Stata Journal}, volume 4, number 4: {browse "http://www.stata-journal.com/sjpdf.html?articlenum=gr0009":gr0009}
+
+{psee}
+{space 2}Help:  {manhelp predict R}, {manhelp tsset TS}, {helpb modeldiag}
+{p_end}

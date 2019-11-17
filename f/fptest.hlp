@@ -1,0 +1,88 @@
+{smcl}
+{* 27nov2007}{...}
+{cmd:help fptest}{right: ({browse "http://www.stata-journal.com/article.html?article=st0158":SJ9-1: st0158})}
+{hline}
+
+
+{title:Title}
+
+{p2colset 5 15 17 2}{...}
+{p2col :{hi:fptest} {hline 2}}Two-sample Fisher-Pitman permutation test for
+equality of means{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:fptest}
+ {it:varname}
+ {ifin}{cmd:, by(}{it:groupvar}{cmd:)}
+ [{cmd:reps(}{it:#}{cmd:)} {cmd:simsec(}{it:#}{cmd:)} {cmd:exact}] 
+  
+
+{title:Description}
+
+{pstd} {cmd:fptest} performs a nonparametric two-sample Fisher-Pitman
+permutation test.  As a test statistic, it uses the difference in means of two
+samples.  If the test gets too cumbersome to compute, Monte Carlo simulations
+are done to approximate p-levels.  For more details, refer to {helpb tsrtest}.
+
+
+{title:Options}
+
+{phang} {cmd:by(}{it:groupvar}{cmd:)} specifies the dichotomous grouping
+variable, which marks the two (across and within-independent) samples whose
+means should be tested.
+
+{phang} {cmd:reps(}{it:#}{cmd:)} stipulates that {it:#} random group assignments be
+performed if simulating. The default is {cmd:reps(10000)}.
+
+{phang} {cmd:simsec(}{it:#}{cmd:)} stipulates that an exact test be used if
+its estimated execution time would not exceed {it:#} seconds. If the estimated
+execution time exceeds {it:#} seconds, {cmd:fptest} will revert to Monte Carlo
+simulation. The default is {cmd:simsec(1000)}.
+
+{phang} {cmd:exact} forces the calculation of exact p-levels, even if the
+estimated execution time would exceed the time specified in {cmd:simsec(}{cmd:)}.
+
+
+{title:Saved results}
+
+{pstd}{cmd:fptest} saves the following in {cmd:r()}:
+
+{synoptset 16 tabbed}{...}
+{p2col 5 16 20 2: Scalars}{p_end}
+{synopt:{cmd:r(twotail)}} two-tailed p-level of nondirectional test of Ho: the two sample means are identical{p_end}
+{synopt:{cmd:r(uppertail)}} one-tailed p-level of test of Ho: mean of sample 1 is greater than or equal to mean of sample 2{p_end}
+{synopt:{cmd:r(lowertail)}} one-tailed p-level of test of Ho: mean of sample 1 is less than or equal to mean of sample 2{p_end}
+{synopt:{cmd:r(samplediff)}} observed difference between means of each sample{p_end}
+{p2colreset}{...}
+
+
+{title:Example}
+
+{psee}{cmd:. sysuse auto}{p_end}
+{psee}{cmd:. fptest price if _n>40 & _n<60, by(foreign)}{p_end}
+
+
+{title:Authors}
+
+{phang}Johannes Kaiser{p_end}
+{phang}University of Bonn{p_end}
+{phang}Bonn, Germany{p_end}
+{phang}johannes.kaiser@uni-bonn.de{p_end}
+
+{phang}Michael G. Lacy{p_end}
+{phang}Colorado State University{p_end}
+{phang}Fort Collins, Colorado{p_end}
+{phang}michael.lacy@colostate.edu{p_end}
+
+
+{title:Also see}
+
+{psee}Article: {it:Stata Journal}, volume 9, number 1: {browse "http://www.stata-journal.com/article.html?article=st0158":st0158}
+
+{psee}
+Online:  {helpb permute}, {helpb tsrtest}, and {helpb permtest2} (if installed)
+{p_end}

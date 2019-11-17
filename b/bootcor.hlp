@@ -1,0 +1,92 @@
+.-
+help for ^bootcor^                                                (STB-55: sg138)
+.-
+
+Bootstrap inferences about measures of correlation
+--------------------------------------------------
+
+   ^bootcor^ var1 var2 var3 [var4] [^if^ exp] [^in^ range]
+          [^, r^eps^(^#^) st^at^(pearson^|^icc^|^concord)^
+            ^le^vel^(^#^) sav^ing^(^newfile^)^]
+
+
+Description
+-----------
+
+^bootcor^ uses bootstrap resampling to compare correlations between variables.
+Bootstrapping, unlike the standard Fisher r-to-z confidence interval method,
+does not require assumptions of underlying bivariate normality and therefore
+provides more accurate confidence intervals and inferences.  ^bootcor^ also
+solves the problem of non-independent samples (i.e., elements in a correlation
+matrix) where standard formulas break down.
+
+The user specifies the variables to be compared.  When three variables are
+listed, ^bootcor^ will compute confidence intervals for the correlation
+between var1 and var2 (r1), and var1 and var3 (r2). When four variables are
+listed, ^bootcor^ computes confidence intervals for var1 and var2 (r1) 
+and var3 and var4 (r2).
+
+Next, r1 and r2 are compared using a z-test on the difference between r1 and 
+r2 for each boostrap sample.  A z-score and p-value are given.  
+
+
+Options
+-------
+  
+^reps(^#^)^ allows the user to specify how many bootstrap replications
+    (B) should be computed.  The default value of B is 50.  It is
+    recommended that B be at least 1000 for adequate accuracy when
+    estimating correlation coefficients.
+
+^stat(pearson)^ uses the Pearson Correlation Coefficient as the parameter
+    to be estimated.  This is the default setting.
+
+^stat(icc)^ uses the Intra-Class Correlation Coefficient as the
+    parameter to be estimated.  ^bootcor^ uses a modified version of
+    iclassr2.ado to compute the correlation coefficient.
+
+^stat(concord)^ uses the Concordance Coefficient as the parameter to be
+    estimated.  ^bootcor^ uses a modified version of concord.ado to compute
+    the correlation coefficient.
+
+^level(^#^)^ allows the user to specify the level of confidence for the
+    individual correlation coefficients.  Level can range from 1 to 100.  The
+    default is 95.
+
+^saving(^newfile^)^ will export the bootstrap replications to a .dct
+    file that the user can later analyze in more detail.  Five
+    variables are saved, with each resample listed casewise.  r_boot1
+    is r1, r_boot2 is r2, z_boot1 is the Fisher transformed value of
+    r_boot1, z_boot2 is the Fisher transformed value of r_boot2, and
+    z_bootd is the difference of z_boot1 and z_boot2.  The user can
+    open this file using the command
+
+     infile using newfile.dct
+
+
+Examples
+--------
+
+ . ^bootcor var1 var2 var3^
+
+ . ^bootcor var1 var2 var3 var4^
+
+ . ^bootcor time1 time2 time3, stat(icc) reps(1000)^
+
+ . ^bootcor var1t1 var1t2 var2t1 var2t2 if(group==1), stat(concord)^
+
+ . ^bootcor var1 var2 var3, saving(boot) level(90)^
+
+
+Author
+------
+
+        Dan J. Neal
+        Syracuse, New York
+        email: djneal@@syr.edu
+
+
+Also see
+--------
+ 
+   STB: STB-55 sg138

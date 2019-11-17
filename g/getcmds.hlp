@@ -1,0 +1,77 @@
+{smcl}
+{* version 1.1.0 20nov2009}{...}
+{hline}
+help for {hi:getcmds}
+{hline}
+
+{title:Get a listing of all official Stata commands}
+
+{p 8 12 2}
+{cmd:getcmds} using {it:filename}
+	[{cmd:,}
+	{cmd:replace} 
+	{cmd:append} 
+	[
+		{cmdab:all:cmds} 
+		|
+		{cmdab:ado:only}
+		|
+		{cmdab:nonado:only} 
+		|
+		{cmdab:hlp:only} 
+	]
+	]
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:getcmds} will retrieve the name of all built-in Stata commands as well as
+every ado-file present in Stata's system directory, and places this list of
+command names in {it:filename}.  If {it:filename} is specified without an
+extension, {cmd:getcmds} will automatically append a ".txt" extension.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:replace} specifies that {it:filename} be replaced if it already exits.
+
+{p 4 8 2}
+{cmd:append} specifies that {it:filename} be appended if it already exits.
+
+{p 4 8 2}
+{cmd:allcmds} specifies that all built-in and ado-file commands be listed in
+{it:filename}.  This is the default.
+
+{p 4 8 2}
+{cmd:adoonly} specifies that only ado-file commands be listed in
+{it:filename}.
+
+{p 4 8 2}
+{cmd:nonadoonly} specifies that only built-in commands be listed in
+{it:filename}.
+
+{p 4 8 2}
+{cmd:hlponly} specifies that only built-in and ado-file commands that have
+help files of the same name be listed in {it:filename}.
+
+
+{title:Examples}
+
+{p 4 4 2}{cmd:. getcmds using ado, ado}{p_end}
+{p 4 4 2}{cmd:. getcmds using builtin, nonado}{p_end}
+{p 4 4 2}{cmd:. getcmds using all, all}{p_end}
+
+
+{title:Also see}
+
+{p 5 14 2}
+Manual:  {hi:[P] file},
+{hi:[P] findfile}
+{hi:[R] which}
+
+{p 4 14 2}
+On-line:  help for {help file},
+{help findfile},
+{help which}

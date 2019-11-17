@@ -1,0 +1,26 @@
+*! Stata package list  24aug2007
+*! Wage gap decomposition packages
+*! This package list comprises ado packages used for the
+*! decomposition of wage or income differentials between
+*! groups and related applications.
+*! 
+*! Assembled by: Ben Jann, ETH Zurich, jann@soz.gess.ethz.ch
+
+*! Decomposition of wage differentials
+oaxaca.pkg     "http://fmwww.bc.edu/repec/bocode/o" `"module to compute Blinder-Oaxaca decomposition"'
+decomp.pkg     "http://fmwww.bc.edu/repec/bocode/d" `"alternate module to compute Blinder-Oaxaca decomposition"'
+decompose.pkg  "http://fmwww.bc.edu/repec/bocode/d" `"antecessor of {cmd:oaxaca}"'
+
+*! Difference-in-difference decomposition
+jmpierce2.pkg  "http://fmwww.bc.edu/repec/bocode/j" `"module to compute trend decomposition of wage differentials"'
+smithwelch.pkg "http://fmwww.bc.edu/repec/bocode/s" `"alternate module to compute trend decomposition of wage differentials"'
+
+*! Generalizations
+gdecomp.pkg    "http://fmwww.bc.edu/repec/bocode/g" `"module to compute non-linear Blinder-Oaxaca decomposition"'
+fairlie.pkg    "http://fmwww.bc.edu/repec/bocode/f" `"module to compute Fairlie decomposition for binary outcomes"'
+jmpierce.pkg   "http://fmwww.bc.edu/repec/bocode/j" `"module to compute decomposition of differences in various statistics"'
+dfl.pkg        "http://fmwww.bc.edu/repec/bocode/d" `"module to compute DiNardo/Fortin/Lemieux counterfactual densities"'
+
+*! Related packages
+devcon.pkg     "http://fmwww.bc.edu/repec/bocode/d" `"module to apply the deviation contrast transform"'
+margeff.pkg    "http://fmwww.bc.edu/repec/bocode/m" `"module required by {cmd:gdecomp}"'

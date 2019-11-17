@@ -1,0 +1,88 @@
+{smcl}
+{hline}
+help for {hi:rmatch}
+{hline}
+
+{title:Matching with Replacement}
+
+{p 4 8 2}
+{cmdab:rmatch}
+{it:treatvar}
+{it:matchvar}
+[{cmd:if} {it:exp}]
+[{cmd:in} {it:range}]
+[{cmd:,}
+  {opt s:et(newvar)}
+  {opt pwt(newvar)}
+  {opt d:iff(newvar)}
+  {opt c:aliper(#)}
+  {opt lp}
+]       
+
+{title:Description}
+
+{pstd}
+The command {cmd:rmatch} performs matching with replacement on a single
+variable. Each treated subject {it:treatvar} = 1) is matched to the nearest
+single control ({it:treatvar} = 0), based on the variable {it:matchvar},
+if that control subject is sufficiently close (within the distance defined
+by {opt caliper}. Each control may be used as a match for several cases.
+
+{title:Options}
+
+{phang}
+{opt s:et(newvar)} The variable {it:newvar} will be created, containing an
+identifier for each set of matched cases and controls. Normally, each set will
+contain one control and a number of cases to which it has been matched.
+However, it is possible that two (or more) controls have identical
+propensity scores, and hence are equally good matches for one or more cases.
+In this case, all suitable controls will be included in the set. If this
+option is not used, a variable called {cmd:set} will be created (unless this
+  variable already exists, in which case {cmd:rmatch} will halt).
+
+{phang}
+{opt pwt(newvar)} The variable {it:newvar} will be created, containing 1 for
+each treated subject, and for each untreated subject it will contain the
+number of treated subjects to which that subject was matched. So if
+{it:newvar} is used as a weight, the weighted means of all of the variables
+that make up the propensity score should be the same in the treated and
+untreated subjects. If this option is not used, a variable called {cmd:pwt}
+will be created (unless this variable already exists, in which case
+  {cmd:rmatch} will halt).
+
+{phang}
+{opt d:iff(newvar)} If this option is given, the variable {it:newvar}
+will be created, containing, for each treated subject, the difference
+in propensity score between that subject and its matched control.
+
+{phang}
+{opt c:aliper(#)} The option {cmd:caliper} puts an upper bound on the
+difference in propensity between a treated subject and its matched
+control. If no match can be found within this caliper, the treated subject
+is excluded from the analysis (the variable {cmd:pwt} is set to 0).
+
+{phang}
+{opt lp} tells {cmd:gmatch} to use the linear predictor from the logistic
+regression model used to define the propensity score, rather than the
+propensity score itself. It therefore matches on log(matchvar/(1-matchvar)).
+
+{title:Remarks}
+
+{p 4 8 2}
+
+{title:References}
+
+{p 4 8 2}
+
+{title:Author}
+
+{p 4 4 2}
+Mark Lunt, Arthritis Research UK Epidemiology Unit
+
+{p 4 4 2}
+The University of Manchester
+
+{p 4 4 2}
+Please email {browse "mailto:mark.lunt@manchester.ac.uk":mark.lunt@manchester.ac.uk} if you encounter problems with this program
+
+

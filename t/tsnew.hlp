@@ -1,0 +1,101 @@
+New features in the Stata time series library
+---------------------------------------------
+
+This help file describes new and modified features in the Stata time series
+library.  The file is cumulative; it begins with the changes added in the
+most recent STB distribution diskette.  Older changes follow.  Type ^help ts^
+for general information on the time series library.
+ 
+
+Changes in STB-24
+-----------------
+^tspred^ has been upgraded to a level A program.  In addition, four new 
+programs have been added to assist in producing forecasts.  The new programs
+are: ^date2obs^, ^filldate^, ^projdate^, and ^scenario^.  The most significant
+addition is ^scenario^, which creates user-defined scenarios for RHS variables.
+
+
+Changes in STB-23
+-----------------
+An improved version of Ken Heinecke's ^hansen^ program (sts8) has been 
+added.
+
+
+Changes in STB-22
+-----------------
+The time series library was upgraded to recognize panel data, that is,
+a mixture of time series and cross section data.   A new command, ^csunits^,
+was added to identify the cross-sectional indexes.  ^csunits^ is the 
+cross section analog of ^datevars^.
+
+The ^lag^ command was also upgraded to recognize panel data.  As a side
+effect, ^lag^ is now somewhat more "invasive".  ^lag^ will sort the data,
+if necessary, to insure the data are stored in correct time order before
+lags are calculated.
+
+Most of the time series commands are not yet upgraded to handle panel data.
+These commands are:
+
+        ^ac^, ^chow^, ^cusum^, ^dif^, ^finddate^, ^findsmpl^, ^growth^
+        ^pac^, ^quandt^, ^regdiag^, ^tspred^, and ^xcorr^.
+
+Note that ^tsfit^ and ^tsreg^ should correctly estimate models for panel
+data.  However, the reporting of sample information and some of the 
+regression diagnostics are incorrect.
+
+In ordinary (non-panel) time series data, all commands work as before.
+
+
+Changes in STB-20
+-----------------
+
+Alan Riley's (dm20) date commands have been added to the time series library.
+These programs include:
+
+^downame^: converts a day-of-the-week code to a name.
+^lastday^: calculates the last day of the month.
+^lstbday^: calculates the last business day of the month.
+^mdytodow^: calculates the day of the week from month/day/year.
+^mnthname^: converts a month code to a name.
+^namedow^: converts a name to a day-of-the-week code.
+^namemnth^: converts a name to a month code.
+^today^: calculates today.
+^ystrday^: calculates yesterday from today.
+
+
+Changes in STB-19
+-----------------
+
+^findsmpl^: findsmpl would fail if there were no usable observations.  This 
+    bug has been corrected.  findsmpl now reports "no observations" and 
+    returns without an error.
+
+^growthi^: growthi is an immediate form of growth.ado.  
+
+
+Changes in STB-18
+-----------------
+
+^faketemp^:  faketemp.ado (STB-17: ip5) has been added to the library.  This
+    program was written by Craig Hakkio, Federal Reserve Bank of Kansas City. 
+    Type "help faketemp" for more information.
+
+^lag^:  The ^lag^ command has been substantially rewritten and the syntax has
+    been expanded to permit variable lists.  The ^lag^ command is also smarter
+    about combining operators.  The ^lead^ and ^dif^ commands will be revised
+    along the same lines in later issues.
+
+^regdiag^:  The Durbin-Watson statistic was occasionally misreported as a 
+    missing value.  This bug has been fixed.  A new option, ^time^, has been
+    added.  The ^time^ option specifies a standard selection of time series 
+    diagnostics.  This set includes Akaike's Information Criterion (^aic^), 
+    the ARCH test (^arch^), the Durbin-Watson test (^dw^), the LM (^lm^) and
+    Q (^q^) tests for serial correlation, the Schwarz criterion (^sc^), and the
+    test of the normality of the residuals (^normal^).
+
+^tauprob^:  tauprob.ado (STB-17: sts6) has been added to the library.  This
+    program was written by Craig Hakkio, Federal Reserve Bank of Kansas City. 
+    Type "help tauprob" for more information.
+
+^tsreg^:  ^tsreg^ now displays the standard set of time series diagnostics 
+    (see ^regdiag^ above) rather than all possible diagnostics.

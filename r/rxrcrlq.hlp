@@ -1,0 +1,63 @@
+.-
+help for ^rxrcrlq^     					  STB-28: sg45
+.-
+
+Generalized ridge regression: shrinkage shape
+---------------------------------------------
+
+        ^rxrcrlq^ depvar varlist [^if^ exp] [^in^ range]
+
+		[^,^ ^nq(^#^)^ ^qmax(^#^)^ ^qmin(^#^)^ ^r^escale^(^#^)^ ^t^ol^(^#^)^ ]
+
+
+To reset problem-size limits, see ^help matsize^.
+
+
+Description
+-----------
+
+^rxrcrlq^ uses classical, normal-theory, maximum-likelihood to identify the
+shrinkage path of MSE optimal shape (or curvature) for generalized ridge
+regression of ^depvar^ on ^varlist^.
+
+
+Options
+-------
+
+^nq(^#^)^ specifies an integer number of ^qshape^ values to evaluate between ^qmin^
+    and ^qmax^, inclusive.  The default value is 21, and ^nq^ cannot be reset to
+    any integer value less than 9.
+
+^qmax(^#^)^ specifies the maximum ^qshape^ to evaluate.  The default value is 5,
+    and ^qmax^ cannot be reset to any value less than 2.
+
+^qmin(^#^)^ specifies the minimum ^qshape^ to evaluate.  The default value is -5,
+    and ^qmin^ cannot be reset to any value greater than -2.
+
+^rescale(^#^)^ controls the scaling of the response variable and all p
+    predictor variables in the ^varlist^.  The default value is ^rescale^=1 to
+    scale all centered variables to have sample variance 1.  ^rescale^=0 should
+    be specified to retain the original scalings.
+
+^tol(^#^)^ specifies search convergence criterion and defaults to 0.01.
+
+
+Example
+-------
+
+ . ^rxrcrlq mpg cylnds cubins hpower weight^
+
+
+Author
+------
+
+        Robert L. Obenchain
+        Eli Lilly and Company
+
+
+Also see
+--------
+
+    STB:  STB-28 sg45
+On-line:  ^help^ for @rxridge@ and @rxrmaxl@
+

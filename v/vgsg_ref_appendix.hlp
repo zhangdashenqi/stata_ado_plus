@@ -1,0 +1,33 @@
+{smcl}
+{p 0 4}
+{bf:{help vgsg:A Visual Guide to Stata Graphics}} > {bf:{help vgsg_ref:Cross reference}} > {bf:Appendix}
+{p_end}
+{hline}
+
+{title:Appendix}
+
+{p 4 8 4}Stat{break}
+  {manhelp graph_other G:graph other}
+
+{p 4 8 4}Stat options{break}
+  {manhelpi twoway_options G}{break}
+
+{p 4 8 4}Save/Redisplay/Combine{break}
+ {manhelpi saving_option G}{break}
+ {manhelp graph_use G:graph use}{break}
+ {manhelpi name_option G}{break}
+ {manhelp graph_display G:graph display}{break}
+ {manhelp graph_combine G:graph combine}{break}
+
+{p 4 8 4}More examples{break}
+ {manhelp graph_intro G:graph intro}{break}
+
+{p 4 8 4}Common mistakes{break}
+
+{p 4 8 4}Schemes{break}
+ {manhelp schemes G:schemes intro}
+
+{phang}Online{break}
+ {bf:{browse "http://www.stata-press.com/books/vgsg.html":Online supplements available from www.stata-press.com}}
+
+{hline}

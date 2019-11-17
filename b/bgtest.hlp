@@ -1,0 +1,76 @@
+.-
+help for ^bgtest^                                                 (STB-55: sg136)
+.-
+
+Calculate the Breusch-Godfrey LM statistic after @regress@
+----------------------------------------------------------
+
+	^bgtest^  [, ^l^ags^(^p^)^] 
+
+^bgtest^ is for use after ^regress^; see help @regress@.
+
+^bgtest^ is for use with time-series data. You must ^tsset^ your data before
+using ^bgtest^; see help @tsset@.
+
+
+Description
+-----------
+
+^bgtest^ computes the Breusch-Godfrey Lagrange multiplier test (Breusch 1978,
+Godfrey 1978) for nonindependence in the error distribution. For a specified
+number of lags p, the test's null of independent errors has alternatives of
+either AR(p) or MA(p). The test statistic, a TR^^2 measure, is distributed
+Chi-squared(p) under the null hypothesis. The test is asymptotically
+equivalent to the Box-Pierce portmanteau test, or Q statistic (@wntestq@),
+for p lags. Unlike the Q statistic, the Bruesch-Godfrey test is valid in
+the presence of stochastic regressors, such as lagged values of the dependent
+variable.
+
+For p=1, the test is asymptotically equivalent to the Durbin-Watson 'h' 
+statistic (@durbinh@), which may be considered a special case of the 
+Breusch-Godfrey test statistic. See Greene (2000), Chapter 13.
+
+The command displays the test statistic, degrees of freedom and P-value,
+and places values in the return array. ^return list^ for details. 
+
+
+Examples
+--------
+
+	. ^regress csales isales^
+	. ^bgtest^
+	. ^bgtest, lags(4)^
+
+
+References
+----------
+
+Breusch, T. "Testing for autocorrelation in dynamic linear models."
+    Australian Economic Papers, 17, 1978, pp. 334-355.
+    
+Godfrey, L. "Testing against general autoregressive and moving average
+    error models when the regressors include lagged dependent variables."
+    Econometrica, 46, 1978, 1293-1302.
+    
+Greene, W. Econmetric Analysis. 4th ed., 2000. New York: Prentice-Hall.
+
+
+Authors
+-------
+
+        Christopher F Baum, Boston College, USA
+        baum@@bc.edu
+
+        Vince Wiggins, Stata Corporation
+        vwiggins@@stata.com
+        
+Also see
+--------
+    STB:  STB-55 sg136
+ Manual:  ^[R] regress^, ^[R] regression diagnostics^
+On-line:  help for @regdiag@, @regress@, @time@, @tsset@; @dwtest@;
+	  @durbinh@ (if installed)
+
+
+
+

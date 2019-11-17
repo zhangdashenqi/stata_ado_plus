@@ -1,0 +1,157 @@
+.-
+help for ^mlogplot^ - 03Nov2005
+.-
+
+Odds ratio and discrete change plots for multinomial logit
+----------------------------------------------------------
+
+For odds ratio plots, the results of ^mlogit^ must be in memory; for discrete
+change plots or odds ratio plots using discrete change the results of ^prchange^
+must be in memory. The syntax is:
+
+    ^mlogplot^ [varlist] [^, or^atio ^dc^hange ^s^td^(^[^s^|^u^|^0^]...[^s^|^u^|^0^]^)^
+        ^min(^#^) max(^#^) packed labels p^rob^(^#^) b^asecategory^(^#^)^
+        nt^ics^(^#^) n^ote^(^string^)^ ^val^ues ^dcadd(^#^) ^saving(^filename[^,replace^]^)^]
+
+To create odds ratio plots with coefficients that you have placed into
+matrices (e.g.,to plot coefficients from a published paper):
+
+    ^mlogplot,^ ^matrix v^ars^(^varlist^)^ ^s^td^(^[^s^|^u^|^0^]...[^s^|^u^|^0^]^)^
+        [^min(^#^) max(^#^) packed labels b^asecategory^(^#^) nt^ics^(^#^) n^ote^(^string^)^
+        ^saving(^filename[^,replace^]^)^]
+
+The matrices you must create are discussed below.
+
+Description
+-----------
+
+^mlogplot^ takes coefficients either from ^mlogit^ or from other programs that
+estimate the multinomial logit model. When estimates from other programs are
+used they must be passed to ^mlogplot^ as matrices. ^mlogplot^ then plots the
+odds ratios (i.e., exp(b)) and/or the discrete change coefficients. You can
+list the same variable more than once if you want both standardized and
+unstandardized coefficients to be plotted in the same graph. A variety of
+options control the way the final graph looks. The dialog box program ^mlogview^
+provides a convenient front end that allows you to use this program
+interactively.
+
+^IMPORTANT^: When using coefficients from ^mlogit^, you must be sure that the
+value labels for the dependent variable begin with different letters or
+numbers. Otherwise, the plot might be misleading.
+
+Options for Plotting Estimates from ^mlogit^
+---------------------------------------------
+
+^oratio^ indicates that you want to plot the odds ratios (i.e., exp(b)).
+
+^dchange^ requests plots involving discrete change. To use this option, you
+    must have first run ^prchange^. This option does not work with the ^matrix^
+    option.
+
+    If ^oratio^ has been specified, this options plots the size of the letters
+    proportional to the size of the corresponding discrete change coefficient.
+    See ^dcadd^ and ^dcbase^ for further details.
+
+    If ^oratio^ is not specified, ^dchange^ indicates that you want to plot the
+    discrete change coefficients.
+
+^basecategory^ is used for an odds ratio plot to specify which category of
+    the outcome measure is to be used as the reference point.
+
+^labels^ uses variable labels to label each row of the plot. You might need to
+    revise your variable labels to make them fit the graph. This option does
+    not work with the ^matrix^ option.
+
+^min(^#^) and max(^#^)^ specify the minimum value and the maximum value on which
+    the coefficients are plotted. This is useful if you want to compare
+    coefficients from different logits, or produces several plots from the
+    same logit.
+
+^ntics^ sets the number of tic marks to show on the axes. Used along with ^min^
+    and ^max^, this allows you to determine the numbering on the axes and the
+    location of tic marks.
+
+^packed^ removes the vertical spacing among the outcome categories. This allows
+    up to 11 variables on a single graph. Otherwise, the maximum is 5.
+
+^prob^ is used for an odds ratio plot to specify that if a coefficient
+    contrasting two outcomes is not signficant at this level, a line is to
+    be drawn connecting the letters.
+
+^std(^[^s^|^u^|^0^]...[^s^|^u^|^0^]^)^ specifies the type of coefficient to plot. s specifies
+    standardized coefficients; u specifies unstandardized coefficients; 0
+    specifies changes from 0 to 1 in discrete change plots. For example,
+    std(u0su) indicates that the first variable is unstandardized, the second
+    is binary, the third standardized, and the last is unstandardized.
+
+^dcadd(^#^)^ is rarely used. In odds ratio plots where
+    the ^dchange^ option is specified, the size of the letter corresponds to
+    the square root of the size of the discrete change coefficient. ^dcadd^ adds
+    an amount to each discrete change making the size of all letters larger,
+    making it easier to see the letters for small discrete changes. By
+    default this quantity is 0. If your letters print too small, you might
+    want to increase this by a small amount, say ^dcadd(.03)^.
+
+Plotting Estimates from Matrices
+--------------------------------
+
+The ^matrix^ option indicates that estimates are to be obtained from global
+matrices, which are described below. When this option is used, the options
+^prob^ and ^dchange^ are not allowed. All other options can be used.
+
+^vars(varlist)^ contains the names of the variables whose coefficients you
+  want to plot. The names must be in the order you want to plot them and
+  must be included in the global ^mnlname^.
+
+Globals for Plotting Matrices
+-----------------------------
+
+^mnlbeta^ contains the betas in a matrix where element (i,j) is the j-th
+    variable for comparison i relative to the reference category. That is,
+    columns are for variables; rows for different contrasts. Note that
+    constants are NOT included.
+
+^mnlname^ contains the names of the variables corresponding to the columns of
+    mnlbeta.
+
+^mnlcatnm^ is a string with labels for the outcome categories. The
+    1st category corresponds to the 1st column of mnlbeta, the 2nd to the
+    2nd, etc. The label for the reference category should be last. Thus,
+    mnlcatnm provides labels for the rows of mnlbeta. The option
+    ^basecategory^ references which letter in this string represents the
+    base category.
+
+^mnlrefn^ is the number of the category in mnlcatnm that is the reference
+    category for the contrasts contained in mnlbeta.
+
+^mnldepnm^ contains name of dependent variable.
+
+^mnlsd^ contains the standard deviations for the variables that correspond
+    to columns of mnlbeta
+
+Example using mlogit
+--------------------
+
+ . ^mlogit occ white ed exper,basecategory(5)^
+ . ^prchange^
+ . ^mlogplot white ed exper, dc std(0ss) min(-2.75) max(.55)^
+
+Example using matrices
+----------------------
+
+ . ^matrix mnlsd = (2.946427, 13.95936, 2.946427, 13.95936)^
+ . ^global mnlname = "W_Educ W_Exper NW_Educ NW_Exper"^
+ . ^global mnlrefn = 5^
+ . ^global mnlcatnm = "Menial BlueC Craft WhiteC Prof"^
+ . ^matrix mnlbeta = (-.83075, -.92255, -.68761, -.41964 \ /*^
+ > ^*/                -.03380, -.03145, -.00026,  .00085 \ /*^
+ > ^*/                -.70126, -.56070, -.88250, -.53115 \ /*^
+ > ^*/                -.11084, -.02611, -.15979, -.05209 )^
+ . ^matrix mnlbeta = mnlbeta'^
+ . ^mlogplot, vars(W_Educ NW_Educ W_Exper NW_Exper) matrix /*^
+ > ^*/ std(ssss) note("Effects of Education")
+
+.-
+Authors: J. Scott Long and Jeremy Freese
+         www.indiana.edu/~jsl650/spost.htm
+         spostsup@@indiana.edu

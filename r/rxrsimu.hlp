@@ -1,0 +1,76 @@
+.-
+help for ^rxrsimu^     					  STB-28: sg45
+.-
+
+Generalized ridge regression: simulated losses
+----------------------------------------------
+
+	^matrix^ ^rxsigma^ ^=^ ^(^#^)^
+
+	^matrix^ ^rxgamma^ ^=^ ^(^#,...,#^)^
+
+        ^rxrsimu^ depvar varlist [^if^ exp] [^in^ range] 
+                [^,^ ^m^steps^(^#^)^ ^q^shape^(^#^)^ ^r^escale^(^#^)^ ^s^tart^(^#^)^ ^t^ol^(^#^)^ ]
+
+
+To reset problem-size limits, see ^help matsize^.
+
+
+Description
+-----------
+
+^rxrsimu^ simulates normal-theory response values (in a variable named ^ysim^)
+when the true sigma (standard deviation of errors) and the true gammas
+(uncorrelated components) are assumed known values and then calculates the
+true losses associated with generalized ridge shrinkage.
+
+
+Options
+-------
+
+^msteps(^#^)^ specifies the number of steps per unit increase in ^MCAL^, the multi-
+    collinearity allowance parameter; the default value is 4.  The total number
+    of steps along the generalized shrinkage path from the least squares solu-
+    tion (^MCAL^=0) to all zero coefficients (^MCAL^=p) will thus be 1+(msteps*p).
+
+^qshape(^#^)^ controls the shape (or curvature) of the generalized shrinkage
+    path through likelihood space; the default value is 0, which yields Hoerl-
+    Kennard "ordinary" ridge regression.  ^qshape^=1 yields uniform shrinkage,
+    and all ^qshape^ values between -5 and 5 are allowed.
+
+^rescale(^#^)^ controls the scaling of the response variable and all p
+    predictor variables in the ^varlist^.  The default value is ^rescale^=1 to
+    scale all centered variables to have sample variance 1.  ^rescale^=0 should
+    be specified to retain the original scalings.
+
+^start(^#^)^ controls Stata's uniform() random number seed value, and the ^rxrsimu^
+    default value is 12345.  If you make repeated ^rxrsimu^ runs without changing
+    this seed, you will get the same pseudo-random values each time.  When you
+    do change ^start^, make it large, positive and odd.
+
+^tol(^#^)^ specifies search convergence criterion and defaults to 0.01.
+
+
+Example
+-------
+
+ . ^matrix rxsigma = (.5)^               ...Specify true std.dev. of error terms
+ . ^matrix rxgamma = (-.5,.1,-.1,-.4)^
+                             ...Specify true values of uncorrelated components
+ . ^rxrsimu mpg cylnds cubins hpower weight, q(-1)^
+                     ...Simulate responses and calculate true shrinkage losses
+
+
+Author
+------
+
+        Robert L. Obenchain
+        Eli Lilly and Company
+
+
+Also see
+--------
+
+    STB:  STB-28 sg45
+On-line:  ^help^ for @rxrrisk@ and @rxridge@
+

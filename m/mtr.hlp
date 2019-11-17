@@ -1,0 +1,37 @@
+Calculate U.S. marginal tax rates                            (STB-22: sss1.1)
+---------------------------------
+
+	^egen^ [type] varname ^= mtr(^year^,^income^)^ [^if^ exp] [^in^ range]
+
+where year is a variable or a number, 1930<=year<=1994, and income is a
+variable or number, income>=0.
+
+Description
+-----------
+
+^mtr()^ finds finds the U.S. marginal income tax rate corresponding to any given
+level of taxable income for a married couple between the years 1930 and 1994.
+
+
+Examples
+--------
+
+	. ^egen mtax = mtr(1980,faminc)^
+
+	. ^egen mtax = mtr(sampyear, faminc)^
+
+
+Author
+------
+
+Timothy J. Schmidt, Federal Reserve Bank of Kansas City, 816-881-2307.
+
+
+Also see
+--------
+
+    STB:  ss1 (STB-15), sss1.1 (STB-22)
+ Manual:  [5d] egen
+On-line:  ^help^ for ^egen^
+
+

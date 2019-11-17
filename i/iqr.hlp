@@ -1,0 +1,53 @@
+Interquartile Range, etc.
+-------------------------
+
+Author:   Lawrence C. Hamilton, Dept. of Sociology, Univ. of New Hampshire
+Support:  None. 
+
+		^iqr^ varname [^if^ exp] [^in^ range]
+
+The command provides the following output:
+
+      number of observations       mean           10 trim
+      standard deviation           median         IQR
+      pseudo standard deviation    
+      
+      (for both) low and high:
+      inner fences                 outer fences
+          # mild outliers              # severe outliers
+          % mild outliers              % severe outliers
+
+
+
+      
+Definitions
+-----------
+
+      IQR (Interquartile Range) = 75th percentile - 25th percentile
+      Pseudo standard deviation = IQR/1.349
+      10% trim mean             = Average of cases between 10th and
+                                     90th percentiles
+      Inner fences              = Q(25)-1.5IQR and Q(75)+1.5IQR
+      Outer fences              = Q(25)-3IQR   and Q(75)+3IQR
+      Mild outlier              = Q(25)-3IQR <= x < Q(25)-1.5IQR  or
+                                  Q(75)+1.5IQR < x <= Q(75)+3IQR
+      Severe outlier            = x < Q(25)-3IQR  or  x > Q(75)+3IQR
+
+Notes:
+------
+
+In a symetrical distribution, the trimmed mean equals median and mean.
+
+Values beyond the inner fences make up about 0.7% of normal population.
+
+Severe outliers comprise about .0002% of the normal population. In 
+samples, they lie far out enough to have a substantial effect on means,
+standard deviations, and other classical statistics.
+
+The presence of any severe outliers in a real-data sample of n=10 to at
+least 300 should be sufficient evidence to reject normality at a 5%
+significance level. Mild outliers appear common in samples of any size.
+
+            
+     
+     

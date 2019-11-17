@@ -1,0 +1,77 @@
+.-
+help for ^pwrdemo2^
+.-
+
+Draw Curves Illustrating Power
+------------------------------
+
+^Description^
+
+  ^pwrdemo2^ draws curves showing the distribution of the null hypothesis,
+        and the alternative hypothesis, showing the rejection region
+        and the area representing power.  
+
+        By default, when you run ^pwrdemo2^, a dialog box is brought
+        forward with buttons allowing you to vary the sample 
+        size (^N^), the difference between the mean under 
+        the null hypothesis and the mean under the alternative 
+        hypothesis (^diff^) and alpha. 
+
+        There are also buttons that allow you to show movies
+        which show the impact of ^N^, ^diff^ and ^alpha^.
+        You can vary the speed of the movie by altering
+        the ^movie delay^ drop down.
+
+^Basic Syntax^
+
+  . pwrdemo2
+
+^Advanced Syntax^
+
+  ^pwrdemo2^ , ^n^(#) ^d^iff(#) ^a^lpha(#) ^nodialog^
+
+  The options ^n^(#) ^d^iff(#) ^a^lpha(#) allow you to set the sample size,
+  the mean difference between Ho and Ha, and alpha.  If you don't 
+  include any options, the default values are...
+
+  n(25)       - sample size of 25
+  diff(.25)   - the mean difference between Ho and Ha is .25
+  alpha(0.05) - alpha is set to 0.05 (two tailed)
+
+  If you include the ^nodialog^ option, the display of the dialog
+  box is supressed.
+
+^Examples^
+
+  . ^pwrdemo2^
+  Starts the program and brings up the dialog box with the default
+  values for ^n^, ^diff^ and ^alpha^.
+
+  . ^pwrdemo2 , n(100)^
+  Uses a sample size of 100, and the default difference of .25 and alpha of 0.05 .
+
+  . ^pwrdemo2 , n(100) diff(.15) alpha(0.01)^
+  Uses a sample size of 100, a difference of .15 betwen Ho and Ha, and
+  alpha of 0.01
+
+^More Advanced Syntax^
+
+  ^pwrdemo2^ , ^n^(#) ^d^iff(#) ^a^lpha(#) ^t1^( ) ^t2^(  ) ^l1^( ) <other graph options>.
+
+  You can use the ^t1^ option to specify the t1title in the graph, the ^t2^ option
+  to specify the t2title in the graph, and ^l1^ option to specify the l1title
+  in the graph.  See ^help graph^ for more information on these title options. 
+  You can include other graph options to control how the graph looks.
+
+^More Advanced Syntax Examples^
+
+  . ^pwrdemo2 , n(100) diff(.15) alpha(0.01)^ t1("My Power Graph") 
+  The t1title in the graph will be "My Power Graph"
+
+Author
+------
+
+Michael N. Mitchell
+Statistical Computing and Consulting
+UCLA, Academic Technology Services
+mnm@@ucla.edu 

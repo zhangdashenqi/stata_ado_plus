@@ -1,0 +1,101 @@
+{smcl}
+{* 03nov2006}{...}
+{hline}
+help for {hi:hyperlog}{right:(SJ7-1: dm0027)}
+{hline}
+
+{title:Make hyperlinked index from a log file}
+
+{p 8 12 2}
+{cmd:hyperlog}
+{it:do-file}
+[{it:logfile}] [, {cmdab:multi:pass} {cmd:replace}]
+
+
+{p 4 4 2}
+If {it:logfile} is omitted, then it is assumed to have the same root name as
+{it:do-file}.
+
+{p 4 4 2}
+If {it:do-file} is specified without an extension, then {cmd:.do} is assumed.
+
+{p 4 4 2}
+If {it:logfile} is specified without an extension, then {cmd:.log} is assumed.
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:hyperlog} produces an interactive index file that makes navigating long
+Stata log files easier.  The index file is designed to be viewed in any web
+browser and contains two columns.  The left column is a listing of the do-file
+where each command line appears as a hyperlink.  Clicking any hyperlink causes
+the web browser to scroll directly to the corresponding entry in the log file,
+which is displayed in the right column.
+
+{p 4 4 2}
+The log file must be in ASCII text format (not SMCL) and should have been
+created with a {helpb log} command within the specified do-file.  The index
+file created by {cmd:hyperlog} is given a name derived from the do-file's root
+name.  For example, for a do-file {cmd:foo.do}, {cmd:hyperlog} would produce
+an index file {cmd:foo_hlog.html}.  The do-file and log file do not have to
+have the same root name.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:multipass} alters the behavior of {cmd:hyperlog} when it encounters a
+command line in the do-file that cannot be found in the log file.  By default,
+{cmd:hyperlog} stops adding further hyperlinks.  {cmd:multipass} requests that
+unmatched commands be ignored and processing be continued.  This option may
+significantly increase processing time if the log file is large or complex,
+such as those containing conditional or looping commands ({helpb ifcmd:if},
+{helpb while:while}, {helpb foreach:foreach}, or {helpb forvalues:forvalues}).
+
+{p 4 8 2}
+{cmd:replace} indicates that it is OK to overwrite the HTML output files if
+they already exist.  Otherwise, an error message will be generated if the
+files already exist.
+
+
+{title:Remarks}
+
+{p 4 4 2}
+Read the following if you are interested in how {cmd:hyperlog} creates the
+index file.
+
+{p 4 4 2}
+{cmd:hyperlog} is a file filter that converts a do-file and its corresponding
+log file into two HTML output files.  While doing so, {cmd:hyperlog} attempts
+to find matching Stata command lines between the two input files.  Matching
+lines are made into hyperlinks by adding appropriate HTML tags.  Comment and
+blank lines are copied to the output files without alteration.  {cmd:hyperlog}
+then creates a third file, the index file, which defines a web page of two
+columns in which the other two output files are displayed.  For example, the
+do-file {cmd:foo.do} and its corresponding log file {cmd:foo.log} would be
+filtered to create the output files {cmd:foo_do.html} and {cmd:foo_log.html},
+respectively.  The third output file would be {cmd:foo_hlog.html}, the actual
+index file to be opened in a web browser.
+
+
+{title:Examples}
+
+{p 4 8 2}
+{cmd:. hyperlog foo, replace}
+
+{p 4 8 2}
+{cmd:. hyperlog foo foo}
+
+{p 4 8 2}
+{cmd:. hyperlog foo.do foo.log, multipass}
+
+
+{title:Author}
+
+{p 4 4 2}
+J. Eng, Department of Radiology and Radiological Science, Johns Hopkins
+University School of Medicine.  Email
+{browse "mailto:jeng@jhmi.edu":jeng@jhmi.edu} if you have any problems,
+questions, comments, or suggestions.
+{p_end}

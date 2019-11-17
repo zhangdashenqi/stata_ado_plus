@@ -1,0 +1,85 @@
+{smcl}
+{* 19nov2002}{...}
+{hline}
+help for {hi:leastlikely}{right:(SJ2-4: st0022_1)}
+{hline}
+
+{title:List least likely observations}
+
+{p 8 13}{cmd:leastlikely} [{it:varlist}] [{cmd:if} {it:exp}] 
+[{cmd:in} {it:range}] 
+[{cmd:,} {cmd:n(}{it:#}{cmd:)} {cmdab:g:enerate(}{it:varname}{cmd:)}
+[{cmdab:no:}]{cmdab:d:isplay} {cmdab:nol:abel} {cmdab:noo:bs}
+{cmdab:do:ublespace}]
+
+
+{title:Description}
+
+{p 4 4 2}For regression models for categorical dependent variables, 
+{cmd:leastlikely} lists the in-sample observations with the lowest 
+predicted probabilities of observing the outcome value that was 
+actually observed.  For example, in a model with a binary dependent 
+variable, {cmd:leastlikely} lists the observations that have the lowest 
+predicted probability of {it:depvar=0} among those cases for which 
+{it:depvar=0}, and it lists the observations that have the lowest predicted 
+probability of {it: depvar=1} among those cases for which {it:depvar=1}.  The 
+least likely values represent relatively deviant cases that may warrant 
+closer inspection.
+
+{p 4 4 2}{cmd:leastlikely} works with estimation commands for models of binary 
+outcomes in which option {cmd:p} after {cmd:predict} provides the predicted 
+probability  of a positive outcome (e.g., {cmd:logit}, {cmd:probit}), but the 
+dependent  variable must be coded as 0 and 1.  Likewise, {cmd:leastlikely} 
+works with estimation commands for models of ordinal or nominal outcomes 
+in which option {cmd:outcome(}{it:#}{cmd:)} after {cmd: predict} provides the
+predicted probability of outcome {it:#}.  Exceptions are commands in which the
+predicted probabilities are probabilities within groups or panels or for
+"blocked" data; {cmd:leastlikely} will produce an error message if executed
+after {cmd:blogit}, {cmd:bprobit}, {cmd:clogit}, {cmd:glogit}, 
+{cmd:gprobit}, {cmd:nlogit}, or {cmd:xtlogit}.  
+
+{p 4 4 2}{cmd:leastlikely} lists the observation number and the
+predicted probability (as Prob or as the variable name specified by the
+{cmd:generate} option).  Values of variables in {it:varlist} will also be 
+specified.
+
+
+{title:Options}
+
+{p 4 8 2}{cmd:n(}{it:#}{cmd:)} specifies the number of observations to be listed
+for each outcome.  The default is 5.  If multiple observations have the same
+probabilities, more than the specified number will be listed to include all
+of them.
+
+{p 4 8 2}{cmd:generate(}{it:varname}{cmd:)} specifies that the probabilities
+of observing the outcome value that was observed should be stored in
+{it:varname}.  If not specified, the variable name {cmd:Prob} will be created
+but dropped after the output is produced.
+
+{p 4 8 2}[{cmd:no}]{cmd:display} forces the format into {cmd:display} or 
+tabular ({cmd:nodisplay}) format.  If you do not specify one of these two 
+options, then Stata chooses one based on its judgment of which would be most 
+readable.
+
+{p 4 8 2}{cmd:nolabel} causes the numeric codes rather than the label values
+to be displayed.
+
+{p 4 8 2}{cmd:noobs} suppresses printing of the observation numbers.
+
+{p 4 8 2}{cmd:doublespace} produces a blank line between each observation in
+the listing when in {cmd:nodisplay} mode; it has no effect in {cmd:display}
+mode.
+
+
+{title:Examples}
+
+{p 4 8 2}{cmd:. logit low age lwt race2 race3 smoke ptl ht ui}{p_end}
+{p 4 8 2}{cmd:. leastlikely}{p_end}
+{p 4 8 2}{cmd:. leastlikely age lwt, n(10) g(prob)}{p_end}
+
+
+{title:Author}
+
+      {browse "mailto:jfreese@ssc.wisc.edu":Jeremy Freese}
+      Department of Sociology,
+      University of Wisconsin-Madison

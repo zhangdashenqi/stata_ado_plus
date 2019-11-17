@@ -1,0 +1,56 @@
+{smcl}
+{* 24feb2004}{...}
+{hline}
+help for {hi:grouping}{right:(SJ6-4: st0112)}
+{hline}
+
+{title:Calculate grouping indicator for linked employer-employee data}
+
+{p 8 16 2}
+{cmdab:grouping} {it:newvar}{cmd:,} {cmdab:i:var(varname)}
+{cmdab:j:var(varname)}
+
+
+{title:Description}
+
+{pstd} {cmd:grouping} calculates a unique group number for each firm
+and each individual in a linked employer-employee dataset.  Each firm
+is indexed by the {cmd:jvar} variable, and each individual is indexed
+by the {cmd:ivar} variable.  The variable {it:newvarname} stores the
+resulting group numbers.
+
+{pstd} A group contains all the individuals who have ever worked for any
+of the firms in a group and all the firms at which any of the workers
+were employed.  Thus, in most reasonable cases, the first group will
+contain almost all workers and firms. To be in a separate group, a firm
+must have employed no workers who ever worked for any firm in another
+group.  A firm that experiences no turnover will be in a group of its
+own.
+
+{pstd} The algorithm for computing the groups is based on that given by
+Abowd, Creecy, and Kramarz (2002).
+
+
+{title:Reference}
+
+{phang}
+Abowd, J., R. Creecy, and F. Kramarz. 2002. Computing person
+and firm effects using linked longitudinal employer-employee data.
+Technical Report 2002-06, U.S. Census Bureau.
+{browse "http://lehd.dsd.census.gov/led/library/techpapers/tp-2002-06.pdf"}.
+
+
+{title:Authors}
+
+{pstd}
+Richard Upward{break}
+School of Economics{break}
+University of Nottingham{break}
+richard.upward@nottingham.ac.uk
+
+{pstd}
+Thorsten Schank{break}
+Volkswirtschaftliches Institut {break}
+Friedrich-Alexander-University Erlangen-Nuremberg{break}
+thorsten.schank@wiso.uni-erlangen.de
+{p_end}

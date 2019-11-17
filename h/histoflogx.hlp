@@ -1,0 +1,63 @@
+{smcl}
+{* 20mar2003}{...}
+{hline}
+help for {hi:histoflogx}
+{hline}
+
+{title:Histogram with log scale on the x-axis}
+
+{p 8 12 2}
+{cmd:histoflogx}
+	{it:varname}
+	[{it:weights}]
+	[{cmd:if} {it:exp}]
+	[{cmd:in} {it:range}]
+	,
+	{cmdab:lab:els:(}{it:numlist}{cmd:)}
+	[ {it:histogram_options} ]
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:histoflogx} is a Stata 8 wrapper for the {cmd:histogram} command.  It
+reproduces Stata 7 histograms generated using the {cmd:log} option.  For
+example
+
+        {cmd:. graph7 mpg, log bin(9) percent xlab(10/20 30 40)}
+	  {it:({stata "gr_example auto: graph7 mpg, log bin(9) percent xlab(10/20 30 40)":click to run})}
+
+{p 4 4 2}
+can be reproduced in Stata 8 graphics by typing
+
+        {cmd:. histoflogx mpg, bin(9) percent start(`=log(10)') lab(10/20 30 40)}
+	  {it:({stata "gr_example auto: histoflogx mpg, bin(9) percent start(`=log(10)') lab(10/20 30 40)":click to run})}
+
+{p 4 4 2}
+Note the use of the {cmd:start()} option.  This is because {cmd:graph7, hist}
+can use a different starting value than {cmd:histogram}.  We use {cmd:log(10)}
+because the bins and heights are calculated using the log scale.
+
+
+{title:Options}
+
+{p 4 8 2}
+{cmd:labels(}{it:numlist}{cmd:)} specifies values to be used as x-axis labels.
+
+{p 4 8 2}
+{it:histogram_options} are those options allowed by {cmd:histogram}; see help
+{help histogram}.
+
+
+{title:Examples}
+
+{p 4 4 2}{cmd:. histoflogx}{p_end}
+
+
+{title:Also see}
+
+{p 5 14 2}
+Manual:  {hi:[R] histogram}
+
+{p 4 14 2}
+On-line:  help for {help histogram}

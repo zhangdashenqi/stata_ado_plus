@@ -1,0 +1,64 @@
+.-
+help for ^xtrchh^                                                  (STB-33: sg62)
+.-
+
+Hildreth-Houck Random coefficients regression for panel data
+------------------------------------------------------------
+
+	^xtrchh^  depvar [varlist] [^if^ exp] [^in^ range] [^, l^evel^(^#^)^ ^i(^varname^)^ 
+		^t(^varname^)^ ]
+
+^xtrchh^ shares the features of all estimation commands; see help @est@.
+
+^xtrchh^, typed without arguments, redisplays previous estimates.
+
+To reset problem-size limits, see help @matsize@.
+
+
+Description
+-----------
+
+If you have not read help for @xt@, please do so now.
+
+^xtrchh^ estimates random coefficients regression models for panel data.
+
+		y[i,t] = a + B*x[i,t] + u[i] + e[i,t]
+
+                i = 1, 2, ..., n   is the groups (or items)
+                t = 1, 2, ..., T_i is the time for group i 
+
+Included in the output is the results of a test of parameter constancy.
+
+Options
+-------
+
+^level(^#^)^ specifies the significance level, in percent, for confidence intervals
+    of the coefficients; see help @level@.
+
+^i(^varname^)^ specifies the variable name corresponding to i; see help @xt@.
+
+^t(^varname^)^ specifies the variable name corresponding to t; see help @xt@.
+
+^nocons^ requests that a model be fit without a constant term.
+
+
+Examples
+--------
+
+        . ^xtrchh i f c, i(group) t(year)^
+
+        . ^xtrchh i f c, i(group) t(year) nocons^
+
+Also see
+--------
+
+    STB: STB-33, sg62
+On-line: help for @xt@, @xtdata@, @xtdes@, @xtsum@, @xttab@; @est@; @correlate@, @test@
+          @xtreg@
+
+Author
+------
+
+    James W. Hardin
+    Stata Corporation
+    jwh@@stata.com

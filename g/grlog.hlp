@@ -1,0 +1,69 @@
+.-
+help for ^grlog^
+.-
+
+Graphing Logistic Regression
+----------------------------
+
+To invoke, type
+
+^. grlog^
+
+This program shows the regression line between X and Y
+in Logistic Regression.  
+
+.-
+
+The first dialog box asks you how you would like 
+to the view the predicted value of Y in the relationship
+between X and Y.  You can choose to view the predicted
+value of Y as
+
+  - the probability Y=1
+    This is useful for showing the S shaped curve of the
+    relationship between X and P(Y=1).  Students can
+    see that the Y axis is easy to interpret but the 
+    shape of the relationship is not linear.  
+  - The Logit of Y (Log Odds Y=1).  
+    This is useful for showing the "logit" model, where
+    the relationship between X and Y is linear; however,
+    interpreting the meaning of Y is very tricky.
+
+Also, you can choose to "Show Point at (X,Yhat)".
+This will display a point which is the predicted value for Y
+when X is 0.  You will then be able to increase/decrease X 
+to show how the predicted value of Y changes as X changes.
+
+You can then choose "continue".
+
+.-
+
+The next dialog box allows you to adjust
+  a-.1 and a+.1 : adding and subtracting .1 from the intercept.
+  b-.1 and b+.1 : adding and subtracting .1 from the slope.
+  X-1  and X+1 (if you choose "show point at prected value of X")
+    This allows you to add and subtract 1 from X, and see
+    how it impacts the predicted value of Y.
+
+  You can also show 2 "movies"
+  Show Movie Varying a : Varys a from -1 to +1, showing
+    how varyng a changes the logistic regression curve.
+
+  Show Movie Varying b : Varys b from -1 to +1, showing
+    how varying b changes the logistic regression curve.
+
+  The "Done" button quits the program.
+  The "Reset" button resets a, b and X to their default
+    values, i.e., a=0, b=1, and X=0.
+  The "Help" button brings up this help screen.
+
+If you have comments or suggestions, please email 
+Michael Mitchell at mnm@ucla.edu .
+
+Author
+------
+
+Michael N. Mitchell
+Statistical Computing and Consulting
+UCLA, Academic Technology Services
+mnm@@ucla.edu
